@@ -76,7 +76,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 17;   /* 13/11 : + encart « Ce que dit la règle » ; 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
+  var I18N_V = 18;   /* 13/11 : + encart « Ce que dit la règle » ; 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -1820,6 +1820,36 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })();
       return function () { vif = false; };
     }, [c.club]);
+    /* 13/11 23h27 (Blandine : « les factures rangées par cheval… en lien avec la compta ») : factures rangées par l'outil
+       « Ajouter un document » (table cheval_factures) → coût de chaque cheval sur l'année */
+    var _fa = React.useState(null); var factures = _fa[0], setFactures = _fa[1];
+    React.useEffect(function () {
+      var ids = ((d && d.chevaux) || []).map(function (x) { return x.id; }).filter(Boolean);
+      if (!ids.length) { setFactures([]); return; }
+      var vif = true;
+      supa.from("cheval_factures").select("cheval_id, date_facture, categorie, montant_ttc").in("cheval_id", ids.slice(0, 300)).limit(3000).then(function (r) { if (vif) setFactures((r && !r.error && r.data) || []); }, function () { if (vif) setFactures([]); });
+      return function () { vif = false; };
+    }, [d ? (d.chevaux || []).length : -1]);
+    var CAT_FAC = { marechal: "Maréchal", veterinaire: "Vétérinaire", pension: "Pension", dentiste: "Dentiste", osteopathe: "Ostéopathe", alimentation: "Alimentation", transport: "Transport", engagement: "Engagements", equipement: "Équipement", autre: "Autre" };
+    function blocCoutChevaux(an) {
+      var L = (factures || []).filter(function (f) { return String(f.date_facture || "").slice(0, 4) === String(an); });
+      if (!L.length) return h("div", null, h("h2", { className: "hv3-h2" }, "Le coût des chevaux"),
+        h("div", { className: "hg-sous", style: { textAlign: "left" } }, h("span", null, "Aucune facture rangée cette année."), " ", h("span", null, "Donne tes factures (maréchal, vétérinaire, pension…) à l'outil « Ajouter un document » en bas de la page : elles se rangent au bon cheval et apparaissent ici.")));
+      var parCh = {}, parCat = {}, tot = 0;
+      L.forEach(function (f) { var m = +f.montant_ttc || 0; tot += m; parCh[f.cheval_id] = (parCh[f.cheval_id] || 0) + m; parCat[f.categorie || "autre"] = (parCat[f.categorie || "autre"] || 0) + m; });
+      var lignes = Object.keys(parCh).map(function (id) { return { nom: nomCheval(d, id) || "?", m: parCh[id] }; }).sort(function (a, b) { return b.m - a.m; });
+      var maxC = lignes.reduce(function (a, x) { return Math.max(a, x.m); }, 1);
+      var cats = Object.keys(parCat).sort(function (a, b) { return parCat[b] - parCat[a]; });
+      return h("div", null, h("h2", { className: "hv3-h2" }, "Le coût des chevaux"),
+        h("div", { className: "hg-sous", style: { textAlign: "left", marginTop: -4 } }, h("b", { style: { color: "#C9A66B", fontWeight: 500 } }, euros(tot)), " ", h("span", null, "de factures rangées cette année")),
+        h("div", { className: "hg-sous", style: { textAlign: "left", marginTop: 2 } }, cats.map(function (k, i) { return h("span", { key: k }, i ? " · " : "", h("span", null, CAT_FAC[k] || k), " " + euros(parCat[k])); })),
+        lignes.map(function (x, k) {
+          return h("div", { key: k, style: { padding: "11px 2px", borderBottom: "1px solid rgba(243,238,228,.08)" } },
+            h("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, fontFamily: "'Montserrat',sans-serif", fontSize: 13, color: "#F3EEE4" } }, h("span", null, x.nom), h("span", { style: { color: "#C9A66B" } }, euros(x.m))),
+            h("div", { style: { marginTop: 7, height: 2, borderRadius: 2, background: "rgba(243,238,228,.08)" } },
+              h("div", { style: { width: Math.max(3, Math.round(100 * x.m / maxC)) + "%", height: "100%", borderRadius: 2, background: "linear-gradient(90deg,rgba(201,166,107,.35),#C9A66B)" } })));
+        }));
+    }
     function ouvrir(ecran) { try { window.__santeClub = { nom: c.club }; window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
     var corps, sousHero = "Préparée depuis ta banque.";
     if (!d || !ap) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
@@ -1866,6 +1896,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               h("div", { style: { marginTop: 7, height: 2, borderRadius: 2, background: "rgba(243,238,228,.08)" } },
                 h("div", { style: { width: Math.max(3, Math.round(100 * (+p.montant || 0) / maxP)) + "%", height: "100%", borderRadius: 2, background: "linear-gradient(90deg,rgba(201,166,107,.35),#C9A66B)" } })));
           })) : null,
+        blocCoutChevaux(exemple ? new Date().getFullYear() : cur.annee),
         (D.trouves || []).length ? h("div", null, h("h2", { className: "hv3-h2" }, "Trouvé pour ton registre"),
           h("div", { className: "hv3-cartes" }, D.trouves.map(function (t, k) {
             var cible = t.cible === "detenteur" ? "detenteur" : (t.cible === "camion" ? "camion" : null);

@@ -147,6 +147,112 @@
 "Résultats du concours": ["Show results", "Resultados del concurso", "Risultati del concorso", "競技会の結果", "Turnierergebnisse", "نتائج المسابقة", "比赛成绩", "Wedstrijduitslagen", "Resultados do concurso", "Tävlingsresultat", "Результаты соревнований", "Wyniki zawodów", "대회 결과", "نتایج مسابقه"],
 "D’après ses papiers": ["According to its papers", "Según sus papeles", "Secondo i suoi documenti", "書類によると", "Laut seinen Papieren", "حسب أوراقه", "根据其证件", "Volgens zijn papieren", "Segundo os papéis", "Enligt pappren", "По документам", "Według dokumentów", "서류에 따르면", "بر اساس مدارکش"],
 "Je les lis dans l’onglet Résultats de la fiche du concours : tu vérifies chaque épreuve, puis tu publies. Ils iront sur les performances des cavaliers et des chevaux.": ["I'll read them in the Results tab of the show page: you check each class, then publish. They'll go to the riders' and horses' performances.", "Los leo en la pestaña Resultados de la ficha del concurso: revisas cada prueba y luego publicas. Irán a las actuaciones de los jinetes y de los caballos.", "Li leggo nella scheda Risultati del concorso: verifichi ogni prova, poi pubblichi. Andranno nelle prestazioni dei cavalieri e dei cavalli.", "競技会ページの「結果」タブで読み取ります：各競技を確認してから公開してね。ライダーと馬の成績に反映されます。", "Ich lese sie im Reiter Ergebnisse der Turnierseite: Du prüfst jede Prüfung und veröffentlichst dann. Sie erscheinen bei den Leistungen der Reiter und Pferde.", "أقرؤها في تبويب النتائج في صفحة المسابقة: تتحقق من كل منافسة ثم تنشر. ستظهر في أداء الفرسان والخيول.", "我会在比赛页面的「成绩」标签中读取：你逐项核对后发布。成绩会进入骑手和马匹的表现记录。", "Ik lees ze in het tabblad Uitslagen van de wedstrijdpagina: je controleert elke proef en publiceert dan. Ze komen bij de prestaties van ruiters en paarden.", "Leio-os no separador Resultados da ficha do concurso: verificas cada prova e depois publicas. Vão para os desempenhos dos cavaleiros e dos cavalos.", "Jag läser dem under fliken Resultat på tävlingssidan: du kontrollerar varje klass och publicerar sedan. De hamnar under ryttarnas och hästarnas prestationer.", "Я прочитаю их во вкладке «Результаты» на странице соревнований: ты проверяешь каждый маршрут и публикуешь. Они попадут в выступления всадников и лошадей.", "Odczytam je w zakładce Wyniki na stronie zawodów: sprawdzasz każdy konkurs, potem publikujesz. Trafią do wyników jeźdźców i koni.", "대회 페이지의 결과 탭에서 읽을게: 경기마다 확인한 뒤 게시해. 기수와 말의 성적에 반영돼.", "آن‌ها را در زبانهٔ نتایجِ صفحهٔ مسابقه می‌خوانم: هر رقابت را بررسی می‌کنی، بعد منتشر می‌کنی. به عملکرد سوارکاران و اسب‌ها اضافه می‌شوند."],
+"Le concours": ["The show", "El concurso", "Il concorso", "競技会", "Das Turnier", "المسابقة", "比赛", "De wedstrijd", "O concurso", "Tävlingen", "Соревнования", "Zawody", "대회", "مسابقه"],
+"Je ne trouve pas ce concours dans l’agenda": ["I can't find this show in the calendar", "No encuentro este concurso en la agenda", "Non trovo questo concorso nell'agenda", "この競技会がカレンダーに見つかりません", "Ich finde dieses Turnier nicht im Kalender", "لا أجد هذه المسابقة في الأجندة", "日程里找不到这场比赛", "Ik vind deze wedstrijd niet in de agenda", "Não encontro este concurso na agenda", "Jag hittar inte tävlingen i kalendern", "Не нахожу эти соревнования в календаре", "Nie znajduję tych zawodów w kalendarzu", "일정에서 이 대회를 찾을 수 없어", "این مسابقه را در تقویم پیدا نمی‌کنم"],
+"Ajoute-le à l’agenda de l’écurie, ou ouvre sa fiche, puis redonne-moi le document.": ["Add it to the yard calendar, or open its page, then give me the document again.", "Añádelo a la agenda de la cuadra o abre su ficha y vuelve a darme el documento.", "Aggiungilo all'agenda della scuderia o apri la sua scheda, poi ridammi il documento.", "厩舎のカレンダーに追加するか、そのページを開いてから、もう一度書類を渡してね。", "Füge es dem Stallkalender hinzu oder öffne seine Seite und gib mir das Dokument noch einmal.", "أضفها إلى أجندة الإسطبل أو افتح صفحتها، ثم أعطني المستند مرة أخرى.", "把它加入马场日程，或打开它的页面，然后再把文件给我。", "Voeg hem toe aan de stalagenda of open zijn pagina en geef me het document opnieuw.", "Adiciona-o à agenda da coudelaria ou abre a ficha e volta a dar-me o documento.", "Lägg till den i stallets kalender eller öppna dess sida och ge mig dokumentet igen.", "Добавь их в календарь конюшни или открой их страницу и снова дай мне документ.", "Dodaj je do kalendarza stajni albo otwórz ich stronę i daj mi dokument jeszcze raz.", "마구간 일정에 추가하거나 대회 페이지를 연 뒤 서류를 다시 줘.", "آن را به تقویم اصطبل اضافه کن یا صفحه‌اش را باز کن، بعد دوباره سند را به من بده."],
+"Je l’ai retrouvé dans l’agenda. Change-le si ce n’est pas le bon.": ["I found it in the calendar. Change it if it's not the right one.", "Lo encontré en la agenda. Cámbialo si no es el correcto.", "L'ho trovato nell'agenda. Cambialo se non è quello giusto.", "カレンダーで見つけました。違っていたら変更してね。", "Ich habe es im Kalender gefunden. Ändere es, falls es nicht stimmt.", "وجدتها في الأجندة. غيّرها إن لم تكن الصحيحة.", "我在日程里找到了。如果不对，请更改。", "Ik heb hem in de agenda gevonden. Wijzig hem als het niet de juiste is.", "Encontrei-o na agenda. Muda-o se não for o certo.", "Jag hittade den i kalendern. Ändra om det inte är rätt.", "Я нашёл их в календаре. Измени, если это не те.", "Znalazłem je w kalendarzu. Zmień, jeśli to nie te.", "일정에서 찾았어. 맞지 않으면 바꿔 줘.", "آن را در تقویم پیدا کردم. اگر درست نیست، عوضش کن."],
+"J’ai plusieurs concours possibles : lequel est-ce ?": ["I have several possible shows: which one is it?", "Tengo varios concursos posibles: ¿cuál es?", "Ho più concorsi possibili: quale è?", "候補の競技会が複数あります：どれですか？", "Es kommen mehrere Turniere in Frage: welches ist es?", "لدي عدة مسابقات محتملة: أيها؟", "有几场可能的比赛：是哪一场？", "Er zijn meerdere wedstrijden mogelijk: welke is het?", "Tenho vários concursos possíveis: qual é?", "Flera tävlingar är möjliga: vilken är det?", "Подходят несколько соревнований: какие именно?", "Pasuje kilka zawodów: które to?", "가능한 대회가 여러 개야: 어느 거야?", "چند مسابقهٔ ممکن دارم: کدام است؟"],
+"— Quel concours ? —": ["— Which show? —", "— ¿Qué concurso? —", "— Quale concorso? —", "— どの競技会？ —", "— Welches Turnier? —", "— أي مسابقة؟ —", "— 哪场比赛？ —", "— Welke wedstrijd? —", "— Que concurso? —", "— Vilken tävling? —", "— Какие соревнования? —", "— Które zawody? —", "— 어느 대회? —", "— کدام مسابقه؟ —"],
+"Choisis la jument.": ["Choose the mare.", "Elige la yegua.", "Scegli la fattrice.", "牝馬を選んでね。", "Wähle die Stute.", "اختر الفرس.", "选择母马。", "Kies de merrie.", "Escolhe a égua.", "Välj stoet.", "Выбери кобылу.", "Wybierz klacz.", "암말을 골라 줘.", "مادیان را انتخاب کن."],
+"Coche au moins une ligne avec une date.": ["Check at least one line with a date.", "Marca al menos una línea con fecha.", "Spunta almeno una riga con una data.", "日付のある行を1つ以上選んでね。", "Hake mindestens eine Zeile mit Datum an.", "حدّد سطرًا واحدًا على الأقل بتاريخ.", "至少勾选一行带日期的记录。", "Vink minstens één regel met een datum aan.", "Marca pelo menos uma linha com data.", "Bocka i minst en rad med datum.", "Отметь хотя бы одну строку с датой.", "Zaznacz co najmniej jeden wiersz z datą.", "날짜가 있는 줄을 하나 이상 체크해 줘.", "دست‌کم یک ردیف تاریخ‌دار را علامت بزن."],
+"Poulinage prévu": ["Expected foaling", "Parto previsto", "Parto previsto", "出産予定", "Voraussichtliche Geburt", "موعد الولادة المتوقع", "预产期", "Verwachte veulening", "Parto previsto", "Beräknad fölning", "Ожидаемая выжеребка", "Przewidywany poród", "출산 예정", "زایمان پیش‌بینی‌شده"],
+"✓ Suivi de la jument enregistré : ": ["✓ Mare follow-up saved: ", "✓ Seguimiento de la yegua guardado: ", "✓ Monitoraggio della fattrice salvato: ", "✓ 牝馬の記録を保存しました：", "✓ Stutenverlauf gespeichert: ", "✓ تم حفظ متابعة الفرس: ", "✓ 母马记录已保存：", "✓ Opvolging van de merrie opgeslagen: ", "✓ Acompanhamento da égua guardado: ", "✓ Stoets uppföljning sparad: ", "✓ Наблюдение за кобылой сохранено: ", "✓ Zapisano obserwację klaczy: ", "✓ 암말 기록 저장: ", "✓ پیگیری مادیان ذخیره شد: "],
+"Rappel un mois avant le terme.": ["Reminder one month before the due date.", "Recordatorio un mes antes del término.", "Promemoria un mese prima del termine.", "予定日の1か月前にお知らせします。", "Erinnerung einen Monat vor dem Termin.", "تذكير قبل شهر من الموعد.", "预产期前一个月提醒。", "Herinnering een maand voor de uitgerekende datum.", "Lembrete um mês antes do termo.", "Påminnelse en månad före beräknat datum.", "Напоминание за месяц до срока.", "Przypomnienie miesiąc przed terminem.", "예정일 한 달 전에 알려 줄게.", "یک ماه پیش از موعد یادآوری می‌کنم."],
+"Donne un nom au contrat.": ["Give the contract a name.", "Ponle un nombre al contrato.", "Dai un nome al contratto.", "契約に名前を付けてね。", "Gib dem Vertrag einen Namen.", "أعطِ العقد اسمًا.", "给合同起个名字。", "Geef het contract een naam.", "Dá um nome ao contrato.", "Ge avtalet ett namn.", "Дай договору название.", "Nadaj umowie nazwę.", "계약 이름을 정해 줘.", "برای قرارداد نامی بگذار."],
+"Ajouté depuis un contrat (outil « Ajouter un document »).": ["Added from a contract (“Add a document” tool).", "Añadido desde un contrato (herramienta «Añadir un documento»).", "Aggiunto da un contratto (strumento «Aggiungi un documento»).", "契約書から追加（「書類を追加」ツール）。", "Aus einem Vertrag hinzugefügt (Tool „Dokument hinzufügen“).", "أُضيف من عقد (أداة «إضافة مستند»).", "从合同添加（「添加文件」工具）。", "Toegevoegd vanuit een contract (tool „Document toevoegen”).", "Adicionado a partir de um contrato (ferramenta «Adicionar um documento»).", "Tillagt från ett avtal (verktyget ”Lägg till ett dokument”).", "Добавлено из договора (инструмент «Добавить документ»).", "Dodano z umowy (narzędzie „Dodaj dokument”).", "계약서에서 추가됨(「서류 추가」 도구).", "از یک قرارداد افزوده شد (ابزار «افزودن سند»)."],
+"seule la personne qui gère l’écurie peut l’ajouter": ["only the person managing the yard can add it", "solo quien gestiona la cuadra puede añadirlo", "solo chi gestisce la scuderia può aggiungerlo", "厩舎の管理者だけが追加できます", "nur wer den Stall verwaltet, kann es hinzufügen", "يمكن لمسؤول الإسطبل فقط إضافته", "只有马场管理者可以添加", "alleen wie de stal beheert kan het toevoegen", "só quem gere a coudelaria pode adicioná-lo", "bara den som sköter stallet kan lägga till det", "добавить может только тот, кто управляет конюшней", "dodać może tylko osoba zarządzająca stajnią", "마구간 관리자만 추가할 수 있어", "فقط کسی که اصطبل را اداره می‌کند می‌تواند اضافه‌اش کند"],
+"Contrat de pension": ["Livery contract", "Contrato de pupilaje", "Contratto di pensione", "預託契約", "Pensionsvertrag", "عقد إيواء", "寄养合同", "Pensioncontract", "Contrato de pensão", "Inackorderingsavtal", "Договор о постое", "Umowa pensjonatowa", "위탁 계약", "قرارداد نگهداری"],
+"Le contrat est gardé dans tes documents.": ["The contract is kept in your documents.", "El contrato se guarda en tus documentos.", "Il contratto è conservato nei tuoi documenti.", "契約書はあなたの書類に保管しました。", "Der Vertrag liegt in deinen Dokumenten.", "العقد محفوظ في مستنداتك.", "合同已保存在你的文件中。", "Het contract staat in je documenten.", "O contrato fica guardado nos teus documentos.", "Avtalet sparas bland dina dokument.", "Договор сохранён в твоих документах.", "Umowa jest zapisana w twoich dokumentach.", "계약서는 네 서류에 보관했어.", "قرارداد در سندهایت نگه داشته شد."],
+"✓ Pension ajoutée : tu suivras les échéances dans la page Pensions.": ["✓ Livery added: you'll follow the payments on the Livery page.", "✓ Pupilaje añadido: seguirás los vencimientos en la página Pupilajes.", "✓ Pensione aggiunta: seguirai le scadenze nella pagina Pensioni.", "✓ 預託を追加しました：支払いは「預託」ページで確認できます。", "✓ Pension hinzugefügt: die Fälligkeiten siehst du auf der Seite Pensionen.", "✓ أُضيف الإيواء: ستتابع المستحقات في صفحة الإيواء.", "✓ 寄养已添加：在「寄养」页面跟进付款。", "✓ Pension toegevoegd: je volgt de termijnen op de pagina Pensions.", "✓ Pensão adicionada: acompanhas os pagamentos na página Pensões.", "✓ Inackordering tillagd: du följer betalningarna på sidan Inackorderingar.", "✓ Постой добавлен: платежи — на странице «Постой».", "✓ Pensjonat dodany: terminy płatności zobaczysz na stronie Pensjonaty.", "✓ 위탁을 추가했어: 납부 일정은 위탁 페이지에서 확인해.", "✓ نگهداری افزوده شد: سررسیدها را در صفحهٔ نگهداری‌ها دنبال می‌کنی."],
+"✓ Contrat ajouté : tu suivras les règlements dans la page Contrats.": ["✓ Contract added: you'll follow the payments on the Contracts page.", "✓ Contrato añadido: seguirás los pagos en la página Contratos.", "✓ Contratto aggiunto: seguirai i pagamenti nella pagina Contratti.", "✓ 契約を追加しました：支払いは「契約」ページで確認できます。", "✓ Vertrag hinzugefügt: die Zahlungen siehst du auf der Seite Verträge.", "✓ أُضيف العقد: ستتابع الدفعات في صفحة العقود.", "✓ 合同已添加：在「合同」页面跟进付款。", "✓ Contract toegevoegd: je volgt de betalingen op de pagina Contracten.", "✓ Contrato adicionado: acompanhas os pagamentos na página Contratos.", "✓ Avtal tillagt: du följer betalningarna på sidan Avtal.", "✓ Договор добавлен: платежи — на странице «Договоры».", "✓ Umowa dodana: płatności zobaczysz na stronie Umowy.", "✓ 계약을 추가했어: 납부는 계약 페이지에서 확인해.", "✓ قرارداد افزوده شد: پرداخت‌ها را در صفحهٔ قراردادها دنبال می‌کنی."],
+"Indique la date de fin.": ["Enter the end date.", "Indica la fecha de fin.", "Indica la data di fine.", "終了日を入れてね。", "Gib das Enddatum an.", "أدخل تاريخ الانتهاء.", "填写截止日期。", "Vul de einddatum in.", "Indica a data de fim.", "Ange slutdatum.", "Укажи дату окончания.", "Podaj datę końca.", "종료일을 입력해 줘.", "تاریخ پایان را وارد کن."],
+"Date mise à jour sur le véhicule ": ["Date updated on the vehicle ", "Fecha actualizada en el vehículo ", "Data aggiornata sul veicolo ", "車両の日付を更新しました：", "Datum beim Fahrzeug aktualisiert: ", "تم تحديث التاريخ على المركبة ", "车辆日期已更新：", "Datum bijgewerkt bij het voertuig ", "Data atualizada no veículo ", "Datum uppdaterat för fordonet ", "Дата обновлена для машины ", "Zaktualizowano datę pojazdu ", "차량 날짜를 업데이트했어: ", "تاریخ روی وسیلهٔ نقلیه به‌روز شد: "],
+"✓ Rangé dans tes documents, avec un rappel avant la date de fin.": ["✓ Filed in your documents, with a reminder before the end date.", "✓ Guardado en tus documentos, con un recordatorio antes de la fecha de fin.", "✓ Archiviato nei tuoi documenti, con un promemoria prima della scadenza.", "✓ 書類に保存し、期限前にお知らせします。", "✓ In deinen Dokumenten abgelegt, mit Erinnerung vor dem Enddatum.", "✓ حُفظ في مستنداتك مع تذكير قبل تاريخ الانتهاء.", "✓ 已存入你的文件，到期前会提醒。", "✓ Opgeslagen in je documenten, met een herinnering voor de einddatum.", "✓ Guardado nos teus documentos, com lembrete antes da data de fim.", "✓ Sparat bland dina dokument, med påminnelse före slutdatum.", "✓ Сохранено в твоих документах, с напоминанием до окончания срока.", "✓ Zapisano w twoich dokumentach, z przypomnieniem przed terminem.", "✓ 네 서류에 정리했고, 만료 전에 알려 줄게.", "✓ در سندهایت گذاشته شد، با یادآوری پیش از تاریخ پایان."],
+"✓ Traitement suivi : ": ["✓ Treatment tracked: ", "✓ Tratamiento en seguimiento: ", "✓ Trattamento monitorato: ", "✓ 治療を記録しました：", "✓ Behandlung erfasst: ", "✓ علاج قيد المتابعة: ", "✓ 治疗已记录：", "✓ Behandeling opgevolgd: ", "✓ Tratamento acompanhado: ", "✓ Behandling följs: ", "✓ Лечение отслеживается: ", "✓ Leczenie śledzone: ", "✓ 치료 기록: ", "✓ درمان پیگیری می‌شود: "],
+" médicament(s), avec un rappel le dernier jour. ": [" medicine(s), with a reminder on the last day. ", " medicamento(s), con un recordatorio el último día. ", " farmaco/i, con un promemoria l'ultimo giorno. ", " 種類の薬、最終日にお知らせします。", " Medikament(e), mit Erinnerung am letzten Tag. ", " دواء، مع تذكير في اليوم الأخير. ", " 种药物，最后一天提醒。", " medicijn(en), met een herinnering op de laatste dag. ", " medicamento(s), com lembrete no último dia. ", " läkemedel, med påminnelse sista dagen. ", " препарат(ов), с напоминанием в последний день. ", " lek(i), z przypomnieniem ostatniego dnia. ", " 개 약, 마지막 날 알려 줄게. ", " دارو، با یادآوری در روز آخر. "],
+"Choisis d’abord le concours ci-dessus.": ["First choose the show above.", "Primero elige el concurso de arriba.", "Prima scegli il concorso qui sopra.", "まず上で競技会を選んでね。", "Wähle zuerst oben das Turnier.", "اختر المسابقة أعلاه أولًا.", "请先在上方选择比赛。", "Kies eerst hierboven de wedstrijd.", "Escolhe primeiro o concurso acima.", "Välj först tävlingen ovan.", "Сначала выбери соревнования выше.", "Najpierw wybierz zawody powyżej.", "먼저 위에서 대회를 골라 줘.", "اول مسابقه را در بالا انتخاب کن."],
+"Suivi de la jument": ["Mare follow-up", "Seguimiento de la yegua", "Monitoraggio della fattrice", "牝馬の記録", "Stutenverlauf", "متابعة الفرس", "母马记录", "Opvolging van de merrie", "Acompanhamento da égua", "Stoets uppföljning", "Наблюдение за кобылой", "Obserwacja klaczy", "암말 기록", "پیگیری مادیان"],
+"Je l’ajoute à la page Santé de la jument.": ["I'll add it to the mare's Health page.", "Lo añado a la página Salud de la yegua.", "Lo aggiungo alla pagina Salute della fattrice.", "牝馬の健康ページに追加します。", "Ich füge es der Gesundheitsseite der Stute hinzu.", "سأضيفه إلى صفحة صحة الفرس.", "我会把它加到母马的健康页面。", "Ik voeg het toe aan de gezondheidspagina van de merrie.", "Adiciono-o à página Saúde da égua.", "Jag lägger till det på stoets hälsosida.", "Добавлю на страницу здоровья кобылы.", "Dodam to do strony Zdrowie klaczy.", "암말의 건강 페이지에 추가할게.", "آن را به صفحهٔ سلامت مادیان اضافه می‌کنم."],
+"Jument": ["Mare", "Yegua", "Fattrice", "牝馬", "Stute", "الفرس", "母马", "Merrie", "Égua", "Sto", "Кобыла", "Klacz", "암말", "مادیان"],
+"Calculé à 340 jours après la dernière saillie s’il n’est pas écrit. Je te préviens un mois avant.": ["Calculated at 340 days after the last covering if not written. I'll remind you a month before.", "Calculado a 340 días de la última monta si no está escrito. Te aviso un mes antes.", "Calcolato a 340 giorni dall'ultima monta se non è scritto. Ti avviso un mese prima.", "書かれていなければ最後の種付けから340日で計算します。1か月前にお知らせします。", "Wenn nicht angegeben, 340 Tage nach der letzten Bedeckung berechnet. Ich erinnere dich einen Monat vorher.", "إن لم يُكتب، يُحسب بعد 340 يومًا من آخر تلقيح. سأنبهك قبل شهر.", "若未写明，按最后一次配种后340天计算。提前一个月提醒你。", "Berekend op 340 dagen na de laatste dekking als het er niet staat. Ik waarschuw je een maand vooraf.", "Calculado a 340 dias da última cobrição se não estiver escrito. Aviso-te um mês antes.", "Beräknas till 340 dagar efter sista betäckningen om det inte står. Jag påminner dig en månad innan.", "Если не указано, считается как 340 дней после последней случки. Напомню за месяц.", "Jeśli nie podano, liczone jako 340 dni od ostatniego krycia. Przypomnę miesiąc wcześniej.", "적혀 있지 않으면 마지막 교배 후 340일로 계산해. 한 달 전에 알려 줄게.", "اگر نوشته نشده باشد، ۳۴۰ روز پس از آخرین جفت‌گیری حساب می‌شود. یک ماه پیش خبرت می‌کنم."],
+"Enregistrer le suivi": ["Save the follow-up", "Guardar el seguimiento", "Salva il monitoraggio", "記録を保存", "Verlauf speichern", "حفظ المتابعة", "保存记录", "Opvolging opslaan", "Guardar o acompanhamento", "Spara uppföljningen", "Сохранить наблюдение", "Zapisz obserwację", "기록 저장", "ذخیرهٔ پیگیری"],
+"Le contrat": ["The contract", "El contrato", "Il contratto", "契約", "Der Vertrag", "العقد", "合同", "Het contract", "O contrato", "Avtalet", "Договор", "Umowa", "계약", "قرارداد"],
+"Je l’ajoute aux pages de gestion de l’écurie pour suivre les échéances. Pense à faire relire tes contrats par un professionnel (juriste, avocat) : Hype t’aide à les ranger et à les suivre, il ne vérifie pas leur valeur juridique.": ["I'll add it to the yard management pages to track the due dates. Have your contracts checked by a professional (legal adviser, lawyer): Hype helps you file and track them, it doesn't check their legal validity.", "Lo añado a las páginas de gestión de la cuadra para seguir los vencimientos. Haz revisar tus contratos por un profesional (jurista, abogado): Hype te ayuda a guardarlos y seguirlos, no comprueba su validez jurídica.", "Lo aggiungo alle pagine di gestione della scuderia per seguire le scadenze. Fai rileggere i contratti da un professionista (giurista, avvocato): Hype ti aiuta ad archiviarli e seguirli, non ne verifica la validità giuridica.", "期日を管理できるよう厩舎の管理ページに追加します。契約は専門家（法律家・弁護士）に確認してもらってね：Hypeは整理と管理を手伝いますが、法的な有効性は確認しません。", "Ich füge es den Verwaltungsseiten des Stalls hinzu, um die Fälligkeiten zu verfolgen. Lass deine Verträge von einer Fachperson (Jurist, Anwalt) prüfen: Hype hilft beim Ablegen und Verfolgen, prüft aber nicht die rechtliche Gültigkeit.", "سأضيفه إلى صفحات إدارة الإسطبل لمتابعة المواعيد. اطلب من مختص (مستشار قانوني، محامٍ) مراجعة عقودك: يساعدك Hype على حفظها ومتابعتها، ولا يتحقق من صحتها القانونية.", "我会把它加到马场管理页面以跟进到期日。请让专业人士（法务、律师）审阅你的合同：Hype 帮你存档和跟进，但不核实其法律效力。", "Ik voeg het toe aan de beheerpagina's van de stal om de termijnen te volgen. Laat je contracten nalezen door een professional (jurist, advocaat): Hype helpt ze op te bergen en te volgen, maar controleert hun juridische geldigheid niet.", "Adiciono-o às páginas de gestão da coudelaria para acompanhar os prazos. Pede a um profissional (jurista, advogado) que reveja os teus contratos: o Hype ajuda a guardá-los e acompanhá-los, não verifica a sua validade jurídica.", "Jag lägger till det på stallets förvaltningssidor för att följa förfallodagarna. Låt en expert (jurist, advokat) granska dina avtal: Hype hjälper dig att spara och följa dem, men kontrollerar inte deras juridiska giltighet.", "Добавлю на страницы управления конюшней, чтобы следить за сроками. Дай свои договоры на проверку специалисту (юристу, адвокату): Hype помогает хранить их и следить за ними, но не проверяет их юридическую силу.", "Dodam to do stron zarządzania stajnią, by śledzić terminy. Daj umowy do sprawdzenia profesjonaliście (prawnik, adwokat): Hype pomaga je przechowywać i śledzić, nie sprawdza ich ważności prawnej.", "기한을 관리할 수 있게 마구간 관리 페이지에 추가할게. 계약서는 전문가(법률가, 변호사)에게 검토받아: Hype는 정리와 관리를 돕지만 법적 효력은 확인하지 않아.", "آن را به صفحه‌های مدیریت اصطبل اضافه می‌کنم تا سررسیدها را دنبال کنی. قراردادهایت را به یک متخصص (حقوق‌دان، وکیل) نشان بده: Hype در نگهداری و پیگیری کمک می‌کند، اما اعتبار حقوقی‌شان را بررسی نمی‌کند."],
+"Type de contrat": ["Contract type", "Tipo de contrato", "Tipo di contratto", "契約の種類", "Vertragsart", "نوع العقد", "合同类型", "Soort contract", "Tipo de contrato", "Avtalstyp", "Тип договора", "Rodzaj umowy", "계약 종류", "نوع قرارداد"],
+"Pension ou demi-pension d’un cheval": ["Full or part livery of a horse", "Pupilaje o media pensión de un caballo", "Pensione o mezza pensione di un cavallo", "馬の預託またはハーフリース", "Pension oder Halbpension eines Pferdes", "إيواء حصان أو نصف إيواء", "马匹寄养或半租", "Pension of halve lease van een paard", "Pensão ou meia pensão de um cavalo", "Inackordering eller halvfoder för en häst", "Постой или полупостой лошади", "Pensjonat lub półdzierżawa konia", "말의 위탁 또는 반임대", "نگهداری یا نیمه‌نگهداری یک اسب"],
+"Autre contrat (assurance, cotisation, location…)": ["Other contract (insurance, membership, rental…)", "Otro contrato (seguro, cuota, alquiler…)", "Altro contratto (assicurazione, quota, affitto…)", "その他の契約（保険・会費・賃貸…）", "Anderer Vertrag (Versicherung, Beitrag, Miete…)", "عقد آخر (تأمين، اشتراك، إيجار…)", "其他合同（保险、会费、租赁…）", "Ander contract (verzekering, contributie, huur…)", "Outro contrato (seguro, quota, aluguer…)", "Annat avtal (försäkring, avgift, hyra…)", "Другой договор (страховка, взнос, аренда…)", "Inna umowa (ubezpieczenie, składka, najem…)", "기타 계약(보험, 회비, 임대…)", "قرارداد دیگر (بیمه، حق عضویت، اجاره…)"],
+"Nom du contrat": ["Contract name", "Nombre del contrato", "Nome del contratto", "契約名", "Name des Vertrags", "اسم العقد", "合同名称", "Naam van het contract", "Nome do contrato", "Avtalets namn", "Название договора", "Nazwa umowy", "계약 이름", "نام قرارداد"],
+"Ex. Assurance du camion": ["E.g. Lorry insurance", "Ej. Seguro del camión", "Es. Assicurazione del camion", "例：馬運車の保険", "Z. B. Versicherung des LKW", "مثال: تأمين الشاحنة", "例：运马车保险", "Bijv. Verzekering van de vrachtwagen", "Ex. Seguro do camião", "T.ex. Försäkring för lastbilen", "Напр. Страховка коневоза", "Np. Ubezpieczenie ciężarówki", "예: 마필 수송차 보험", "مثلاً بیمهٔ کامیون"],
+"Catégorie": ["Category", "Categoría", "Categoria", "カテゴリー", "Kategorie", "الفئة", "类别", "Categorie", "Categoria", "Kategori", "Категория", "Kategoria", "분류", "دسته"],
+"Formule": ["Package", "Fórmula", "Formula", "プラン", "Formel", "الصيغة", "方案", "Formule", "Fórmula", "Upplägg", "Формула", "Formuła", "방식", "نوع"],
+"Organisme": ["Provider", "Entidad", "Ente", "提供元", "Anbieter", "الجهة", "机构", "Instantie", "Entidade", "Leverantör", "Организация", "Instytucja", "기관", "سازمان"],
+"Montant (€)": ["Amount (€)", "Importe (€)", "Importo (€)", "金額（€）", "Betrag (€)", "المبلغ (€)", "金额（€）", "Bedrag (€)", "Montante (€)", "Belopp (€)", "Сумма (€)", "Kwota (€)", "금액(€)", "مبلغ (€)"],
+"Fréquence": ["Frequency", "Frecuencia", "Frequenza", "頻度", "Häufigkeit", "التكرار", "频率", "Frequentie", "Frequência", "Frekvens", "Периодичность", "Częstotliwość", "주기", "دوره"],
+"Prochaine échéance": ["Next due date", "Próximo vencimiento", "Prossima scadenza", "次の期日", "Nächste Fälligkeit", "الاستحقاق القادم", "下次到期", "Volgende termijn", "Próximo prazo", "Nästa förfallodag", "Следующий срок", "Następny termin", "다음 납부일", "سررسید بعدی"],
+"Fin du contrat": ["End of contract", "Fin del contrato", "Fine del contratto", "契約終了", "Vertragsende", "نهاية العقد", "合同结束", "Einde van het contract", "Fim do contrato", "Avtalets slut", "Окончание договора", "Koniec umowy", "계약 종료", "پایان قرارداد"],
+"Ajouter le contrat": ["Add the contract", "Añadir el contrato", "Aggiungi il contratto", "契約を追加", "Vertrag hinzufügen", "إضافة العقد", "添加合同", "Contract toevoegen", "Adicionar o contrato", "Lägg till avtalet", "Добавить договор", "Dodaj umowę", "계약 추가", "افزودن قرارداد"],
+"Un papier qui expire": ["A paper that expires", "Un papel que caduca", "Un documento in scadenza", "期限のある書類", "Ein Papier, das abläuft", "ورقة تنتهي صلاحيتها", "会过期的证件", "Een papier dat verloopt", "Um papel que expira", "Ett papper som går ut", "Документ с истекающим сроком", "Dokument, który wygasa", "만료되는 서류", "سندی که منقضی می‌شود"],
+"Je le range dans tes documents et je te préviens avant la date de fin.": ["I'll file it in your documents and remind you before the end date.", "Lo guardo en tus documentos y te aviso antes de la fecha de fin.", "Lo archivio nei tuoi documenti e ti avviso prima della scadenza.", "書類に保存し、期限前にお知らせします。", "Ich lege es in deinen Dokumenten ab und erinnere dich vor dem Enddatum.", "سأحفظه في مستنداتك وأنبهك قبل تاريخ الانتهاء.", "我会存入你的文件，并在到期前提醒你。", "Ik berg het op in je documenten en waarschuw je voor de einddatum.", "Guardo-o nos teus documentos e aviso-te antes da data de fim.", "Jag sparar det bland dina dokument och påminner dig före slutdatum.", "Сохраню в твоих документах и напомню до окончания срока.", "Zapiszę to w twoich dokumentach i przypomnę przed terminem.", "네 서류에 정리하고 만료 전에 알려 줄게.", "آن را در سندهایت می‌گذارم و پیش از تاریخ پایان خبرت می‌کنم."],
+"Nom du document": ["Document name", "Nombre del documento", "Nome del documento", "書類名", "Name des Dokuments", "اسم المستند", "文件名称", "Naam van het document", "Nome do documento", "Dokumentets namn", "Название документа", "Nazwa dokumentu", "서류 이름", "نام سند"],
+"Ex. Licence FFE 2027": ["E.g. FFE licence 2027", "Ej. Licencia FFE 2027", "Es. Licenza FFE 2027", "例：FFEライセンス 2027", "Z. B. FFE-Lizenz 2027", "مثال: رخصة FFE 2027", "例：FFE 执照 2027", "Bijv. FFE-licentie 2027", "Ex. Licença FFE 2027", "T.ex. FFE-licens 2027", "Напр. Лицензия FFE 2027", "Np. Licencja FFE 2027", "예: FFE 라이선스 2027", "مثلاً مجوز FFE ۲۰۲۷"],
+"Valable jusqu’au": ["Valid until", "Válido hasta", "Valido fino al", "有効期限", "Gültig bis", "صالح حتى", "有效期至", "Geldig tot", "Válido até", "Giltigt till", "Действует до", "Ważne do", "유효 기간", "معتبر تا"],
+"Immatriculation": ["Registration", "Matrícula", "Targa", "ナンバー", "Kennzeichen", "رقم التسجيل", "车牌", "Kenteken", "Matrícula", "Registreringsnummer", "Госномер", "Numer rejestracyjny", "차량 번호", "پلاک"],
+"Ranger avec un rappel": ["File with a reminder", "Guardar con recordatorio", "Archivia con promemoria", "お知らせ付きで保存", "Mit Erinnerung ablegen", "حفظ مع تذكير", "保存并设提醒", "Opbergen met herinnering", "Guardar com lembrete", "Spara med påminnelse", "Сохранить с напоминанием", "Zapisz z przypomnieniem", "알림과 함께 정리", "ذخیره با یادآوری"],
+"Engagements du concours": ["Show entries", "Inscripciones del concurso", "Iscrizioni del concorso", "競技会のエントリー", "Turniernennungen", "تسجيلات المسابقة", "比赛报名", "Inschrijvingen van de wedstrijd", "Inscrições do concurso", "Tävlingsanmälningar", "Заявки на соревнования", "Zgłoszenia na zawody", "대회 참가 신청", "ثبت‌نام‌های مسابقه"],
+"Je les lis dans les Engagements du concours : tu vérifies les cavaliers, les chevaux et les épreuves, puis tu enregistres.": ["I'll read them in the show Entries: you check the riders, horses and classes, then save.", "Los leo en las Inscripciones del concurso: revisas jinetes, caballos y pruebas, y luego guardas.", "Le leggo nelle Iscrizioni del concorso: verifichi cavalieri, cavalli e prove, poi salvi.", "競技会のエントリーで読み取ります：ライダー・馬・競技を確認してから保存してね。", "Ich lese sie bei den Turniernennungen: Du prüfst Reiter, Pferde und Prüfungen und speicherst dann.", "أقرؤها في تسجيلات المسابقة: تتحقق من الفرسان والخيول والمنافسات ثم تحفظ.", "我会在比赛报名中读取：你核对骑手、马匹和项目后保存。", "Ik lees ze bij de inschrijvingen van de wedstrijd: je controleert ruiters, paarden en proeven en slaat dan op.", "Leio-as nas Inscrições do concurso: verificas cavaleiros, cavalos e provas, depois guardas.", "Jag läser dem under tävlingens anmälningar: du kontrollerar ryttare, hästar och klasser och sparar sedan.", "Я прочитаю их в заявках на соревнования: проверь всадников, лошадей и маршруты, затем сохрани.", "Odczytam je w zgłoszeniach na zawody: sprawdzasz jeźdźców, konie i konkursy, potem zapisujesz.", "대회 참가 신청에서 읽을게: 기수, 말, 경기를 확인한 뒤 저장해.", "آن‌ها را در ثبت‌نام‌های مسابقه می‌خوانم: سوارکاران، اسب‌ها و رقابت‌ها را بررسی می‌کنی، بعد ذخیره می‌کنی."],
+"Le traitement": ["The treatment", "El tratamiento", "Il trattamento", "治療", "Die Behandlung", "العلاج", "治疗", "De behandeling", "O tratamento", "Behandlingen", "Лечение", "Leczenie", "치료", "درمان"],
+"Je l’ajoute au suivi du cheval, avec un rappel le dernier jour. Vérifie les dates.": ["I'll add it to the horse's follow-up, with a reminder on the last day. Check the dates.", "Lo añado al seguimiento del caballo, con un recordatorio el último día. Revisa las fechas.", "Lo aggiungo al monitoraggio del cavallo, con un promemoria l'ultimo giorno. Controlla le date.", "馬の記録に追加し、最終日にお知らせします。日付を確認してね。", "Ich füge es dem Verlauf des Pferdes hinzu, mit Erinnerung am letzten Tag. Prüfe die Daten.", "سأضيفه إلى متابعة الحصان مع تذكير في اليوم الأخير. تحقّق من التواريخ.", "我会把它加入马匹记录，最后一天提醒。请核对日期。", "Ik voeg het toe aan de opvolging van het paard, met een herinnering op de laatste dag. Controleer de data.", "Adiciono-o ao acompanhamento do cavalo, com lembrete no último dia. Verifica as datas.", "Jag lägger till det i hästens uppföljning, med påminnelse sista dagen. Kontrollera datumen.", "Добавлю в наблюдение за лошадью с напоминанием в последний день. Проверь даты.", "Dodam to do obserwacji konia, z przypomnieniem ostatniego dnia. Sprawdź daty.", "말의 기록에 추가하고 마지막 날 알려 줄게. 날짜를 확인해.", "آن را به پیگیری اسب اضافه می‌کنم، با یادآوری در روز آخر. تاریخ‌ها را بررسی کن."],
+"Fin": ["End", "Fin", "Fine", "終了", "Ende", "النهاية", "结束", "Einde", "Fim", "Slut", "Конец", "Koniec", "종료", "پایان"],
+"Attention : ce cheval est engagé en concours pendant ce traitement ou juste après": ["Careful: this horse is entered in a show during this treatment or just after", "Atención: este caballo está inscrito en un concurso durante este tratamiento o justo después", "Attenzione: questo cavallo è iscritto a un concorso durante questo trattamento o subito dopo", "注意：この馬は治療中または直後に競技会にエントリーしています", "Achtung: Dieses Pferd ist während dieser Behandlung oder kurz danach für ein Turnier genannt", "تنبيه: هذا الحصان مسجّل في مسابقة أثناء هذا العلاج أو بعده مباشرة", "注意：这匹马在治疗期间或刚结束后报名了比赛", "Let op: dit paard is ingeschreven voor een wedstrijd tijdens of vlak na deze behandeling", "Atenção: este cavalo está inscrito num concurso durante este tratamento ou logo depois", "Obs: hästen är anmäld till en tävling under eller strax efter behandlingen", "Внимание: эта лошадь заявлена на соревнования во время лечения или сразу после", "Uwaga: ten koń jest zgłoszony na zawody w trakcie leczenia lub tuż po nim", "주의: 이 말은 치료 중이거나 직후에 대회 참가가 신청되어 있어", "توجه: این اسب در طول این درمان یا کمی بعد از آن در مسابقه ثبت‌نام شده است"],
+"Vérifie avec ton vétérinaire le délai à respecter avant de concourir.": ["Check with your vet how long to wait before competing.", "Consulta con tu veterinario el plazo a respetar antes de competir.", "Verifica con il veterinario quanto attendere prima di gareggiare.", "競技に出る前に必要な期間を獣医に確認してね。", "Kläre mit deinem Tierarzt, wie lange du vor dem Start warten musst.", "تحقّق مع طبيبك البيطري من المهلة الواجبة قبل المشاركة.", "请向兽医确认参赛前需等待的时间。", "Vraag je dierenarts hoe lang je moet wachten voor je start.", "Confirma com o teu veterinário o prazo a respeitar antes de competir.", "Kolla med din veterinär hur länge du ska vänta innan tävling.", "Уточни у ветеринара, сколько ждать перед стартом.", "Sprawdź z weterynarzem, ile trzeba odczekać przed startem.", "출전 전에 지켜야 할 기간을 수의사에게 확인해.", "با دامپزشکت مدت لازم پیش از شرکت در مسابقه را بررسی کن."],
+"Enregistrer le traitement et ranger": ["Save the treatment and file", "Guardar el tratamiento y archivar", "Salva il trattamento e archivia", "治療を保存して書類を保管", "Behandlung speichern und ablegen", "حفظ العلاج والأرشفة", "保存治疗并归档", "Behandeling opslaan en opbergen", "Guardar o tratamento e arquivar", "Spara behandlingen och arkivera", "Сохранить лечение и убрать", "Zapisz leczenie i odłóż", "치료 저장하고 정리", "ذخیرهٔ درمان و بایگانی"],
+"les engagements d'un concours": ["a show's entries", "las inscripciones de un concurso", "le iscrizioni di un concorso", "競技会のエントリー", "die Nennungen eines Turniers", "تسجيلات مسابقة", "一场比赛的报名", "de inschrijvingen van een wedstrijd", "as inscrições de um concurso", "anmälningarna till en tävling", "заявки на соревнования", "zgłoszenia na zawody", "대회 참가 신청", "ثبت‌نام‌های یک مسابقه"],
+"un papier avec une date de fin": ["a paper with an end date", "un papel con fecha de fin", "un documento con una scadenza", "期限のある書類", "ein Papier mit Enddatum", "ورقة لها تاريخ انتهاء", "有截止日期的证件", "een papier met een einddatum", "um papel com data de fim", "ett papper med slutdatum", "документ со сроком действия", "dokument z datą końca", "만료일이 있는 서류", "سندی با تاریخ پایان"],
+"un contrat": ["a contract", "un contrato", "un contratto", "契約書", "ein Vertrag", "عقد", "一份合同", "een contract", "um contrato", "ett avtal", "договор", "umowa", "계약서", "یک قرارداد"],
+"le suivi d'une jument": ["a mare's follow-up", "el seguimiento de una yegua", "il monitoraggio di una fattrice", "牝馬の記録", "der Verlauf einer Stute", "متابعة فرس", "母马记录", "de opvolging van een merrie", "o acompanhamento de uma égua", "uppföljning av ett sto", "наблюдение за кобылой", "obserwacja klaczy", "암말 기록", "پیگیری یک مادیان"],
+"Licence et certificat médical": ["Licence and medical certificate", "Licencia y certificado médico", "Licenza e certificato medico", "ライセンスと診断書", "Lizenz und ärztliches Attest", "الرخصة والشهادة الطبية", "执照和体检证明", "Licentie en medisch attest", "Licença e atestado médico", "Licens och läkarintyg", "Лицензия и медицинская справка", "Licencja i zaświadczenie lekarskie", "라이선스와 진단서", "مجوز و گواهی پزشکی"],
+"Assurance": ["Insurance", "Seguro", "Assicurazione", "保険", "Versicherung", "التأمين", "保险", "Verzekering", "Seguro", "Försäkring", "Страховка", "Ubezpieczenie", "보험", "بیمه"],
+"Papiers du camion / van": ["Lorry / trailer papers", "Papeles del camión / remolque", "Documenti del camion / van", "馬運車・トレーラーの書類", "Papiere von LKW / Anhänger", "أوراق الشاحنة / المقطورة", "运马车 / 拖车证件", "Papieren van vrachtwagen / trailer", "Papéis do camião / atrelado", "Papper för lastbil / transport", "Документы коневоза / прицепа", "Dokumenty ciężarówki / przyczepy", "수송차 / 트레일러 서류", "مدارک کامیون / تریلر"],
+"Identité et permis": ["ID and driving licence", "Identidad y permiso", "Identità e patente", "身分証と免許", "Ausweis und Führerschein", "الهوية ورخصة القيادة", "身份证和驾照", "Identiteit en rijbewijs", "Identidade e carta de condução", "Legitimation och körkort", "Удостоверение и права", "Dowód i prawo jazdy", "신분증과 면허", "کارت شناسایی و گواهینامه"],
+"Diplômes et carte pro": ["Diplomas and professional card", "Títulos y carné profesional", "Diplomi e tesserino professionale", "資格と業務カード", "Diplome und Berufsausweis", "الشهادات والبطاقة المهنية", "文凭和职业证", "Diploma's en beroepskaart", "Diplomas e cartão profissional", "Examensbevis och yrkeskort", "Дипломы и профкарта", "Dyplomy i legitymacja zawodowa", "자격증과 직업 카드", "مدارک تحصیلی و کارت حرفه‌ای"],
+"Autres documents": ["Other documents", "Otros documentos", "Altri documenti", "その他の書類", "Weitere Dokumente", "مستندات أخرى", "其他文件", "Andere documenten", "Outros documentos", "Andra dokument", "Другие документы", "Inne dokumenty", "기타 서류", "سندهای دیگر"],
+"Saillie": ["Covering", "Monta", "Monta", "種付け", "Bedeckung", "تلقيح طبيعي", "配种", "Dekking", "Cobrição", "Betäckning", "Случка", "Krycie", "교배", "جفت‌گیری"],
+"Insémination": ["Insemination", "Inseminación", "Inseminazione", "人工授精", "Besamung", "تلقيح اصطناعي", "人工授精", "Inseminatie", "Inseminação", "Inseminering", "Осеменение", "Inseminacja", "인공수정", "تلقیح"],
+"Échographie": ["Scan", "Ecografía", "Ecografia", "エコー検査", "Ultraschall", "تصوير بالموجات", "B超", "Echografie", "Ecografia", "Ultraljud", "УЗИ", "USG", "초음파", "سونوگرافی"],
+"Poulinage": ["Foaling", "Parto", "Parto", "出産", "Abfohlen", "الولادة", "产驹", "Veulening", "Parto", "Fölning", "Выжеребка", "Wyźrebienie", "출산", "زایمان"],
+"Box": ["Stable", "Box", "Box", "馬房", "Box", "إسطبل مغلق", "马厩", "Box", "Box", "Box", "Денник", "Boks", "마방", "باکس"],
+"Pré": ["Field", "Prado", "Paddock", "放牧地", "Weide", "مرعى", "草场", "Weide", "Pasto", "Hage", "Левада", "Pastwisko", "방목지", "چراگاه"],
+"Box et pré": ["Stable and field", "Box y prado", "Box e paddock", "馬房と放牧地", "Box und Weide", "إسطبل ومرعى", "马厩和草场", "Box en weide", "Box e pasto", "Box och hage", "Денник и левада", "Boks i pastwisko", "마방과 방목지", "باکس و چراگاه"],
+"Demi-pension": ["Part livery", "Media pensión", "Mezza pensione", "ハーフリース", "Halbpension", "نصف إيواء", "半租", "Halve lease", "Meia pensão", "Halvfoder", "Полупостой", "Półdzierżawa", "반임대", "نیمه‌نگهداری"],
+"Travail": ["Training", "Trabajo", "Lavoro", "調教", "Beritt", "تدريب", "训练", "Training", "Trabalho", "Träning", "Работа", "Trening", "조교", "تمرین"],
+"Mensuel": ["Monthly", "Mensual", "Mensile", "毎月", "Monatlich", "شهري", "每月", "Maandelijks", "Mensal", "Månadsvis", "Ежемесячно", "Miesięcznie", "매월", "ماهانه"],
+"Trimestriel": ["Quarterly", "Trimestral", "Trimestrale", "四半期ごと", "Vierteljährlich", "ربع سنوي", "每季度", "Per kwartaal", "Trimestral", "Kvartalsvis", "Ежеквартально", "Kwartalnie", "분기별", "سه‌ماهه"],
+"Semestriel": ["Half-yearly", "Semestral", "Semestrale", "半年ごと", "Halbjährlich", "نصف سنوي", "每半年", "Halfjaarlijks", "Semestral", "Halvårsvis", "Раз в полгода", "Półrocznie", "반기별", "شش‌ماهه"],
+"Annuel": ["Yearly", "Anual", "Annuale", "毎年", "Jährlich", "سنوي", "每年", "Jaarlijks", "Anual", "Årligen", "Ежегодно", "Rocznie", "매년", "سالانه"],
+"Une fois": ["Once", "Una vez", "Una volta", "1回のみ", "Einmalig", "مرة واحدة", "一次", "Eenmalig", "Uma vez", "En gång", "Один раз", "Jednorazowo", "1회", "یک‌بار"],
+"Cotisation": ["Membership fee", "Cuota", "Quota", "会費", "Beitrag", "اشتراك", "会费", "Contributie", "Quota", "Medlemsavgift", "Взнос", "Składka", "회비", "حق عضویت"],
+"Abonnement": ["Subscription", "Suscripción", "Abbonamento", "定期契約", "Abonnement", "اشتراك دوري", "订阅", "Abonnement", "Assinatura", "Abonnemang", "Подписка", "Abonament", "구독", "اشتراک"],
+"Loyer": ["Rent", "Alquiler", "Affitto", "賃料", "Miete", "إيجار", "租金", "Huur", "Renda", "Hyra", "Аренда", "Czynsz", "임대료", "اجاره"],
+"Choisis le cheval de chaque ligne.": ["Choose the horse for each line.", "Elige el caballo de cada línea.", "Scegli il cavallo di ogni riga.", "各行の馬を選んでね。", "Wähle für jede Zeile das Pferd.", "اختر الحصان لكل سطر.", "为每一行选择马匹。", "Kies het paard voor elke regel.", "Escolhe o cavalo de cada linha.", "Välj häst för varje rad.", "Выбери лошадь для каждой строки.", "Wybierz konia dla każdego wiersza.", "줄마다 말을 골라 줘.", "برای هر ردیف اسب را انتخاب کن."],
+"Facture": ["Invoice", "Factura", "Fattura", "請求書", "Rechnung", "فاتورة", "发票", "Factuur", "Fatura", "Faktura", "Счёт", "Faktura", "청구서", "فاکتور"],
+"✓ Facture rangée pour ": ["✓ Invoice filed for ", "✓ Factura guardada para ", "✓ Fattura archiviata per ", "✓ 請求書を保存：", "✓ Rechnung abgelegt für ", "✓ حُفظت الفاتورة لـ ", "✓ 发票已归档：", "✓ Factuur opgeborgen voor ", "✓ Fatura guardada para ", "✓ Faktura sparad för ", "✓ Счёт сохранён для ", "✓ Faktura zapisana dla ", "✓ 청구서 정리: ", "✓ فاکتور بایگانی شد برای "],
+"chevaux": ["horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошадей", "koni", "마리", "اسب"],
+"cheval": ["horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошади", "konia", "마리", "اسب"],
+"Elle compte dans le coût du cheval et dans « Ma compta ».": ["It counts in the horse's cost and in “My accounts”.", "Cuenta en el coste del caballo y en «Mi contabilidad».", "Conta nel costo del cavallo e in «La mia contabilità».", "馬の費用と「会計」に反映されます。", "Sie zählt zu den Kosten des Pferdes und in „Meine Buchhaltung“.", "تُحتسب في تكلفة الحصان وفي «محاسبتي».", "计入马匹费用和「我的账务」。", "Ze telt mee in de kosten van het paard en in „Mijn boekhouding”.", "Conta no custo do cavalo e em «A minha contabilidade».", "Den räknas in i hästens kostnad och i ”Min bokföring”.", "Учитывается в расходах на лошадь и в «Моей бухгалтерии».", "Wlicza się do kosztów konia i do „Mojej księgowości”.", "말 비용과 「내 회계」에 반영돼.", "در هزینهٔ اسب و در «حسابداری من» حساب می‌شود."],
+"Pas rangée (droits) : ": ["Not filed (permissions): ", "No guardada (permisos): ", "Non archiviata (permessi): ", "保存できませんでした（権限）：", "Nicht abgelegt (Rechte): ", "لم تُحفظ (الصلاحيات): ", "未归档（权限）：", "Niet opgeborgen (rechten): ", "Não guardada (permissões): ", "Inte sparad (behörighet): ", "Не сохранено (права): ", "Nie zapisano (uprawnienia): ", "정리 안 됨(권한): ", "بایگانی نشد (دسترسی): "],
+"La facture": ["The invoice", "La factura", "La fattura", "請求書", "Die Rechnung", "الفاتورة", "发票", "De factuur", "A fatura", "Fakturan", "Счёт", "Faktura", "청구서", "فاکتور"],
+"Je la range au bon cheval : elle compte dans son coût et dans « Ma compta », et le document va dans sa page Santé.": ["I'll file it under the right horse: it counts in its cost and in “My accounts”, and the document goes to its Health page.", "La guardo en el caballo correcto: cuenta en su coste y en «Mi contabilidad», y el documento va a su página Salud.", "La archivio al cavallo giusto: conta nel suo costo e in «La mia contabilità», e il documento va nella sua pagina Salute.", "正しい馬に保存します：費用と「会計」に反映され、書類は健康ページに入ります。", "Ich lege sie beim richtigen Pferd ab: Sie zählt zu seinen Kosten und in „Meine Buchhaltung“, das Dokument kommt auf seine Gesundheitsseite.", "سأحفظها للحصان الصحيح: تُحتسب في تكلفته وفي «محاسبتي»، ويذهب المستند إلى صفحة صحته.", "我会归到对应的马：计入它的费用和「我的账务」，文件放进它的健康页面。", "Ik berg ze op bij het juiste paard: ze telt mee in zijn kosten en in „Mijn boekhouding”, en het document gaat naar zijn gezondheidspagina.", "Guardo-a no cavalo certo: conta no seu custo e em «A minha contabilidade», e o documento vai para a página Saúde.", "Jag sparar den hos rätt häst: den räknas in i dess kostnad och i ”Min bokföring”, och dokumentet hamnar på hälsosidan.", "Сохраню у нужной лошади: учтётся в её расходах и в «Моей бухгалтерии», документ — на странице здоровья.", "Zapiszę ją przy właściwym koniu: wliczy się do jego kosztów i do „Mojej księgowości”, a dokument trafi na stronę Zdrowie.", "맞는 말에 정리할게: 비용과 「내 회계」에 반영되고, 서류는 건강 페이지에 들어가.", "آن را برای اسب درست بایگانی می‌کنم: در هزینه‌اش و در «حسابداری من» حساب می‌شود و سند به صفحهٔ سلامتش می‌رود."],
+"Fournisseur": ["Supplier", "Proveedor", "Fornitore", "業者", "Lieferant", "المورّد", "供应商", "Leverancier", "Fornecedor", "Leverantör", "Поставщик", "Dostawca", "업체", "تأمین‌کننده"],
+"Date": ["Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "تاریخ"],
+"Objet": ["Item", "Concepto", "Oggetto", "内容", "Leistung", "البند", "项目", "Omschrijving", "Descrição", "Avser", "Назначение", "Pozycja", "항목", "شرح"],
+"Total : ": ["Total: ", "Total: ", "Totale: ", "合計：", "Summe: ", "المجموع: ", "合计：", "Totaal: ", "Total: ", "Totalt: ", "Итого: ", "Razem: ", "합계: ", "جمع: "],
+"Ranger la facture": ["File the invoice", "Guardar la factura", "Archivia la fattura", "請求書を保存", "Rechnung ablegen", "حفظ الفاتورة", "归档发票", "Factuur opbergen", "Guardar a fatura", "Spara fakturan", "Сохранить счёт", "Zapisz fakturę", "청구서 정리", "بایگانی فاکتور"],
+"Maréchal": ["Farrier", "Herrador", "Maniscalco", "装蹄師", "Hufschmied", "البيطار", "钉蹄师", "Hoefsmid", "Ferrador", "Hovslagare", "Коваль", "Kowal", "장제사", "نعل‌بند"],
+"Pension": ["Livery", "Pupilaje", "Pensione", "預託", "Pension", "الإيواء", "寄养", "Pension", "Pensão", "Inackordering", "Постой", "Pensjonat", "위탁", "نگهداری"],
+"Alimentation": ["Feed", "Alimentación", "Alimentazione", "飼料", "Futter", "التغذية", "饲料", "Voeding", "Alimentação", "Foder", "Корма", "Pasza", "사료", "خوراک"],
+"Transport": ["Transport", "Transporte", "Trasporto", "輸送", "Transport", "النقل", "运输", "Transport", "Transporte", "Transport", "Перевозка", "Transport", "수송", "حمل‌ونقل"],
+"Engagements": ["Entries", "Inscripciones", "Iscrizioni", "エントリー", "Nennungen", "التسجيلات", "报名", "Inschrijvingen", "Inscrições", "Anmälningar", "Заявки", "Zgłoszenia", "참가 신청", "ثبت‌نام‌ها"],
+"Équipement": ["Equipment", "Equipo", "Attrezzatura", "用具", "Ausrüstung", "المعدات", "装备", "Uitrusting", "Equipamento", "Utrustning", "Снаряжение", "Sprzęt", "장비", "تجهیزات"],
 "vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
@@ -1459,12 +1565,15 @@
       ".hod-tg{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(243,238,228,.28);display:flex;align-items:center;justify-content:center;color:transparent;font-size:14px;background:transparent}",
       ".hod-tg.on{border-color:" + OR + ";color:" + OR + "}",
       /* en-tête immersif : grand cheval noir entier sur fond noir, titre en bas à gauche, courbe dorée discrète */
-      ".hod-hero{position:relative;margin:-16px -20px 10px;height:210px;background:#000;border-radius:24px 24px 0 0;overflow:hidden}",
-      ".hod-hero img{position:absolute;right:0;top:0;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:right center}",
-      ".hod-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 75%),linear-gradient(180deg,rgba(0,0,0,0) 55%,#050505 100%)}",
-      ".hod-hero-t{position:absolute;left:20px;bottom:22px;right:32%;z-index:2}",
-      ".hod-hero-t .hod-titre{margin:6px 0 0;font-size:27px;line-height:1.05}",
-      ".hod-hero svg{position:absolute;left:0;right:0;bottom:8px;width:100%;height:40px;z-index:2}",
+      /* 13/11 23h25 (Blandine : « tes titres écrasent la tête du cheval ; garde la position de la Vidéothèque ») : photo ENTIÈRE en
+         haut, fondu vers le noir, courbe dorée fine, puis le titre EN DESSOUS de la photo (jamais par-dessus) */
+      ".hod-hero{position:relative;margin:-16px -20px 6px;background:#000;border-radius:24px 24px 0 0;overflow:hidden}",
+      ".hod-hero-ph{position:relative}",
+      ".hod-hero-ph img{display:block;width:100%;height:auto}",
+      ".hod-hero-ph:after{content:'';position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(180deg,rgba(0,0,0,0),#050505)}",
+      ".hod-hero svg{position:absolute;left:0;right:0;bottom:-6px;width:100%;height:34px;z-index:2}",
+      ".hod-hero-t{position:relative;padding:14px 20px 4px;background:#050505}",
+      ".hod-hero-t .hod-titre{margin:6px 0 0;font-size:27px;line-height:1.08}",
       ".hod-hero .hod-poignee{position:absolute;top:10px;left:50%;margin-left:-21px;z-index:3}",
       ".hod-fm{margin-top:10px;border-radius:16px;background:#000;border:1px solid rgba(243,238,228,.08);overflow:hidden}",
       ".hod-fm-h{display:flex;align-items:center;gap:12px;padding:12px 12px 10px}",
@@ -1481,9 +1590,58 @@
 
   var TYPES_SOIN_FR = [["ferrure", "Maréchal (ferrure)"], ["parage", "Maréchal (parage)"], ["vermifuge", "Vermifuge"], ["vaccin", "Vaccin"], ["dentiste", "Dentiste"], ["osteopathe", "Ostéopathe"], ["veterinaire", "Vétérinaire"], ["traitement", "Traitement"], ["autre", "Autre soin"]];
   var TYPES_SOIN = TYPES_SOIN_FR;   /* libellés traduits à l'affichage : T(t[1]) */
-  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", liste_chevaux: "des chevaux à ajouter dans Hype", autre: "un document" };
+  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", liste_chevaux: "des chevaux à ajouter dans Hype", engagements: "les engagements d'un concours", papier_echeance: "un papier avec une date de fin", contrat: "un contrat", suivi_jument: "le suivi d'une jument", autre: "un document" };
 
   function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  /* 13/11 23h15 (Blandine : « les ordonnances qui deviennent un traitement suivi ») */
+  /* 13/11 23h15 (Blandine : « les papiers qui expirent, ah bah ça oui, grave ») → coffre « Mes documents » avec l'échéance
+     (le rappel part tout seul, comme pour les documents ajoutés à la main) ; véhicule de l'écurie mis à jour si la plaque correspond */
+  var CATS_PAP = [["licence", "Licence et certificat médical"], ["assurance", "Assurance"], ["vehicule", "Papiers du camion / van"], ["identite", "Identité et permis"], ["diplomes", "Diplômes et carte pro"], ["autre", "Autres documents"]];
+  /* 13/11 23h15 (Blandine : « les contrats, pension, demi-pension, même d'autres… en mentionnant qu'il faut faire relire par un pro ») :
+     pension / demi-pension → page Pensions (ecurie_pensions) ; autre contrat → page Contrats (ecurie_contrats) ; échéances suivies là-bas */
+  /* 13/11 23h15 (Blandine : « suivi des juments, ça c'est bien aussi ») : saillies, échographies, terme → soins du cheval
+     (page Santé), sans nouvelle table ; terme = saillie + 340 jours si rien n'est écrit, avec un rappel un mois avant */
+  /* 13/11 23h27 (Blandine : « les factures rangées par cheval, obligatoire… en lien avec la compta ») → table cheval_factures
+     (une ligne par cheval), document rangé dans la page Santé du cheval ; total par cheval et par an dans « Ma compta » */
+  var CATS_FAC = [["marechal", "Maréchal"], ["veterinaire", "Vétérinaire"], ["pension", "Pension"], ["dentiste", "Dentiste"], ["osteopathe", "Ostéopathe"], ["alimentation", "Alimentation"], ["transport", "Transport"], ["engagement", "Engagements"], ["equipement", "Équipement"], ["autre", "Autre"]];
+  function montantDe(x) { var t = String(x == null ? "" : x).replace(/\s/g, "").replace(/[^\d.,-]/g, "").replace(",", "."); var n = parseFloat(t); return isNaN(n) ? "" : String(Math.round(n * 100) / 100); }
+  function facDe(lu, chevaux) {
+    var f = (lu && lu.facture) || {}; var d = /^\d{4}-\d{2}-\d{2}$/;
+    var L = (Array.isArray(f.lignes) ? f.lignes : []).filter(function (x) { return x && (x.cheval || x.objet || x.montant_ttc); });
+    if (!L.length) L = [{ cheval: (lu && lu.cheval) || "", objet: "", montant_ttc: f.total_ttc }];
+    return { fournisseur: String(f.fournisseur || "").trim(), date: d.test(String(f.date || "")) ? f.date : new Date().toISOString().slice(0, 10), categorie: CATS_FAC.some(function (c) { return c[0] === f.categorie; }) ? f.categorie : "autre", total: montantDe(f.total_ttc),
+      lignes: L.map(function (x, i) { var c = trouverCheval(x.cheval, chevaux || []); return { k: "f" + i, nomLu: String(x.cheval || ""), chevalId: c ? c.id : "", objet: String(x.objet || "").trim(), montant: montantDe(x.montant_ttc), coche: true }; }) };
+  }
+  var GENRES_JUM = [["saillie", "Saillie"], ["insemination", "Insémination"], ["echographie", "Échographie"], ["poulinage", "Poulinage"], ["autre", "Autre"]];
+  function jumDe(lu) {
+    var j = (lu && lu.jument) || {}; var d = /^\d{4}-\d{2}-\d{2}$/;
+    var ev = (Array.isArray(j.evenements) ? j.evenements : []).map(function (e, i) { return { k: "j" + i, genre: GENRES_JUM.some(function (g) { return g[0] === (e && e.genre); }) ? e.genre : "autre", date: d.test(String((e && e.date) || "")) ? e.date : "", detail: String((e && e.detail) || "").trim(), etalon: String((e && e.etalon) || "").trim(), coche: true }; });
+    var terme = d.test(String(j.terme || "")) ? j.terme : "";
+    if (!terme) { var s0 = ev.filter(function (e) { return (e.genre === "saillie" || e.genre === "insemination") && e.date; }).map(function (e) { return e.date; }).sort().pop(); if (s0) terme = new Date(new Date(s0 + "T12:00:00").getTime() + 340 * 864e5).toISOString().slice(0, 10); }
+    return { ev: ev, terme: terme };
+  }
+  var FORMULES = ["Box", "Pré", "Box et pré", "Demi-pension", "Travail", "Autre"], FREQS = ["Mensuel", "Trimestriel", "Semestriel", "Annuel", "Une fois"], CATS_CTR = ["Assurance", "Cotisation", "Abonnement", "Loyer", "Autre"];
+  function ctrDe(lu) {
+    var c = (lu && lu.contrat) || {}; var d = /^\d{4}-\d{2}-\d{2}$/;
+    var form = String(c.formule || "").replace(/^Pre$/, "Pré").replace(/^Box et pre$/, "Box et pré");
+    return { genre: c.genre === "pension" ? "pension" : "autre", cheval: String(c.cheval || "").trim(), proprietaire: String(c.proprietaire || "").trim(), contact: String(c.contact || "").trim(),
+      formule: FORMULES.indexOf(form) >= 0 ? form : "Box", nom: String(c.nom || "").trim(), categorie: CATS_CTR.indexOf(c.categorie) >= 0 ? c.categorie : "Autre", organisme: String(c.organisme || "").trim(),
+      montant: String(c.montant || "").replace(/[^\d.,]/g, "").replace(",", "."), frequence: FREQS.indexOf(c.frequence) >= 0 ? c.frequence : "Mensuel",
+      debut: d.test(String(c.debut || "")) ? c.debut : "", prochain: d.test(String(c.prochain || "")) ? c.prochain : "", fin: d.test(String(c.fin || "")) ? c.fin : "", club: "" };
+  }
+  function papDe(lu) {
+    var p = (lu && lu.papier) || {};
+    return { categorie: CATS_PAP.some(function (c) { return c[0] === p.categorie; }) ? p.categorie : "autre", titre: String(p.titre || "").trim(), echeance: /^\d{4}-\d{2}-\d{2}$/.test(String(p.echeance || "")) ? p.echeance : "", immat: String(p.immatriculation || "").trim() };
+  }
+  function trtDe(lu) {
+    var d = /^\d{4}-\d{2}-\d{2}$/, auj = new Date().toISOString().slice(0, 10);
+    return ((lu && lu.traitements) || []).filter(function (t) { return t && String(t.medicament || "").trim(); }).map(function (t, i) {
+      var deb = d.test(String(t.debut || "")) ? t.debut : auj, fin = d.test(String(t.fin || "")) ? t.fin : "";
+      var nj = parseInt(String(t.duree_jours || "").replace(/\D/g, ""), 10);
+      if (!fin && nj > 0) fin = new Date(new Date(deb + "T12:00:00").getTime() + (nj - 1) * 864e5).toISOString().slice(0, 10);
+      return { k: "t" + i, medicament: String(t.medicament).trim(), dose: String(t.dose || "").trim(), frequence: String(t.frequence || "").trim(), voie: String(t.voie || "").trim(), debut: deb, fin: fin, coche: true };
+    });
+  }
   function mvDe(lu) {
     var m = (lu && lu.mouvement) || {}; var d = /^\d{4}-\d{2}-\d{2}$/;
     return { sens: ["entree", "sortie", "sortie_provisoire"].indexOf(m.sens) >= 0 ? m.sens : "entree", date: d.test(String(m.date || "")) ? m.date : new Date().toISOString().slice(0, 10), date_retour: d.test(String(m.date_retour || "")) ? m.date_retour : "", lieu: String(m.lieu || ""), motif: String(m.motif || ""), nom: String((lu && lu.cheval) || "").trim() };
@@ -1510,7 +1668,7 @@
     var sv = sess && sess.data && sess.data.session;
     if (!sv || !sv.access_token) throw new Error(T("connecte-toi d’abord"));
     var system = "Tu es l'outil de lecture de documents de Hype (application equestre). On te donne n'importe quel document : photo, capture d'ecran, PDF, parfois ecrit a la main, parfois tres brouillon. "
-      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), ordre_passage (liste de depart d'un concours), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), liste_chevaux (la personne demande d'ajouter des chevaux ou de leur creer une fiche, ex. « les engagements sont sortis, ajoute les nouveaux chevaux », ou une simple liste de chevaux), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
+      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), suivi_jument (saillie, insemination, echographie de gestation, terme prevu, poulinage d'une jument), contrat (contrat de pension, de demi-pension, de location, d'assurance, de travail, abonnement, cotisation...), papier_echeance (papier qui expire : licence FFE, certificat medical, assurance, carte grise, controle technique, permis, carte professionnelle, piece d'identite...), ordre_passage (liste de depart d'un concours, avec numeros ou heures de passage), engagements (liste des engagements d'un concours SANS heures de passage : recapitulatif d'engagement de la FFE / FFE Compet / SIF, ou feuille d'engagement du club : cavaliers, licences, chevaux, epreuves), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), liste_chevaux (la personne demande d'ajouter des chevaux ou de leur creer une fiche, ex. « les engagements sont sortis, ajoute les nouveaux chevaux », ou une simple liste de chevaux), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
       + "2) Extrais ce qui sert. 3) Si tu as un VRAI doute (type, cheval, date, soin), pose UNE question courte et precise a la personne, en la tutoyant (ex. « Est-ce bien les dates de marechalerie de Cirrus, Ecolo et Elfe ? »). Tiens compte de ce que la personne a deja repondu. "
       + "Chevaux de la personne (pour reconnaitre les noms, meme mal ecrits) : " + JSON.stringify((contexte.chevaux || []).slice(0, 150).map(function (c) { return c.nom + (c.alias ? " (" + c.alias + ")" : ""); })) + ". "
       + (contexte.cheval ? "La personne est sur la page du cheval : " + contexte.cheval + ". " : "")
@@ -1523,8 +1681,14 @@
       + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
       + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"puce\":\"numero de transpondeur (15 chiffres) ou vide\",\"proprietaire\":\"nom du ou des proprietaires ou vide\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"},"
       + "\"mouvement\":{\"sens\":\"entree|sortie|sortie_provisoire\",\"date\":\"AAAA-MM-JJ ou vide\",\"date_retour\":\"AAAA-MM-JJ ou vide (seulement sortie_provisoire)\",\"lieu\":\"d'ou il vient (entree) ou ou il va (sortie), adresse ou nom, ou vide\",\"motif\":\"achat, pret, pension, naissance... (entree) ; vente, pret, retour proprietaire, retraite, deces... (sortie) ; concours, stage, veterinaire, clinique, saillie... (sortie_provisoire) ; ou vide\"},"
+      + "\"traitements\":[{\"medicament\":\"nom du medicament\",\"dose\":\"dose par prise ou vide\",\"frequence\":\"ex. 2 fois par jour ou vide\",\"voie\":\"orale, injection, pommade... ou vide\",\"duree_jours\":\"nombre de jours ou vide\",\"debut\":\"AAAA-MM-JJ ou vide\",\"fin\":\"AAAA-MM-JJ ou vide\"}],\"veterinaire\":\"nom du veterinaire ou vide\","
+      + "\"facture\":{\"fournisseur\":\"\",\"date\":\"AAAA-MM-JJ\",\"categorie\":\"marechal|veterinaire|pension|dentiste|osteopathe|alimentation|transport|engagement|equipement|autre\",\"total_ttc\":\"montant total TTC en euros, chiffres seulement\",\"lignes\":[{\"cheval\":\"nom du cheval concerne ou vide\",\"objet\":\"ce qui est facture\",\"montant_ttc\":\"chiffres seulement\"}]},"
+      + "\"jument\":{\"evenements\":[{\"genre\":\"saillie|insemination|echographie|poulinage|autre\",\"date\":\"AAAA-MM-JJ ou vide\",\"detail\":\"ex. gestation confirmee a 15 jours, jumeaux, vide\",\"etalon\":\"nom de l'etalon ou vide\"}],\"terme\":\"AAAA-MM-JJ date de poulinage prevue si ecrite, sinon vide\"},"
+      + "\"contrat\":{\"genre\":\"pension (pension ou demi-pension d'un cheval) ou autre\",\"cheval\":\"\",\"proprietaire\":\"\",\"contact\":\"\",\"formule\":\"Box|Pre|Box et pre|Demi-pension|Travail|Autre\",\"nom\":\"nom court du contrat si autre\",\"categorie\":\"Assurance|Cotisation|Abonnement|Loyer|Autre\",\"organisme\":\"\",\"montant\":\"montant de chaque echeance en euros, chiffres seulement, ou vide\",\"frequence\":\"Mensuel|Trimestriel|Semestriel|Annuel|Une fois\",\"debut\":\"AAAA-MM-JJ ou vide\",\"prochain\":\"AAAA-MM-JJ prochaine echeance ou vide\",\"fin\":\"AAAA-MM-JJ fin du contrat ou vide\"},"
+      + "\"papier\":{\"categorie\":\"licence|assurance|vehicule|identite|diplomes|autre\",\"titre\":\"nom court du papier, ex. Licence FFE 2027, Controle technique du camion\",\"echeance\":\"AAAA-MM-JJ date de fin de validite ou vide\",\"immatriculation\":\"si vehicule, sinon vide\"},"
+      + "\"concours\":{\"date\":\"AAAA-MM-JJ du concours ou vide\",\"lieu\":\"ville ou club organisateur ou vide\",\"numero\":\"numero FFE du concours (7 chiffres) ou vide\",\"nom\":\"nom du concours ou vide\"},"
       + "\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit (orthographe officielle du document)\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\",\"pere\":\"\",\"mere\":\"\",\"naissance\":\"AAAA-MM-JJ ou annee seule ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\"}]}. "
-      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon, avec tout ce que le document dit de lui (SIRE, pere, mere, naissance, sexe, robe, race ; vide si absent) ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
+      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. facture : seulement pour facture (une ligne par cheval ; si la facture concerne un seul cheval ou aucun detail par cheval, une seule ligne avec le total). jument : seulement pour suivi_jument. contrat : seulement pour contrat. papier : seulement pour papier_echeance (licence et certificat medical = licence ; carte grise, controle technique = vehicule ; permis, piece d'identite = identite ; carte professionnelle, diplome = diplomes). traitements : seulement pour ordonnance (un par medicament ; si la fin n'est pas ecrite mais la duree oui, calcule-la depuis le debut ; debut = date de l'ordonnance si rien d'autre). concours : pour programme, ordre_passage, engagements, resultats, horaires_concours, liste_chevaux (date, lieu, numero tels qu'ecrits). chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon, avec tout ce que le document dit de lui (SIRE, pere, mere, naissance, sexe, robe, race ; vide si absent) ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
     var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
     var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
     if (contexte.note) txt += " La personne precise : « " + contexte.note + " ».";
@@ -1551,7 +1715,7 @@
     }
     var m = texte.match(/\{[\s\S]*\}/);
     var o = JSON.parse(m ? m[0] : texte) || {};
-    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {}, chevaux_liste: Array.isArray(o.chevaux_liste) ? o.chevaux_liste : [] };
+    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {}, concours: o.concours || {}, facture: o.facture || {}, jument: o.jument || {}, contrat: o.contrat || {}, papier: o.papier || {}, traitements: Array.isArray(o.traitements) ? o.traitements : [], veterinaire: String(o.veterinaire || ""), chevaux_liste: Array.isArray(o.chevaux_liste) ? o.chevaux_liste : [] };
   }
 
 
@@ -1583,6 +1747,57 @@
     function maj(o) { setSt(function (x) { return Object.assign({}, x, o); }); }
     var refFic = React.useRef(null);
     var chevaux = props.chevaux || [];
+    /* 13/11 23h15 (Blandine : « on avait essayé… pour qu'il retrouve le concours ») : depuis n'importe quelle page, l'outil lit
+       date / lieu / n° FFE du document et retrouve le concours dans l'agenda (club_agenda type concours, ±3 jours ; n° FFE dans
+       concours_feuille.numero). concId = celui de la page, sinon celui retrouvé ou choisi. */
+    var _cc = React.useState({ liste: null, choisi: "" }), concR = _cc[0], setConcR = _cc[1];
+    var concId = props.concoursId || concR.choisi || "";
+    React.useEffect(function () {
+      var lu = st.lu; if (!lu || props.concoursId) return;
+      if (["programme", "ordre_passage", "resultats", "horaires_concours", "liste_chevaux", "engagements"].indexOf(lu.type) < 0) return;
+      var c = lu.concours || {}; var d = String(c.date || "").slice(0, 10);
+      var vif = true;
+      (async function () {
+        try {
+          var q = supa.from("club_agenda").select("id, titre, lieu, date_jour, date_fin").eq("type", "concours");
+          if (/^\d{4}-\d{2}-\d{2}$/.test(d)) { var t = new Date(d + "T12:00:00"); var a = new Date(t.getTime() - 3 * 864e5).toISOString().slice(0, 10), b = new Date(t.getTime() + 3 * 864e5).toISOString().slice(0, 10); q = q.gte("date_jour", a).lte("date_jour", b); }
+          else q = q.gte("date_jour", new Date(Date.now() - 20 * 864e5).toISOString().slice(0, 10)).lte("date_jour", new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10));
+          var r = await q.order("date_jour", { ascending: true }).limit(40);
+          var L = (r && !r.error && r.data) || [];
+          if (L.length) { try { var rf = await supa.from("concours_feuille").select("agenda_id, numero").in("agenda_id", L.map(function (x) { return x.id; })); ((rf && !rf.error && rf.data) || []).forEach(function (f) { L.forEach(function (x) { if (x.id === f.agenda_id) x.numero = f.numero; }); }); } catch (eF) { } }
+          var num = String(c.numero || "").replace(/\D/g, ""), lieu = norm(c.lieu || ""), nom = norm(c.nom || "");
+          L.forEach(function (x) {
+            var s = 0;
+            if (num && String(x.numero || "").replace(/\D/g, "") === num) s += 100;
+            var xl = norm(x.lieu || "") + " " + norm(x.titre || "");
+            if (lieu && lieu.split(" ").some(function (m) { return m.length > 3 && xl.indexOf(m) >= 0; })) s += 20;
+            if (nom && nom.split(" ").some(function (m) { return m.length > 3 && xl.indexOf(m) >= 0; })) s += 10;
+            if (d && String(x.date_jour || "").slice(0, 10) === d) s += 15;
+            x.score = s;
+          });
+          L.sort(function (a, b) { return b.score - a.score; });
+          var sur = L.length && (L[0].score >= 30 || (L.length === 1 && d));
+          if (vif) setConcR({ liste: L, choisi: sur ? L[0].id : "" });
+        } catch (e) { if (vif) setConcR({ liste: [], choisi: "" }); }
+      })();
+      return function () { vif = false; };
+    }, [st.lu, props.concoursId]);
+    function blocConcours() {
+      var lu = st.lu || {}; if (props.concoursId || !concR.liste) return null;
+      if (["programme", "ordre_passage", "resultats", "horaires_concours", "liste_chevaux", "engagements"].indexOf(lu.type) < 0) return null;
+      var c = lu.concours || {};
+      var dd = function (x) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(x || "")); return m ? m[3] + "/" + m[2] + "/" + m[1] : ""; };
+      if (!concR.liste.length) return h("div", { className: "hod-sec" },
+        h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Le concours"))),
+        h("div", { className: "hod-sec-p" }, T("Je ne trouve pas ce concours dans l’agenda") + (c.date || c.lieu ? " (" + [dd(c.date), c.lieu].filter(Boolean).join(", ") + ")" : "") + ". " + T("Ajoute-le à l’agenda de l’écurie, ou ouvre sa fiche, puis redonne-moi le document.")));
+      var ch = concR.liste.filter(function (x) { return x.id === concR.choisi; })[0];
+      return h("div", { className: "hod-sec" },
+        h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Le concours")), ch ? h("div", { className: "hod-pas" }, "✓") : null),
+        h("div", { className: "hod-sec-p" }, ch ? T("Je l’ai retrouvé dans l’agenda. Change-le si ce n’est pas le bon.") : T("J’ai plusieurs concours possibles : lequel est-ce ?")),
+        h("select", { className: "hod-sel", value: concR.choisi, onChange: function (e) { setConcR(Object.assign({}, concR, { choisi: e.target.value })); } },
+          h("option", { value: "" }, T("— Quel concours ? —")),
+          concR.liste.map(function (x) { return h("option", { key: x.id, value: x.id }, [dd(x.date_jour), x.titre, x.lieu].filter(Boolean).join(" · ")); })));
+    }
     /* écuries de la personne (profil : ecurie, ecurie2) — pour rattacher un cheval qui arrive et dont on crée la fiche */
     var _cl = React.useState([]), mesClubs = _cl[0], setMesClubs = _cl[1];
     /* 13/11 22h29 (Blandine : « 36 de ces chevaux n'ont pas encore leur fiche, est-ce que tu m'autorises à les créer… même en vocal :
@@ -1590,12 +1805,12 @@
     var _nv = React.useState({ off: {}, club: "", busy: false, ok: "", err: "" }), nv = _nv[0], setNv = _nv[1];
     var _es = React.useState([]), engSans = _es[0], setEngSans = _es[1];
     React.useEffect(function () {
-      if (!st.lu || !props.concoursId) return;
-      supa.from("concours_engagements").select("cheval1_id, cheval1_nom, cheval2_id, cheval2_nom").eq("agenda_id", props.concoursId).then(function (r) {
+      if (!st.lu || !concId) return;
+      supa.from("concours_engagements").select("cheval1_id, cheval1_nom, cheval2_id, cheval2_nom").eq("agenda_id", concId).then(function (r) {
         var l = []; ((r && !r.error && r.data) || []).forEach(function (e) { if (e.cheval1_nom && !e.cheval1_id) l.push(e.cheval1_nom); if (e.cheval2_nom && !e.cheval2_id) l.push(e.cheval2_nom); });
         setEngSans(l);
       });
-    }, [st.lu, props.concoursId]);
+    }, [st.lu, concId]);
     React.useEffect(function () {
       if (!st.lu || mesClubs.length) return;
       try { (typeof monProfil === "function" ? monProfil() : Promise.resolve(null)).then(function (r) { var p = (r && r.data) || {}; var l = [p.ecurie, p.ecurie2].map(function (x) { return String(x || "").trim(); }).filter(function (x, i, a) { return x && x !== "__perso__" && a.indexOf(x) === i; }); setMesClubs(l); }); } catch (e) { }
@@ -1616,7 +1831,7 @@
         });
         var c1 = trouverCheval(lu.cheval, chevaux, lu.type === "mouvement_cheval" && (!lu.mouvement || lu.mouvement.sens === "entree" || !lu.mouvement.sens));
         var dit = lu.message || [lu.resume, lu.question].filter(Boolean).join(" ");
-        setSt(function (x) { return Object.assign({}, x, { etape: "compris", images: imgs, lu: lu, lignes: lignes, mv: mvDe(lu), chevalId: (c1 && c1.id) || ((lu.type === "mouvement_cheval" && String(lu.cheval || "").trim()) ? "" : (x.chevalId || props.chevalId || "")), reponse: "", reflechit: false, fil: x.fil.concat(dit ? [{ qui: "hype", t: dit }] : []) }); });
+        setSt(function (x) { return Object.assign({}, x, { etape: "compris", images: imgs, lu: lu, lignes: lignes, trt: trtDe(lu), pap: papDe(lu), ctr: ctrDe(lu), jum: jumDe(lu), fac: facDe(lu, chevaux), mv: mvDe(lu), chevalId: (c1 && c1.id) || ((lu.type === "mouvement_cheval" && String(lu.cheval || "").trim()) ? "" : (x.chevalId || props.chevalId || "")), reponse: "", reflechit: false, fil: x.fil.concat(dit ? [{ qui: "hype", t: dit }] : []) }); });
       } catch (eL) { setSt(function (x) { return Object.assign({}, x, { etape: x.etape === "compris" ? "compris" : "choix", reflechit: false, err: T("Lecture impossible : ") + String((eL && eL.message) || eL) }); }); }
     }
     function choisir(e) {
@@ -1777,6 +1992,148 @@
       if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
       return champs.length + reg.length;
     }
+    /* concours prévus pour ce cheval pendant le traitement ou dans les 10 jours qui suivent → prévenir (délai à voir avec le véto) */
+    var _ca2 = React.useState([]), concTrt = _ca2[0], setConcTrt = _ca2[1];
+    React.useEffect(function () {
+      var tr = (st.trt || []).filter(function (t) { return t.coche; }); if (!st.chevalId || !tr.length) { setConcTrt([]); return; }
+      var deb = tr.map(function (t) { return t.debut; }).sort()[0], fin = tr.map(function (t) { return t.fin || t.debut; }).sort().pop();
+      var lim = new Date(new Date(fin + "T12:00:00").getTime() + 10 * 864e5).toISOString().slice(0, 10);
+      var vif = true;
+      (async function () {
+        try {
+          var re = await supa.from("concours_engagements").select("agenda_id").or("cheval1_id.eq." + st.chevalId + ",cheval2_id.eq." + st.chevalId).limit(100);
+          var ids = []; ((re && !re.error && re.data) || []).forEach(function (x) { if (ids.indexOf(x.agenda_id) < 0) ids.push(x.agenda_id); });
+          if (!ids.length) { if (vif) setConcTrt([]); return; }
+          var ra = await supa.from("club_agenda").select("id, titre, date_jour").in("id", ids).gte("date_jour", deb).lte("date_jour", lim);
+          if (vif) setConcTrt((ra && !ra.error && ra.data) || []);
+        } catch (e) { if (vif) setConcTrt([]); }
+      })();
+      return function () { vif = false; };
+    }, [st.chevalId, JSON.stringify((st.trt || []).map(function (t) { return [t.coche, t.debut, t.fin]; }))]);
+    async function enregistrerTraitements(chId) {
+      var tr = (st.trt || []).filter(function (t) { return t.coche && t.medicament; }); var n = 0;
+      for (var i = 0; i < tr.length; i++) {
+        var t = tr[i];
+        try {
+          var lig = { cheval_id: chId, type: "traitement", titre: t.medicament + (t.dose ? " — " + t.dose : ""), date_intervention: t.debut,
+            notes: [t.dose, t.frequence, t.voie].filter(Boolean).join(" · ") || null,
+            details: { import: "outil-document", medicament: t.medicament, dose: t.dose, frequence: t.frequence, voie: t.voie, fin: t.fin || null, veterinaire: (st.lu && st.lu.veterinaire) || null } };
+          if (t.fin) { lig.date_prochaine = t.fin; lig.precision_prochaine = "jour"; lig.rappel_jour_j = true; }
+          var r = await supa.from("soins_cheval").insert(lig).select("id");
+          if (r && !r.error && r.data && r.data.length) n++;
+        } catch (eT) { }
+      }
+      return n;
+    }
+    async function rangerFacture() {
+      var fc = st.fac || { lignes: [] };
+      var sel = fc.lignes.filter(function (l) { return l.coche; });
+      if (!sel.length || sel.some(function (l) { return !l.chevalId; })) { maj({ err: T("Choisis le cheval de chaque ligne.") }); return; }
+      maj({ busy: true, err: "" });
+      var parCh = {}; sel.forEach(function (l) { (parCh[l.chevalId] = parCh[l.chevalId] || []).push(l); });
+      var nOk = 0, refus = [], f = st.fichier, total = 0;
+      var ids = Object.keys(parCh);
+      for (var i = 0; i < ids.length; i++) {
+        var chId = ids[i], L = parCh[chId], somme = L.reduce(function (a, l) { return a + (parseFloat(l.montant) || 0); }, 0);
+        try {
+          var docId = null;
+          if (f) {
+            var ext = (String(f.name || "").split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (/pdf/i.test(f.type) ? "pdf" : "jpg");
+            var chemin = String(chId) + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
+            var up = await supa.storage.from("sante").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
+            if (!(up && up.error)) {
+              var rd = await supa.from("cheval_documents").insert({ cheval_id: chId, type: "facture", titre: T("Facture") + (fc.fournisseur ? " " + fc.fournisseur : "") + (somme ? " — " + String(somme).replace(".", ",") + " €" : ""), date_doc: fc.date, chemin: chemin, mime: f.type || null, taille: f.size || null }).select("id");
+              if (rd && !rd.error && rd.data && rd.data.length) docId = rd.data[0].id; else { try { await supa.storage.from("sante").remove([chemin]); } catch (eR) { } }
+            }
+          }
+          var lignes = L.map(function (l) { return { cheval_id: chId, date_facture: fc.date, fournisseur: fc.fournisseur || null, categorie: fc.categorie, objet: l.objet || null, montant_ttc: l.montant === "" ? null : parseFloat(l.montant), document_id: docId }; });
+          var r = await supa.from("cheval_factures").insert(lignes).select("id");
+          if (!r || r.error || !r.data || !r.data.length) throw new Error("x");
+          nOk++; total += somme;
+        } catch (eF) { refus.push((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || "?"); }
+      }
+      maj({ busy: false, etape: "fini", ok: (nOk ? T("✓ Facture rangée pour ") + nOk + " " + (nOk > 1 ? T("chevaux") : T("cheval")) + (total ? " (" + String(Math.round(total * 100) / 100).replace(".", ",") + " €)" : "") + ". " + T("Elle compte dans le coût du cheval et dans « Ma compta ».") : "") + (refus.length ? " " + T("Pas rangée (droits) : ") + refus.join(", ") + "." : "") });
+    }
+    async function enregistrerJument() {
+      var jm = st.jum || {}; var chId = st.chevalId;
+      if (!chId) { maj({ err: T("Choisis la jument.") }); return; }
+      var sel = (jm.ev || []).filter(function (e) { return e.coche && e.date; });
+      if (!sel.length && !jm.terme) { maj({ err: T("Coche au moins une ligne avec une date.") }); return; }
+      maj({ busy: true, err: "" });
+      var n = 0, dernier = sel.filter(function (e) { return e.genre === "saillie" || e.genre === "insemination"; }).map(function (e) { return e.date; }).sort().pop();
+      for (var i = 0; i < sel.length; i++) {
+        var e = sel[i], lib = (GENRES_JUM.filter(function (g) { return g[0] === e.genre; })[0] || ["", "Suivi"])[1];
+        var lig = { cheval_id: chId, type: e.genre === "echographie" ? "veterinaire" : "autre", titre: T(lib) + (e.etalon ? " — " + e.etalon : "") + (e.detail ? " — " + e.detail : ""), date_intervention: e.date, details: { import: "outil-document", jument: e.genre, etalon: e.etalon || null } };
+        if (jm.terme && e.date === dernier && (e.genre === "saillie" || e.genre === "insemination")) { lig.date_prochaine = jm.terme; lig.precision_prochaine = "jour"; lig.rappel_avant_actif = true; lig.rappel_jours_avant = 30; lig.details.terme = jm.terme; }
+        try { var r = await supa.from("soins_cheval").insert(lig).select("id"); if (r && !r.error && r.data && r.data.length) n++; } catch (eJ) { }
+      }
+      if (!dernier && jm.terme) { try { var r2 = await supa.from("soins_cheval").insert({ cheval_id: chId, type: "autre", titre: T("Poulinage prévu"), date_intervention: new Date().toISOString().slice(0, 10), date_prochaine: jm.terme, precision_prochaine: "jour", rappel_avant_actif: true, rappel_jours_avant: 30, details: { import: "outil-document", jument: "terme" } }).select("id"); if (r2 && !r2.error && r2.data && r2.data.length) n++; } catch (eT) { } }
+      maj({ busy: false, etape: "fini", ok: n ? T("✓ Suivi de la jument enregistré : ") + n + "." + (jm.terme ? " " + T("Rappel un mois avant le terme.") : "") : T("Pas enregistré : la base a refusé (droits sur ce cheval ?)") });
+    }
+    async function rangerContrat() {
+      var c = st.ctr || {}; var club = c.club || mesClubs[0] || "";
+      if (!club) { maj({ err: T("rattache-toi d’abord à une écurie depuis ton profil") }); return; }
+      if (c.genre === "pension" && !c.cheval) { maj({ err: T("Écris le nom du cheval.") }); return; }
+      if (c.genre !== "pension" && !c.nom) { maj({ err: T("Donne un nom au contrat.") }); return; }
+      maj({ busy: true, err: "" });
+      try {
+        var clef = (typeof clefClubG === "function") ? clefClubG(club) : club.toLowerCase();
+        var m = c.montant !== "" && !isNaN(parseFloat(c.montant)) ? parseFloat(c.montant) : null, r;
+        if (c.genre === "pension") r = await supa.from("ecurie_pensions").insert({ club_clef: clef, cheval: c.cheval, proprietaire: c.proprietaire || null, contact: c.contact || null, formule: c.formule, tarif: m, frequence: c.frequence === "Une fois" ? "Mensuel" : c.frequence, prochain_paiement: c.prochain || null, debut: c.debut || null, notes: T("Ajouté depuis un contrat (outil « Ajouter un document »).") }).select("id");
+        else r = await supa.from("ecurie_contrats").insert({ club_clef: clef, nom: c.nom, categorie: c.categorie, organisme: c.organisme || null, montant: m, frequence: c.frequence, prochain_reglement: c.prochain || null, fin_contrat: c.fin || null, notes: T("Ajouté depuis un contrat (outil « Ajouter un document »).") }).select("id");
+        if (!r || r.error || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || T("seule la personne qui gère l’écurie peut l’ajouter"));
+        /* le contrat lui-même est gardé dans « Mes documents » (privé) */
+        var garde = "";
+        if (st.fichier) {
+          try {
+            var u = await utilisateurActuel(); var f = st.fichier;
+            var rd = await supa.from("coffre_documents").insert({ type: "autre", titre: (c.genre === "pension" ? T("Contrat de pension") + " — " + c.cheval : c.nom), echeance: c.fin || null, mime: f.type || null, taille: f.size || null }).select("id");
+            if (rd && !rd.error && rd.data && rd.data.length) {
+              var nomF = String(f.name || "contrat").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-").slice(-60);
+              var ch = u.id + "/" + rd.data[0].id + "-" + nomF; var up = await supa.storage.from("documents").upload(ch, f, { contentType: f.type || undefined, upsert: false });
+              if (!(up && up.error)) { await supa.from("coffre_documents").update({ chemin: ch }).eq("id", rd.data[0].id); garde = " " + T("Le contrat est gardé dans tes documents."); }
+            }
+          } catch (eG) { }
+        }
+        maj({ busy: false, etape: "fini", ok: (c.genre === "pension" ? T("✓ Pension ajoutée : tu suivras les échéances dans la page Pensions.") : T("✓ Contrat ajouté : tu suivras les règlements dans la page Contrats.")) + garde });
+      } catch (eC) { maj({ busy: false, err: T("Pas enregistré : ") + String((eC && eC.message) || eC) }); }
+    }
+    async function rangerPapier() {
+      var pp = st.pap || {}; var f = st.fichier;
+      if (!pp.echeance) { maj({ err: T("Indique la date de fin.") }); return; }
+      maj({ busy: true, err: "" });
+      var id = null;
+      try {
+        var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; if (!u || !u.id) throw new Error(T("connecte-toi d’abord"));
+        var r = await supa.from("coffre_documents").insert({ type: pp.categorie === "identite" || pp.categorie === "diplomes" ? pp.categorie : pp.categorie, titre: pp.titre || null, echeance: pp.echeance, mime: f ? (f.type || null) : null, taille: f ? (f.size || null) : null }).select("id");
+        if (!r || r.error || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || T("la base a refusé (droits sur ce cheval ?)"));
+        id = r.data[0].id;
+        if (f) {
+          var nomF = String(f.name || "document").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-").slice(-60);
+          var chemin = u.id + "/" + id + "-" + nomF;
+          var up = await supa.storage.from("documents").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
+          if (!(up && up.error)) await supa.from("coffre_documents").update({ chemin: chemin }).eq("id", id);
+        }
+        var plus = "";
+        if (pp.categorie === "vehicule" || pp.categorie === "assurance") {
+          try {
+            var plaque = pp.immat.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+            if (plaque) {
+              var rv = await supa.from("ecurie_vehicules").select("id, immatriculation, nom");
+              var v = ((rv && !rv.error && rv.data) || []).filter(function (x) { return String(x.immatriculation || "").replace(/[^A-Za-z0-9]/g, "").toUpperCase() === plaque; })[0];
+              if (v) {
+                var champ = /contr[oô]le|ct\b/i.test(pp.titre) ? "ct_prochain" : (pp.categorie === "assurance" || /assur/i.test(pp.titre)) ? "assurance_fin" : null;
+                if (champ) { var o = {}; o[champ] = pp.echeance; var ru = await supa.from("ecurie_vehicules").update(o).eq("id", v.id).select("id"); if (ru && !ru.error && ru.data && ru.data.length) plus = " " + T("Date mise à jour sur le véhicule ") + (v.nom || v.immatriculation) + "."; }
+              }
+            }
+          } catch (eV) { }
+        }
+        maj({ busy: false, etape: "fini", ok: T("✓ Rangé dans tes documents, avec un rappel avant la date de fin.") + plus });
+      } catch (eP) {
+        if (id) { try { await supa.from("coffre_documents").delete().eq("id", id); } catch (eD) { } }
+        maj({ busy: false, err: T("Pas rangé : ") + String((eP && eP.message) || eP) });
+      }
+    }
     async function rangerDoc(typeDoc) {
       var f = st.fichier; var chId = st.chevalId;
       if (!f || !chId) { maj({ err: T("Choisis le cheval concerné.") }); return; }
@@ -1784,6 +2141,7 @@
       var nbFiche = 0;
       try {
         if (st.lu && st.lu.type === "papiers_cheval") nbFiche = await completerFiche();
+        var nbTrt = (st.lu && st.lu.type === "ordonnance") ? await enregistrerTraitements(chId) : 0;
         var ext = (String(f.name || "").split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (/pdf/i.test(f.type) ? "pdf" : "jpg");
         var chemin = String(chId) + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
         var up = await supa.storage.from("sante").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
@@ -1791,7 +2149,7 @@
         var titre = typeDoc === "autre" && st.lu && st.lu.type === "papiers_cheval" ? "Papiers du cheval" : null;
         var r = await supa.from("cheval_documents").insert({ cheval_id: chId, type: typeDoc, titre: titre, date_doc: new Date().toISOString().slice(0, 10), chemin: chemin, mime: f.type || null, taille: f.size || null }).select("id");
         if ((r && r.error) || !r || !r.data || !r.data.length) { try { await supa.storage.from("sante").remove([chemin]); } catch (eR) { } throw (r && r.error) || new Error(T("la base a refusé (droits sur ce cheval ?)")); }
-        maj({ busy: false, etape: "fini", ok: (typeof nbFiche === "number" && nbFiche > 0 ? T("✓ Fiche du cheval complétée : ") + nbFiche + ". " : "") + T("✓ Document rangé dans la page Santé de ") + ((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || T("ce cheval")) + "." });
+        maj({ busy: false, etape: "fini", ok: (typeof nbFiche === "number" && nbFiche > 0 ? T("✓ Fiche du cheval complétée : ") + nbFiche + ". " : "") + (nbTrt ? T("✓ Traitement suivi : ") + nbTrt + T(" médicament(s), avec un rappel le dernier jour. ") : "") + T("✓ Document rangé dans la page Santé de ") + ((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || T("ce cheval")) + "." });
       } catch (eD) { maj({ busy: false, err: T("Pas rangé : ") + String((eD && eD.message) || eD) }); }
     }
     /* horaires dictés ou lus → club_agenda (même forme que le formulaire « Modifier les horaires » de la fiche concours :
@@ -1800,10 +2158,10 @@
     function hMin(t) { var m = String(t || "").toLowerCase().match(/(\d{1,2})\s*[h:]\s*(\d{0,2})/); return m ? Number(m[1]) * 60 + Number(m[2] || 0) : null; }
     function hFmt(t) { var n = hMin(t); if (n == null) return ""; return Math.floor(n / 60) + "h" + String(n % 60).padStart(2, "0"); }
     async function enregistrerHoraires() {
-      var hz = (st.lu && st.lu.horaires) || {}; if (!props.concoursId) return;
+      var hz = (st.lu && st.lu.horaires) || {}; if (!concId) return;
       maj({ busy: true, err: "" });
       try {
-        var ra = await supa.from("club_agenda").select("id, horaires, heure_depart, heure_embarquement").eq("id", props.concoursId).maybeSingle();
+        var ra = await supa.from("club_agenda").select("id, horaires, heure_depart, heure_embarquement").eq("id", concId).maybeSingle();
         if (!ra || ra.error || !ra.data) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
         var anc = Array.isArray(ra.data.horaires) ? ra.data.horaires.slice() : [];
         (Array.isArray(hz.lignes) ? hz.lignes : []).forEach(function (x) {
@@ -1818,7 +2176,7 @@
         var upd = { horaires: anc.length ? anc : null, recos: recos.length ? recos : null, heure_reco: null, heure_epreuve: deb };
         if (hFmt(hz.depart)) upd.heure_depart = hFmt(hz.depart);
         if (hFmt(hz.embarquement)) upd.heure_embarquement = hFmt(hz.embarquement);
-        var r = await supa.from("club_agenda").update(upd).eq("id", props.concoursId).select("id");
+        var r = await supa.from("club_agenda").update(upd).eq("id", concId).select("id");
         if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
         maj({ busy: false, etape: "fini", ok: T("✓ Horaires enregistrés dans la fiche du concours.") });
       } catch (eH) { maj({ busy: false, err: T("Pas enregistré : ") + String((eH && eH.message) || eH) }); }
@@ -1830,12 +2188,12 @@
       props.fermer(); if (app.setEcran) app.setEcran("sante-cheval");
     }
     function allerConcours(type) {
-      if (!props.concoursId) { maj({ err: T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.") }); return; }
+      if (!concId) { maj({ err: T("Choisis d’abord le concours ci-dessus.") }); return; }
       try {
-        window.__concoursId = props.concoursId; window.__engagementsId = props.concoursId;
-        if (type === "ordre_passage") window.__ordreFichier = st.fichier; else if (type === "resultats") window.__resFichier = st.fichier; else window.__progFichier = st.fichier;
+        window.__concoursId = concId; window.__engagementsId = concId;
+        if (type === "ordre_passage") window.__ordreFichier = st.fichier; else if (type === "engagements") window.__engFichier = st.fichier; else if (type === "resultats") window.__resFichier = st.fichier; else window.__progFichier = st.fichier;
       } catch (e) { }
-      props.fermer(); if (app.setEcran) app.setEcran(type === "ordre_passage" ? "engagements" : type === "resultats" ? "concours" : "jour-j");
+      props.fermer(); if (app.setEcran) app.setEcran((type === "ordre_passage" || type === "engagements") ? "engagements" : type === "resultats" ? "concours" : "jour-j");
     }
 
     /* 13/11 22h07 (Blandine : « quand un cheval entre ou quitte l'écurie… on est obligé de le signaler sur le registre d'élevage ») :
@@ -2026,7 +2384,7 @@
     function manquants() {
       var lu = st.lu || {}; var vus = {}, out = [];
       var src = (lu.chevaux_liste || []).map(function (x) { return { nom: String((x && x.nom) || x || "").replace(/\s+/g, " ").trim(), sire: String((x && x.sire) || "").replace(/\s+/g, "").trim() }; });
-      if (["liste_chevaux", "ordre_passage", "programme", "resultats"].indexOf(lu.type) >= 0) engSans.forEach(function (n) { src.push({ nom: String(n).replace(/\s+/g, " ").trim(), sire: "" }); });
+      if (["liste_chevaux", "ordre_passage", "engagements", "programme", "resultats"].indexOf(lu.type) >= 0) engSans.forEach(function (n) { src.push({ nom: String(n).replace(/\s+/g, " ").trim(), sire: "" }); });
       src.forEach(function (x) {
         if (!x.nom || x.nom.length < 2) return; var k = norm(x.nom); if (vus[k]) return; vus[k] = 1;
         if (trouverCheval(x.nom, chevaux, true)) return;
@@ -2054,12 +2412,12 @@
         var r = await supa.from("chevaux").insert(lignes).select("id, nom");
         if (!r || r.error || !r.data || !r.data.length) throw new Error(String((r && r.error && (r.error.message || r.error)) || T("la base a refusé (droits sur ce cheval ?)")));
         var lies = 0;
-        if (props.concoursId) {
+        if (concId) {
           for (var i = 0; i < r.data.length; i++) {
             var c = r.data[i];
             try {
-              var a = await supa.from("concours_engagements").update({ cheval1_id: c.id }).eq("agenda_id", props.concoursId).is("cheval1_id", null).ilike("cheval1_nom", c.nom).select("id");
-              var b = await supa.from("concours_engagements").update({ cheval2_id: c.id }).eq("agenda_id", props.concoursId).is("cheval2_id", null).ilike("cheval2_nom", c.nom).select("id");
+              var a = await supa.from("concours_engagements").update({ cheval1_id: c.id }).eq("agenda_id", concId).is("cheval1_id", null).ilike("cheval1_nom", c.nom).select("id");
+              var b = await supa.from("concours_engagements").update({ cheval2_id: c.id }).eq("agenda_id", concId).is("cheval2_id", null).ilike("cheval2_nom", c.nom).select("id");
               lies += ((a && a.data) || []).length + ((b && b.data) || []).length;
             } catch (eL) { }
           }
@@ -2148,8 +2506,9 @@
     if (st.etape === "choix") {
       corps = h("div", null,
         h("div", { className: "hod-hero" },
-          h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }), h("div", { className: "hod-poignee" }),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 })),
+          h("div", { className: "hod-hero-ph" }, h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }),
+            h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
+          h("div", { className: "hod-poignee" }),
           h("div", { className: "hod-hero-t" },
             h("div", { className: "hod-k" }, T("Un document, une info ?")),
             h("div", { className: "hod-titre" }, T("Que souhaites-tu enregistrer ?")))),
@@ -2210,16 +2569,16 @@
           lab(T("Cheval")), selCheval(), bas(allerCarnet, T("Lire le carnet")));
       } else if (type === "programme" || type === "ordre_passage") {
         action = sec(type === "programme" ? T("Programme du concours") : T("Ordre de passage"), null, type === "programme" ? T("Je le lis dans le Jour J du concours (horaires, recos, pistes) et je le garde dans le Dossier du concours.") : T("Je le lis dans les Engagements du concours (numéros et heures de passage) et je le garde dans le Dossier du concours."),
-          bas(function () { allerConcours(type); }, T("Continuer")));
+          bas(function () { allerConcours(type); }, T("Continuer"), !concId));
       } else if (type === "horaires_concours") {
         var hz = lu.horaires || {}, lignesH = Array.isArray(hz.lignes) ? hz.lignes.filter(function (x) { return x && x.heure; }) : [];
         var libT = { reco: T("Reco"), debut: T("Début"), autre: T("Autre") };
-        action = sec(T("Les horaires à enregistrer"), null, !props.concoursId ? T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.") : null,
+        action = sec(T("Les horaires à enregistrer"), null, !concId ? T("Choisis d’abord le concours ci-dessus.") : null,
           h("div", { className: "hod-fm" },
             hz.depart ? ligneV("dep", T("Départ"), hz.depart) : null,
             hz.embarquement ? ligneV("emb", T("Embarquement"), hz.embarquement) : null,
             lignesH.map(function (x, i) { return ligneV("h" + i, (x.type === "autre" ? (x.lib || libT.autre) : (libT[x.type] || libT.autre)) + (x.epreuve ? " · " + x.epreuve : ""), x.heure); })),
-          bas(enregistrerHoraires, st.busy ? "…" : T("Enregistrer les horaires"), st.busy || !props.concoursId));
+          bas(enregistrerHoraires, st.busy ? "…" : T("Enregistrer les horaires"), st.busy || !concId));
       } else if (type === "mouvement_cheval") {
         var mv = st.mv || {};
         function mm(o) { maj({ mv: Object.assign({}, mv, o) }); }
@@ -2246,15 +2605,105 @@
           bas(enregistrerMouvement, st.busy ? "…" : ((!st.chevalId && mv.sens === "entree") ? T("Créer sa fiche et l’inscrire") : T("Inscrire au registre")), st.busy));
       } else if (type === "liste_chevaux") {
         action = manquants().length || nv.fait || propositions().length || mj.fait ? null : sec(T("Chevaux"), null, T("Tous ces chevaux ont déjà leur fiche dans Hype."), bas(props.fermer, T("Fermer"), false, true));
+      } else if (type === "facture") {
+        var fc = st.fac || { lignes: [] };
+        function mf(o) { maj({ fac: Object.assign({}, fc, o) }); }
+        function ml2(i, o) { var L = fc.lignes.slice(); L[i] = Object.assign({}, fc.lignes[i], o); mf({ lignes: L }); }
+        var tot = fc.lignes.filter(function (l) { return l.coche; }).reduce(function (a, l) { return a + (parseFloat(l.montant) || 0); }, 0);
+        action = sec(T("La facture"), null, T("Je la range au bon cheval : elle compte dans son coût et dans « Ma compta », et le document va dans sa page Santé."),
+          h("div", { style: { display: "flex", gap: 8 } },
+            h("div", { style: { flex: 1.4, minWidth: 0 } }, lab(T("Fournisseur")), h("input", { className: "hod-sel", value: fc.fournisseur || "", onChange: function (e) { mf({ fournisseur: e.target.value }); } })),
+            h("div", { style: { flex: 1, minWidth: 0 } }, lab(T("Date")), h("input", { className: "hod-sel", type: "date", value: fc.date || "", onChange: function (e) { mf({ date: e.target.value }); } }))),
+          lab(T("Catégorie")), h("select", { className: "hod-sel", value: fc.categorie, onChange: function (e) { mf({ categorie: e.target.value }); } }, CATS_FAC.map(function (c) { return h("option", { key: c[0], value: c[0] }, T(c[1])); })),
+          fc.lignes.map(function (l, i) {
+            var ch = chevaux.filter(function (c) { return c.id === l.chevalId; })[0];
+            return h("div", { key: l.k, className: "hod-fm", style: { opacity: l.coche ? 1 : .5, marginTop: 12 } },
+              h("div", { className: "hod-fm-h", style: { cursor: "pointer" }, onClick: function () { ml2(i, { coche: !l.coche }); } },
+                h("div", { className: "hod-av" }, String((ch && ch.nom) || l.nomLu || "€").charAt(0).toUpperCase()),
+                h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, (ch && ch.nom) || l.nomLu || T("— Quel cheval ? —")), h("div", { className: "hod-chs" }, [l.objet, l.montant ? String(l.montant).replace(".", ",") + " €" : ""].filter(Boolean).join(" · "))),
+                tg(l.coche)),
+              h("div", { style: { padding: "0 12px 12px" } },
+                h("select", { className: "hod-sel", value: l.chevalId, onChange: function (e) { ml2(i, { chevalId: e.target.value }); } }, h("option", { value: "" }, T("— Quel cheval ? —")), chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })),
+                h("div", { style: { display: "flex", gap: 8 } },
+                  h("input", { className: "hod-sel", style: { flex: 2, minWidth: 0 }, value: l.objet || "", placeholder: T("Objet"), onChange: function (e) { ml2(i, { objet: e.target.value }); } }),
+                  h("input", { className: "hod-sel", style: { flex: 1, minWidth: 0 }, inputMode: "decimal", value: l.montant || "", placeholder: "€", onChange: function (e) { ml2(i, { montant: e.target.value.replace(",", ".") }); } }))));
+          }),
+          tot ? h("div", { className: "hod-sec-p", style: { marginTop: 12, textAlign: "right" } }, T("Total : ") + String(Math.round(tot * 100) / 100).replace(".", ",") + " €") : null,
+          bas(rangerFacture, st.busy ? "…" : T("Ranger la facture"), st.busy));
+      } else if (type === "suivi_jument") {
+        var jm = st.jum || { ev: [] };
+        function mj2(i, o) { var L = jm.ev.slice(); L[i] = Object.assign({}, jm.ev[i], o); maj({ jum: Object.assign({}, jm, { ev: L }) }); }
+        action = sec(T("Suivi de la jument"), null, T("Je l’ajoute à la page Santé de la jument."),
+          lab(T("Jument")), selCheval(),
+          jm.ev.map(function (e, i) {
+            return h("div", { key: e.k, className: "hod-fm", style: { opacity: e.coche ? 1 : .5 } },
+              h("div", { className: "hod-fm-h", style: { cursor: "pointer" }, onClick: function () { mj2(i, { coche: !e.coche }); } },
+                h("div", { className: "hod-av" }, "♀"),
+                h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, T((GENRES_JUM.filter(function (g) { return g[0] === e.genre; })[0] || ["", "Autre"])[1])), h("div", { className: "hod-chs" }, [e.etalon, e.detail].filter(Boolean).join(" · "))),
+                tg(e.coche)),
+              h("div", { style: { padding: "0 12px 12px" } }, h("input", { className: "hod-sel", type: "date", value: e.date, onChange: function (ev2) { mj2(i, { date: ev2.target.value }); } })));
+          }),
+          lab(T("Poulinage prévu")), h("input", { className: "hod-sel", type: "date", value: jm.terme || "", onChange: function (e) { maj({ jum: Object.assign({}, jm, { terme: e.target.value }) }); } }),
+          h("div", { className: "hod-chs", style: { marginTop: 6 } }, T("Calculé à 340 jours après la dernière saillie s’il n’est pas écrit. Je te préviens un mois avant.")),
+          bas(enregistrerJument, st.busy ? "…" : T("Enregistrer le suivi"), st.busy));
+      } else if (type === "contrat") {
+        var cc = st.ctr || {};
+        function mc(o) { maj({ ctr: Object.assign({}, cc, o) }); }
+        var pens = cc.genre === "pension";
+        action = sec(T("Le contrat"), null, T("Je l’ajoute aux pages de gestion de l’écurie pour suivre les échéances. Pense à faire relire tes contrats par un professionnel (juriste, avocat) : Hype t’aide à les ranger et à les suivre, il ne vérifie pas leur valeur juridique."),
+          lab(T("Type de contrat")), h("select", { className: "hod-sel", value: cc.genre || "autre", onChange: function (e) { mc({ genre: e.target.value }); } }, h("option", { value: "pension" }, T("Pension ou demi-pension d’un cheval")), h("option", { value: "autre" }, T("Autre contrat (assurance, cotisation, location…)"))),
+          pens ? lab(T("Cheval")) : lab(T("Nom du contrat")),
+          pens ? h("input", { className: "hod-sel", value: cc.cheval || "", onChange: function (e) { mc({ cheval: e.target.value }); } }) : h("input", { className: "hod-sel", value: cc.nom || "", placeholder: T("Ex. Assurance du camion"), onChange: function (e) { mc({ nom: e.target.value }); } }),
+          pens ? lab(T("Propriétaire")) : lab(T("Catégorie")),
+          pens ? h("input", { className: "hod-sel", value: cc.proprietaire || "", onChange: function (e) { mc({ proprietaire: e.target.value }); } }) : h("select", { className: "hod-sel", value: cc.categorie, onChange: function (e) { mc({ categorie: e.target.value }); } }, CATS_CTR.map(function (x) { return h("option", { key: x, value: x }, T(x)); })),
+          pens ? lab(T("Formule")) : lab(T("Organisme")),
+          pens ? h("select", { className: "hod-sel", value: cc.formule, onChange: function (e) { mc({ formule: e.target.value }); } }, FORMULES.map(function (x) { return h("option", { key: x, value: x }, T(x)); })) : h("input", { className: "hod-sel", value: cc.organisme || "", onChange: function (e) { mc({ organisme: e.target.value }); } }),
+          h("div", { style: { display: "flex", gap: 8 } },
+            h("div", { style: { flex: 1, minWidth: 0 } }, lab(T("Montant (€)")), h("input", { className: "hod-sel", inputMode: "decimal", value: cc.montant || "", onChange: function (e) { mc({ montant: e.target.value }); } })),
+            h("div", { style: { flex: 1, minWidth: 0 } }, lab(T("Fréquence")), h("select", { className: "hod-sel", value: cc.frequence, onChange: function (e) { mc({ frequence: e.target.value }); } }, FREQS.map(function (x) { return h("option", { key: x, value: x }, T(x)); })))),
+          h("div", { style: { display: "flex", gap: 8 } },
+            h("div", { style: { flex: 1, minWidth: 0 } }, lab(T("Prochaine échéance")), h("input", { className: "hod-sel", type: "date", value: cc.prochain || "", onChange: function (e) { mc({ prochain: e.target.value }); } })),
+            h("div", { style: { flex: 1, minWidth: 0 } }, lab(pens ? T("Début") : T("Fin du contrat")), h("input", { className: "hod-sel", type: "date", value: (pens ? cc.debut : cc.fin) || "", onChange: function (e) { mc(pens ? { debut: e.target.value } : { fin: e.target.value }); } }))),
+          mesClubs.length > 1 ? lab(T("Écurie")) : null,
+          mesClubs.length > 1 ? h("select", { className: "hod-sel", value: cc.club || mesClubs[0], onChange: function (e) { mc({ club: e.target.value }); } }, mesClubs.map(function (k) { return h("option", { key: k, value: k }, k); })) : null,
+          bas(rangerContrat, st.busy ? "…" : T("Ajouter le contrat"), st.busy));
+      } else if (type === "papier_echeance") {
+        var pp = st.pap || {};
+        function mp(o) { maj({ pap: Object.assign({}, pp, o) }); }
+        action = sec(T("Un papier qui expire"), null, T("Je le range dans tes documents et je te préviens avant la date de fin."),
+          lab(T("Catégorie")), h("select", { className: "hod-sel", value: pp.categorie || "autre", onChange: function (e) { mp({ categorie: e.target.value }); } }, CATS_PAP.map(function (c) { return h("option", { key: c[0], value: c[0] }, T(c[1])); })),
+          lab(T("Nom du document")), h("input", { className: "hod-sel", value: pp.titre || "", placeholder: T("Ex. Licence FFE 2027"), onChange: function (e) { mp({ titre: e.target.value }); } }),
+          lab(T("Valable jusqu’au")), h("input", { className: "hod-sel", type: "date", value: pp.echeance || "", onChange: function (e) { mp({ echeance: e.target.value }); } }),
+          pp.categorie === "vehicule" || pp.immat ? lab(T("Immatriculation")) : null,
+          pp.categorie === "vehicule" || pp.immat ? h("input", { className: "hod-sel", value: pp.immat || "", placeholder: "AB-123-CD", onChange: function (e) { mp({ immat: e.target.value }); } }) : null,
+          bas(rangerPapier, st.busy ? "…" : T("Ranger avec un rappel"), st.busy));
+      } else if (type === "engagements") {
+        action = sec(T("Engagements du concours"), null, concId ? T("Je les lis dans les Engagements du concours : tu vérifies les cavaliers, les chevaux et les épreuves, puis tu enregistres.") : T("Choisis d’abord le concours ci-dessus."),
+          bas(function () { allerConcours("engagements"); }, T("Continuer"), !concId));
       } else if (type === "resultats") {
-        action = sec(T("Résultats du concours"), null, props.concoursId ? T("Je les lis dans l’onglet Résultats de la fiche du concours : tu vérifies chaque épreuve, puis tu publies. Ils iront sur les performances des cavaliers et des chevaux.") : T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page."),
-          bas(function () { allerConcours("resultats"); }, T("Continuer"), !props.concoursId));
+        action = sec(T("Résultats du concours"), null, concId ? T("Je les lis dans l’onglet Résultats de la fiche du concours : tu vérifies chaque épreuve, puis tu publies. Ils iront sur les performances des cavaliers et des chevaux.") : T("Choisis d’abord le concours ci-dessus."),
+          bas(function () { allerConcours("resultats"); }, T("Continuer"), !concId));
       } else {
         var typeDoc = type === "ordonnance" ? "ordonnance" : type === "facture" ? "facture" : "autre";
         var p = lu.papiers || {};
         var champs = (type === "papiers_cheval" && fiche) ? champsPapiers(p, fiche) : [];
         var chF = chevaux.filter(function (c) { return c.id === st.chevalId; })[0];
+        var trt = st.trt || [];
+        function mt(i, o) { var L = trt.slice(); L[i] = Object.assign({}, trt[i], o); maj({ trt: L }); }
+        var dd2 = function (x) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(x || "")); return m ? m[3] + "/" + m[2] : ""; };
         action = h("div", null,
+          type === "ordonnance" && trt.length ? sec(T("Le traitement"), trt.length, T("Je l’ajoute au suivi du cheval, avec un rappel le dernier jour. Vérifie les dates."),
+            trt.map(function (t, i) {
+              return h("div", { key: t.k, className: "hod-fm", style: { opacity: t.coche ? 1 : .5 } },
+                h("div", { className: "hod-fm-h", style: { cursor: "pointer" }, onClick: function () { mt(i, { coche: !t.coche }); } },
+                  h("div", { className: "hod-av" }, "℞"),
+                  h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, t.medicament), h("div", { className: "hod-chs" }, [t.dose, t.frequence, t.voie].filter(Boolean).join(" · "))),
+                  tg(t.coche)),
+                h("div", { style: { display: "flex", gap: 8, padding: "0 12px 12px" } },
+                  h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { className: "hod-chg-l" }, T("Début")), h("input", { className: "hod-sel", type: "date", value: t.debut, onChange: function (e) { mt(i, { debut: e.target.value }); } })),
+                  h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { className: "hod-chg-l" }, T("Fin")), h("input", { className: "hod-sel", type: "date", value: t.fin, onChange: function (e) { mt(i, { fin: e.target.value }); } }))));
+            }),
+            concTrt.length ? h("div", { className: "hod-q", style: { marginTop: 12 } }, T("Attention : ce cheval est engagé en concours pendant ce traitement ou juste après") + " (" + concTrt.map(function (c) { return dd2(c.date_jour) + " " + (c.titre || ""); }).join(", ") + "). " + T("Vérifie avec ton vétérinaire le délai à respecter avant de concourir.")) : null) : null,
           type === "papiers_cheval" ? sec(T("Compléter la fiche du cheval"), null, !st.chevalId ? T("Choisis d’abord le cheval ci-dessous.") : null,
             st.chevalId && !fiche ? h("div", { className: "hod-sec-p" }, "…") : null,
             st.chevalId && fiche ? (champs.length ? h("div", { className: "hod-fm" },
@@ -2272,12 +2721,13 @@
                   c.pareil ? null : tg(on));
               })) : h("div", { className: "hod-sec-p" }, T("Je n’ai rien lu d’utile pour la fiche."))) : null) : null,
           sec(T("Ranger le document"), null, T("Je le range dans les documents de la page Santé du cheval :"), lab(T("Cheval")), selCheval(),
-            bas(function () { rangerDoc(typeDoc); }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")), st.busy)));
+            bas(function () { rangerDoc(typeDoc); }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : (type === "ordonnance" && trt.some(function (t) { return t.coche; })) ? T("Enregistrer le traitement et ranger") : T("Ranger le document")), st.busy)));
       }
       corps = h("div", null,
         h("div", { className: "hod-hero" },
-          h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }), h("div", { className: "hod-poignee" }),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 })),
+          h("div", { className: "hod-hero-ph" }, h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }),
+            h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
+          h("div", { className: "hod-poignee" }),
           h("div", { className: "hod-hero-t" },
             h("div", { className: "hod-k" }, T("Ce que j’ai compris")),
             h("div", { className: "hod-titre" }, (function () { var x = T(NOMS_TYPE[type] || NOMS_TYPE.autre); return x.charAt(0).toUpperCase() + x.slice(1) + "."; })()))),
@@ -2289,6 +2739,7 @@
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { reponse: (String(x.reponse || "").trim() ? x.reponse + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
           h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: function () { repondre(); } }, T("Envoyer"))),
         boutonVoix(),
+        blocConcours(),
         blocNouveaux(),
         blocMaj(),
         action,

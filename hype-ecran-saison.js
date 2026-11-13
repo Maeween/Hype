@@ -5332,8 +5332,11 @@ async function hsLireFiche(images) {
   var sess = await supa.auth.getSession();
   var sv = sess && sess.data && sess.data.session;
   if (!sv || !sv.access_token) throw new Error("session");
-  var system = "Tu lis une feuille d'engagement de concours d'equitation (tableau CAVALIERS / Licence / Ep. / CHEVAL / Ep. / CHEVAL), en photo, capture ou PDF. "
-    + "Reponds UNIQUEMENT en JSON : {\"cavaliers\":[{\"nom\":\"NOM Prenom recopie tel quel\",\"licence\":\"numero recopie tel quel ou vide\",\"epreuve1\":\"\",\"cheval1\":\"\",\"epreuve2\":\"\",\"cheval2\":\"\"}]}. "
+  /* 13/11 23h15 (Blandine : « récapitulatif d'engagement de la FFE ») : la même lecture accepte aussi le récapitulatif FFE
+     (une ligne par engagement : cavalier, licence, cheval, épreuve) → regroupé par cavalier dans « tours » (jusqu'à 5). */
+  var system = "Tu lis une feuille d'engagement de concours d'equitation (tableau CAVALIERS / Licence / Ep. / CHEVAL / Ep. / CHEVAL) OU un recapitulatif d'engagements de la FFE (FFE Compet / SIF : une ligne par engagement avec cavalier, licence, cheval, epreuve), en photo, capture ou PDF. "
+    + "Reponds UNIQUEMENT en JSON : {\"cavaliers\":[{\"nom\":\"NOM Prenom recopie tel quel\",\"licence\":\"numero recopie tel quel ou vide\",\"epreuve1\":\"\",\"cheval1\":\"\",\"epreuve2\":\"\",\"cheval2\":\"\",\"tours\":[{\"epreuve\":\"\",\"cheval\":\"\"}]}]}. "
+    + "UN objet par cavalier (regroupe toutes ses lignes) ; tours = TOUS ses engagements dans l'ordre (5 au plus), epreuve1/cheval1 et epreuve2/cheval2 = les deux premiers. "
     + "Une ligne par cavalier ecrit sur la feuille, dans l'ordre. Recopie les accents. N'invente RIEN : case vide ou illisible = chaine vide. Ignore le chef d'equipe et le tableau des montants.";
   var blocs = (Array.isArray(images) ? images : [images]).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
   blocs.push({ type: "text", text: "Liste les cavaliers de cette feuille." });
@@ -5658,6 +5661,13 @@ function EcranEngagements() {
   var _cpa = React.useState(""); var autreC = _cpa[0], setAutreC = _cpa[1];   /* "cav" | "ch" | "ep" : saisie « autre » ouverte */
   var _cph = React.useState(""); var autreCh = _cph[0], setAutreCh = _cph[1];
   var _cpm = React.useState(""); var msgC = _cpm[0], setMsgC = _cpm[1];
+  /* 13/11 23h15 : feuille d'engagement / récapitulatif FFE donné à l'outil unique → lu ici (même lecture que « Lire une fiche ») */
+  React.useEffect(function () {
+    var f = null; try { f = window.__engFichier || null; } catch (e) { }
+    if (!f || !lignes) return;
+    try { window.__engFichier = null; } catch (e2) { }
+    lireFiche({ target: { files: [f] } });
+  }, [lignes ? 1 : 0]);
   /* 09/11 : ordre de passage choisi depuis la carte Passages de la fiche concours → lu ici dès que les engagements sont chargés */
   React.useEffect(function () {
     if (!lignes || !lignes.length) return;
@@ -5922,7 +5932,8 @@ function EcranEngagements() {
       var res = l.filter(function (x) { return x && String(x.nom || "").trim(); }).map(function (x) {
         var c = tous.filter(function (p) { return hsMemePers(x.nom, p.nom) || hsMemePers(x.nom, p.pseudo); })[0] || null;
         var deja = lignes.some(function (li) { return (c && li.cavalier_id === c.id) || hsMemePers(li.nom, x.nom); });
-        return { nom: String(x.nom || "").trim(), licence: String(x.licence || "").trim(), epreuve1: hsNomEpreuve(x.epreuve1 || ""), cheval1: String(x.cheval1 || "").trim(), epreuve2: hsNomEpreuve(x.epreuve2 || ""), cheval2: String(x.cheval2 || "").trim(), compte: c, deja: deja, coche: true };
+        var trs = (Array.isArray(x.tours) ? x.tours : []).map(function (t) { return { epreuve: hsNomEpreuve((t && t.epreuve) || ""), cheval: String((t && t.cheval) || "").trim() }; }).filter(function (t) { return t.epreuve || t.cheval; }).slice(0, 5);
+        return { nom: String(x.nom || "").trim(), licence: String(x.licence || "").trim(), epreuve1: hsNomEpreuve(x.epreuve1 || ""), cheval1: String(x.cheval1 || "").trim(), epreuve2: hsNomEpreuve(x.epreuve2 || ""), cheval2: String(x.cheval2 || "").trim(), tours: trs, compte: c, deja: deja, coche: true };
       });
       setLus(res); setLecture(res.length ? "" : "Aucun cavalier trouvé sur cette fiche.");
     } catch (eL) { setLecture("Lecture impossible : " + String((eL && eL.message) || eL)); }
@@ -5933,11 +5944,17 @@ function EcranEngagements() {
     var n = lignes.slice(), eAjout = (feuille.epreuves || []).slice();
     lus.forEach(function (x) {
       if (!x.coche) return;
-      [x.epreuve1, x.epreuve2].forEach(function (ep) { if (ep && !eAjout.some(function (y) { return y.toLowerCase() === ep.toLowerCase(); })) eAjout.push(ep); });
+      var trsX = (x.tours && x.tours.length) ? x.tours.map(function (t) { return [t.epreuve, t.cheval]; }) : [[x.epreuve1, x.cheval1], [x.epreuve2, x.cheval2]];
+      trsX.forEach(function (y) { var ep = y[0]; if (ep && !eAjout.some(function (z) { return z.toLowerCase() === ep.toLowerCase(); })) eAjout.push(ep); });
       var j = -1; n.forEach(function (li, k) { if (j === -1 && ((x.compte && li.cavalier_id === x.compte.id) || hsMemePers(li.nom, x.nom))) j = k; });
-      if (j !== -1) { n[j] = Object.assign({}, n[j], { nom: x.nom || n[j].nom, licence: x.licence || n[j].licence }); return; }
+      if (j !== -1) {
+        /* 13/11 : déjà sur la feuille → nom et licence lus, et les tours lus qui manquent (même épreuve + même cheval = déjà là) */
+        var tj = (n[j].tours || []).slice();
+        trsX.forEach(function (y) { if (!(y[0] || y[1]) || tj.length >= 5) return; var ch = String(y[1] || "").trim(); if (tj.some(function (t) { return String(t.epreuve || "").toLowerCase() === String(y[0] || "").toLowerCase() && String(t.cheval_nom || "").toLowerCase() === ch.toLowerCase(); })) return; tj.push({ epreuve: y[0] || "", cheval_nom: ch, passage: "", piste: "" }); });
+        n[j] = Object.assign({}, n[j], { nom: x.nom || n[j].nom, licence: x.licence || n[j].licence, tours: tj }); return;
+      }
       n.push({ __n: true, cavalier_id: x.compte ? x.compte.id : null, nom: x.nom, licence: x.licence, ordre: n.length,
-        tours: [[x.epreuve1, x.cheval1], [x.epreuve2, x.cheval2]].filter(function (y) { return y[0] || y[1]; }).map(function (y) { return { epreuve: y[0] || "", cheval_nom: String(y[1] || "").trim(), passage: "", piste: "" }; }) });
+        tours: trsX.filter(function (y) { return y[0] || y[1]; }).slice(0, 5).map(function (y) { return { epreuve: y[0] || "", cheval_nom: String(y[1] || "").trim(), passage: "", piste: "" }; }) });
     });
     if (eAjout.length !== (feuille.epreuves || []).length) setFeuille(Object.assign({}, feuille, { epreuves: eAjout }));
     setLignes(n); setModifie(true); setLus(null); setMsg("Fiche ajoutée : vérifie, puis touche « Enregistrer ».");

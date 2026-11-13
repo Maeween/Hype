@@ -34,6 +34,20 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 23:40 — build 20261113-2340 — Outil : 7 nouveautés (concours retrouvé, engagements FFE, ordonnances, papiers qui expirent, contrats, juments, factures) + héros « Vidéothèque »
+- RÈGLE DESIGN (Blandine 23h25, à garder pour tous les héros) : comme la Vidéothèque — la photo ENTIÈRE en haut, fondu vers le noir, fine courbe dorée, et le TITRE EN DESSOUS de la photo, jamais par-dessus la tête du cheval. Petite courbe dorée « de temps en temps », sans excès.
+- Concours retrouvé tout seul : l'outil lit date / lieu / n° FFE (champ « concours ») et cherche dans club_agenda (type concours, ±3 jours) + concours_feuille.numero ; carte « Le concours » (retrouvé ✓, ou choix si plusieurs, ou « ajoute-le à l'agenda »). concId remplace props.concoursId partout dans l'outil.
+- Engagements FFE : nouveau type « engagements » → window.__engFichier → écran Engagements → lireFiche (hsLireFiche accepte aussi le récapitulatif FFE, jusqu'à 5 tours par cavalier ; ajouterLus complète aussi les tours manquants d'un cavalier déjà présent).
+- Ordonnances : « traitements » (médicament, dose, fréquence, voie, début, fin) → soins_cheval type traitement, date_prochaine = fin + rappel le jour J ; alerte si le cheval est engagé en concours pendant le traitement ou dans les 10 jours (« vérifie le délai avec ton vétérinaire »).
+- Papiers qui expirent : type « papier_echeance » → coffre_documents (Mes documents) avec l'échéance (rappel automatique existant) ; si la plaque correspond à un véhicule de l'écurie : ct_prochain / assurance_fin mis à jour.
+- Contrats : type « contrat » → pension / demi-pension dans ecurie_pensions, autres dans ecurie_contrats ; document gardé dans Mes documents ; mention « fais relire par un professionnel, Hype ne vérifie pas la valeur juridique ».
+- Suivi des juments : type « suivi_jument » → soins_cheval (saillie/insémination/poulinage = autre, échographie = vétérinaire) ; terme = dernière saillie + 340 j si non écrit, rappel 30 jours avant. (Le document n'est pas encore rangé.)
+- Factures : BASE (accord « Oui ok » 23h27) table cheval_factures (cheval, date, fournisseur, catégorie, objet, montant TTC, document ; RLS : créateur, propriétaire, équipe de l'écurie, modératrice). Une ligne par cheval ; document dans la page Santé de chaque cheval. « Ma compta » : nouveau bloc « Le coût des chevaux » (total de l'année, par cheval et par catégorie).
+- Traductions : 15 langues (outil + i18n/gestion-*.json, I18N_V 18).
+- Fichiers : hype-outil-doc.js (v=13), hype-ecran-saison.js (v=172), hype-ecran-gestion.js (v=41), i18n/gestion-*.json, index.html (build), SUIVI.md.
+- Pas testé en vrai (écran de test seulement) : tous les enregistrements → à vérifier sur iPhone.
+- À FAIRE ENSUITE (validé par Blandine) : la reprise de dressage DICTÉE par le juge, figure par figure (note + commentaire écrits par Hey Baby) → maquette d'abord.
+
 ## 2026-11-13 23:16 — build 20261113-2316 — Outil : tout au style noir et ivoire + résultats de concours
 - Style : en-tête immersif (grand cheval noir entier, courbe dorée fine) aussi sur l'accueil de l'outil ; tous les blocs (papiers du cheval, soins, carnet, programme / ordre de passage, horaires, registre, résultats, ranger le document) en cartes noires, petits titres dorés, valeurs ivoire, coches dorées à contour, champs noirs.
 - Résultats de concours : depuis la fiche d'un concours, l'outil pose le fichier (window.__resFichier) et ouvre la fiche → onglet Résultats → lecture lancée automatiquement (lireResultats existant : vérifier chaque épreuve, puis publier). Effet placé AVANT le « if (!ev) return » de EcranConcours (ordre des hooks). Les chevaux cités → mise à jour / création des fiches proposée dans l'outil.
