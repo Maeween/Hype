@@ -3515,7 +3515,9 @@ function EcranConcours() {
       else aj(F("Reconnaissance"), ev.heure_reco, 15);
       aj(F("Début de l’épreuve"), ev.heure_epreuve, null);
       if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; })) aj(F("Rendez-vous au paddock") + " · " + (g.nom || "") + " · " + hsNomEpreuve(g.epreuve || ""), g.heure_rdv, 20); });
-      if (!gestion) mesLignes.forEach(function (x) { aj(F("Passage") + (x.nu ? " · " + F("tour ") + x.nu : "") + " · " + (x.ep || "") + (x.ch ? " · " + x.ch : ""), x.hp, 15); });
+      /* 13/11 09h13 (Blandine : « les passages, t'es pas obligé… surtout le rendez-vous paddock ») : un passage déjà couvert par un groupe publié n'est pas ajouté */
+      function dansGroupe(x) { return grpD.some(function (g) { return g.publie && hsNomEpreuve(g.epreuve || "") === hsNomEpreuve(x.ep || "") && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id && (c.numero || 1) === (x.nu || 1); }); }); }
+      if (!gestion) mesLignes.forEach(function (x) { if (moi && dansGroupe(x)) return; aj(F("Passage") + (x.nu ? " · " + F("tour ") + x.nu : "") + " · " + (x.ep || "") + (x.ch ? " · " + x.ch : ""), x.hp, 15); });
       if (!items.length) { setHorMsg(F("Les horaires ne sont pas encore indiqués.")); return; }
       var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hype//Concours//FR", "CALSCALE:GREGORIAN"];
       items.forEach(function (it, i) {

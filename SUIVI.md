@@ -22,6 +22,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1015 — Agenda : passages déjà dans un groupe retirés
+- Blandine 09h13 : « les passages, t'es pas obligé… surtout le rendez-vous paddock » ; 09h14 « Ok » (publier).
+- hype-ecran-saison.js v=150 : dans « Ajouter à mon agenda », un passage déjà couvert par un groupe publié du cavalier n'est plus ajouté (le rendez-vous paddock suffit) ; les passages restent pour un cavalier hors groupe.
+
 ## 20261113-0955 — Concours : « Ajouter à mon agenda »
 - Blandine 09h10 « Ok » (proposition du bouton d'agenda avec toutes les alarmes).
 - hype-ecran-saison.js v=149 : dans les infos pratiques du concours, lien « Ajouter à mon agenda » (tout le monde, concours pas encore passé) → fichier d'agenda (.ics) partagé au calendrier du téléphone : Embarquement (sans alarme), Départ (alarme 15 min), Reconnaissance (une par épreuve — pour un cavalier, seulement ses épreuves ; alarme 15 min), Début de l'épreuve, Rendez-vous au paddock de chacun de ses groupes publiés (alarme 20 min), et pour un cavalier chacun de ses passages (alarme 15 min). Si le téléphone refuse le partage : message clair (ouvrir Hype dans Safari). Testé sur la copie locale (fichier vérifié).
