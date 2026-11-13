@@ -1,3 +1,11 @@
+# 🗓️ 13/11 (16h15) — LEÇON EN BLEU NUIT — horselingo `856388c` [publier], « OK »
+
+**Choix de Blandine** (après plusieurs séries de propositions : « vraiment pas… très laid » pour les cartes postales/polaroid/cahier ; « dans le design de la Vidéothèque… avec des belles photos de chevaux ») : photo de cheval de Hype ENTIÈRE dans un encart ombré **centré** (choix « 2 »), courbe bleue bien **décollée** de la photo et du mot, mot en Cormorant et **tous les textes centrés** (« attention à bien centrer le texte à chaque fois »).
+**Fait** : 3 photos (lecon-cheval-1/2/3.webp, copiées de Hype : theme-sante-bai-repos, galops-carte-cours-bai, galop1-hero-bai), une par mot (toujours la même pour un même mot) ; boutons Écouter / Garder à contour fin, centrés sans toucher les bords ; « Continuer » / « Vérifier » à contour (plus de bouton plein) ; bulle « L'étoile garde un mot… » posée sur le coin de la photo (elle cachait « Continuer » puis le titre) ; carte « C'est ça » et choix juste sans aplat bleu (« trop de bleu »). Cache linguae-v21.
+**Texte corrigé (17 langues)** : définition de « le niveau » — « un Galop 4 français ne veut rien dire ailleurs » jugé trop franc → « Un diplôme passé dans un pays n'est pas forcément reconnu dans un autre : dis plutôt ce que tu sais faire — trotter, galoper, sauter. » (hype-lingo-lex-arrivee.js ?l=15 ; persan aussi rangé dans outils/fa/traductions.json).
+**Tests (Chromium)** : 375 / 390 / 1440 px, français et persan : aucune erreur.
+**Reste (Horse Lingo)** : lexique et carnet de souvenirs ; titre « Le lexique » sur l'encart (proposé).
+
 # 🗓️ 13/11 (10h40) — PAGE DES LANGUES EN BLEU NUIT (proposition A) — horselingo `a2e4b0a` [publier], « Ok »
 
 **Choix de Blandine** : « A pour langues » (liste), avec l'image fixe du cheval au ruban de drapeaux (la vidéo de la tête de cheval est gardée pour « Le tour du monde », page vue à chaque voyage ; la page des langues ne se voit qu'à la première visite ou en changeant de langue apprise).
