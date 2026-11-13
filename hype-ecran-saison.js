@@ -2306,7 +2306,7 @@ function EcranConcours() {
   }
   function carteGroupe(g, gi) {
     var aMoi = moi && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; });
-    var conf = gestion ? doublonsDe(g).concat(attenteDe(g), conflitsDe(g)) : [];
+    var conf = [];   /* 13/11 13h16 (Blandine : « les histoires de savoir que machin est aussi dans le groupe 2… c'est pas la peine, ça gâche le truc ») : plus d'alertes dorées sous les groupes */
     /* 13/11 (Blandine : proposition 9) : heure de rendez-vous en grand à gauche, couples dans l'ordre de passage à droite (N°, photo, nom, cheval · heure) */
     var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || Object.assign({ pseudo: c.pseudo, cheval_nom: c.cheval_nom, cavalier_id: c.cavalier_id }, {}); })
       .sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
@@ -2343,7 +2343,7 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", onClick: proposer }, F("Proposer des groupes")),
         h("button", { type: "button", className: "hc-btn-l", onClick: nouveauGroupe }, F("+ Nouveau groupe"))),
       grs.map(function (g, gi) {
-        var alertes = doublonsDe(g).concat(attenteDe(g), conflitsDe(g)), nbC = (g.couples || []).length;
+        var alertes = [], nbC = (g.couples || []).length;   /* 13/11 13h16 : alertes retirées aussi dans l'éditeur */
         return h("div", { key: g.id || g.__nv, className: "hc-ged-gb" }, h("div", { className: "hc-ged-g" },
           h("input", { className: "hc-ged-nom", value: g.nom || "", "aria-label": F("Nom du groupe"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.nom = v; }); }); } }),
           /* 09/11 14h15 (Blandine : « quand on écrit l'heure ce n'est pas clair, on peut même entrer 8 chiffres ») : vrai sélecteur d'heure (roue sur iPhone), enregistré au format 10h00 */

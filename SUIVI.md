@@ -22,6 +22,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1330 — Groupes du paddock : plus de messages dorés sous les groupes
+Blandine 13/11 13h16 (« les infos en doré en dessous, elles sont de trop… l'heure de passage on la voit bien »). hype-ecran-saison.js v=156.
+- Retirés sous chaque groupe ET dans l'éditeur : « X est aussi dans Groupe N », « passe N min après le premier passage », conflits d'horaires (fonctions doublonsDe / attenteDe / conflitsDe gardées, plus affichées).
+- Rappel : les groupes non publiés ne sont visibles que de la coach (filtre gestion || publie).
+
 ## 20261113-1325 — Encadré « À déclarer au jury » en tickets, non partants regroupés
 Blandine 13/11 13h09-13h12 (capture des « Tickets » + « Ok, c'est bien… pas la peine d'un ticket par non partant, la liste »). hype-ecran-saison.js v=155.
 - Habillage « tickets » (alr-5) : grand titre, un ticket par changement (N° dans un talon à pointillés), ivoire.
