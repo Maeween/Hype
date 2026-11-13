@@ -18,8 +18,16 @@
 (function () {
 /* 04/11 23h10 (Blandine « 3 oui ok ») — TRADUCTIONS de « Ma saison » et de la « Liste du van » (13 langues ; le français reste la clé).
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
-var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
+var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];   /* 13/11 : persan ajouté (les textes sans persan restent en français) */
 var HS_TR_BRUT = {
+  "Documents du concours": ["Competition documents", "Documentos del concurso", "Documenti del concorso", "大会の書類", "Turnierdokumente", "مستندات المسابقة", "比赛文件", "Wedstrijddocumenten", "Documentos do concurso", "Tävlingsdokument", "Документы соревнования", "Dokumenty zawodów", "대회 문서", "مدارک مسابقه"],   /* 13/11 documents du concours */
+  "Programme": ["Schedule", "Programa", "Programma", "プログラム", "Programm", "البرنامج", "赛程", "Programma", "Programa", "Program", "Программа", "Program", "프로그램", "برنامه"],   /* 13/11 documents du concours */
+  "Ordre de passage": ["Start order", "Orden de salida", "Ordine di partenza", "出場順", "Starterliste", "ترتيب الانطلاق", "出场顺序", "Startvolgorde", "Ordem de partida", "Startordning", "Порядок выступлений", "Kolejność startu", "출전 순서", "ترتیب اجرا"],   /* 13/11 documents du concours */
+  "remis au propre": ["cleaned up", "pasado a limpio", "ripulito", "整えた版", "bereinigt", "نسخة منقحة", "已整理", "opgeschoond", "passado a limpo", "uppstädad", "приведён в порядок", "uporządkowany", "정리됨", "مرتب‌شده"],   /* 13/11 documents du concours */
+  "Original": ["Original", "Original", "Originale", "元の画像", "Original", "الأصل", "原件", "Origineel", "Original", "Original", "Оригинал", "Oryginał", "원본", "اصل"],   /* 13/11 documents du concours */
+  "Document": ["Document", "Documento", "Documento", "書類", "Dokument", "مستند", "文件", "Document", "Documento", "Dokument", "Документ", "Dokument", "문서", "سند"],   /* 13/11 documents du concours */
+  "Le programme et l’ordre de passage lus par Hype seront gardés ici.": ["The schedule and start order read by Hype will be kept here.", "El programa y el orden de salida leídos por Hype se guardarán aquí.", "Il programma e l’ordine di partenza letti da Hype saranno conservati qui.", "Hypeが読み取ったプログラムと出場順はここに保存されます。", "Das von Hype gelesene Programm und die Starterliste werden hier aufbewahrt.", "سيُحفظ هنا البرنامج وترتيب الانطلاق اللذان قرأهما Hype.", "Hype 读取的赛程和出场顺序会保存在这里。", "Het programma en de startvolgorde die Hype heeft gelezen, worden hier bewaard.", "O programa e a ordem de partida lidos pelo Hype ficam guardados aqui.", "Programmet och startordningen som Hype har läst sparas här.", "Программа и порядок выступлений, прочитанные Hype, будут храниться здесь.", "Program i kolejność startu odczytane przez Hype będą przechowywane tutaj.", "Hype가 읽은 프로그램과 출전 순서가 여기에 보관됩니다.", "برنامه و ترتیب اجرایی که Hype خوانده است اینجا نگه داشته می‌شود."],   /* 13/11 documents du concours */
+  "toi seule": ["only you", "solo tú", "solo tu", "あなただけ", "nur du", "أنت فقط", "仅你可见", "alleen jij", "só tu", "bara du", "только ты", "tylko ty", "나만", "فقط تو"],   /* 13/11 documents du concours */
   "Par épreuve": ["By class", "Por prueba", "Per prova", "競技別", "Nach Prüfung", "حسب المسابقة", "按赛项", "Per rubriek", "Por prova", "Per klass", "По маршрутам", "Według konkursu", "종목별"],
   "Épreuve non précisée": ["Class not specified", "Prueba sin precisar", "Prova non indicata", "競技未指定", "Prüfung nicht angegeben", "مسابقة غير محددة", "未注明赛项", "Rubriek niet opgegeven", "Prova não indicada", "Klass ej angiven", "Маршрут не указан", "Konkurs nieokreślony", "종목 미지정"],
   "Vidéo": ["Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "영상"],
@@ -6494,6 +6502,7 @@ function EcranEngagements() {
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.cheval_nom || t.epreuve) equipe.push({ cavalier: l.nom, cheval: t.cheval_nom || "", epreuve: t.epreuve || "" }); }); });
+      hsGarderDocConcours(idEv, f, imgs, "ordre_passage", F("Ordre de passage") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
       var cleL = "hype_lecture_ordre_" + idEv;
       var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem(cleL, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
       try { localStorage.removeItem(cleL); } catch (eR) { }
@@ -7725,6 +7734,7 @@ function EcranJourJ(props) {
       var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
       /* 13/11 19h43 (Blandine : « si quelqu'un clique sur fermer, ça continue de charger quand même derrière ») : comme la lecture
          de l'ordre de passage, le n° de la lecture est gardé sur le téléphone ; en revenant sur la page, le résultat est repris */
+      hsGarderDocConcours(idEv, f, imgs, "programme", F("Programme") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
       var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem("hype_lecture_prog_" + idEv, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
       try { localStorage.removeItem("hype_lecture_prog_" + idEv); } catch (eR) { }
       traiterProg(lu);
@@ -7982,6 +7992,115 @@ function EcranJourJ(props) {
 }
 
 /* ════════════════════ LE DOSSIER ════════════════════ */
+/* ── 13/11 20h43 (Blandine « Ok ») : GARDER LE DOCUMENT LU ──
+   Avant : le programme / l'ordre de passage étaient lus puis jetés. Maintenant, dès qu'un document est donné à l'outil,
+   il est rangé (même si la lecture échoue) dans registre_documents (colonne agenda_id ajoutée le 13/11, rien effacé),
+   rangement privé « registre », mêmes droits que les papiers du van (coach / responsable d'écurie / modératrice).
+   On garde DEUX fichiers sous l'id de la ligne : la version PROPRE (PDF : barre d'état et barres de l'appli retirées
+   sur une capture d'iPhone, bords unis rognés, contraste remonté, une page par image) dans « chemin », et l'ORIGINAL
+   tel quel (original.<ext>) au cas où le recadrage aurait coupé quelque chose. Visible dans le Dossier du concours. */
+async function hsImgDepuis(src) {
+  return await new Promise(function (ok, ko) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = ko; i.src = src; });
+}
+/* une image -> page JPEG propre { bytes, w, h } */
+async function hsPagePropre(src, opts) {
+  opts = opts || {};
+  var im = await hsImgDepuis(src);
+  var W = im.naturalWidth || 1, H = im.naturalHeight || 1;
+  var x0 = 0, y0 = 0, x1 = W, y1 = H;
+  /* capture d'écran de téléphone : on retire la barre d'état (heure, réseau, batterie) en haut et la barre du bas */
+  if (opts.haut) y0 = Math.min(H - 10, Math.round(W * 0.15));
+  if (opts.bas) y1 = Math.max(y0 + 10, H - Math.round(W * 0.09));
+  var c = document.createElement("canvas"); c.width = x1 - x0; c.height = y1 - y0;
+  var cx = c.getContext("2d"); cx.drawImage(im, x0, y0, c.width, c.height, 0, 0, c.width, c.height);
+  /* rogner les bords unis (marges blanches, bandes noires) */
+  try {
+    var d = cx.getImageData(0, 0, c.width, c.height).data, w = c.width, hh = c.height;
+    var ref = [d[0], d[1], d[2]];
+    function uni(i) { return Math.abs(d[i] - ref[0]) + Math.abs(d[i + 1] - ref[1]) + Math.abs(d[i + 2] - ref[2]) < 40; }
+    function ligneUnie(y) { for (var x = 0; x < w; x += 4) if (!uni((y * w + x) * 4)) return false; return true; }
+    function colUnie(x, a, b) { for (var y = a; y < b; y += 4) if (!uni((y * w + x) * 4)) return false; return true; }
+    var t = 0, bo = hh - 1, g = 0, dr = w - 1;
+    while (t < bo && ligneUnie(t)) t++;
+    while (bo > t && ligneUnie(bo)) bo--;
+    while (g < dr && colUnie(g, t, bo)) g++;
+    while (dr > g && colUnie(dr, t, bo)) dr--;
+    var m = 16; t = Math.max(0, t - m); bo = Math.min(hh - 1, bo + m); g = Math.max(0, g - m); dr = Math.min(w - 1, dr + m);
+    if ((dr - g) > w * 0.3 && (bo - t) > hh * 0.2 && ((dr - g) < w - 2 || (bo - t) < hh - 2)) {
+      var c2 = document.createElement("canvas"); c2.width = dr - g + 1; c2.height = bo - t + 1;
+      c2.getContext("2d").drawImage(c, g, t, c2.width, c2.height, 0, 0, c2.width, c2.height); c = c2; cx = c2.getContext("2d");
+    }
+  } catch (eT) { }
+  /* contraste : étirer les niveaux (le gris pâle d'une capture devient bien lisible) */
+  try {
+    var k = Math.min(1, 2000 / Math.max(c.width, c.height));
+    var c3 = document.createElement("canvas"); c3.width = Math.round(c.width * k); c3.height = Math.round(c.height * k);
+    var x3 = c3.getContext("2d"); x3.fillStyle = "#fff"; x3.fillRect(0, 0, c3.width, c3.height); x3.drawImage(c, 0, 0, c3.width, c3.height);
+    var id = x3.getImageData(0, 0, c3.width, c3.height), px = id.data, hist = new Array(256).fill(0), n = px.length / 4;
+    for (var i = 0; i < px.length; i += 16) hist[Math.round(px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11)]++;
+    var tot = n / 4, acc = 0, bas = 0, haut = 255;
+    for (var v = 0; v < 256; v++) { acc += hist[v]; if (acc > tot * 0.01) { bas = v; break; } }
+    acc = 0; for (var v2 = 255; v2 >= 0; v2--) { acc += hist[v2]; if (acc > tot * 0.01) { haut = v2; break; } }
+    if (haut - bas > 40 && (bas > 8 || haut < 247)) {
+      var f = 255 / (haut - bas);
+      for (var j = 0; j < px.length; j += 4) { px[j] = Math.max(0, Math.min(255, (px[j] - bas) * f)); px[j + 1] = Math.max(0, Math.min(255, (px[j + 1] - bas) * f)); px[j + 2] = Math.max(0, Math.min(255, (px[j + 2] - bas) * f)); }
+      x3.putImageData(id, 0, 0);
+    }
+    c = c3;
+  } catch (eC) { }
+  var b = await new Promise(function (ok) { c.toBlob(ok, "image/jpeg", 0.86); });
+  if (!b) throw new Error("image");
+  return { bytes: new Uint8Array(await b.arrayBuffer()), w: c.width, h: c.height };
+}
+/* PDF simple, une image JPEG par page (même principe que la page Santé) */
+function hsPdfDeJpeg(pages) {
+  var enc = new TextEncoder(), morceaux = [], pos = 0, offs = [];
+  function ecrire(x) { var b = typeof x === "string" ? enc.encode(x) : x; morceaux.push(b); pos += b.length; }
+  function objet(n, corps) { offs[n] = pos; ecrire(n + " 0 obj\n"); corps.forEach(ecrire); ecrire("\nendobj\n"); }
+  ecrire("%PDF-1.4\n%âãÏÓ\n");
+  var kids = pages.map(function (p, i) { return (3 + i * 3) + " 0 R"; }).join(" ");
+  objet(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
+  objet(2, ["<< /Type /Pages /Kids [" + kids + "] /Count " + pages.length + " >>"]);
+  pages.forEach(function (p, i) {
+    var nP = 3 + i * 3, nC = nP + 1, nI = nP + 2, W = 595, H = Math.round(595 * p.h / p.w);
+    var flux = "q " + W + " 0 0 " + H + " 0 0 cm /Im0 Do Q";
+    objet(nP, ["<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /XObject << /Im0 " + nI + " 0 R >> >> /Contents " + nC + " 0 R >>"]);
+    objet(nC, ["<< /Length " + flux.length + " >>\nstream\n" + flux + "\nendstream"]);
+    objet(nI, ["<< /Type /XObject /Subtype /Image /Width " + p.w + " /Height " + p.h + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + p.bytes.length + " >>\nstream\n", p.bytes, "\nendstream"]);
+  });
+  var nb = 3 + pages.length * 3, xref = pos;
+  ecrire("xref\n0 " + nb + "\n0000000000 65535 f \n");
+  for (var n = 1; n < nb; n++) ecrire(("0000000000" + offs[n]).slice(-10) + " 00000 n \n");
+  ecrire("trailer\n<< /Size " + nb + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF");
+  return new Blob(morceaux, { type: "application/pdf" });
+}
+/* range le document d'un concours ; ne bloque jamais la lecture (erreurs seulement dans la console) */
+async function hsGarderDocConcours(idEv, fichier, imgs, type, titre) {
+  try {
+    if (!idEv || !fichier) return null;
+    var ra = await supa.from("club_agenda").select("club_clef").eq("id", idEv).maybeSingle();
+    var clef = ra && ra.data && ra.data.club_clef; if (!clef) return null;
+    var ri = await supa.from("registre_documents").insert({ club_clef: clef, agenda_id: idEv, type: type, titre: titre, date_doc: new Date().toISOString().slice(0, 10) }).select("id");
+    if (ri && ri.error) throw new Error(ri.error.message || String(ri.error));
+    var idD = ri && ri.data && ri.data[0] && ri.data[0].id; if (!idD) return null;
+    var ext = (String(fichier.name || "").match(/\.[a-z0-9]{1,5}$/i) || [""])[0].toLowerCase() || (/pdf/i.test(fichier.type) ? ".pdf" : ".jpg");
+    await supa.storage.from("registre").upload(idD + "/original" + ext, fichier, { contentType: fichier.type || "application/octet-stream", upsert: true });
+    var chemin = idD + "/original" + ext;
+    try {
+      var estPdf = /pdf/i.test(String(fichier.type || "")) || /\.pdf$/i.test(String(fichier.name || ""));
+      var capture = !estPdf && /png/i.test(String(fichier.type || ""));   /* une capture d'écran d'iPhone est un PNG */
+      var pages = [];
+      for (var i = 0; i < (imgs || []).length; i++) pages.push(await hsPagePropre(imgs[i], { haut: capture && i === 0, bas: capture && i === imgs.length - 1 }));
+      if (pages.length) {
+        var up = await supa.storage.from("registre").upload(idD + "/propre.pdf", hsPdfDeJpeg(pages), { contentType: "application/pdf", upsert: true });
+        if (!(up && up.error)) chemin = idD + "/propre.pdf";
+      }
+    } catch (eP) { try { console.warn("document propre", eP); } catch (e0) { } }
+    await supa.from("registre_documents").update({ chemin: chemin }).eq("id", idD);
+    return idD;
+  } catch (eG) { try { console.warn("garder le document", eG); } catch (e1) { } return null; }
+}
+
 function EcranDossierConcours() {
   var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
   var idEv = hsIdConcours();
@@ -7995,10 +8114,40 @@ function EcranDossierConcours() {
   var _bz = React.useState(false); var occupe = _bz[0], setOccupe = _bz[1];
   var _nd = React.useState({ nom: "", valable: "" }); var nd = _nd[0], setNd = _nd[1];
   var refFic = React.useRef(null);
+  var _dc = React.useState([]); var docsC = _dc[0], setDocsC = _dc[1];   /* 13/11 : documents lus par l'outil (programme, ordre de passage) */
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
   /* 07/11 : papiers du van = ceux de « Le camion » (Mon écurie), un seul endroit : registre_documents type « camion »,
      rangement privé « registre » (fichier sous l'id de sa ligne). Avant : table dossier_van (restée vide). */
+  function chargerDocsC() {
+    supa.from("registre_documents").select("*").eq("agenda_id", idEv).order("created_at", { ascending: false }).then(function (r) {
+      if (r && !r.error) setDocsC((r.data || []).filter(function (x) { return x.chemin; }));
+    });
+  }
+  async function ouvrirChemin(chemin) {
+    try {
+      var r = await supa.storage.from("registre").createSignedUrl(chemin, 300);
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      window.open(r.data.signedUrl, "_blank");
+    } catch (eO) { setMsg(F("Impossible d’ouvrir : ") + String((eO && eO.message) || eO)); }
+  }
+  async function ouvrirOriginal(d) {
+    try {
+      var dos = String(d.chemin).split("/")[0];
+      var l = await supa.storage.from("registre").list(dos);
+      var o = ((l && l.data) || []).filter(function (x) { return /^original/.test(x.name); })[0];
+      ouvrirChemin(o ? dos + "/" + o.name : d.chemin);
+    } catch (eO2) { ouvrirChemin(d.chemin); }
+  }
+  async function retirerDocC(d) {
+    try {
+      var dos = String(d.chemin).split("/")[0];
+      var r = await supa.from("registre_documents").delete().eq("id", d.id).select("id");
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      try { var l = await supa.storage.from("registre").list(dos); var noms = ((l && l.data) || []).map(function (x) { return dos + "/" + x.name; }); if (noms.length) await supa.storage.from("registre").remove(noms); } catch (eR) { }
+      chargerDocsC();
+    } catch (eX) { setMsg(F("Pas retiré : ") + String((eX && eX.message) || eX)); }
+  }
   function chargerVan(clef) {
     supa.from("registre_documents").select("*").eq("club_clef", clef).eq("type", "camion").order("created_at", { ascending: false }).then(function (r) {
       if (r && !r.error) setVan((r.data || []).filter(function (x) { return x.chemin; }).map(function (x) { return { id: x.id, nom: x.titre || F("Papier"), chemin: x.chemin, valable_jusqu: x.valable_jusqu || null }; }));
@@ -8014,7 +8163,7 @@ function EcranDossierConcours() {
         if (!r || !r.data) throw new Error(F("ce concours n’existe plus"));
         var E = r.data; if (vif) setEv(E);
         var g = await hsPeutGerer(E.club_clef); if (vif) setGestion(g);
-        if (g) chargerVan(E.club_clef);
+        if (g) { chargerVan(E.club_clef); chargerDocsC(); }
         /* engagements lisibles : tous pour la coach, sa seule ligne pour une cavalière (droits de la base) */
         var re = await supa.from("concours_engagements").select("nom, licence, cavalier_id, cheval1_id, cheval1_nom, cheval2_id, cheval2_nom").eq("agenda_id", idEv);
         var L = (re && !re.error && re.data) || [];
@@ -8085,6 +8234,19 @@ function EcranDossierConcours() {
 
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
     h("div", { className: "hs-in" },
+      /* 13/11 : documents du concours (programme, ordre de passage) gardés par l'outil de lecture — coach seulement */
+      gestion ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Documents du concours")), h("span", null, "🔒 " + F("toi seule"))),
+        h("div", { className: "hs-carte" },
+          docsC.length ? docsC.map(function (d) {
+            var propre = /\/propre\.pdf$/.test(String(d.chemin));
+            return h("div", { key: d.id, className: "hs-row" },
+              h("div", { className: "g" }, h("b", null, d.titre || F("Document")), h("span", null, (d.type === "ordre_passage" ? F("Ordre de passage") : F("Programme")) + " · " + hsFmt(String(d.created_at || "").slice(0, 10), { day: "numeric", month: "long" }) + (propre ? " · " + F("remis au propre") : ""))),
+              h("button", { type: "button", className: "hs-lien", onClick: function () { ouvrirChemin(d.chemin); } }, F("Ouvrir")),
+              propre ? h("button", { type: "button", className: "hs-lien", style: { color: "rgba(243,238,228,.6)" }, onClick: function () { ouvrirOriginal(d); } }, F("Original")) : null,
+              h("button", { type: "button", className: "hs-lien", style: { color: "rgba(243,238,228,.45)" }, onClick: function () { retirerDocC(d); } }, "×"));
+          }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Le programme et l’ordre de passage lus par Hype seront gardés ici."))))))
+      : null,
       /* van : coach seulement */
       gestion ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Le van")), h("span", null, "🔒 " + F("toi seule"))),
