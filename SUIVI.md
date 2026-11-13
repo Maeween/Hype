@@ -10,6 +10,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0250 — Hauteurs dans les résultats, import par capture d'écran, collage SIF, photos des bandeaux
+- Performances : chaque résultat des archives affiche sa hauteur en doré sous la date (lue dans le nom de l'épreuve : hauteur écrite, anciennes catégories B/C/D, catégories actuelles).
+- Import FFE : « Choisir un fichier » accepte une capture d'écran (la Photothèque montre la dernière capture en premier : plus de recherche de fichier). Lecture par hey-baby-vision (mode perception différé, Premium), rendue au format du tableau FFE Compet puis même lecteur et même relecture. Nouvelle fonction hypeLireCaptureResultats (index.html), passée à l'écran par onLireImage. À tester sur une vraie capture.
+- Import FFE : un collage qui n'est pas le tableau FFE Compet passe par les lecteurs de PDF (telemat, Résultats détaillés SIF).
+- Bandeaux des archives : photo collée au bord, pleine hauteur, largeur naturelle, jamais coupée ; fondu sur le seul bord intérieur (l'img n'est plus dans un flex, que Safari rétrécissait).
+- Base : 8 fiches créées renommées (Bruant II, Ischia II, Kignonette du Chêne, Farouk du Tertre, Lina du Val, Giron des Bruyères, Gamine des Bois, Caramel du Vexin).
+- perf v=32, import v=41.
+
 ## 20261113-0240 — Performances du cavalier : « Tes records », portraits par défaut ; noms des fiches créées
 - Import du 13/11 01h23 RÉUSSI : 12 fiches créées automatiquement (Peper, Insbruck, Mab Danhouet, Kignonette du Chêne, Farouk du Tertre, Cabri Eole, Lina du Val, Bruant II, Giron des Bruyères, Gamine des Bois, Ischia II, Caramel du Vexin), 57 lignes écrites.
 - Souvenirs (page du cavalier) = « Tes records » : victoire la plus disputée, concours le plus réussi (le plus de classements, même nom à 4 jours près), cheval de cœur en concours (le plus de classements), meilleur classement au plus haut niveau. Ni préparatoires ni indices 4. Les moments choisis à la main restent après.

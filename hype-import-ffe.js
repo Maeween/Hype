@@ -952,7 +952,7 @@
       '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
       '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs fichiers' : 'Choisir un fichier') + '</b>' +
-      '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet' : 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet (tout ton palmarès d\'un coup)') + '</span>' +
+      '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'PDF FFE, fichier « Eng_Result… .xls » de FFE Compet, ou capture d\'écran' : 'Une capture d\'écran de tes résultats (FFE Compet, SIF), un PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet') + '</span>' +
       '<input type="file" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-zone" style="margin-top:10px;cursor:default"><b>Ou colle ta page FFE Compet</b>' +
       '<span>Plus besoin de chercher le fichier : sur FFE Compet, page « Engagements et performances », sélectionne tout et copie. Puis appuie longuement sur le cadre ci-dessous et choisis « Coller ».</span>' +
@@ -998,7 +998,7 @@
       '<h2>Lecture en cours…</h2></div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i></i></div>' +
       '<div class="hi-att"><b>' + ech(E.nomFichier) + '</b>' +
-      '<span>Quelques secondes. Rien n\'est enregistré pour l\'instant.</span></div>';
+      '<span>' + (E.lectureImage ? 'Hype lit ta capture : 1 à 2 minutes. Tu peux laisser l\'écran ouvert. Rien n\'est enregistré pour l\'instant.' : 'Quelques secondes. Rien n\'est enregistré pour l\'instant.') + '</span></div>';
   }
 
   /* 30/10 (Blandine) : « n importe quelle cavaliere d une ecurie peut ajouter les resultats aux chevaux,
@@ -1407,7 +1407,11 @@
         }
         if (!html) { E.err = "Rien n'a été collé. Sur FFE Compet, sélectionne toute la page, copie, puis colle ici."; refaire(); return; }
         E.err = null; E.nomFichier = "page FFE Compet collée"; E.etape = "lecture"; refaire();
-        Promise.resolve("__HYPE_XLS__" + html).then(lireTexte).catch(function (e) {
+        /* 13/11 01h37 (Blandine : « il n'y a pas que FFE Compet… FFE SIF, c'est pas écrit de la même façon ») : si le tableau collé
+           n est pas celui de FFE Compet, le TEXTE collé passe par les lecteurs des PDF (telemat, « Résultats détaillés » du SIF). */
+        var aLire = "__HYPE_XLS__" + html;
+        try { var essai = window.HYPE_IMPORT.lire(aLire); if ((!essai || !essai.lignes || !essai.lignes.length) && txt) aLire = txt; } catch (eEs) { if (txt) aLire = txt; }
+        Promise.resolve(aLire).then(lireTexte).catch(function (e) {
           E.err = "Ce qui a été collé n'a pas pu être lu. " + (e && e.message ? e.message : "");
           E.etape = "choix"; refaire();
         });
@@ -1440,6 +1444,15 @@
             window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
             E.etape = "niveau"; refaire();
           }).catch(function (eM) { E.err = "Les fichiers n'ont pas pu \u00eatre lus. " + (eM && eM.message ? eM.message : ""); E.etape = "choix"; refaire(); });
+          return;
+        }
+        /* 13/11 01h40 : une CAPTURE D ÉCRAN (photo) est lue par la lecture d image de Hype, puis passe par le même lecteur. */
+        if (/^image\//i.test(String(fic.type || "")) || /\.(png|jpe?g|heic|heif|webp)$/i.test(String(fic.name || ""))) {
+          if (typeof options.onLireImage !== "function") { E.err = "La lecture des captures d'écran n'est pas disponible ici. Envoie le PDF ou le fichier .xls."; refaire(); return; }
+          E.err = null; E.nomFichier = "capture d'écran"; E.etape = "lecture"; E.lectureImage = true; refaire();
+          Promise.resolve(options.onLireImage(fic)).then(function (t) { E.lectureImage = false; return lireTexte(t); }).catch(function (eI) {
+            E.lectureImage = false; E.err = "La capture n'a pas pu être lue : " + (eI && eI.message ? eI.message : String(eI)); E.etape = "choix"; refaire();
+          });
           return;
         }
         E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
