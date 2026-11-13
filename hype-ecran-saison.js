@@ -263,6 +263,13 @@ var HS_TR_BRUT = {
   "Prévois de quoi changer la cartouche de ton gilet airbag, ou une protection dorsale.": ["Bring a spare cartridge for your airbag vest, or a back protector."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance."],
   "Tu ne participes plus à ce concours ?": ["You’re no longer taking part in this show?"],
+  "Informations du concours": ["Show information"],
+  "Modifier l’adresse": ["Edit the address"],
+  "1er passage ": ["1st round "],
+  "reco ": ["course walk "],
+  "Ordre d’embarquement": ["Loading order"],
+  "Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.": ["The first horse loaded is the one competing last; the last one loaded comes out first."],
+  "Pas encore d’ordre de passage.": ["No start order yet."],
   "Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.": ["Be right on time at the warm-up arena entrance: one late rider makes the whole team late."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance. Remember to bring someone to hold your horse during the course walk, and something to replace your airbag vest cartridge or a back protector, just in case."],
   "Ne quitte jamais le paddock sans l’accord de ta coach.": ["Never leave the warm-up arena without your coach's go-ahead.", "Nunca salgas del paddock sin el permiso de tu entrenadora.", "Non lasciare mai il campo prova senza il via della tua coach.", "コーチの許可なしに準備馬場を離れないこと。", "Verlass den Abreiteplatz nie ohne das Okay deiner Trainerin.", "لا تغادر ميدان الإحماء أبدًا دون موافقة مدربتك.", "未经教练同意切勿离开热身场。", "Verlaat de losrijring nooit zonder akkoord van je coach.", "Nunca saia do paddock sem o sinal da sua treinadora.", "Lämna aldrig framridningen utan din tränares klartecken.", "Никогда не уходи с разминки без разрешения тренера.", "Nigdy nie opuszczaj rozprężalni bez zgody trenerki.", "코치의 허락 없이 준비 마장을 떠나지 마세요."],
@@ -1045,6 +1052,11 @@ var CSS2 = [
   ".hc-alerte.al2 .hc-inf-h{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:4px}.hc-alerte.al2 .hc-inf-h>span{display:flex;flex-direction:column}.hc-alerte.al2 .hc-inf-h small{font-family:Montserrat,sans-serif;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.5)}.hc-alerte.al2 .hc-inf-h b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:20px;color:#F3EEE4}",
   ".hc-alerte.al2 .hc-inf-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.hc-alerte.al2 .hc-inf-a .al-tag{width:auto !important;display:inline-block !important;padding:4px 12px !important;border-top:1px solid !important;margin-top:0;text-decoration:none;background:none;cursor:pointer;font:inherit;font-family:Montserrat,sans-serif;font-size:11.5px}",
   ".hc-alerte.hc-infos .al-n small{text-transform:uppercase}",
+  ".hc .hc-actions.hc-act-in{margin:12px 0 0;gap:8px;grid-template-columns:repeat(3,minmax(0,1fr)) !important}.hc .hc-act-in .hc-act{min-height:52px;font-size:12.5px;padding:6px 8px;line-height:1.2;text-align:center;flex-direction:column;justify-content:center;gap:4px}.hc .hc-act-in .hc-act.on{background:#1d2626 !important}",
+  ".hc-infos-w{margin-bottom:56px}.hc-emb{margin-top:12px !important;padding:4px 16px 8px !important;border:1px solid rgba(243,238,228,.12) !important;background:#0e1212 !important}.hc-emb .hc-emb-l{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:baseline;padding:8px 0;border-top:1px solid rgba(243,238,228,.07);font-size:13.5px;color:rgba(243,238,228,.75)}.hc-emb .hc-emb-l b{color:#F3EEE4;font-weight:600}.hc-emb .hc-emb-l .n{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:#F3EEE4}.hc-emb .hc-emb-l small{font-size:11.5px;color:rgba(243,238,228,.5)}",
+  ".hc-infos-w .hc-pas-tete{margin-top:40px !important}.hc-infos-w .hc-alerte.hc-infos{margin-top:0}",
+  ".hc-alerte.al2 .hc-inf-ep{display:flex;flex-direction:column;gap:4px;margin-top:6px}.hc-alerte.al2 .hc-inf-ep>span{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;font-family:Montserrat,sans-serif;font-size:13px;color:rgba(243,238,228,.75)}.hc-alerte.al2 .hc-inf-ep i{font-style:normal;font-weight:600;color:#F3EEE4;min-width:84px}",
+  ".hc-infos .hc-chg label span,.hc-infos .hc-chg-l span{color:rgba(243,238,228,.6) !important}",
   "html.alr-5 .hc-alerte.al2{background:none;border:0;padding:0}html.alr-5 .hc-alerte.al2 .al-t{font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:26px;font-weight:500;border-bottom:0;padding:0 0 10px}html.alr-5 .hc-alerte.al2 .al-i{grid-template-columns:64px minmax(0,1fr);gap:0;margin-bottom:10px;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:14px;background:#0e1212;overflow:hidden}html.alr-5 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.12)}html.alr-5 .hc-alerte.al2 .al-n{align-self:stretch;border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 0}html.alr-5 .hc-alerte.al2 .al-c{padding:12px 14px}",
   "html.alr-6 .hc-alerte.al2 .al-i{grid-template-columns:1fr;padding:10px 0}html.alr-6 .hc-alerte.al2 .al-n{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:4px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em}html.alr-6 .hc-alerte.al2 .al-n small{font-size:12px;letter-spacing:.06em;margin:0;color:inherit}html.alr-6 .hc-alerte.al2 .al-c{flex-direction:row;flex-wrap:wrap;column-gap:8px;row-gap:2px;align-items:baseline}html.alr-6 .hc-alerte.al2 .al-l1{flex-basis:100%;font-size:15px}html.alr-6 .hc-alerte.al2 .al-l2{font-size:15px}html.alr-6 .hc-alerte.al2 .al-l3:before{content:'· '}html.alr-6 .hc-alerte.al2 .al-tag{flex-basis:auto;margin-top:2px}",
   "html.alr-7 .hc-alerte.al2{border:0;border-top:1px solid var(--al,#C9A66B);border-bottom:1px solid var(--al,#C9A66B);border-radius:0;background:none;padding:2px 0 6px}html.alr-7 .hc-alerte.al2 .al-t{justify-content:center;gap:12px;border-bottom:0;font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:24px;font-weight:500}html.alr-7 .hc-alerte.al2 .al-i{border-top:1px solid rgba(243,238,228,.07)}html.alr-7 .hc-alerte.al2 .al-n{font-size:34px}",
@@ -1559,6 +1571,7 @@ function EcranConcours() {
   var _mo = React.useState(false); var menuOuv = _mo[0], setMenuOuv = _mo[1];
   var _ou = React.useState({}); var ouvert = _ou[0], setOuvert = _ou[1];
   var _io = React.useState(false); var infosOuv = _io[0], setInfosOuv = _io[1];
+  var _oem = React.useState(false); var ordreEmbOuv = _oem[0], setOrdreEmbOuv = _oem[1];
   var _hf = React.useState(null); var horForm = _hf[0], setHorForm = _hf[1];   /* 13/11 : formulaire « Modifier les horaires » (coach) */
   var _hm = React.useState(""); var horMsg = _hm[0], setHorMsg = _hm[1];
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
@@ -3766,7 +3779,8 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", onClick: function () { setHorForm(null); } }, F("Annuler")),
         h("button", { type: "button", className: "hc-btn-l", onClick: enregistrerHoraires }, F("Enregistrer"))));
   }
-  var blocPratique = h("div", { key: "prat", className: "hc-prat" },
+  var blocPratique = null;   /* 13/11 13h41 : tout est dans « Informations du concours » en haut */
+  var blocPratiqueAncien = h("div", { key: "prat", className: "hc-prat" },
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
       /* 13/11 13h28 : la ligne compacte (lieu | départ) est remplacée par l'encart « Le concours » en haut ; ici ne reste que le détail, ouvert depuis l'encart */
       !infosOuv ? null : h("div", { className: "hc-bande" + (infosOuv ? " ouv" : ""), id: "hc-infos-pratiques" },
@@ -3886,19 +3900,57 @@ function EcranConcours() {
       /* 13/11 13h28 (Blandine : « un petit encart propre en haut, même avant ce qu'il faut déclarer au jury, avec les infos du concours :
          le lieu, l'heure de départ… l'adresse pour les parents, et le petit lien vers le plan ») — même dessin que les tickets du jury */
       (function () {
+        /* 13/11 13h41 (Blandine : « un vrai titre comme l'organisation du paddock… l'adresse… le petit lien vers Google… un récapitulatif
+           des horaires que le coach peut modifier : embarquement, reco et début de chaque épreuve… et virer tout ce qui est doré ») */
         var d = String(ev.date_jour || "").slice(0, 10), jour = "", mois = "";
         if (/^\d{4}-\d{2}-\d{2}$/.test(d)) { var dt = new Date(d + "T12:00:00"); jour = String(dt.getDate()); try { mois = dt.toLocaleDateString(lg || "fr", { month: "short" }).replace(".", ""); } catch (eM) { mois = ""; } }
-        var lignes = [[F("Embarquement"), ev.heure_embarquement], [F("Départ"), ev.heure_depart], [F("Reconnaissance"), recoBande], [F("Début de l’épreuve"), ev.heure_epreuve]].filter(function (x) { return x[1]; });
-        return h("div", { className: "hc-alerte al2 hc-infos" },
-          h("div", { className: "al-t" }, h("span", null, F("Le concours"))),
-          h("div", { className: "al-i" },
-            h("span", { className: "al-n" }, h("small", null, mois || ""), jour || "–"),
-            h("span", { className: "al-c" },
-              h("span", { className: "al-l1" }, h("b", null, ev.lieu || F("Lieu pas encore indiqué"))),
-              lignes.length ? h("span", { className: "hc-inf-h" }, lignes.map(function (x, i) { return h("span", { key: i }, h("small", null, x[0]), h("b", null, x[1])); })) : h("span", { className: "al-l3" }, F("Les horaires ne sont pas encore indiqués.")),
-              h("span", { className: "hc-inf-a" },
-                lienPlan ? h("a", { className: "al-tag", href: lienPlan, target: "_blank", rel: "noopener" }, F("Itinéraire") + " ›") : null,
-                h("button", { type: "button", className: "al-tag ok", onClick: function () { setInfosOuv(!infosOuv); if (!infosOuv) setTimeout(function () { try { var el = document.getElementById("hc-infos-pratiques"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { } }, 150); } }, infosOuv ? F("Fermer") : F("Infos pratiques") + " ›")))));
+        var gMaps = ev.lieu ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(ev.lieu) : null;
+        var gen = [[F("Embarquement"), ev.heure_embarquement], [F("Départ"), ev.heure_depart]].filter(function (x) { return x[1]; });
+        var recosL = Array.isArray(ev.recos) ? ev.recos : [];
+        var parE = parEpreuve.map(function (g) {
+          var ps = g.l.filter(function (p) { return !p.non_partant && p.passage; }).map(function (p) { return p.passage; }).sort(function (a, b) { return hsMinutes(a) - hsMinutes(b); });
+          var r = recosL.filter(function (x) { return x && x.ep === g.ep && x.heure; })[0];
+          var reco = r ? r.heure : (parEpreuve.length === 1 ? ev.heure_reco : "");
+          return { ep: hsEpCourt(g.ep), reco: reco, debut: ps[0] || (parEpreuve.length === 1 ? ev.heure_epreuve : "") };
+        }).filter(function (x) { return x.reco || x.debut; });
+        return h("div", { className: "hc-infos-w" },
+          h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))),
+          h("div", { className: "hc-alerte al2 hc-infos" },
+            h("div", { className: "al-i" },
+              h("span", { className: "al-n" }, h("small", null, mois || ""), jour || "–"),
+              h("span", { className: "al-c" },
+                h("span", { className: "al-l1" }, h("b", null, ev.lieu || F("Lieu pas encore indiqué"))),
+                gen.length ? h("span", { className: "hc-inf-h" }, gen.map(function (x, i) { return h("span", { key: i }, h("small", null, x[0]), h("b", null, x[1])); })) : null,
+                parE.length ? h("span", { className: "hc-inf-ep" }, parE.map(function (x, i) { return h("span", { key: i }, h("i", null, x.ep), x.reco ? h("span", null, F("reco ") + x.reco) : null, x.debut ? h("span", null, F("1er passage ") + x.debut) : null); })) : null,
+                (!gen.length && !parE.length) ? h("span", { className: "al-l3" }, F("Les horaires ne sont pas encore indiqués.")) : null,
+                h("span", { className: "hc-inf-a" },
+                  gMaps ? h("a", { className: "al-tag", href: gMaps, target: "_blank", rel: "noopener" }, F("Itinéraire") + " ›") : null,
+                  !fini ? h("button", { type: "button", className: "al-tag ok", onClick: ajouterAgenda }, F("Ajouter à mon agenda")) : null,
+                  gestion ? h("button", { type: "button", className: "al-tag ok", onClick: modifierRdv }, F("Modifier l’adresse")) : null,
+                  gestion ? h("button", { type: "button", className: "al-tag ok", onClick: function () { if (horForm) setHorForm(null); else ouvrirHoraires(); } }, F("Modifier les horaires")) : null),
+                horForm ? formHoraires() : null,
+                horMsg ? h("span", { className: "al-l3" }, horMsg) : null)),
+            /* 13/11 13h42 (Blandine : « insérer dans l'encart les boutons sombres Tu participes, Liste du van ») */
+            h("div", { className: "hc-actions hc-act-in" },
+              h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
+              h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van")),
+              /* 13/11 13h45 (Blandine : « rajoute le troisième bouton ordre d'embarquement ») : les chevaux dans l'ordre de leur 1er passage */
+              h("button", { type: "button", className: "hc-act" + (ordreEmbOuv ? " on" : ""), onClick: function () { setOrdreEmbOuv(!ordreEmbOuv); } }, hcIcone("heure"), F("Ordre d’embarquement"))),
+            ordreEmbOuv ? (function () {
+              var vus = {}, l = [];
+              (passagesEq || []).filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) {
+                var ch = p.cheval_brut || p.cheval_nom; if (!ch || vus[ch.toLowerCase()]) return; vus[ch.toLowerCase()] = 1;
+                l.push({ ch: ch, qui: p.pseudo_brut || p.pseudo || "", h: p.passage, ep: hsEpCourt(p.epreuve) });
+              });
+              /* 13/11 13h48 (Blandine : « il faut monter en dernier ceux qui vont être montés en premier ») : on embarque d'abord le cheval qui passe le plus tard */
+              l.reverse();
+              return h("div", { className: "hc-alerte al2 hc-emb" },
+                h("div", { className: "al-t" }, h("span", null, F("Ordre d’embarquement")), h("i", null, String(l.length))),
+                l.length ? l.map(function (x, i) { return h("div", { key: i, className: "hc-emb-l" }, h("span", { className: "n" }, String(i + 1)), h("span", null, h("b", null, x.ch), " · " + x.qui), h("small", null, [x.ep, x.h].filter(Boolean).join(" · "))); })
+                  : h("div", { className: "al-l3" }, F("Pas encore d’ordre de passage.")),
+                h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")));
+            })() : null,
+            fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null));
       })(),
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },

@@ -22,6 +22,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1355 — « Informations du concours » (adresse, horaires par épreuve, Google Maps) + 3 boutons dont « Ordre d'embarquement »
+Blandine 13/11 13h41 → 13h48 (« Ok »). hype-ecran-saison.js v=161.
+- Encart en tête avec un vrai titre de chapitre « Informations du concours » (courbe), date, adresse, embarquement / départ, une ligne par épreuve (reco si remplie, 1er passage calculé depuis l'ordre de passage), boutons ivoire : Itinéraire (Google Maps), Ajouter à mon agenda, Modifier l'adresse / Modifier les horaires (coach). Plus de partie « Infos pratiques » à déplier, plus de texte doré.
+- Base (sa demande « trouve l'adresse… tu la mets ») : lieu du CSO Versailles du 15/11 = « Club Hippique de Versailles, 59 rue Rémont, 78000 Versailles » (à confirmer par Blandine).
+- Boutons sombres sur une ligne sous l'encart : Je participe · Liste du van · Ordre d'embarquement ; grand espace avant les Règles du paddock.
+- Ordre d'embarquement : liste des chevaux, un par cheval, le premier embarqué = celui qui passe le plus tard (le dernier embarqué sort en premier). Elle avait déjà eu un ordre préparé ailleurs (« imprimé sur le parchemin ») — à comparer.
+
 ## 20261113-1350 — Bandeaux d'épreuve plus bas, boutons Par épreuve / cavalier / cheval sur fond sombre
 Blandine 13/11 13h37-13h39 (choix « 3 »). hype-ecran-saison.js v=160.
 - Bandeaux d'épreuve (g-ep) : 96 px au lieu de 118, titre 26 px, 14 px d'espace avant la liste.
