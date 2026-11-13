@@ -92,6 +92,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2317 — Guide du coach : chapitre 08 « Analyse & progression » et « Cycle de progression Hype »
+Blandine 13/11 23h09–23h10 (8 cartes ChatGPT, cycle Préparer → Concourir → Observer → Analyser → Enseigner → Progresser, signature « Chaque concours prépare le suivant. »).
+- hype-ecran-coach.js : chapitre « analyse » (#coach-analyse), 8 cartes (liens : Médias de l'équipe, Performances chevaux), À savoir ; 8e entrée dans la frise et la liste ; cycle SVG (HYPE au centre, 6 étapes, flèches champagne) sur l'accueil du guide et en fin du chapitre 08.
+- À vérifier avant de le présenter : sélection d'un extrait vidéo pour Hey Baby, épingle privée cavalier + coach, statistiques « sans-faute », page couple créée automatiquement. index.html : build 20261113-2317.
 ## 20261113-2312 — Guide du coach : recette et lisibilité (7 chapitres)
 Blandine 13/11 23h00–23h03 (cahiers « Recette fonctionnelle et visuelle », « Finalisation… recette », « Correction prioritaire — lisibilité sur iPhone »).
 - Lisibilité (composant commun) : titres 16,5 px ivoire, descriptions 15 px #E8E4DC interligne 1,45 ; colonne numéro/filet/picto resserrée ; dégradé renforcé derrière le texte ; en-têtes : zone sombre derrière le titre, sous-titre ivoire ; « À savoir » : libellé plus étroit, texte 15 px.

@@ -28,6 +28,11 @@
     if (nom === "jury") return h("svg", p, h("rect", { x: 5, y: 4, width: 14, height: 17, rx: 2 }), h("path", { d: "M9 4V3h6v1M8.5 13l2.5 2.5 4.5-5" }));
     if (nom === "dossier") return h("svg", p, h("path", { d: "M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" }), h("rect", { x: 10, y: 12.5, width: 5, height: 4, rx: 0.8 }), h("path", { d: "M11 12.5v-1a1.5 1.5 0 0 1 3 0v1" }));
     if (nom === "telephone") return h("svg", p, h("rect", { x: 7, y: 3, width: 10, height: 18, rx: 2 }), h("path", { d: "M11 18h2" }), h("circle", { cx: 17, cy: 5, r: 2.2, fill: CH, stroke: "none" }));
+    if (nom === "video") return h("svg", p, h("rect", { x: 3, y: 6, width: 13, height: 12, rx: 2 }), h("path", { d: "M16 10l5-3v10l-5-3" }));
+    if (nom === "graph") return h("svg", p, h("path", { d: "M4 20V10M10 20V4M16 20v-7M21 20H3" }));
+    if (nom === "bulle") return h("svg", p, h("path", { d: "M4 5h16v11H9l-5 4z" }));
+    if (nom === "livre") return h("svg", p, h("path", { d: "M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5" }));
+    if (nom === "cible") return h("svg", p, h("circle", { cx: 12, cy: 12, r: 8.5 }), h("circle", { cx: 12, cy: 12, r: 4.5 }), h("circle", { cx: 12, cy: 12, r: 0.8, fill: IV }));
     if (nom === "info") return h("svg", p, h("circle", { cx: 12, cy: 12, r: 9 }), h("path", { d: "M12 11v6M12 7.5v.01" }));
     if (nom === "programme") return h("svg", p, h("rect", { x: 4, y: 4, width: 16, height: 16, rx: 3 }), h("path", { d: "M8 9h8M8 12h8M8 15h5" }));
     if (nom === "paddock") return h("svg", p, h("path", { d: "M6 4c-1.5 4-1.5 9 1 12.5M18 4c1.5 4 1.5 9-1 12.5M7 16.5c1.5 2.2 3 3.5 5 3.5s3.5-1.3 5-3.5" }));
@@ -109,6 +114,24 @@
     ], savoir: "Les copies numériques ne remplacent pas toujours les originaux exigés, mais elles peuvent te sauver un concours.",
       vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
       signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
+    analyse: { titre: "Analyse & progression", sous: "Observer, analyser, enseigner, progresser.", hero: "images/guide-coach/coach-hd-cso.webp", cycle: true, cartes: [
+      { n: "01", ico: "video", img: "coach-hd-entree", titre: "Retrouver les parcours", ecran: "team-medias",
+        paras: ["Chaque cavalier dispose de son espace pour partager ses vidéos."], liste: ["Demande à tes cavaliers d’ajouter leurs vidéos.", "Retrouve les parcours par concours, cavalier ou cheval.", "Consulte les vidéos de ton équipe."] },
+      { n: "02", ico: "groupe", img: "coach-hd-cso", titre: "Suivre chaque couple", ecran: "team-medias",
+        paras: ["Retrouve l’historique des parcours de chaque couple."], liste: ["Une page couple se crée automatiquement.", "Retrouve les vidéos du cavalier avec ce cheval.", "Compare les parcours au fil des concours.", "Observe leur évolution."] },
+      { n: "03", ico: "graph", img: "coach-hd-chrono", titre: "Analyser les performances", ecran: "performances-chevaux",
+        paras: ["Suis les résultats et les statistiques de ton équipe."], liste: ["Consulte les résultats par cavalier, cheval ou couple.", "Retrouve les sans-faute et les performances enregistrées.", "Observe leur évolution au fil de la saison.", "Identifie les axes de progression."] },
+      { n: "04", ico: "bulle", img: "coach-hd-coach", titre: "Commenter les parcours", ecran: "team-medias",
+        paras: ["Partage tes observations et tes conseils avec ton cavalier."], liste: ["Regarde les vidéos de tes cavaliers.", "Identifie les points forts et les difficultés.", "Ajoute tes commentaires et tes conseils."] },
+      { n: "05", ico: "micro", img: "coach-hd-selle", titre: "Analyser avec Hey Baby", ecran: "team-medias",
+        paras: ["Sélectionne un extrait vidéo et demande une analyse."], liste: ["Sélectionne le passage que tu souhaites travailler.", "Partage-le avec Hey Baby.", "Échange avec lui sur les difficultés rencontrées.", "Relis, complète ou modifie ses conseils."] },
+      { n: "06", ico: "cadenas", img: "coach-hd-dossard", titre: "Épingler un conseil privé", ecran: "team-medias",
+        paras: ["Partage un retour personnalisé avec ton cavalier."], liste: ["Sélectionne les conseils que tu souhaites transmettre.", "Ajoute tes propres observations.", "Valide et épingle le retour.", "Seuls ton cavalier et toi pouvez consulter cette épingle."] },
+      { n: "07", ico: "livre", img: "coach-hd-materiel", titre: "Faire progresser mon équipe", ecran: "team-medias",
+        paras: ["Transforme une difficulté rencontrée en conseil collectif."], liste: ["Demande à Hey Baby d’approfondir un thème technique.", "Prépare un contenu pédagogique sans identifier le cavalier.", "Relis, modifie et valide le contenu.", "Épingle-le pour toute ton équipe de compétition."] },
+      { n: "08", ico: "cible", img: "coach-hd-documents", titre: "Préparer la suite", ecran: "team-medias",
+        paras: ["Appuie-toi sur les parcours pour préparer tes prochaines séances."], liste: ["Identifie les difficultés récurrentes.", "Compare les vidéos et les performances.", "Définis tes prochains objectifs de travail.", "Adapte tes séances aux besoins de chaque couple."] }
+    ], savoir: "Tu gardes la maîtrise pédagogique : les conseils de Hey Baby restent soumis à ta validation avant leur partage." },
     paddock: { titre: "Paddock", sous: "Organiser la détente de mes cavaliers.", hero: "images/concours-carte-equipe.webp", cartes: [
       { n: "01", ico: "groupe", capture: "coach-cap-pad-proposer", img: "coach-hd-entree", titre: "Organiser mes groupes", ecran: "concours",
         paras: ["Hype rassemble tes cavaliers selon leurs heures de passage."], liste: ["Utilise les passages de ton équipe.", "Hype propose des groupes de six couples maximum.", "Les passages sont regroupés sur une période de 30 minutes."] },
@@ -139,8 +162,32 @@
     { id: "passages", nom: "Passages", ico: "liste", ecran: "concours" },
     { id: "paddock", nom: "Paddock", ico: "paddock", ecran: "concours" },
     { id: "jourj", nom: "Jour J", ico: "drapeau", ecran: "jour-j" },
-    { id: "resultats", nom: "Résultats", ico: "coupe", ecran: "concours" }
+    { id: "resultats", nom: "Résultats", ico: "coupe", ecran: "concours" },
+    { id: "analyse", nom: "Analyse", ico: "graph", ecran: "team-medias" }
   ];
+
+  /* 13/11 23h10 (Blandine) : « Cycle de progression Hype » — cercle SVG, HYPE au centre, 6 étapes, fines flèches champagne */
+  function Cycle(h) {
+    var E = ["Préparer", "Concourir", "Observer", "Analyser", "Enseigner", "Progresser"];
+    var cx = 180, cy = 180, R = 118, kids = [];
+    kids.push(h("circle", { key: "c", cx: cx, cy: cy, r: R, fill: "none", stroke: "rgba(201,166,107,0.18)", strokeWidth: 1 }));
+    for (var i = 0; i < 6; i++) {
+      var a0 = (-90 + i * 60 + 13) * Math.PI / 180, a1 = (-90 + (i + 1) * 60 - 13) * Math.PI / 180;
+      var x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0), x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+      kids.push(h("path", { key: "a" + i, d: "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + R + " " + R + " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1), fill: "none", stroke: CH, strokeWidth: 1.2, markerEnd: "url(#hcFl)" }));
+      var a = (-90 + i * 60) * Math.PI / 180, nx = cx + R * Math.cos(a), ny = cy + R * Math.sin(a);
+      kids.push(h("circle", { key: "p" + i, cx: nx, cy: ny, r: 5, fill: BG, stroke: CH, strokeWidth: 1.2 }));
+      var lx = cx + (R + 34) * Math.cos(a), ly = cy + (R + 34) * Math.sin(a) + 5;
+      kids.push(h("text", { key: "t" + i, x: lx, y: ly, textAnchor: Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end"), fill: IV, style: { fontFamily: M, fontSize: 14, fontWeight: 600, letterSpacing: 0.3 } }, E[i]));
+    }
+    kids.push(h("text", { key: "h", x: cx, y: cy + 4, textAnchor: "middle", fill: IV, style: { fontFamily: SERIF, fontSize: 40, fontWeight: 500, letterSpacing: 6 } }, "HYPE"));
+    kids.push(h("text", { key: "s", x: cx, y: cy + 28, textAnchor: "middle", fill: CH, style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.6 } }, "CYCLE DE PROGRESSION"));
+    return h("div", { style: { padding: "18px 0 6px", textAlign: "center" } },
+      h("svg", { viewBox: "-56 0 472 360", role: "img", "aria-label": "Cycle de progression Hype : préparer, concourir, observer, analyser, enseigner, progresser", style: { display: "block", width: "100%", maxWidth: 440, height: "auto", margin: "0 auto" } },
+        h("defs", null, h("marker", { id: "hcFl", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, h("path", { d: "M1 1L9 5L1 9", fill: "none", stroke: CH, strokeWidth: 1.4 }))),
+        kids),
+      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, marginTop: 6 } }, "Chaque concours prépare le suivant."));
+  }
 
   function EcranGuideCoach() {
     var h = React.createElement;
@@ -226,7 +273,8 @@
       return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
         hero("Le guide du coach", "Tous les tutos pour accompagner tes cavaliers"),
         h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "10px 18px 0", display: "flex", flexDirection: "column", gap: 12 } },
-          carteListe(null, "Organiser une journée de compétition", "Engagements, programme, paddock, jour J, résultats.", function () { setVue("journee"); }, "j")));
+          carteListe(null, "Organiser une journée de compétition", "Engagements, programme, paddock, jour J, résultats.", function () { setVue("journee"); }, "j"),
+          Cycle(h)));
     }
     if (vue === "journee") {
       var JOUR = [
@@ -236,7 +284,8 @@
         ["04", "Passages", "Gérer mes couples et suivre le déroulement des épreuves.", function () { setVue("passages"); }],
         ["05", "Paddock", "Organiser la détente de mes cavaliers.", function () { setVue("paddock"); }],
         ["06", "Jour J", "Piloter mon concours et accompagner mon équipe.", function () { setVue("jourj"); }],
-        ["07", "Résultats", "Retrouver les performances de mon équipe.", function () { setVue("resultats"); }]
+        ["07", "Résultats", "Retrouver les performances de mon équipe.", function () { setVue("resultats"); }],
+        ["08", "Analyse & progression", "Observer, analyser, enseigner, progresser.", function () { setVue("analyse"); }]
       ];
       return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
         hero("Journée de compétition", "Organiser une journée de compétition, étape par étape"),
@@ -292,6 +341,7 @@
           ico(h, "micro"),
           h("div", null, h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.15 } }, PG.vocal.titre), (PG.vocal.exemples || []).map(function (x, k) { return h("div", { key: k, style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: CH, lineHeight: 1.35, marginTop: k ? 4 : 8 } }, x); }), h("div", { style: { fontSize: 14, color: IV2, lineHeight: 1.45, marginTop: 6 } }, gras(PG.vocal.texte)))) : null,
         PG.signature ? h("div", { style: { textAlign: "center", fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.3, margin: "14px 0 4px" } }, PG.signature[0], h("br"), h("span", { style: { color: CH } }, PG.signature[1])) : null),
+      PG.cycle ? h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "0 18px" } }, Cycle(h)) : null,
       (PG.bas || "coach-fr-camion") ? h("div", { style: { position: "relative", maxWidth: 900, margin: "22px auto 0" } },
         h("img", { src: "images/guide-coach/" + (PG.bas || "coach-fr-camion") + ".webp", alt: "", loading: "lazy", style: { display: "block", width: "100%", height: "auto" } }),
         courbe(true)) : null,
