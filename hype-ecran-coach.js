@@ -26,6 +26,8 @@
     if (nom === "cadenas") return h("svg", p, h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }));
     if (nom === "croix") return h("svg", p, h("circle", { cx: 12, cy: 12, r: 9 }), h("path", { d: "M9 9l6 6M15 9l-6 6" }));
     if (nom === "jury") return h("svg", p, h("rect", { x: 5, y: 4, width: 14, height: 17, rx: 2 }), h("path", { d: "M9 4V3h6v1M8.5 13l2.5 2.5 4.5-5" }));
+    if (nom === "dossier") return h("svg", p, h("path", { d: "M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" }), h("rect", { x: 10, y: 12.5, width: 5, height: 4, rx: 0.8 }), h("path", { d: "M11 12.5v-1a1.5 1.5 0 0 1 3 0v1" }));
+    if (nom === "telephone") return h("svg", p, h("rect", { x: 7, y: 3, width: 10, height: 18, rx: 2 }), h("path", { d: "M11 18h2" }), h("circle", { cx: 17, cy: 5, r: 2.2, fill: CH, stroke: "none" }));
     if (nom === "info") return h("svg", p, h("circle", { cx: 12, cy: 12, r: 9 }), h("path", { d: "M12 11v6M12 7.5v.01" }));
     if (nom === "programme") return h("svg", p, h("rect", { x: 4, y: 4, width: 16, height: 16, rx: 3 }), h("path", { d: "M8 9h8M8 12h8M8 15h5" }));
     if (nom === "paddock") return h("svg", p, h("path", { d: "M6 4c-1.5 4-1.5 9 1 12.5M18 4c1.5 4 1.5 9-1 12.5M7 16.5c1.5 2.2 3 3.5 5 3.5s3.5-1.3 5-3.5" }));
@@ -93,16 +95,20 @@
       { n: "06", ico: "programme", capture: "coach-cap-pas-direct", titre: "Suivre le direct", ecran: "concours",
         paras: ["Retrouve le direct du chronométreur depuis Hype."], liste: ["Ouvre « Modifier les passages ».", "Ajuste le rythme de l’épreuve si nécessaire.", "Recherche le direct sur Winjump ou ajoute son lien.", "Préviens tes cavaliers si nécessaire."] }
     ], savoir: "Hype prépare tes déclarations au jury, mais tu dois toujours les transmettre au secrétariat." },
-    jourj: { titre: "Jour J", sous: "Piloter mon concours et accompagner mon équipe.", hero: "images/bandeau-prochain-concours.webp", cartes: [
-      { n: "01", ico: "camion", capture: "coach-cap-fr-embarquement", titre: "Préparer le départ", ecran: "concours",
-        paras: ["Retrouve les horaires et l’ordre d’embarquement."], liste: ["Consulte l’heure d’embarquement.", "Vérifie l’ordre des chevaux dans le camion.", "Retrouve l’heure de départ.", "Consulte la Liste du van."] },
-      { n: "02", ico: "maj", capture: "coach-cap-jj-crayon", titre: "Gérer les imprévus", ecran: "concours",
+    jourj: { titre: "Jour J", sous: "Piloter mon concours et accompagner mon équipe.", hero: "coach-jj-hero", bas: "coach-fr-camion", cartes: [
+      { n: "01", ico: "camion", img: "coach-jj-fond-01", capture: "coach-cap-fr-embarquement", titre: "Préparer le départ", ecran: "concours",
+        paras: ["Retrouve les horaires et l’ordre d’embarquement."], liste: ["Consulte l’heure d’embarquement.", "Vérifie l’ordre des chevaux dans le camion.", "Retrouve l’heure de départ.", "Consulte la Liste du van avant de partir."] },
+      { n: "02", ico: "dossier", img: "coach-jj-fond-02", titre: "Mes documents à portée de main", ecran: "coffre",
+        paras: ["Retrouve les papiers de tes chevaux et du camion en cas d’oubli."], liste: ["Retrouve les copies des carnets et des vaccins dans la rubrique Santé de tes chevaux.", "Conserve les documents du camion, du van et leurs assurances dans ton coffre-fort privé.", "Accède rapidement à tes documents en cas d’oubli ou de contrôle.", "Pense à emporter les originaux obligatoires."] },
+      { n: "03", ico: "reglages", img: "coach-jj-fond-03", capture: "coach-cap-jj-crayon", titre: "Gérer les imprévus", ecran: "concours",
         paras: ["Adapte ton organisation au déroulement du concours."], liste: ["Retrouve les passages de ton équipe.", "Modifie les horaires ou les pistes si nécessaire.", "Enregistre les changements et les non-partants.", "Décale une épreuve en cas de retard."] },
-      { n: "03", ico: "cloche", capture: "coach-cap-prog-decaler", titre: "Prévenir mes cavaliers", ecran: "concours",
-        paras: ["Informe ton équipe des changements de programme."], liste: ["Décale l’épreuve concernée.", "Coche « Prévenir les cavaliers ».", "Valide les modifications.", "Hype envoie une notification aux cavaliers concernés."] },
-      { n: "04", ico: "info", capture: "coach-cap-jj-alertes", titre: "Activer mes alertes", ecran: "concours",
-        paras: ["Utilise « Me prévenir » pour recevoir les alertes disponibles."], liste: ["Retrouve le bouton « Me prévenir ».", "Active les alertes disponibles.", "Tu es prévenu avant le départ et avant chaque reconnaissance.", "Consulte les notifications reçues."] }
-    ], savoir: "En cas de retard, actualise ton programme et pense à prévenir tes cavaliers." },
+      { n: "04", ico: "cloche", img: "coach-jj-fond-04", capture: "coach-cap-prog-decaler", titre: "Prévenir mes cavaliers", ecran: "concours",
+        paras: ["Informe ton équipe des changements de programme."], liste: ["Décale l’épreuve concernée.", "Coche « Prévenir les cavaliers ».", "Valide les modifications.", "Hype recalcule les heures de passage et décale les rendez-vous au paddock.", "Les cavaliers concernés reçoivent une notification."] },
+      { n: "05", ico: "telephone", img: "coach-jj-fond-05", capture: "coach-cap-jj-alertes", titre: "Activer mes alertes", ecran: "concours",
+        paras: ["Utilise « Me prévenir » pour recevoir les alertes disponibles."], liste: ["Retrouve le bouton « Me prévenir ».", "Active les alertes disponibles.", "Tu es prévenu avant le départ et avant chaque reconnaissance.", "Consulte les notifications reçues sur ton téléphone."] }
+    ], savoir: "Les copies numériques ne remplacent pas toujours les originaux exigés, mais elles peuvent te sauver un concours.",
+      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
+      signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
     paddock: { titre: "Paddock", sous: "Organiser la détente de mes cavaliers.", hero: "images/concours-carte-equipe.webp", cartes: [
       { n: "01", ico: "groupe", capture: "coach-cap-pad-proposer", titre: "Organiser mes groupes", ecran: "concours",
         paras: ["Hype rassemble tes cavaliers selon leurs heures de passage."], liste: ["Utilise les passages de ton équipe.", "Hype propose des groupes de six couples maximum.", "Les passages sont regroupés sur une période de 30 minutes."] },

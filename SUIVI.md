@@ -75,6 +75,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2257 — Guide du coach, chapitre Jour J complet (5 cartes, photos HD) ; fond HD de la carte 01 Engagements
+Blandine 13/11 22h55 (cahier « Chapitre 06 — Jour J », carte « Mes documents à portée de main », nouvel « À savoir », pack de photos). hype-ecran-coach.js : Préparer le départ, Mes documents à portée de main (→ Mon coffre-fort), Gérer les imprévus, Prévenir mes cavaliers, Activer mes alertes ; À savoir ; encart « Dicte tes consignes à Hype. » ; signature ; bandeau camion ; frise sur Jour J. Photos : images/guide-coach/coach-jj-*.webp ; coach-eng-fond-01 remplacé par la version HD (dossard). index.html : build 20261113-2257.
 ## 20261113-2254 — Guide du coach : les 7 chapitres finalisés (cahier « Finalisation des sept chapitres »)
 Blandine 13/11 22h47–22h51 (textes ChatGPT Passages, Jour J, Résultats, Paddock 05, Programme 04, cahier de finalisation, photos HD).
 - hype-ecran-coach.js : Engagements, Feuille de route, Programme, Passages, Paddock (6 cartes dont « Publier mes groupes »), Jour J, Résultats — tous ouverts dans la liste des chapitres (#coach-programme, #coach-passages, #coach-jourj, #coach-resultats…). Textes = mots exacts du cahier.
