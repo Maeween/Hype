@@ -1146,11 +1146,108 @@ function estClasseQ(f) {
       var propreH = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
       var hautTxt = String(hauteF.haut.toFixed(2)).replace(".", ",") + " m";
       var resH = hauteF.pl != null ? rangTxt(hauteF.pl) + (hauteF.part ? " " + SUR() + " " + hauteF.part : "") : T("Parcours couru", "Completed round");
+      var HV = (typeof window !== "undefined" && window.__hautVar) || "B";   /* 13/11 01h56 : Blandine choisit le bandeau avec la tête */   /* essai : A encadré · B bandeau · C jauge */
+      var ouvrirH = function () { allerAuFort(hauteF); };
+      var kickH = MOI ? T("Ton plus haut niveau couru", "Your highest level") : T("Son plus haut niveau couru", "Highest level");
+      if (HV === "B") {
+        var msqB = "linear-gradient(270deg, transparent 0%, #000 18%)";
+        /* l écriture passe AU-DESSUS de la tête (Blandine : « fais gaffe à ce que tu écris dans la tête du cheval… mets l onglet un peu plus haut ») */
+        g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: ouvrirH, "data-perf-haute": "1", style: { position: "relative", height: 176, marginTop: 22, overflow: "hidden", background: "#000", cursor: "pointer" } },
+          h("div", { style: { position: "absolute", top: 16, left: 22, right: 22, textAlign: "end", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, kickH),
+          h("img", { src: "images/portrait-defaut-isabelle.webp", alt: "", "aria-hidden": "true", style: { position: "absolute", top: 40, bottom: 0, left: 0, height: "calc(100% - 40px)", width: "auto", maxWidth: "50%", objectFit: "contain", WebkitMaskImage: msqB, maskImage: msqB } }),
+          h("div", { style: { position: "absolute", top: 40, bottom: 0, right: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-end", textAlign: "end" } },
+            h("div", { style: { fontFamily: SERIF, fontSize: 54, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt),
+            h("div", { style: { fontFamily: SANS, fontSize: 13, color: CHAMP, marginTop: 6 } }, hauteF.ep))));
+      } else if (HV === "C") {
+        var MIN = 0.6, MAX = 1.6, pc = Math.max(0, Math.min(100, (hauteF.haut - MIN) / (MAX - MIN) * 100));
+        var crans = [0.6, 0.8, 1.0, 1.2, 1.4, 1.6];
+        g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: ouvrirH, "data-perf-haute": "1", style: { margin: "30px 22px 0", cursor: "pointer" } },
+          h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 } },
+            h("div", null,
+              h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, kickH),
+              h("div", { style: { fontFamily: SANS, fontSize: 13, color: IVOIRE, marginTop: 6 } }, hauteF.ep)),
+            h("div", { style: { fontFamily: SERIF, fontSize: 58, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt)),
+          h("div", { style: { position: "relative", height: 34, marginTop: 14 } },
+            h("div", { style: { position: "absolute", left: 0, right: 0, top: 10, height: 3, borderRadius: 2, background: "rgba(243,238,228,0.12)" } }),
+            h("div", { style: { position: "absolute", left: 0, width: pc + "%", top: 10, height: 3, borderRadius: 2, background: "linear-gradient(90deg, #8E7446, #E6CF9C)" } }),
+            h("div", { style: { position: "absolute", left: "calc(" + pc + "% - 7px)", top: 4, width: 14, height: 14, borderRadius: "50%", background: "#E6CF9C", boxShadow: "0 0 12px rgba(230,207,156,0.6)" } }),
+            crans.map(function (c) { var x = (c - MIN) / (MAX - MIN) * 100; return h("div", { key: "cr" + c, style: { position: "absolute", left: x + "%", top: 20, transform: x === 0 ? "none" : x === 100 ? "translateX(-100%)" : "translateX(-50%)", fontFamily: SANS, fontSize: 9.5, color: MUET2, direction: "ltr" } }, String(c.toFixed(1)).replace(".", ",")); }))));
+      } else
       g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: function () { allerAuFort(hauteF); }, "data-perf-haute": "1", style: { margin: "26px 22px 0", padding: "18px 18px 16px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.4)", background: "rgba(16,26,29,0.55)", textAlign: "center", cursor: "pointer" } },
         h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, MOI ? T("Ton plus haut niveau couru", "Your highest level") : T("Son plus haut niveau couru", "Highest level")),
         h("div", { style: { fontFamily: SERIF, fontSize: 44, lineHeight: 1, color: IVOIRE, marginTop: 8, direction: "ltr" } }, hautTxt),
         h("div", { style: { fontFamily: SANS, fontSize: 13, color: IVOIRE, marginTop: 8 } }, hauteF.ep)));   /* 13/11 01h30 (Blandine) : juste le niveau ; lieu, date et place sont à un toucher */
     }
+    /* 13/11 01h32 (Blandine : « les meilleurs moments, on peut les limiter à quelques trucs… des petits trucs marrants plutôt que
+       de cumuler ») : page du cavalier = quelques RECORDS, pas une liste. 1) la victoire la plus disputée ; 2) le concours le plus
+       réussi (le plus de classements sur un même concours) ; 3) le cheval avec qui il y a eu le plus de classements ; 4) le meilleur
+       classement au plus haut niveau. Ni préparatoires ni indices 4 (tous les sans-faute y sont 1ers). Les moments choisis à la main
+       restent, après. Le plus haut niveau couru a déjà son encart en haut : pas de doublon. */
+    /* 13/11 01h50 (Blandine : « tes records, il faudra les remonter en haut de la page ») : juste sous le plus haut niveau. */
+    var recs = null;
+    if (modeCav) {
+      recs = [];
+      var bR = base.filter(function (f) { return f && (typeof visL !== "function" || visL(f)); });
+      var faux1er = function (f) { var t = String(f && f.ep || "").toLowerCase(); if (typeof hypePerfEstPrepa === "function" ? hypePerfEstPrepa(f.ep) : /pr[ée]pa/.test(t)) return true; if (/(?:^|[^a-z])[bcd]4(?![0-9])/.test(t)) return true; if (/poney\s*4\b/.test(t) && String(f.d || "") >= "2024-09-01") return true; return false; };
+      var propreR = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
+      var phDe = function (nm) { var cx = nm ? parCheval(nm) : null; if (cx && cx.c && cx.c.photo_url) return cx.c.photo_url; try { return (typeof chevalDefaut === "function") ? chevalDefaut((cx && cx.c) || { nom: nm || "" }) : null; } catch (eCd) { return null; } };
+      var hTx = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };
+      var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, t); };
+      var gros = function (t) { return h("span", { style: { color: CHAMP } }, t); };
+      /* 1 */
+      var gV = null; bR.forEach(function (f) { if (f.pl !== 1 || !f.part || faux1er(f)) return; if (!gV || f.part > gV.part) gV = f; });
+      if (gV) recs.push({ k: "rv", l1: h(React.Fragment, null, kick(MOI ? T("Ta victoire la plus disputée", "Your most contested win") : T("Sa victoire la plus disputée", "Most contested win")), gros(rangTxt(1)), " " + SUR() + " " + gV.part),
+        l2: h(React.Fragment, null, [gV.ep, hTx(gV)].filter(Boolean).join(" · "), h("br"), [propreR(gV.nom), String(gV.d || "").slice(0, 4), gV.cav ? nomCourt(gV.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(gV.cav), f: gV });
+      /* 2 : même concours = même nom, à 4 jours près */
+      var grp = []; bR.filter(estClasseQ).slice().sort(function (a, b) { return String(a.d || "").localeCompare(String(b.d || "")); }).forEach(function (f) {
+        var nm = String(f.nom || "").toLowerCase().trim(); if (!nm || !f.d) return;
+        var gx = grp.filter(function (x) { return x.nm === nm && (new Date(f.d) - new Date(x.fin)) / 864e5 <= 4; })[0];
+        if (gx) { gx.n++; gx.fin = f.d; gx.ls.push(f); } else grp.push({ nm: nm, deb: f.d, fin: f.d, n: 1, ls: [f] });
+      });
+      var scoreC = function (x) { return x.ls.reduce(function (t, f) { return t + (f.part ? f.part / f.pl : 1 / f.pl); }, 0); };   /* à égalité de classements : les meilleures places sur les plus grosses épreuves */
+      var gC = null; grp.forEach(function (x) { if (x.n >= 2 && (!gC || x.n > gC.n || (x.n === gC.n && scoreC(x) > scoreC(gC)))) gC = x; });
+      /* 13/11 01h54 (Blandine : « au pire, tu cites les trois, s'ils ont le même nombre de classements ») : à égalité, jusqu à 3 concours cités */
+      var exC = gC ? grp.filter(function (x) { return x.n === gC.n; }).sort(function (a, b) { return scoreC(b) - scoreC(a); }).slice(0, 3) : [];
+      if (gC && exC.length > 1) { var f0m = exC[0].ls[0];
+        recs.push({ k: "rc", l1: h(React.Fragment, null, kick(MOI ? T("Tes concours les plus réussis", "Your best shows") : T("Ses concours les plus réussis", "Best shows")), gros(String(gC.n)), " " + T("classements chacun", "placings each")),
+          l2: h(React.Fragment, null, exC.map(function (x, ix) { return h(React.Fragment, { key: "xc" + ix }, ix ? h("br") : null, propreR(x.ls[0].nom) + " · " + String(x.deb).slice(0, 4)); })), ph: phDe(f0m.cav), f: f0m }); }
+      else if (gC) { var f0 = gC.ls[0], chs = {}; gC.ls.forEach(function (f) { if (f.cav) chs[nomCourt(f.cav)] = 1; });
+        recs.push({ k: "rc", l1: h(React.Fragment, null, kick(MOI ? T("Ton concours le plus réussi", "Your best show") : T("Son concours le plus réussi", "Best show")), gros(String(gC.n)), " " + T("classements", "placings")),
+          l2: h(React.Fragment, null, propreR(f0.nom), h("br"), [dateLisible(gC.deb), Object.keys(chs).join(", ")].filter(Boolean).join(" · ")), ph: phDe(f0.cav), f: f0 }); }
+      /* 3 */
+      var parC = {}; bR.filter(estClasseQ).forEach(function (f) { if (f.cav) parC[f.cav] = (parC[f.cav] || 0) + 1; });
+      var cC = Object.keys(parC).sort(function (a, b) { return parC[b] - parC[a]; })[0];
+      if (cC) { var vC = bR.filter(function (f) { return f.cav === cC && f.pl === 1 && !faux1er(f); }).length;
+        recs.push({ k: "rh", l1: h(React.Fragment, null, kick(MOI ? T("Ton cheval de cœur en concours", "Your top show horse") : T("Son cheval de cœur en concours", "Top show horse")), gros(nomCourt(cC))),
+          l2: h(React.Fragment, null, parC[cC] + " " + T("classements ensemble", "placings together") + (vC ? " · " + vC + " " + (vC > 1 ? T("victoires", "wins") : T("victoire", "win")) : "")), ph: phDe(cC), cheval: cC }); }
+      /* 4 */
+      var cl4 = bR.filter(function (f) { return f.pl != null && !faux1er(f) && hauteurEp(f.ep) != null; });
+      var hM = 0; cl4.forEach(function (f) { var hh = hauteurEp(f.ep); if (hh > hM) hM = hh; });
+      var bH = null; cl4.forEach(function (f) { if (f === gV || hauteurEp(f.ep) < hM - 0.001) return; if (!bH || f.pl < bH.pl || (f.pl === bH.pl && (f.part || 0) > (bH.part || 0))) bH = f; });
+      if (bH) recs.push({ k: "rm", l1: h(React.Fragment, null, kick(MOI ? T("Ton meilleur classement au plus haut niveau", "Your best placing at top level") : T("Son meilleur classement au plus haut niveau", "Best placing at top level")), gros(rangTxt(bH.pl)), bH.part ? " " + SUR() + " " + bH.part : ""),
+        l2: h(React.Fragment, null, [bH.ep, hTx(bH)].filter(Boolean).join(" · "), h("br"), [propreR(bH.nom), String(bH.d || "").slice(0, 4), bH.cav ? nomCourt(bH.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(bH.cav), f: bH });
+    }
+    if (recs) { var ORD_R = ["rv", "rm", "rc", "rh"]; recs.sort(function (a, b) { return ORD_R.indexOf(a.k) - ORD_R.indexOf(b.k); }); }   /* 13/11 01h51 (Blandine) : victoire la plus disputée, meilleur au plus haut niveau, concours le plus réussi, cheval de cœur en dernier */
+    if (recs && recs.length) {
+      g.push(partie("p4", T("Palmarès", "Track record"), MOI ? T("Tes records", "Your records") : T("Ses records", "Records")));
+      /* 13/11 01h48 (Blandine : « tes records dans la première proposition… c'est joli ») : bandeaux pleine largeur comme les
+         archives — tête de cheval alternée (photo entière, regard vers le texte), courbe dorée entre deux records. */
+      var TETES_R = ["images/portrait-defaut-gris.webp", "images/portrait-defaut-alezan.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp"];
+      var recsEl = [];
+      recs.forEach(function (r, i) {
+        var droite = i % 2 === 0, cote = droite ? "right" : "left";
+        var msq = "linear-gradient(" + (droite ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée à droite : masque retourné */
+        if (i) recsEl.push(h("svg", { key: "rcb" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })));
+        recsEl.push(h("div", { key: r.k, role: "button", tabIndex: 0, onClick: function () { if (r.f) allerAuFort(r.f); else if (r.cheval) { var cx = parCheval(r.cheval); if (cx) ouvrirFiche(cx.id); } }, style: { position: "relative", height: 128, overflow: "hidden", background: "#000", cursor: "pointer" } },
+          h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "46%", overflow: "hidden", pointerEvents: "none" } },
+            h("img", { src: TETES_R[i % TETES_R.length], alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", transform: droite ? "scaleX(-1)" : undefined, WebkitMaskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)", maskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)" } })),
+          h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "60%", fontFamily: SERIF, fontSize: 26, lineHeight: 1.1, color: IVOIRE } },
+            h("div", null, r.l1),
+            h("div", { style: { fontFamily: SANS, fontSize: 11.5, lineHeight: 1.45, color: "rgba(243,238,228,0.8)", marginTop: 4 } }, r.l2))));
+      });
+      g.push(h("div", { key: "p4r", style: { paddingTop: 16 } }, recsEl));
+    }
+    if (recs && recs.length) g.push(sepA2("s1"));
     g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), (MOI ? T("Ta saison, tes chiffres", "Your season, your numbers") : T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش"))));
     g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
@@ -1278,56 +1375,7 @@ function estClasseQ(f) {
     }
 
     /* 4 · Souvenirs */
-    var fs3 = forts.filter(function (f) { return !(modeCav && f && f.plusHaute); }).slice(0, 8);   /* 13/11 01h27 : la plus haute épreuve a son encart en haut de la page */   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
-    /* 13/11 01h32 (Blandine : « les meilleurs moments, on peut les limiter à quelques trucs… des petits trucs marrants plutôt que
-       de cumuler ») : page du cavalier = quelques RECORDS, pas une liste. 1) la victoire la plus disputée ; 2) le concours le plus
-       réussi (le plus de classements sur un même concours) ; 3) le cheval avec qui il y a eu le plus de classements ; 4) le meilleur
-       classement au plus haut niveau. Ni préparatoires ni indices 4 (tous les sans-faute y sont 1ers). Les moments choisis à la main
-       restent, après. Le plus haut niveau couru a déjà son encart en haut : pas de doublon. */
-    var recs = null;
-    if (modeCav) {
-      recs = [];
-      var bR = base.filter(function (f) { return f && (typeof visL !== "function" || visL(f)); });
-      var faux1er = function (f) { var t = String(f && f.ep || "").toLowerCase(); if (typeof hypePerfEstPrepa === "function" ? hypePerfEstPrepa(f.ep) : /pr[ée]pa/.test(t)) return true; if (/(?:^|[^a-z])[bcd]4(?![0-9])/.test(t)) return true; if (/poney\s*4\b/.test(t) && String(f.d || "") >= "2024-09-01") return true; return false; };
-      var propreR = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
-      var phDe = function (nm) { var cx = nm ? parCheval(nm) : null; if (cx && cx.c && cx.c.photo_url) return cx.c.photo_url; try { return (typeof chevalDefaut === "function") ? chevalDefaut((cx && cx.c) || { nom: nm || "" }) : null; } catch (eCd) { return null; } };
-      var hTx = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };
-      var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, t); };
-      var gros = function (t) { return h("span", { style: { color: CHAMP } }, t); };
-      /* 1 */
-      var gV = null; bR.forEach(function (f) { if (f.pl !== 1 || !f.part || faux1er(f)) return; if (!gV || f.part > gV.part) gV = f; });
-      if (gV) recs.push({ k: "rv", l1: h(React.Fragment, null, kick(MOI ? T("Ta victoire la plus disputée", "Your most contested win") : T("Sa victoire la plus disputée", "Most contested win")), gros(rangTxt(1)), " " + SUR() + " " + gV.part),
-        l2: h(React.Fragment, null, [gV.ep, hTx(gV)].filter(Boolean).join(" · "), h("br"), [propreR(gV.nom), String(gV.d || "").slice(0, 4), gV.cav ? nomCourt(gV.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(gV.cav), f: gV });
-      /* 2 : même concours = même nom, à 4 jours près */
-      var grp = []; bR.filter(estClasseQ).slice().sort(function (a, b) { return String(a.d || "").localeCompare(String(b.d || "")); }).forEach(function (f) {
-        var nm = String(f.nom || "").toLowerCase().trim(); if (!nm || !f.d) return;
-        var gx = grp.filter(function (x) { return x.nm === nm && (new Date(f.d) - new Date(x.fin)) / 864e5 <= 4; })[0];
-        if (gx) { gx.n++; gx.fin = f.d; gx.ls.push(f); } else grp.push({ nm: nm, deb: f.d, fin: f.d, n: 1, ls: [f] });
-      });
-      var gC = null; grp.forEach(function (x) { if (x.n >= 2 && (!gC || x.n > gC.n)) gC = x; });
-      if (gC) { var f0 = gC.ls[0], chs = {}; gC.ls.forEach(function (f) { if (f.cav) chs[nomCourt(f.cav)] = 1; });
-        recs.push({ k: "rc", l1: h(React.Fragment, null, kick(MOI ? T("Ton concours le plus réussi", "Your best show") : T("Son concours le plus réussi", "Best show")), gros(String(gC.n)), " " + T("classements", "placings")),
-          l2: h(React.Fragment, null, propreR(f0.nom), h("br"), [dateLisible(gC.deb), Object.keys(chs).join(", ")].filter(Boolean).join(" · ")), ph: phDe(f0.cav), f: f0 }); }
-      /* 3 */
-      var parC = {}; bR.filter(estClasseQ).forEach(function (f) { if (f.cav) parC[f.cav] = (parC[f.cav] || 0) + 1; });
-      var cC = Object.keys(parC).sort(function (a, b) { return parC[b] - parC[a]; })[0];
-      if (cC) { var vC = bR.filter(function (f) { return f.cav === cC && f.pl === 1 && !faux1er(f); }).length;
-        recs.push({ k: "rh", l1: h(React.Fragment, null, kick(MOI ? T("Ton cheval de cœur en concours", "Your top show horse") : T("Son cheval de cœur en concours", "Top show horse")), gros(nomCourt(cC))),
-          l2: h(React.Fragment, null, parC[cC] + " " + T("classements ensemble", "placings together") + (vC ? " · " + vC + " " + (vC > 1 ? T("victoires", "wins") : T("victoire", "win")) : "")), ph: phDe(cC), cheval: cC }); }
-      /* 4 */
-      var cl4 = bR.filter(function (f) { return f.pl != null && !faux1er(f) && hauteurEp(f.ep) != null; });
-      var hM = 0; cl4.forEach(function (f) { var hh = hauteurEp(f.ep); if (hh > hM) hM = hh; });
-      var bH = null; cl4.forEach(function (f) { if (f === gV || hauteurEp(f.ep) < hM - 0.101) return; if (!bH || f.pl < bH.pl || (f.pl === bH.pl && (f.part || 0) > (bH.part || 0))) bH = f; });
-      if (bH) recs.push({ k: "rm", l1: h(React.Fragment, null, kick(MOI ? T("Ton meilleur classement au plus haut niveau", "Your best placing at top level") : T("Son meilleur classement au plus haut niveau", "Best placing at top level")), gros(rangTxt(bH.pl)), bH.part ? " " + SUR() + " " + bH.part : ""),
-        l2: h(React.Fragment, null, [bH.ep, hTx(bH)].filter(Boolean).join(" · "), h("br"), [propreR(bH.nom), String(bH.d || "").slice(0, 4), bH.cav ? nomCourt(bH.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(bH.cav), f: bH });
-      fs3 = forts.filter(function (f) { return f && f.ff && !f.fx; });   /* seuls les moments choisis à la main restent en plus des records */
-    }
-    if (recs && recs.length) {
-      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories"), MOI ? T("Tes records", "Your records") : T("Ses records", "Records")));
-      g.push(h("div", { key: "p4r", style: { padding: "16px 22px 0" } }, recs.map(function (r) {
-        return carteBasse(r.k, ETOI(), r.l1, r.l2, r.ph, function () { if (r.f) allerAuFort(r.f); else if (r.cheval) { var cx = parCheval(r.cheval); if (cx) ouvrirFiche(cx.id); } });
-      })));
-    }
+    var fs3 = (recs && recs.length) ? forts.filter(function (f) { return f && f.ff && !f.fx; }) : forts.filter(function (f) { return !(modeCav && f && f.plusHaute); }).slice(0, 8);   /* avec les records : seuls les moments choisis à la main restent ici */   /* 13/11 01h27 : la plus haute épreuve a son encart en haut de la page */   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
     if (fs3.length) {
       if (!(recs && recs.length)) g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), (MOI ? T("Tes plus beaux moments", "Your finest moments") : T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش"))));
       g.push(h("div", { key: "p4c", style: { padding: "16px 22px 0" } }, fs3.map(function (f, i) {
@@ -1453,18 +1501,23 @@ function estClasseQ(f) {
           }));
         var lsF = filtrer(x.ls, cleF);
         return h("div", { style: { padding: "8px 22px 10px" } }, t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "2px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
-      var photoBloc = function (ph, hauteur, cote) {   /* 13/11 01h37 (Blandine : « la photo d'Elfe est bien plus large que ce que tu montres ») : la photo prend toute la hauteur du bandeau et SA largeur naturelle, collée au bord, jamais coupée (contain) ; fondu sur son seul bord intérieur. Plus d img en flex (Safari la rétrécissait). */
-        var dirM = cote === "right" ? "90deg" : "270deg", msq = "linear-gradient(" + dirM + ", transparent 0%, #000 18%)";
+      var photoBloc = function (ph, hauteur, cote, miroir) {   /* 13/11 01h37 (Blandine : « la photo d'Elfe est bien plus large que ce que tu montres ») : la photo prend toute la hauteur du bandeau et SA largeur naturelle, collée au bord, jamais coupée (contain) ; fondu sur son seul bord intérieur. Plus d img en flex (Safari la rétrécissait). */
+        var dirM = cote === "right" ? "90deg" : "270deg", msq = "linear-gradient(" + dirM + ", transparent 0%, #000 18%)"; var msqM = "linear-gradient(" + (cote === "right" ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée : le masque se retourne avec elle */
         return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "70%", pointerEvents: "none", overflow: "hidden" } },
-          ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", objectPosition: cote === "right" ? "right center" : "left center", display: "block", WebkitMaskImage: msq, maskImage: msq } }) : null); };
+          ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", objectPosition: cote === "right" ? "right center" : "left center", display: "block", transform: miroir ? "scaleX(-1)" : undefined, WebkitMaskImage: miroir ? msqM : msq, maskImage: miroir ? msqM : msq } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
       if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
+        var TETES = ["images/portrait-defaut-alezan.webp", "images/portrait-defaut-gris.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp", "images/portrait-defaut-bai.webp", "images/portrait-defaut-blanc.webp"];
         var PH_DEF = function (nm) { var cx = nm ? parCheval(nm) : null; try { if (typeof chevalDefaut === "function") return chevalDefaut((cx && cx.c) || { nom: nm || "" }); } catch (eCd) { } return "images/portrait-defaut-bai.webp"; };   /* 13/11 01h35 (Blandine) : cheval sans photo = un des portraits par défaut choisis pour les chevaux (selon sa robe), comme partout dans Hype */
-        S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x); if (!P.ph) P = { nom: P.nom, ph: PH_DEF(x.cheval ? x.lib : P.nom) }; var st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
+        S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x); if (!P.ph) P = { nom: P.nom, ph: PH_DEF(x.cheval ? x.lib : P.nom) };
+          /* 13/11 01h46 (Blandine : « les photos en hauteur, ça passe pas… une saison, souvent plusieurs chevaux… des têtes de chevaux, on alterne les couleurs, et les vraies photos seulement quand on trie par cheval ») */
+          var TV = (typeof window !== "undefined" && window.__teteVar) || "T";   /* 13/11 01h56 (Blandine : « alterne les couleurs, sinon trois fois la même ça fait bizarre ») : robes alternées, le regard alterne aussi */   /* essai : T têtes alternées · R robe du cheval principal · F année en filigrane */
+          if (!x.cheval) P = { nom: P.nom, ph: TV === "R" ? PH_DEF(P.nom) : TV === "F" ? "" : TETES[i % TETES.length] }; var st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
           if (i) out.push(courbe("ci" + i, i % 2 === 0));
           out.push(h("div", { key: "I" + x.cle },
             h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer", background: "#000" } },   /* 13/11 01h14 (Blandine : « on laisse juste la saison, voir les résultats ») ; hauteur d origine gardee (01h17) */
-              photoBloc(P.ph, 128, droite ? "right" : "left"),
+              photoBloc(P.ph, 128, droite ? "right" : "left", !x.cheval && droite),
+              (!x.cheval && TV === "F") ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", [droite ? "right" : "left"]: 14, fontFamily: SERIF, fontSize: 118, lineHeight: 1, color: "transparent", WebkitTextStroke: "1px rgba(201,166,107,0.35)", pointerEvents: "none", direction: "ltr" } }, String(x.lib).slice(0, 4)) : null,   /* 13/11 01h47 (Blandine : « ils regardent tous dans la même direction ») : les têtes regardent toujours vers le texte */
               h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
                 h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
                 h("div", { style: { fontFamily: SERIF, fontSize: x.cheval ? 24 : 26, lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),

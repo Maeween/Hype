@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0300 — Performances du cavalier : plus haut niveau en bandeau, records en tête, têtes de chevaux alternées
+- Plus haut niveau couru : bandeau pleine largeur, tête de cheval à gauche, 1,35 m en grand + nom de l'épreuve ; le sur-titre passe AU-DESSUS de la tête (Blandine : « fais gaffe à ce que tu écris dans la tête du cheval »).
+- « Tes records » (sur-titre « Palmarès ») remontés juste sous le plus haut niveau, en bandeaux façon archives (courbe dorée entre deux). Ordre : victoire la plus disputée, meilleur classement au plus haut niveau (seulement le niveau le plus haut : sa B1 Open 9e/44), concours le plus réussi, cheval de cœur. À égalité de classements, jusqu'à 3 concours cités (chez elle : Bonnières 1998, Bazainville 2000, Montlouis 2000).
+- Archives « Par saison » : têtes de chevaux par défaut aux robes alternées, le regard toujours tourné vers le texte (images retournées côté droit) ; les vraies photos restent dans « Par cheval ». Variantes d'essai gardées : window.__teteVar (T/R/F), window.__hautVar (A/B/C).
+- Les moments choisis à la main restent plus bas. perf v=33.
+
 ## 20261113-0250 — Hauteurs dans les résultats, import par capture d'écran, collage SIF, photos des bandeaux
 - Performances : chaque résultat des archives affiche sa hauteur en doré sous la date (lue dans le nom de l'épreuve : hauteur écrite, anciennes catégories B/C/D, catégories actuelles).
 - Import FFE : « Choisir un fichier » accepte une capture d'écran (la Photothèque montre la dernière capture en premier : plus de recherche de fichier). Lecture par hey-baby-vision (mode perception différé, Premium), rendue au format du tableau FFE Compet puis même lecteur et même relecture. Nouvelle fonction hypeLireCaptureResultats (index.html), passée à l'écran par onLireImage. À tester sur une vraie capture.
