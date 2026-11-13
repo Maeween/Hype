@@ -375,7 +375,7 @@ function EcranCarnetDetail() {
       upId = String(rCr.data.upload_id);
       var rTr = await hypeVideoTraceMaj(upId, { destination_type: "seance", destination_id: idSe, nom: f.name || null, duree: (dV > 0 ? Math.round(dV * 10) / 10 : null) }, null);
       if (!rTr || rTr.error) { try { console.warn("[carnet] trace video :", rTr && rTr.error); } catch (eC2) { } dire(echec); return; }
-      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, f, function (pc) { if (vif()) setVidHJ({ etape: "envoi", pct: pc }); });
+      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, f, function (pc) { if (vif()) setVidHJ({ etape: "envoi", pct: pc }); }, { upId: upId });
       if (rUp && rUp.error) {
         try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (eT1) { }
         dire(echec); return;

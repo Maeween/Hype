@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261113-1035"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261113-1150"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}/* 30/10 (Blandine) - vignettes des videos des Galops : image assombrie, voile semi-transparent, titre ivoire ecrit dessus */.vidv{position:relative;display:block;overflow:hidden;background:#030405}.vidv img{opacity:.4!important;filter:none!important}.vidv:after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(3,4,5,.18),rgba(3,4,5,.78))!important}.vidv .gv3-play,.vidv .g1o-vid-play,.vidv .g5-vid-bientot{z-index:2}.vidv .g1o-vid-play,[dir=rtl] .vidv .g1o-vid-play{left:50%;right:auto;top:28%;bottom:auto;width:34px;height:34px;transform:translate(-50%,-50%)}.vidv .gv3-play{top:28%;width:34px;height:34px}.vidv .gv3-play svg{width:16px;height:16px}.vidv .g5-vid-bientot{top:28%}.vidv-t{position:absolute;left:10px;right:10px;top:64%;transform:translateY(-50%);text-align:center;z-index:3;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16px;line-height:1.15;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.9);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}@media (min-width:1024px){.vidv-t{left:14px;right:14px;font-size:18px}}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -136,6 +136,52 @@ try {
   }
 } catch (eLien) { }
 const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+/* 13/11 (Blandine : « idem pour les envois de photos s'il y a eu un problème ») — ENVOIS DE FICHIERS QUI
+   REPRENNENT TOUT SEULS. Tout envoi vers le stockage (photos, photos du carnet, documents, santé…) passe par
+   upload() : en cas de coupure (réseau perdu, appli passée en arrière-plan, serveur qui ne répond pas), on attend
+   que l'appli soit revenue au premier plan et que le réseau soit là, puis on réessaie, 3 fois au plus. Un refus
+   « normal » (droits, fichier refusé) n'est jamais retenté. Si un 2e essai trouve le fichier déjà là (le 1er était
+   en fait passé), c'est un succès. */
+function hypeAttendreReseau(maxMs) {
+  return new Promise(function (ok) {
+    var t0 = Date.now();
+    (function boucle() {
+      var pret = true;
+      try { if (typeof navigator !== "undefined" && navigator.onLine === false) pret = false; } catch (eN) { }
+      try { if (typeof document !== "undefined" && document.visibilityState === "hidden") pret = false; } catch (eV) { }
+      if (pret || Date.now() - t0 > (maxMs || 60000)) { ok(pret); return; }
+      setTimeout(boucle, 1000);
+    })();
+  });
+}
+function hypeErreurReseau(err) {
+  try {
+    var code = Number(err && (err.status || err.statusCode));
+    if (code >= 500 || code === 408 || code === 429) return true;
+    if (code >= 400 && code < 500) return false;
+    var t = String((err && (err.message || err.error)) || err || "");
+    return /fetch|network|r[ée]seau|load failed|timeout|timed out|abort|connexion|connection|socket|offline/i.test(t);
+  } catch (e) { return false; }
+}
+(function () {
+  try {
+    var proto = Object.getPrototypeOf(supa.storage.from("photos"));
+    if (!proto || proto.__hypeReprise || typeof proto.upload !== "function") return;
+    var envoiOrigine = proto.upload;
+    proto.upload = async function (chemin, fichier, options) {
+      var r = null;
+      for (var essai = 0; ; essai++) {
+        try { r = await envoiOrigine.call(this, chemin, fichier, options); } catch (eU) { r = { data: null, error: eU }; }
+        if (!r || !r.error) return r;
+        if (essai > 0 && /exist|duplicate/i.test(String((r.error && (r.error.message || r.error.error)) || ""))) return { data: { path: chemin }, error: null };
+        if (essai >= 3 || !hypeErreurReseau(r.error)) return r;
+        await hypeAttendreReseau(120000);
+        await new Promise(function (ok) { setTimeout(ok, 1500 * (essai + 1)); });
+      }
+    };
+    proto.__hypeReprise = true;
+  } catch (eP) { }
+})();
 
 
 /* --- 2. Comptes (inscription / connexion) ------------------ */
@@ -5568,7 +5614,7 @@ async function hypePosterVideoSouvenir({ ecurie, fichier, user }) {
 
   (async function () {
     try {
-      const rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function () { });
+      const rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function () { }, { upId: upIdV });
       if (rUp && rUp.error) {
         try { await hypeVideoTraceMaj(upIdV, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { }
         try { await hypeLigneMediaMarquerErreur("souvenir", destId, rUp.error); } catch (e3) { }
@@ -5670,7 +5716,7 @@ async function hypePosterVideoCommentaire({ cible, texte, fichier, prive, user, 
   (async function () {
     var bilanBg = { etat: "inconnu" }; /* 10/09 (nuit) : ce que l'arriere-plan a reellement obtenu, transmis a surFin */
     try {
-      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function () { });
+      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function () { }, { upId: upIdV });
       if (rUp && rUp.error) {
         try { await hypeVideoTraceMaj(upIdV, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { }
         try { await hypeLigneMediaMarquerErreur("commentaire", destId, rUp.error); } catch (e3) { }
@@ -39540,8 +39586,9 @@ function EcranVideosCavaliere() {
       var upId = String(rCr.data.upload_id);
       var rTr = await hypeVideoTraceMaj(upId, { destination_type: "collection", destination_id: String(colId), nom: fichier.name }, null);
       if (!rTr || rTr.error) throw new Error(T("Suivi de l’envoi impossible, rien n’a été envoyé.", "The upload couldn’t be tracked; nothing was sent.", "No se pudo seguir el envío; no se ha enviado nada.", "Impossibile seguire l’invio, non è stato inviato nulla.", "アップロードを追跡できず、何も送信されませんでした。", "Der Upload konnte nicht verfolgt werden, nichts wurde gesendet.", "تعذّر تتبّع الإرسال، لم يُرسل شيء.", "无法跟踪上传，未发送任何内容。", "De upload kon niet worden gevolgd, er is niets verzonden.", "Não foi possível acompanhar o envio, nada foi enviado.", "Uppladdningen kunde inte följas, inget skickades.", "Не удалось отследить отправку, ничего не отправлено.", "Nie udało się śledzić wysyłania, nic nie wysłano.", "업로드를 추적할 수 없어 아무것도 보내지 않았어요.", "پیگیری ارسال ممکن نیست، هیچ چیزی فرستاده نشد."));
-      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function (pct) { etat({ etape: "envoi", pct: pct, texte: T("Envoi de la vidéo… ", "Uploading the video… ", "Enviando el vídeo… ", "Invio del video… ", "動画をアップロード中… ", "Video wird hochgeladen… ", "جارٍ إرسال الفيديو… ", "正在上传视频… ", "Video uploaden… ", "Enviando o vídeo… ", "Laddar upp videon… ", "Отправка видео… ", "Wysyłanie wideo… ", "동영상 업로드 중… ", "در حال ارسال ویدیو… ") + Math.round(pct) + " %" }); });
-      if (rUp && rUp.error) { try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { } throw new Error(T("Envoi interrompu : ", "Upload interrupted: ", "Envío interrumpido: ", "Invio interrotto: ", "アップロードが中断されました：", "Upload unterbrochen: ", "انقطع الإرسال: ", "上传中断：", "Upload onderbroken: ", "Envio interrompido: ", "Uppladdningen avbröts: ", "Отправка прервана: ", "Wysyłanie przerwane: ", "업로드가 중단됐어요: ", "ارسال قطع شد: ") + rUp.error); }
+      ecrireAttVC(lireAttVC().concat([{ user: moiVC.id, cible: cibleVC, upload: upId, col: colId }]));   /* 13/11 : noté AVANT l envoi (appli fermée = rattrapage) */
+      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function (pct) { etat({ etape: "envoi", pct: pct, texte: T("Envoi de la vidéo… ", "Uploading the video… ", "Enviando el vídeo… ", "Invio del video… ", "動画をアップロード中… ", "Video wird hochgeladen… ", "جارٍ إرسال الفيديو… ", "正在上传视频… ", "Video uploaden… ", "Enviando o vídeo… ", "Laddar upp videon… ", "Отправка видео… ", "Wysyłanie wideo… ", "동영상 업로드 중… ", "در حال ارسال ویدیو… ") + Math.round(pct) + " %" }); }, { upId: upId });
+      if (rUp && rUp.error) { ecrireAttVC(lireAttVC().filter(function (x) { return x.upload !== upId; })); try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { } throw new Error(T("Envoi interrompu : ", "Upload interrupted: ", "Envío interrumpido: ", "Invio interrotto: ", "アップロードが中断されました：", "Upload unterbrochen: ", "انقطع الإرسال: ", "上传中断：", "Upload onderbroken: ", "Envio interrompido: ", "Uppladdningen avbröts: ", "Отправка прервана: ", "Wysyłanie przerwane: ", "업로드가 중단됐어요: ", "ارسال قطع شد: ") + rUp.error); }
       colCree = null;   /* la video est partie : la collection reste meme si Mux tarde */
       try { await hypeVideoTraceMaj(upId, { statut: "processing" }, "pasReady"); } catch (e3) { }
       etat({ etape: "envoi", pct: 100, texte: T("Vidéo reçue, Mux la prépare…", "Video received, Mux is preparing it…", "Vídeo recibido, Mux lo está preparando…", "Video ricevuto, Mux lo sta preparando…", "動画を受信しました。Muxが準備中…", "Video empfangen, Mux bereitet es vor…", "تم استلام الفيديو، Mux يجهّزه…", "已收到视频，Mux 正在处理…", "Video ontvangen, Mux bereidt hem voor…", "Vídeo recebido, o Mux está preparando…", "Videon har tagits emot, Mux förbereder den…", "Видео получено, Mux его готовит…", "Wideo odebrane, Mux je przygotowuje…", "동영상을 받았어요. Mux가 준비 중이에요…", "ویدیو دریافت شد، Mux دارد آماده‌اش می‌کند…") });
@@ -39549,14 +39596,15 @@ function EcranVideosCavaliere() {
       if (rSt && rSt.playback_id) {
         await rangerDansColVC(colId, "https://stream.mux.com/" + rSt.playback_id + ".m3u8");
         try { await hypeVideoTraceMaj(upId, { statut: "ready", playback_id: rSt.playback_id, duree: rSt.duree || null }, "pasReady"); } catch (e5) { }
+        ecrireAttVC(lireAttVC().filter(function (x) { return x.upload !== upId; }));
         await rechargerColVC();
         etat({ etape: "fini", texte: T("Vidéo ajoutée.", "Video added.", "Vídeo añadido.", "Video aggiunto.", "動画を追加しました。", "Video hinzugefügt.", "تمت إضافة الفيديو.", "视频已添加。", "Video toegevoegd.", "Vídeo adicionado.", "Videon har lagts till.", "Видео добавлено.", "Wideo dodane.", "동영상을 추가했어요.", "ویدیو اضافه شد.") });
       } else if (rSt && rSt.errored) {
+        ecrireAttVC(lireAttVC().filter(function (x) { return x.upload !== upId; }));
         try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: String(rSt.error || "Mux") }, "pasReady"); } catch (e6) { }
         throw new Error(T("Mux n’a pas pu préparer cette vidéo.", "Mux could not prepare this video.", "Mux no pudo preparar este vídeo.", "Mux non è riuscito a preparare questo video.", "Muxがこの動画を準備できませんでした。", "Mux konnte dieses Video nicht vorbereiten.", "تعذّر على Mux تجهيز هذا الفيديو.", "Mux 无法处理这个视频。", "Mux kon deze video niet voorbereiden.", "O Mux não conseguiu preparar este vídeo.", "Mux kunde inte förbereda videon.", "Mux не смог подготовить это видео.", "Mux nie zdołał przygotować tego wideo.", "Mux가 이 동영상을 준비하지 못했어요.", "Mux نتوانست این ویدیو را آماده کند."));
       } else {
-        ecrireAttVC(lireAttVC().concat([{ user: moiVC.id, cible: cibleVC, upload: upId, col: colId }]));
-        await rechargerColVC();
+        await rechargerColVC();   /* 13/11 : déjà noté avant l envoi */
         etat({ etape: "fini", texte: T("La vidéo est bien envoyée. Elle est encore en préparation : elle apparaîtra dans sa collection dans quelques minutes (rouvre la page).", "The video has been sent. It’s still being prepared and will appear in its collection in a few minutes (reopen the page).", "El vídeo se ha enviado. Aún se está preparando: aparecerá en su colección en unos minutos (vuelve a abrir la página).", "Il video è stato inviato. È ancora in preparazione: comparirà nella sua raccolta tra qualche minuto (riapri la pagina).", "動画は送信されました。まだ準備中です。数分後にコレクションに表示されます（ページを開き直してね）。", "Das Video wurde gesendet. Es wird noch vorbereitet und erscheint in einigen Minuten in seiner Sammlung (öffne die Seite erneut).", "تم إرسال الفيديو. ما زال قيد التجهيز وسيظهر في مجموعته خلال دقائق (أعد فتح الصفحة).", "视频已发送，仍在处理中，几分钟后会出现在合集中（请重新打开页面）。", "De video is verzonden. Hij wordt nog voorbereid en verschijnt over een paar minuten in zijn collectie (open de pagina opnieuw).", "O vídeo foi enviado. Ainda está sendo preparado e vai aparecer na coleção em alguns minutos (abra a página de novo).", "Videon har skickats. Den förbereds fortfarande och dyker upp i sin samling om några minuter (öppna sidan igen).", "Видео отправлено. Оно ещё готовится и появится в коллекции через несколько минут (открой страницу заново).", "Wideo zostało wysłane. Wciąż jest przygotowywane i za kilka minut pojawi się w kolekcji (otwórz stronę ponownie).", "동영상을 보냈어요. 아직 준비 중이라 몇 분 뒤 컬렉션에 나타나요 (페이지를 다시 열어 줘).", "ویدیو با موفقیت ارسال شد. هنوز در حال آماده‌سازی است: چند دقیقهٔ دیگر در مجموعه‌اش ظاهر می‌شود (صفحه را دوباره باز کن).") });
       }
     } catch (eV) {
@@ -40276,9 +40324,9 @@ function hypeRequeteTeam(colonnes, clef) {
 
 const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=56", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
-const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=46", "HypeTeamMedias", "Medias");
-const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=46", "HypeTeamMedias", "Epingle");
-const EcranVideoEquipe = hypeEcranDiffere("hype-ecran-team-medias.js?v=46", "HypeTeamMedias", "Video");   /* 11/11 : vidéo de l équipe partagée (#tv=) */   /* 05/11 soir */
+const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=47", "HypeTeamMedias", "Medias");
+const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=47", "HypeTeamMedias", "Epingle");
+const EcranVideoEquipe = hypeEcranDiffere("hype-ecran-team-medias.js?v=47", "HypeTeamMedias", "Video");   /* 11/11 : vidéo de l équipe partagée (#tv=) */   /* 05/11 soir */
 const EcranAide = hypeEcranDiffere("hype-ecran-aide.js?v=12", "HypeAide", "Aide");   /* 12/11 : page Aide (tutos + Hey Baby en mode aide) */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
 const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=150", "HypeSaison", "Saison");
@@ -46239,7 +46287,7 @@ async function hypeCarnetRattraperVideos() {
   return bilan;
 }
 
-const EcranCarnetDetail = hypeEcranDiffere("hype-ecran-carnet-detail.js?v=6", "HypeCarnetDetail", "CarnetDetail");
+const EcranCarnetDetail = hypeEcranDiffere("hype-ecran-carnet-detail.js?v=7", "HypeCarnetDetail", "CarnetDetail");
 
 /* 15/09 (194) : LE COMPOSANT `EcranApprentissage` A ETE SUPPRIME ICI, avec son accord
    explicite. Cree par erreur au 181, sa route etait debranchee depuis le 185 : il n etait
@@ -55855,7 +55903,7 @@ function AlbumsCheval(props) {
         }
         jvMaj("Trace écrite (uploading)", "ok"); jv("Envoi du fichier : 0 %", "cours");
         /* 3) LE PUT (web : XHR avec progression ; natif : Uploader). */
-        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, ficM, function (pc) { try { setEnvoiPct(pc); jvMaj("Envoi du fichier : " + pc + " %", "cours"); } catch (eSp) { } });
+        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, ficM, function (pc) { try { setEnvoiPct(pc); jvMaj("Envoi du fichier : " + pc + " %", "cours"); } catch (eSp) { } }, { upId: upIdM });
         if (rUp && rUp.error) {
           try { await hypeVideoTraceMaj(upIdM, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (eTe) { }
           jvMaj("Envoi interrompu : " + rUp.error, "ko");
@@ -75399,10 +75447,16 @@ function hypeEstVideoMux(u) { try { return /^mux:/.test(String(u || "")); } catc
 function hypeMuxLecture(u) { try { return "https://stream.mux.com/" + String(u).replace(/^mux:/, "") + ".m3u8"; } catch (e) { return ""; } }
 function hypeMuxVignette(u) { try { return "https://image.mux.com/" + String(u).replace(/^mux:/, "") + "/thumbnail.jpg?width=640&fit_mode=preserve"; } catch (e) { return ""; } }
 
-function hypeMuxEnvoyerFichier(adresse, fichier, surProgres) {
-  if (fichier && fichier.__natif) return hypeMuxEnvoyerNatif(adresse, fichier, surProgres); /* 05/09 17 h 40 : app native */
-  /* PUT direct chez Mux, avec la progression reelle — un envoi de video sans
-     barre est le meilleur moyen de faire croire a un plantage. */
+/* 13/11 (Blandine : « applique ça pour tous les envois de vidéo, où que ce soit dans l'application ») —
+   hypeMuxEnvoyerFichier(adresse, fichier, surProgres, reprise) :
+   1) si reprise.upId est donné, la vidéo est GARDÉE dans le téléphone (IndexedDB « hype-envois ») tant
+      qu'elle n'est pas partie. Si l'appli est fermée pendant l'envoi, hypeEnvoisReprendre() la renvoie toute
+      seule à la prochaine ouverture (nouvelle adresse Mux, même destination : séance, album, souvenir,
+      commentaire, collection, équipe).
+   2) une coupure pendant l'envoi (réseau, appli passée en arrière-plan) : on attend le retour au premier plan
+      et du réseau, puis on renvoie, 3 fois au plus. Un refus 4xx n'est jamais retenté.
+   L'app native garde son propre envoi en arrière-plan (inchangé). */
+function hypeMuxPutUneFois(adresse, fichier, surProgres) {
   return new Promise(function (resoudre) {
     try {
       var xhr = new XMLHttpRequest();
@@ -75412,7 +75466,7 @@ function hypeMuxEnvoyerFichier(adresse, fichier, surProgres) {
           if (ev.lengthComputable) { try { surProgres(Math.round(ev.loaded / ev.total * 100)); } catch (eP) { } }
         };
       }
-      xhr.onload = function () { resoudre(xhr.status >= 200 && xhr.status < 300 ? { ok: true } : { error: "envoi refusé (code " + xhr.status + ")" }); };
+      xhr.onload = function () { resoudre(xhr.status >= 200 && xhr.status < 300 ? { ok: true } : { error: "envoi refusé (code " + xhr.status + ")", code: xhr.status }); };
       xhr.onerror = function () { resoudre({ error: "réseau interrompu pendant l'envoi" }); };
       xhr.ontimeout = function () { resoudre({ error: "envoi trop long" }); };
       xhr.timeout = 15 * 60 * 1000;   /* une video de 3 min sur une 4G de carriere */
@@ -75420,6 +75474,182 @@ function hypeMuxEnvoyerFichier(adresse, fichier, surProgres) {
     } catch (e) { resoudre({ error: String(e) }); }
   });
 }
+function hypeMuxEnvoyerFichier(adresse, fichier, surProgres, reprise) {
+  if (fichier && fichier.__natif) return hypeMuxEnvoyerNatif(adresse, fichier, surProgres); /* 05/09 17 h 40 : app native */
+  return (async function () {
+    var upId = (reprise && reprise.upId) ? String(reprise.upId) : "";
+    if (upId) { try { await hypeRepriseGarder(upId, fichier, reprise.extra || null); } catch (eG) { } }
+    var r = null;
+    for (var essai = 0; essai < 4; essai++) {
+      if (essai > 0) {
+        await hypeAttendreReseau(5 * 60 * 1000);
+        await new Promise(function (ok) { setTimeout(ok, 2000 * essai); });
+      }
+      r = await hypeMuxPutUneFois(adresse, fichier, surProgres);
+      if (r && r.ok) break;
+      if (r && r.code >= 400 && r.code < 500 && r.code !== 408 && r.code !== 429) break;
+    }
+    if (upId) { try { await hypeRepriseOublier(upId); } catch (eO) { } }
+    return r || { error: "envoi impossible" };
+  })();
+}
+/* --- La vidéo gardée dans le téléphone (IndexedDB). Tout échec ici est silencieux : l'envoi part quand même. --- */
+function hypeRepriseBase() {
+  return new Promise(function (ok, ko) {
+    try {
+      if (typeof indexedDB === "undefined") { ko("indexedDB absent"); return; }
+      var rq = indexedDB.open("hype-envois", 1);
+      rq.onupgradeneeded = function () { try { rq.result.createObjectStore("videos", { keyPath: "upId" }); } catch (eC) { } };
+      rq.onsuccess = function () { ok(rq.result); };
+      rq.onerror = function () { ko(rq.error); };
+    } catch (e) { ko(e); }
+  });
+}
+async function hypeRepriseOp(mode, fn) {
+  var db = await hypeRepriseBase();
+  return new Promise(function (ok, ko) {
+    try {
+      var tx = db.transaction("videos", mode), st = tx.objectStore("videos"), res;
+      var rq = fn(st);
+      if (rq) rq.onsuccess = function () { res = rq.result; };
+      tx.oncomplete = function () { ok(res); try { db.close(); } catch (eC) { } };
+      tx.onerror = tx.onabort = function () { ko(tx.error); try { db.close(); } catch (eC2) { } };
+    } catch (e) { ko(e); }
+  });
+}
+async function hypeRepriseGarder(upId, fichier, extra) {
+  var uid = null; try { var u = await utilisateurActuel(); uid = u && u.id; } catch (eU) { }
+  return hypeRepriseOp("readwrite", function (st) { return st.put({ upId: String(upId), blob: fichier, nom: (fichier && fichier.name) || "video.mp4", type: (fichier && fichier.type) || "video/mp4", extra: extra || null, user: uid, quand: Date.now(), essais: 0 }); });
+}
+async function hypeRepriseOublier(upId) { return hypeRepriseOp("readwrite", function (st) { return st.delete(String(upId)); }); }
+async function hypeRepriseLister() { return (await hypeRepriseOp("readonly", function (st) { return st.getAll(); })) || []; }
+/* Les pages Équipe (Médias) et Collections notent leurs vidéos en préparation dans le téléphone : on leur
+   donne la nouvelle adresse d'envoi quand une vidéo repart. */
+function hypeRepriseRemplacerAttente(ancien, nouveau) {
+  ["hype_team_videos_attente", "hype_vc_attente"].forEach(function (cle) {
+    try {
+      var l = JSON.parse(localStorage.getItem(cle) || "[]") || [];
+      var change = false;
+      l.forEach(function (x) { if (x && x.upload === ancien) { x.upload = nouveau; x.muxId = null; change = true; } });
+      if (change) localStorage.setItem(cle, JSON.stringify(l));
+    } catch (e) { }
+  });
+}
+function hypeRepriseOterAttente(upload) {
+  ["hype_team_videos_attente", "hype_vc_attente"].forEach(function (cle) {
+    try {
+      var l = JSON.parse(localStorage.getItem(cle) || "[]") || [];
+      var l2 = l.filter(function (x) { return !(x && x.upload === upload); });
+      if (l2.length !== l.length) localStorage.setItem(cle, JSON.stringify(l2));
+    } catch (e) { }
+  });
+}
+var __hypeRepriseEnCours = false, __hypeRepriseDernier = 0;
+async function hypeEnvoisReprendre() {
+  if (__hypeRepriseEnCours || Date.now() - __hypeRepriseDernier < 60000) return;
+  if (typeof supa === "undefined" || !supa) return;
+  __hypeRepriseEnCours = true; __hypeRepriseDernier = Date.now();
+  try {
+    if (typeof hypeSessionPrete === "function" && !(await hypeSessionPrete())) return;
+    var moi = await utilisateurActuel(); if (!moi || !moi.id) return;
+    /* A) les vidéos restées dans le téléphone : l'envoi n'est jamais allé au bout */
+    var liste = []; try { liste = await hypeRepriseLister(); } catch (eL) { liste = []; }
+    for (var i = 0; i < liste.length; i++) {
+      var e = liste[i];
+      try {
+        if (!e || !e.upId) continue;
+        if (e.user && e.user !== moi.id) continue;
+        if (Date.now() - (e.quand || 0) > 7 * 24 * 3600 * 1000 || (e.essais || 0) >= 5 || !e.blob) { await hypeRepriseOublier(e.upId); continue; }
+        var rT = await supa.from("videos_mux").select("id, cible, album_id, destination_type, destination_id, nom, statut").eq("upload_id", e.upId).maybeSingle();
+        if (!rT || rT.error) continue;
+        var t = rT.data;
+        if (!t || t.statut === "ready" || t.statut === "processing") { await hypeRepriseOublier(e.upId); continue; }
+        var st = await hypeMuxAppel({ action: "status", upload_id: e.upId }, 20);
+        var d = (st && st.data) || null;
+        if (d && (d.playback_id || /asset_created|preparing|ready/.test(String(d.status || "")))) { await hypeRepriseOublier(e.upId); continue; }
+        if (!t.cible) { await hypeRepriseOublier(e.upId); continue; }
+        try { await hypeRepriseOp("readwrite", function (s2) { e.essais = (e.essais || 0) + 1; return s2.put(e); }); } catch (eE) { }
+        var rCr = await hypeMuxAppel({ cible: t.cible }, 25);
+        if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
+          if (rCr && /plafond|quota|autoris|limit/i.test(String(rCr.error || ""))) { await hypeRepriseOublier(e.upId); hypeRepriseOterAttente(e.upId); }
+          continue;
+        }
+        var nUp = String(rCr.data.upload_id);
+        var champs = { nom: t.nom || e.nom || null };
+        if (t.destination_type) champs.destination_type = t.destination_type;
+        if (t.destination_id != null) champs.destination_id = String(t.destination_id);
+        if (t.album_id != null) champs.album_id = String(t.album_id);
+        var rTr = await hypeVideoTraceMaj(nUp, champs, null);
+        if (!rTr || rTr.error) continue;
+        try { await hypeVideoTraceMaj(e.upId, { statut: "errored", erreur: "envoi interrompu (appli fermée), repris automatiquement" }, "pasReady"); } catch (eT) { }
+        hypeRepriseRemplacerAttente(e.upId, nUp);
+        var estLigne = (t.destination_type === "souvenir" || t.destination_type === "commentaire");
+        if (estLigne) { try { await supa.from(hypeLigneMediaTable(t.destination_type)).update({ statut: "uploading" }).eq("id", t.destination_id).neq("statut", "ready"); } catch (eLg) { } }
+        var fich = e.blob;
+        try { if (!fich.name && typeof File === "function") fich = new File([e.blob], e.nom || "video.mp4", { type: e.type || "video/mp4" }); } catch (eF) { }
+        await hypeRepriseOublier(e.upId);
+        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fich, null, { upId: nUp, extra: e.extra || null });
+        if (rUp && rUp.ok) {
+          try { await hypeVideoTraceMaj(nUp, { statut: "processing" }, "pasReady"); } catch (eP) { }
+          if (estLigne) { try { await hypeLigneMediaAlignerStatut(t.destination_type, t.destination_id, "processing"); } catch (eA) { } }
+        } else {
+          try { await hypeVideoTraceMaj(nUp, { statut: "errored", erreur: "reprise : " + ((rUp && rUp.error) || "?") }, "pasReady"); } catch (eR) { }
+          if (estLigne) { try { await hypeLigneMediaMarquerErreur(t.destination_type, t.destination_id, "reprise"); } catch (eM) { } }
+          hypeRepriseOterAttente(nUp);
+        }
+      } catch (eX) { }
+    }
+    /* B) les vidéos envoyées mais pas encore rangées (appli fermée pendant la préparation) : on les range
+       où qu'elles aillent, sans attendre que la personne rouvre la bonne page. */
+    await hypeVideosRattraperTout(moi.id);
+  } catch (eG) { } finally { __hypeRepriseEnCours = false; }
+}
+async function hypeVideosRattraperTout(uid) {
+  try {
+    var r = await supa.from("videos_mux").select("upload_id, cible, destination_type, destination_id, statut, created_at").eq("user_id", uid).in("statut", ["uploading", "processing"]).limit(200);
+    if (!r || r.error || !r.data || !r.data.length) return;
+    var cibles = {}, seance = false, cols = [];
+    r.data.forEach(function (l) {
+      var dt = l.destination_type || "album";
+      if (dt === "seance") seance = true;
+      else if (dt === "collection") cols.push(l);
+      else if (dt === "team") { /* rangée par la page Médias de l'équipe, qui a les détails (cavaliers, chevaux) */ }
+      else if (l.cible) cibles[l.cible] = 1;
+    });
+    if (seance && typeof hypeCarnetRattraperVideos === "function") { try { await hypeCarnetRattraperVideos(); } catch (eS) { } }
+    var lc = Object.keys(cibles);
+    for (var i = 0; i < lc.length; i++) { try { await hypeMuxReconcilier(lc[i]); } catch (eC) { } }
+    for (var j = 0; j < cols.length; j++) {
+      var c = cols[j];
+      try {
+        var st = await hypeMuxAppel({ action: "status", upload_id: c.upload_id }, 20);
+        var d = (st && st.data) || null;
+        if (d && d.playback_id) {
+          var url = hypeMuxUrlLecture(d.playback_id);
+          var rC = await supa.from("collections_videos").select("id, videos").eq("id", c.destination_id).maybeSingle();
+          if (rC && rC.error) continue;
+          if (!rC || !rC.data) { await hypeVideoTraceMaj(c.upload_id, { statut: "errored", erreur: "collection supprimée", playback_id: String(d.playback_id) }, "pasReady"); hypeRepriseOterAttente(c.upload_id); continue; }
+          var lv = Array.isArray(rC.data.videos) ? rC.data.videos.slice() : [];
+          if (lv.indexOf(url) < 0) { lv.push(url); var rU = await supa.from("collections_videos").update({ videos: lv }).eq("id", c.destination_id).select("id"); if (!rU || rU.error || !rU.data || !rU.data.length) continue; }
+          await hypeVideoTraceMaj(c.upload_id, { statut: "ready", playback_id: String(d.playback_id), duree: (typeof d.duration === "number" && isFinite(d.duration)) ? Math.round(d.duration * 10) / 10 : null }, "pasReady");
+          hypeRepriseOterAttente(c.upload_id);
+        } else if ((d && hypeMuxStatutTermine(d.status)) || (st && st.error && /not_found|404|introuvable/i.test(String(st.error)))) {
+          await hypeVideoTraceMaj(c.upload_id, { statut: "errored", erreur: "Mux : " + String((d && d.status) || "introuvable") }, "pasReady");
+          hypeRepriseOterAttente(c.upload_id);
+        }
+      } catch (eV) { }
+    }
+  } catch (e) { }
+}
+/* À l'ouverture de l'appli, au retour au premier plan et au retour du réseau (une fois par minute au plus). */
+(function () {
+  try {
+    var go = function () { try { hypeEnvoisReprendre(); } catch (e) { } };
+    setTimeout(go, 8000);
+    window.addEventListener("online", function () { setTimeout(go, 3000); });
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") setTimeout(go, 3000); });
+  } catch (eI) { }
+})();
 async function hypeMuxAttendrePret(uploadId, surAttente) {
   /* Mux encode en arriere-plan. On demande l'etat toutes les 3 s, 2 min au plus.
      ⚠️ Si l'encodage n'est pas fini, on rend la main SANS erreur : la video
@@ -75634,6 +75864,7 @@ async function hypeMuxReconcilier(cible) {
     var maintenant = Date.now();
     for (var i = 0; i < r.data.length; i++) {
       var l = r.data[i];
+      if (l.destination_type === "seance" || l.destination_type === "collection" || l.destination_type === "team") continue; /* 13/11 : rangées par leur propre rattrapage (sinon une vidéo de collection partait vers les commentaires) */
       var age = maintenant - (Date.parse(l.created_at) || maintenant);
       var st = await hypeMuxAppel({ action: "status", upload_id: l.upload_id }, 20);
       var d = (st && st.data) || null;
