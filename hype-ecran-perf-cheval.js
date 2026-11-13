@@ -1159,11 +1159,14 @@ function estClasseQ(f) {
     var anneau = null;
     if (nJ && nJQ) {
       var pct = Math.round(100 * nJQ / nJ), r = 48, ci = 2 * Math.PI * r;
+      /* 13/11 02h49 (Blandine : « le pourcentage, ce qu on peut faire pour limiter le doré ») — essai window.__anVar : A doré épais · B doré fin · C ivoire fin · D ivoire fin + petit point doré */
+      var AV2 = (typeof window !== "undefined" && window.__anVar) || "B", AN_C = (AV2 === "C" || AV2 === "D") ? "rgba(243,238,228,0.85)" : CHAMP, AN_W = AV2 === "A" ? 9 : 3;
       anneau = h("div", { role: "button", tabIndex: 0, "aria-expanded": detOuv === "pct", onClick: function () { setDetOuv(detOuv === "pct" ? null : "pct"); }, style: { textAlign: "center", flex: "0 0 auto", cursor: "pointer", padding: 4, borderRadius: 16, border: "1px solid " + (detOuv === "pct" ? "rgba(201,166,107,0.55)" : "transparent"), background: detOuv === "pct" ? "rgba(201,166,107,0.06)" : "transparent" } },
         h("svg", { width: 104, height: 104, viewBox: "0 0 120 120", role: "img", "aria-label": pct + " %" },   /* 13/11 02h39 (Blandine : « réduire un peu cet encart ») : 128 -> 104 */
-          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: "rgba(243,238,228,0.1)", strokeWidth: 9 }),
-          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: CHAMP, strokeWidth: 9, strokeLinecap: "round", strokeDasharray: (ci * pct / 100).toFixed(1) + " " + ci.toFixed(1), transform: "rotate(-90 60 60)" }),
-          h("text", { x: 60, y: 64, textAnchor: "middle", fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: 34, fill: IVOIRE }, pct + "%")),
+          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: "rgba(243,238,228,0.1)", strokeWidth: AN_W }),
+          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: AN_C, strokeWidth: AN_W, strokeLinecap: "round", strokeDasharray: (ci * pct / 100).toFixed(1) + " " + ci.toFixed(1), transform: "rotate(-90 60 60)" }),
+          h("text", { x: 60, y: 64, textAnchor: "middle", fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: 34, fill: IVOIRE }, pct + "%"),
+          AV2 === "D" ? h("circle", { cx: 60 + r * Math.sin(2 * Math.PI * pct / 100), cy: 60 - r * Math.cos(2 * Math.PI * pct / 100), r: 4.5, fill: CHAMP }) : null),
         h("div", { style: { fontFamily: SANS, fontSize: 12, fontWeight: 500, lineHeight: 1.35, marginTop: 0, color: "#F3EEE4" } },
           T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞 ", "platziert bei ", "مصنف في ", "获得名次 ", "geplaatst op ", "classificado em ", "placerad på ", "в призах на ", "w czołówce na ", "입상 ", "رتبه در ") + nJQ + " " + T("concours", "shows", "concursos", "concorsi", "大会", "Turnieren", "مسابقات", "场赛事", "wedstrijden", "concursos", "tävlingar", "турнирах", "zawodach", "대회", "مسابقه"),
           h("br"), SUR() + " " + nJ, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, detOuv === "pct" ? "˄" : "˅")));
@@ -1261,7 +1264,7 @@ function estClasseQ(f) {
       var propreR = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
       var phDe = function (nm) { var cx = nm ? parCheval(nm) : null; if (cx && cx.c && cx.c.photo_url) return cx.c.photo_url; try { return (typeof chevalDefaut === "function") ? chevalDefaut((cx && cx.c) || { nom: nm || "" }) : null; } catch (eCd) { return null; } };
       var hTx = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };
-      var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, t); };
+      var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(243,238,228,0.6)", marginBottom: 3 } }, t); };
       var gros = function (t) { return h("span", { style: { color: IVOIRE } }, t); };   /* 13/11 02h43 (Blandine : « trop de doré ») : valeurs en ivoire, le doré reste aux petits titres */
       /* 1 */
       var gV = null; bR.forEach(function (f) { if (f.pl !== 1 || !f.part || faux1er(f)) return; if (!gV || f.part > gV.part) gV = f; });
@@ -1314,7 +1317,7 @@ function estClasseQ(f) {
       recs.forEach(function (r, i) {
         var droite = i % 2 === 0, cote = droite ? "right" : "left";
         var msq = "linear-gradient(" + (droite ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée à droite : masque retourné */
-        if (i) recsEl.push(h("svg", { key: "rcb" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })));
+        if (i) recsEl.push(h("svg", { key: "rcb" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(243,238,228,0.16)", strokeWidth: 1 })));
         recsEl.push(h("div", { key: r.k, role: "button", tabIndex: 0, onClick: function () { if (r.f) allerAuFort(r.f); else if (r.cheval) { var cx = parCheval(r.cheval); if (cx) ouvrirFiche(cx.id); } }, style: { position: "relative", height: 128, overflow: "hidden", background: "#000", cursor: "pointer" } },
           h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "46%", overflow: "hidden", pointerEvents: "none" } },
             h("img", { src: TETES_R[i % TETES_R.length], alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", transform: droite ? "scaleX(-1)" : undefined, WebkitMaskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)", maskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)" } })),
@@ -1453,7 +1456,7 @@ function estClasseQ(f) {
       if (RV === "B") {
         var elB = [];
         recents.forEach(function (f, i) { var dr = i % 2 === 0, cote = dr ? "right" : "left", mq = "linear-gradient(" + (dr ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";
-          if (i) elB.push(h("svg", { key: "rcv" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })));
+          if (i) elB.push(h("svg", { key: "rcv" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(243,238,228,0.16)", strokeWidth: 1 })));
           elB.push(h("div", { key: "rcb" + i, role: "button", tabIndex: 0, onClick: function () { allerAuFort(f); }, style: { position: "relative", height: 118, overflow: "hidden", background: "#000", cursor: "pointer" } },
             h("img", { src: TT[i % TT.length], alt: "", "aria-hidden": "true", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "44%", objectFit: "contain", transform: dr ? "scaleX(-1)" : undefined, WebkitMaskImage: dr ? mq : "linear-gradient(270deg, transparent 0%, #000 18%)", maskImage: dr ? mq : "linear-gradient(270deg, transparent 0%, #000 18%)" } }),
             h("div", { style: { position: "absolute", top: 0, bottom: 0, [dr ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: dr ? "flex-start" : "flex-end", textAlign: dr ? "start" : "end", maxWidth: "60%" } },
@@ -1474,7 +1477,7 @@ function estClasseQ(f) {
             })(), alt: "", "aria-hidden": "true", style: { position: "absolute", top: 8, left: 0, right: 0, margin: "0 auto", maxWidth: "100%", maxHeight: 128, objectFit: "contain", display: "block" } }),
             h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 42%, rgba(0,0,0,0.94) 66%)" } }),
             h("div", { style: { position: "absolute", left: 12, right: 12, bottom: 12 } },
-              h("div", { style: { fontFamily: SANS, fontSize: 8.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP } }, f.d ? dateLisible(f.d) : ""),
+              h("div", { style: { fontFamily: SANS, fontSize: 8.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(243,238,228,0.6)" } }, f.d ? dateLisible(f.d) : ""),
               h("div", { style: { marginTop: 4 } }, placeEl(f, 24)),
               h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: "rgba(243,238,228,0.8)", marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [epC(f), hTr(f)].filter(Boolean).join(" · ")),
               h("div", { style: { fontFamily: SANS, fontSize: 10, color: "rgba(243,238,228,0.65)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, concoursC(f))));
@@ -1637,7 +1640,7 @@ function estClasseQ(f) {
         var dirM = cote === "right" ? "90deg" : "270deg", msq = "linear-gradient(" + dirM + ", transparent 0%, #000 18%)"; var msqM = "linear-gradient(" + (cote === "right" ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée : le masque se retourne avec elle */
         return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "70%", pointerEvents: "none", overflow: "hidden" } },
           ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", objectPosition: cote === "right" ? "right center" : "left center", display: "block", transform: miroir ? "scaleX(-1)" : undefined, WebkitMaskImage: miroir ? msqM : msq, maskImage: miroir ? msqM : msq } }) : null); };
-      var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
+      var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(243,238,228,0.16)", strokeWidth: 1 })); };
       if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
         var BH = (typeof window !== "undefined" && window.__bandH) || 108;   /* 13/11 02h26 : Blandine choisit 108 */   /* 13/11 02h21 : essai de hauteurs (Blandine : « tous les résultats… un truc à rallonge ») */
         var TETES = ["images/portrait-defaut-alezan.webp", "images/portrait-defaut-gris.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp", "images/portrait-defaut-bai.webp", "images/portrait-defaut-blanc.webp"];
@@ -1652,9 +1655,9 @@ function estClasseQ(f) {
               photoBloc(P.ph, BH, droite ? "right" : "left", !x.cheval && droite),
               (!x.cheval && TV === "F") ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", [droite ? "right" : "left"]: 14, fontFamily: SERIF, fontSize: 118, lineHeight: 1, color: "transparent", WebkitTextStroke: "1px rgba(201,166,107,0.35)", pointerEvents: "none", direction: "ltr" } }, String(x.lib).slice(0, 4)) : null,   /* 13/11 01h47 (Blandine : « ils regardent tous dans la même direction ») : les têtes regardent toujours vers le texte */
               h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
-                h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
+                h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: "rgba(243,238,228,0.55)" } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
                 h("div", { style: { fontFamily: SERIF, fontSize: BH < 100 ? (x.cheval ? 21 : 23) : (x.cheval ? 24 : 26), lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),
-                h("div", { style: { fontFamily: SANS, fontSize: 11, color: CHAMP, marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
+                h("div", { style: { fontFamily: SANS, fontSize: 11, color: "rgba(243,238,228,0.75)", marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
             oo[0] ? listeOuv(x) : null)); });
       } else if (AV === "J") {   /* affiches de saison qui défilent, la liste dessous */
         out.push(rail("Jr", S.map(function (x) { var P = chevalPrincipal(x), on = x.cle === sel, b = meilleurS(x);

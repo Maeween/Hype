@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0400 — Encore moins de doré (page et outil), anneau fin
+- Performances du cavalier : courbes entre bandeaux en ivoire très discret ; petits titres des records, « SAISON », « Voir les résultats », dates des cartes en ivoire/gris. Le doré reste : titres de chapitre, anneau, contours de boutons, hauteurs.
+- Anneau du % : doré FIN (trait 9 -> 3), choix B de Blandine (variantes window.__anVar A/B/C/D).
+- Outil d'import : tons noirs et anthracite (cartes #14181A, contours ivoire très fins, petits titres gris, cases et étapes en ivoire). Doré seulement sur le filet sous le titre et le contour du bouton principal. import v=43, perf v=39.
+- En attente : choix de l'ouverture de l'outil (maquettes A à F).
+
 ## 20261113-0350 — Moins de doré, « cheval le plus performant », outil d'import au nouveau design
 - Performances du cavalier : les grandes valeurs passent en ivoire (records, chiffres d'En bref, places des cartes, % d'une saison ouverte). Le doré reste aux petits titres en capitales, filets, anneau et hauteurs.
 - Record « Ton cheval de cœur en concours » -> « Ton cheval le plus performant ».

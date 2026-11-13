@@ -960,7 +960,28 @@
 '.hi.hi .hi-bt2{border-radius:999px;color:rgba(243,238,228,.85);border-color:rgba(243,238,228,.22)}',
 '.hi.hi .hi-fin{background:rgba(201,166,107,.04);border-color:rgba(201,166,107,.35);border-radius:18px}',
 '.hi.hi .hi-fin .ic{color:#C9A66B}',
-'.hi.hi .hi-fin b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:26px;letter-spacing:0}'
+'.hi.hi .hi-fin b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:26px;letter-spacing:0}',
+/* 13/11 02h50 (Blandine : « vire du doré de l'outil… tons noirs, anthracites, juste des filets de temps en temps, très discret ») */
+'.hi.hi .hi-k{color:rgba(243,238,228,.55)}',
+'.hi.hi .hi-etapes i.on{background:rgba(243,238,228,.75)}',
+'.hi.hi .hi-zone{border:1px solid rgba(243,238,228,.12);background:#14181A}',
+'.hi.hi .hi-zone .ic{color:rgba(243,238,228,.8)}',
+'.hi.hi .hi-aide{background:#121517;border-color:rgba(243,238,228,.08)}',
+'.hi.hi .hi-film-t i{background:rgba(243,238,228,.12)}',
+'.hi.hi .hi-film-t b,.hi.hi .hi-st{color:rgba(243,238,228,.55)}',
+'.hi.hi .hi-film{border-color:rgba(243,238,228,.12)}',
+'.hi.hi .hi-att,.hi.hi .hi-fin{background:#14181A;border-color:rgba(243,238,228,.1)}',
+'.hi.hi .hi-fin .ic{color:rgba(243,238,228,.8)}',
+'.hi.hi .hi-bi{background:#14181A;border-color:rgba(243,238,228,.08)}',
+'.hi.hi .hi-bi.ok b,.hi.hi .hi-bi.dt b{color:#F3EEE4}',
+'.hi.hi .hi-cav.on{border-color:rgba(243,238,228,.6)}',
+'.hi.hi .hi-l{background:#14181A;border-color:rgba(243,238,228,.07)}',
+'.hi.hi .hi-l:not(.off) .hi-case{background:rgba(243,238,228,.9);border-color:rgba(243,238,228,.9);color:#0A0D0C}',
+'.hi.hi .hi-rg.v{color:#F3EEE4}',
+'.hi.hi .hi-n{background:#14181A}',
+'.hi.hi .hi-n.on{border-color:rgba(243,238,228,.55);background:#1A1F21}',
+'.hi.hi .hi-n.on .hi-rd{border-color:#F3EEE4}.hi.hi .hi-n.on .hi-rd::after{background:#F3EEE4}',
+'.hi.hi .hi-n.on .nb{color:#F3EEE4}'
   ].join("");
 
   function poserStyle() {
@@ -1001,7 +1022,7 @@
       '<input type="file" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-zone" style="margin-top:10px;cursor:default"><b>Ou colle ta page FFE Compet</b>' +
       '<span>Plus besoin de chercher le fichier : sur FFE Compet, page « Engagements et performances », sélectionne tout et copie. Puis appuie longuement sur le cadre ci-dessous et choisis « Coller ».</span>' +
-      '<div contenteditable="true" data-hi="coller" inputmode="none" style="margin-top:10px;min-height:46px;padding:12px;border:1px dashed rgba(201,166,107,.6);border-radius:12px;font-size:13px;color:rgba(243,238,228,.7);text-align:center;-webkit-user-select:text;user-select:text">Appuie longuement ici, puis « Coller »</div></div>';
+      '<div contenteditable="true" data-hi="coller" inputmode="none" style="margin-top:10px;min-height:46px;padding:12px;border:1px dashed rgba(243,238,228,.25);border-radius:12px;font-size:13px;color:rgba(243,238,228,.7);text-align:center;-webkit-user-select:text;user-select:text">Appuie longuement ici, puis « Coller »</div></div>';
     h += '<div class="hi-aide"><b>Le plus simple : une capture d\'écran</b>' +   /* 13/11 02h42 : la capture se lit maintenant, elle passe en premier */
       '<ol><li>Ouvre ta page <b>« Engagements et performances »</b> sur FFE Compet (ou ton telemat)</li>' +
       '<li>Fais une <b>capture d\'écran</b> (une longue capture « Page entière » marche aussi)</li>' +
