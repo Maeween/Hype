@@ -1,3 +1,10 @@
+# 🗓️ 13/11 (9h15) — ACCUEIL EN BLEU NUIT + VILLES EN BLEU — horselingo `5a82e27` [publier], « Ok, vas-y, c'est bien »
+
+**Choix de Blandine (13/11 matin)** : Horse Lingo n'est pas doré (« mieux en bleu, j'en peux plus du doré ») → bleu nuit #04070C + bleu glacier #7FD3E3 sur l'accueil ET les pages de ville ; héros comme la Vidéothèque avec le **film d'ouverture** en haut (« la deuxième correspond mieux au texte », la vidéo Hype gardée pour une autre page), en petit et entier (« dézoome », « réduis encore ») ; la courbe du bas faite de **petits drapeaux** (ce sont les boutons « Je lis en », même code qu'avant) ; nouvelle accroche « Le cheval n'a pas de frontières. *Tes mots non plus.* », présentation refaite et aérée (HORSE LINGO lisible, filet, deux lignes centrées) ; encart Badminton plus petit qui **se retourne** (mot du jour au dos) ; flèches ‹ › pour les lots de villes (le glissement marchait déjà) ; bas de page : « Dans ta valise · Ce que le voyage t'apporte » + liste I à V, bouton « Choisis ta destination », passeport sans poney bleu, Hype / Galops inchangés. **Film plein écran du début retiré** (« retire-le ») : l'appli ouvre directement l'accueil (lancerFilm() gardé, non appelé).
+**Textes neufs en 17 langues** : accTitre (nouvelle accroche), accValiseK, accValiseT. Nouvelle image : accueil-film-affiche.webp (image du film, si la vidéo ne démarre pas).
+**Tests (Chromium)** : 390 / 820 / 1440 px ; drapeau allemand puis persan (tout se traduit, persan de droite à gauche), flèche › (2 / 8), page de ville La Baule en bleu : aucune erreur. Cache linguae-v18.
+**À faire ensuite** : page « Quelle langue veux-tu apprendre ? » et « Le tour du monde » (vidéo Hype de la tête de cheval à y mettre) ; leçon A/B ; lexique et carnet de souvenirs.
+
 # 🗓️ 13/11 (4h) — PAGES DE VILLE EN « A » (style Vidéothèque), LES 39 VILLES — horselingo `d5002ec` [publier], « Ok »
 
 **Choix de Blandine** parmi 2 propositions de page de ville (A Vidéothèque / B carte postale) : « fais toutes les villes en A ». Leçon A/B et carnet/lexique : propositions montrées (leçon v3/v4 ; lexique x1/x2 ; carnet x3 album / x4 vitrine), **pas encore choisies**.
