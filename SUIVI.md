@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0235 — Performances du cavalier : plus haut niveau en tête, beaux moments sans indices 4 ni préparatoires
+- Encart « Ton / Son plus haut niveau couru » juste sous le héros : hauteur en grand + nom de l'épreuve, rien d'autre (Blandine : juste le niveau). Un toucher ouvre le résultat. Retiré des Souvenirs (pas de doublon).
+- Beaux moments : ni indices 4 (B4, C4, D4 ; Poney 4 depuis la saison 2024-25), ni préparatoires — tous les sans-faute y sont 1ers ex aequo. En tête : « Ta victoire la plus disputée » (victoire au plus grand nombre de partants).
+- Base (avec son accord) : sa B1 Open du 11/11/2000 à Montlouis-sur-Loire (Vif Bellevue) passe de « Non classé » à 9e / 44.
+- v=30. À confirmer : date exacte du passage des Poney 4 au « tous 1ers ».
+
 ## 20261113-0215 — Import par copier-coller, pastilles d'affichage, plus haute épreuve
 - Import FFE : nouveau cadre « Ou colle ta page FFE Compet » (page « Engagements et performances » copiée puis collée). Le tableau collé passe par le même lecteur que le fichier .xls (testé : 124 lignes, 16 chevaux). Les lignes collées sans nom de cavalier sont rattachées à son nom FFE relié (import depuis sa page Performances). hype-import-ffe.js v=39. Reste à valider sur un vrai copier-coller iPhone depuis FFE Compet.
 - Performances : les pastilles Tous / Classés / Podiums (et Sans faute pour la propriétaire) reviennent dans chaque saison déroulée ; le choix reste sa vue par défaut.

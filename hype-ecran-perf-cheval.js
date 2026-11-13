@@ -192,10 +192,18 @@ function EcranPerformancesCheval(props) {
       }
     } catch (eHm) { }
     var triG = function (a, b) { return ((b.part || 0) - (a.part || 0)) || ((b.haut || 0) - (a.haut || 0)) || (a.pl - b.pl); };
-    var pods = libres.filter(function (f) { return f !== haute && f.pl <= 3 && (f.part == null || f.part >= 5); }).sort(triG);   /* un podium sur moins de 5 partants n est pas un « beau moment » */
-    var cls = libres.filter(function (f) { return f !== haute && f.pl > 3 && estClasseQ(f); }).sort(triG);
+    /* 13/11 01h30 (Blandine) : en indice 4 (B4, C4, D4), tous les sans-faute sont 1ers ex aequo — « 1er sur 118 en B4, c'est juste
+       que je suis sans faute parmi d'autres ». Pareil en Poney 4 depuis environ deux ans (saison 2024-25). Ces épreuves ne font
+       pas de beaux moments. En revanche : « ta victoire avec le plus grand nombre de partants » a sa place, juste après la plus haute. */
+    var indice4 = function (f) { var t = String(f && f.ep || "").toLowerCase(); if (typeof hypePerfEstPrepa === "function" ? hypePerfEstPrepa(f.ep) : /pr[ée]pa/.test(t)) return true;   /* 13/11 01h31 (Blandine) : préparatoires = tous les sans-faute 1ers, comme l indice 4 */
+      if (/(?:^|[^a-z])[bcd]4(?![0-9])/.test(t)) return true; if (/poney\s*4\b/.test(t) && String(f.d || "") >= "2024-09-01") return true; return false; };
+    var grosseV = null; libres.forEach(function (f) { if (f === haute || f.pl !== 1 || indice4(f) || !f.part) return; if (!grosseV || f.part > grosseV.part) grosseV = f; });
+    if (grosseV) grosseV.grosseVic = true;
+    libres = libres.filter(function (f) { return f === haute || f === grosseV || !indice4(f); });
+    var pods = libres.filter(function (f) { return f !== haute && f !== grosseV && f.pl <= 3 && (f.part == null || f.part >= 5); }).sort(triG);   /* un podium sur moins de 5 partants n est pas un « beau moment » */
+    var cls = libres.filter(function (f) { return f !== haute && f !== grosseV && f.pl > 3 && estClasseQ(f); }).sort(triG);
     if (haute) haute.plusHaute = true;
-    resF = forces.concat(haute ? [haute] : [], pods, cls).slice(0, 8);
+    resF = forces.concat(haute ? [haute] : [], grosseV ? [grosseV] : [], pods, cls).slice(0, 8);
     return resF;
     /* 12/11 16h30 (page du cavalier) : un moment fort choisi automatiquement doit être un vrai classement (premier quart) ;
        ceux choisis à la main par la propriétaire restent */
@@ -1131,6 +1139,18 @@ function estClasseQ(f) {
         nbCaches ? h("div", { style: { padding: "8px 0 6px", borderTop: "1px solid rgba(243,238,228,0.07)", fontFamily: SANS, fontSize: 11, color: MUET } },
           "+ " + nbCaches + " " + (nbCaches > 1 ? T("résultats cachés, comptés aussi", "hidden results, counted too") : T("résultat caché, compté aussi", "hidden result, counted too"))) : null);
     })();
+    /* 13/11 01h27 (Blandine : « la plus haute épreuve… un encart rien qu'à lui, tout de suite en haut de la page des cavaliers…
+       ça donne une idée du professionnalisme de la personne ») : encart seul, sous le héros. Retiré des Souvenirs (pas de doublon). */
+    var hauteF = modeCav ? forts.filter(function (f) { return f && f.plusHaute; })[0] : null;
+    if (hauteF) {
+      var propreH = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
+      var hautTxt = String(hauteF.haut.toFixed(2)).replace(".", ",") + " m";
+      var resH = hauteF.pl != null ? rangTxt(hauteF.pl) + (hauteF.part ? " " + SUR() + " " + hauteF.part : "") : T("Parcours couru", "Completed round");
+      g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: function () { allerAuFort(hauteF); }, "data-perf-haute": "1", style: { margin: "26px 22px 0", padding: "18px 18px 16px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.4)", background: "rgba(16,26,29,0.55)", textAlign: "center", cursor: "pointer" } },
+        h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, MOI ? T("Ton plus haut niveau couru", "Your highest level") : T("Son plus haut niveau couru", "Highest level")),
+        h("div", { style: { fontFamily: SERIF, fontSize: 44, lineHeight: 1, color: IVOIRE, marginTop: 8, direction: "ltr" } }, hautTxt),
+        h("div", { style: { fontFamily: SANS, fontSize: 13, color: IVOIRE, marginTop: 8 } }, hauteF.ep)));   /* 13/11 01h30 (Blandine) : juste le niveau ; lieu, date et place sont à un toucher */
+    }
     g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), (MOI ? T("Ta saison, tes chiffres", "Your season, your numbers") : T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش"))));
     g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
@@ -1258,7 +1278,7 @@ function estClasseQ(f) {
     }
 
     /* 4 · Souvenirs */
-    var fs3 = forts.slice(0, 8);   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
+    var fs3 = forts.filter(function (f) { return !(modeCav && f && f.plusHaute); }).slice(0, 8);   /* 13/11 01h27 : la plus haute épreuve a son encart en haut de la page */   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
     if (fs3.length) {
       g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), (MOI ? T("Tes plus beaux moments", "Your finest moments") : T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش"))));
       g.push(h("div", { key: "p4c", style: { padding: "16px 22px 0" } }, fs3.map(function (f, i) {
@@ -1267,7 +1287,7 @@ function estClasseQ(f) {
         var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
         var hTxt = (f.haut != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(f.haut.toFixed(2)).replace(".", ",") + " m" : "";   /* pas de doublon si la hauteur est déjà écrite */
         var propreC = function (n) { if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
-        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, f.plusHaute ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta plus haute épreuve", "Your highest class") : T("Sa plus haute épreuve", "Highest class")) : null, (f.pl == null ? h("span", { style: { color: CHAMP } }, T("Parcours couru", "Completed round")) : h("span", { style: { color: CHAMP } }, rangTxt(f.pl))), (f.part && f.pl != null) ? " " + SUR() + " " + f.part : ""),
+        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, f.plusHaute ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta plus haute épreuve", "Your highest class") : T("Sa plus haute épreuve", "Highest class")) : null, f.grosseVic ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta victoire la plus disputée", "Your most contested win") : T("Sa victoire la plus disputée", "Most contested win")) : null, (f.pl == null ? h("span", { style: { color: CHAMP } }, T("Parcours couru", "Completed round")) : h("span", { style: { color: CHAMP } }, rangTxt(f.pl))), (f.part && f.pl != null) ? " " + SUR() + " " + f.part : ""),
           h(React.Fragment, null, [f.ep, hTxt].filter(Boolean).join(" · ") || concoursC(f), h("br"), [propreC(concoursC(f)), annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")), ph, function () { allerAuFort(f); });
       })));
     }
