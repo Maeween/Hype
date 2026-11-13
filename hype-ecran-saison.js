@@ -274,6 +274,13 @@ var HS_TR_BRUT = {
   " est aussi dans ": [" is also in ", " también está en ", " è anche in ", " は次にも入っています：", " ist auch in ", " موجود أيضًا في ", " 也在 ", " zit ook in ", " também está em ", " är också i ", " также в ", " jest też w ", " 은(는) 다음에도 있어요: "],
   "un autre groupe": ["another group", "otro grupo", "un altro gruppo", "別のグループ", "einer anderen Gruppe", "مجموعة أخرى", "另一个分组", "een andere groep", "outro grupo", "en annan grupp", "другой группе", "innej grupie", "다른 그룹"],
   " à ": [" at ", " a las ", " alle ", " ", " um ", " الساعة ", " ", " om ", " às ", " kl. ", " в ", " o ", " "],
+  "Tous les couples sont déjà dans un groupe.": ["All pairs are already in a group.", "Todas las parejas ya están en un grupo.", "Tutte le coppie sono già in un gruppo.", "すべてのペアがすでにグループに入っています。", "Alle Paare sind schon in einer Gruppe.", "كل الثنائيات موجودة بالفعل في مجموعة.", "所有组合都已在分组中。", "Alle combinaties zitten al in een groep.", "Todos os conjuntos já estão num grupo.", "Alla ekipage är redan i en grupp.", "Все пары уже в группах.", "Wszystkie pary są już w grupie.", "모든 콤비가 이미 그룹에 있어요."],
+  "Nouveaux groupes proposés pour les couples pas encore placés. Tes groupes déjà faits n’ont pas bougé. Vérifie, puis publie : rien n’est envoyé avant.": ["New groups suggested for the pairs not placed yet. Your existing groups have not changed. Check, then publish: nothing is sent before that.", "Nuevos grupos propuestos para las parejas aún sin colocar. Tus grupos ya hechos no han cambiado. Revisa y luego publica: no se envía nada antes.", "Nuovi gruppi proposti per le coppie non ancora sistemate. I gruppi già fatti non sono cambiati. Controlla, poi pubblica: prima non viene inviato nulla.", "まだ入っていないペアのために新しいグループを提案しました。作成済みのグループはそのままです。確認してから公開してください。それまで何も送信されません。", "Neue Gruppen für die noch nicht eingeteilten Paare vorgeschlagen. Deine bestehenden Gruppen bleiben unverändert. Prüfe sie und veröffentliche dann: Vorher wird nichts gesendet.", "اقتُرحت مجموعات جديدة للثنائيات غير الموزعة بعد. مجموعاتك السابقة لم تتغير. تحقّق ثم انشر: لا يُرسل شيء قبل ذلك.", "已为尚未分组的组合建议新分组。你已有的分组没有变动。检查后再发布：发布前不会发送任何内容。", "Nieuwe groepen voorgesteld voor de combinaties die nog niet zijn ingedeeld. Je bestaande groepen zijn niet veranderd. Controleer en publiceer: eerder wordt niets verstuurd.", "Novos grupos sugeridos para os conjuntos ainda não colocados. Os teus grupos já feitos não mudaram. Verifica e depois publica: nada é enviado antes.", "Nya grupper föreslagna för ekipagen som inte är placerade än. Dina befintliga grupper har inte ändrats. Kontrollera och publicera sedan: inget skickas innan dess.", "Предложены новые группы для ещё не распределённых пар. Твои готовые группы не изменились. Проверь и опубликуй: до этого ничего не отправляется.", "Zaproponowano nowe grupy dla par jeszcze nieprzydzielonych. Twoje istniejące grupy się nie zmieniły. Sprawdź i opublikuj: wcześniej nic nie zostanie wysłane.", "아직 배정되지 않은 콤비를 위한 새 그룹을 제안했어요. 이미 만든 그룹은 그대로예요. 확인한 뒤 공개하세요. 그 전에는 아무것도 보내지 않아요."],
+  "Supprimer ce groupe ?": ["Delete this group?", "¿Eliminar este grupo?", "Eliminare questo gruppo?", "このグループを削除しますか？", "Diese Gruppe löschen?", "حذف هذه المجموعة؟", "删除这个分组？", "Deze groep verwijderen?", "Eliminar este grupo?", "Ta bort den här gruppen?", "Удалить эту группу?", "Usunąć tę grupę?", "이 그룹을 삭제할까요?"],
+  "couples": ["pairs", "parejas", "coppie", "ペア", "Paare", "ثنائيات", "组合", "combinaties", "conjuntos", "ekipage", "пар", "par", "콤비"],
+  "couple": ["pair", "pareja", "coppia", "ペア", "Paar", "ثنائي", "组合", "combinatie", "conjunto", "ekipage", "пара", "para", "콤비"],
+  "Garder": ["Keep", "Conservar", "Tieni", "残す", "Behalten", "إبقاء", "保留", "Houden", "Manter", "Behåll", "Оставить", "Zostaw", "유지"],
+  " est deux fois dans ce groupe": [" is twice in this group", " está dos veces en este grupo", " è due volte in questo gruppo", " がこのグループに2回入っています", " ist zweimal in dieser Gruppe", " موجود مرتين في هذه المجموعة", " 在这个分组里出现了两次", " zit twee keer in deze groep", " está duas vezes neste grupo", " är två gånger i den här gruppen", " дважды в этой группе", " jest dwa razy w tej grupie", " 이(가) 이 그룹에 두 번 있어요"],
   "Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant.": ["Suggestion ready: check it, edit it if needed, then publish. Nothing is sent before that.", "Propuesta lista: revísala, modifícala si hace falta y publícala. No se envía nada antes.", "Proposta pronta: controllala, modificala se serve, poi pubblica. Prima non viene inviato nulla.", "提案ができました。確認し、必要なら修正してから公開してください。それまで何も送信されません。", "Vorschlag fertig: prüfe ihn, ändere ihn bei Bedarf und veröffentliche ihn dann. Vorher wird nichts verschickt.", "الاقتراح جاهز: راجعه وعدّله إن لزم ثم انشره. لا يُرسل شيء قبل ذلك.", "建议已生成：请检查、按需修改后再发布。发布前不会发送任何内容。", "Voorstel klaar: controleer het, pas het zo nodig aan en publiceer dan. Eerder wordt er niets verstuurd.", "Sugestão pronta: confira, ajuste se precisar e depois publique. Nada é enviado antes.", "Förslaget är klart: kontrollera, ändra vid behov och publicera sedan. Inget skickas innan dess.", "Предложение готово: проверь, при необходимости измени и опубликуй. До этого ничего не отправляется.", "Propozycja gotowa: sprawdź ją, w razie potrzeby zmień i opublikuj. Wcześniej nic nie zostanie wysłane.", "제안이 준비됐어요. 확인하고 필요하면 수정한 뒤 공개하세요. 그 전에는 아무것도 보내지지 않아요."],
   "✓ Groupes publiés : les cavaliers concernés sont prévenus, puis rappelés 20 minutes avant leur rendez-vous.": ["✓ Groups published: the riders concerned are notified, then reminded 20 minutes before their meeting time.", "✓ Grupos publicados: se avisa a los jinetes y se les recuerda 20 minutos antes de su cita.", "✓ Gruppi pubblicati: i cavalieri interessati vengono avvisati e poi ricordati 20 minuti prima.", "✓ グループを公開しました。該当する騎手に通知し、集合20分前にもお知らせします。", "✓ Gruppen veröffentlicht: Die betroffenen Reiter werden benachrichtigt und 20 Minuten vorher erinnert.", "✓ نُشرت المجموعات: يُبلَّغ الفرسان المعنيون ثم يُذكَّرون قبل موعدهم بعشرين دقيقة.", "✓ 分组已发布：相关骑手会收到通知，并在集合前 20 分钟收到提醒。", "✓ Groepen gepubliceerd: de betrokken ruiters krijgen een melding en 20 minuten vooraf een herinnering.", "✓ Grupos publicados: os cavaleiros são avisados e lembrados 20 minutos antes do encontro.", "✓ Grupperna är publicerade: ryttarna får ett meddelande och en påminnelse 20 minuter innan.", "✓ Группы опубликованы: всадники получат уведомление и напоминание за 20 минут до сбора.", "✓ Grupy opublikowane: jeźdźcy dostaną powiadomienie i przypomnienie 20 minut przed zbiórką.", "✓ 그룹을 공개했어요. 해당 라이더에게 알리고 집합 20분 전에 다시 알려 드려요."],
   "✓ Groupes enregistrés (pas encore publiés).": ["✓ Groups saved (not published yet).", "✓ Grupos guardados (aún sin publicar).", "✓ Gruppi salvati (non ancora pubblicati).", "✓ グループを保存しました（未公開）。", "✓ Gruppen gespeichert (noch nicht veröffentlicht).", "✓ حُفظت المجموعات (لم تُنشر بعد).", "✓ 分组已保存（尚未发布）。", "✓ Groepen opgeslagen (nog niet gepubliceerd).", "✓ Grupos salvos (ainda não publicados).", "✓ Grupperna är sparade (inte publicerade ännu).", "✓ Группы сохранены (ещё не опубликованы).", "✓ Grupy zapisane (jeszcze nieopublikowane).", "✓ 그룹을 저장했어요(아직 비공개)."],
@@ -1280,6 +1287,7 @@ function EcranConcours() {
   var _epp = React.useState({}); var epPlus = _epp[0], setEpPlus = _epp[1];     /* épreuves dont on a déroulé au-delà de 8 passages */
   /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
   var _gd = React.useState([]); var grpD = _gd[0], setGrpD = _gd[1];
+  var _gsx = React.useState(null); var grpSupp = _gsx[0], setGrpSupp = _gsx[1];   /* 13/11 : groupe dont on demande la confirmation de suppression */
   /* 09/11 — PAGE RÉSULTATS */
   var _rso = React.useState({}); var resOuv = _rso[0], setResOuv = _rso[1];   /* 09/11 13h50 (Blandine) : plusieurs épreuves dépliées à la fois — { épreuve: true/false }, absente = automatique */
   var _tvr = React.useState({}); var tvRes = _tvr[0], setTvRes = _tvr[1];      /* vidéos de la Team rattachées à un résultat */
@@ -1919,15 +1927,32 @@ function EcranConcours() {
     });
     return out.filter(function (x, i, t) { return t.indexOf(x) === i; });
   }
+  /* 13/11 (Blandine : « des alertes quand on met deux fois le même cheval ou deux fois le même cavalier dans le même groupe ») */
+  function doublonsDe(g) {
+    var out = [], parCav = {}, parCh = {}, oCav = [], oCh = [];
+    (g.couples || []).forEach(function (c) {
+      var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || c; var et = p.ordre_passage ? F("N° ") + p.ordre_passage + " " : "";
+      var ch = c.cheval_nom || p.cheval_nom || "";
+      if (c.cavalier_id) { if (!parCav[c.cavalier_id]) { parCav[c.cavalier_id] = { nom: prenomDe(p), l: [] }; oCav.push(c.cavalier_id); } parCav[c.cavalier_id].l.push(et + ch); }
+      var kc = c.cheval_id || (ch ? "n:" + String(ch).toLowerCase() : null);
+      if (kc) { if (!parCh[kc]) { parCh[kc] = { nom: ch, l: [] }; oCh.push(kc); } parCh[kc].l.push(et + prenomDe(p)); }
+    });
+    oCav.forEach(function (k) { var x = parCav[k]; if (x.l.length > 1) out.push(x.nom + F(" est deux fois dans ce groupe") + " (" + x.l.join(", ") + ")"); });
+    oCh.forEach(function (k) { var x = parCh[k]; if (x.l.length > 1) out.push(x.nom + F(" est deux fois dans ce groupe") + " (" + x.l.join(", ") + ")"); });
+    return out;
+  }
   function membreCouple(c, k) {
     var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, avatar_url: null };
     return h("div", { key: k, className: "hc-gm" + (moi && p.cavalier_id === moi.id ? " moi" : "") }, avatarHc(p, 46), h("b", null, prenomDe(p)), h("span", null, c.cheval_nom || p.cheval_nom || ""));
   }
   var monGroupe = null; if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; })) { if (!monGroupe || hsNomEpreuve(g.epreuve) === epPaddock) monGroupe = g; } });
   /* ── outils de la coach ── */
-  function ouvrirEditeur() { setGrpMsg(""); setGrpEd(grpD.map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); })); }
+  function ouvrirEditeur() { setGrpMsg(""); setGrpSupp(null); setGrpEd(grpD.map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); })); }
   function majBrouillon(f) { setGrpEd(function (l) { var n = (l || []).map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); }); f(n); return n; }); }
-  function nouveauGroupe() { majBrouillon(function (n) { var k = n.filter(function (g) { return hsNomEpreuve(g.epreuve) === epPaddock; }).length + 1; n.push({ __nv: Date.now() + Math.random(), agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + k, heure_rdv: "", couples: [], ordre: n.length, publie: false }); }); }
+  function cleG(g) { return g.id || g.__nv; }
+  /* 13/11 : le numéro suit le plus grand groupe encore là (les groupes supprimés ne comptent plus) */
+  function prochainNum(n) { var mx = 0, nb = 0; n.forEach(function (g) { if (g.__suppr || hsNomEpreuve(g.epreuve) !== epPaddock) return; nb++; var m = String(g.nom || "").match(/(\d+)\s*$/); if (m) mx = Math.max(mx, Number(m[1])); }); return Math.max(mx, nb) + 1; }
+  function nouveauGroupe() { majBrouillon(function (n) { var k = prochainNum(n); n.push({ __nv: Date.now() + Math.random(), agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + k, heure_rdv: "", couples: [], ordre: n.length, publie: false }); }); }
   function affecter(p, cible) {   /* cible : groupe ou null (aucun) — déplace le couple dans le groupe choisi de cette épreuve */
     majBrouillon(function (n) {
       var cl = cleCouple(p);
@@ -1937,18 +1962,22 @@ function EcranConcours() {
   }
   function proposer() {   /* groupes de 4 à 6 couples dans l'ordre de passage ; rendez-vous 30 min avant le 1er passage du groupe quand on le connaît */
     if (!gEp) return;
-    var l = gEp.l.slice().sort(function (a, b) { return ((a.ordre_passage || 999) - (b.ordre_passage || 999)) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
+    /* 13/11 (Blandine : « il détruit tout ce que tu avais fait avant ») : les groupes déjà faits ne bougent plus — on ne répartit que les couples libres */
+    var places = {}; (grpEd || []).forEach(function (g) { if (g.__suppr || hsNomEpreuve(g.epreuve) !== epPaddock) return; (g.couples || []).forEach(function (c) { places[c.engagement_id + ":" + (c.numero || 1)] = 1; }); });
+    var dejaFaits = Object.keys(places).length > 0;
+    var l = gEp.l.filter(function (p) { return !places[cleCouple(p)]; }).sort(function (a, b) { return ((a.ordre_passage || 999) - (b.ordre_passage || 999)) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
+    if (!l.length) { setGrpMsg(F("Tous les couples sont déjà dans un groupe.")); return; }
     var nbG = Math.max(1, Math.ceil(l.length / 6)); var taille = Math.ceil(l.length / nbG);
     majBrouillon(function (n) {
-      for (var i = n.length - 1; i >= 0; i--) if (hsNomEpreuve(n[i].epreuve) === epPaddock) { if (n[i].id) n[i].__suppr = true; else n.splice(i, 1); }
+      var k0 = prochainNum(n);
       for (var k = 0; k < nbG; k++) {
         var part = l.slice(k * taille, (k + 1) * taille); if (!part.length) continue;
         var m1 = minutesDe(part[0].passage);
-        n.push({ __nv: Date.now() + k, agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + (k + 1), heure_rdv: m1 == null ? "" : fmtMin(m1 - 30), publie: false, ordre: n.length,
+        n.push({ __nv: Date.now() + Math.random() + k, agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + (k0 + k), heure_rdv: m1 == null ? "" : fmtMin(m1 - 30), publie: false, ordre: n.length,
           couples: part.map(function (p) { return { engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_nom || null }; }) });
       }
     });
-    setGrpMsg(F("Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant."));
+    setGrpMsg(dejaFaits ? F("Nouveaux groupes proposés pour les couples pas encore placés. Tes groupes déjà faits n’ont pas bougé. Vérifie, puis publie : rien n’est envoyé avant.") : F("Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant."));
   }
   async function enregistrerGroupes(publier) {
     if (!grpEd || grpOcc) return; setGrpOcc(true); setGrpMsg("");
@@ -1971,7 +2000,7 @@ function EcranConcours() {
   }
   function carteGroupe(g, gi) {
     var aMoi = moi && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; });
-    var conf = gestion ? conflitsDe(g) : [];
+    var conf = gestion ? doublonsDe(g).concat(conflitsDe(g)) : [];
     return h("div", { key: g.id || g.__nv || gi, className: "hc-grp" + (aMoi ? " moi" : "") },
       h("div", { className: "hc-grp-t" }, h("b", null, g.nom || (F("Groupe ") + (gi + 1))), g.heure_rdv ? h("span", null, g.heure_rdv) : null, (gestion && !g.publie) ? h("i", null, F("brouillon")) : null),
       (g.couples || []).length ? h("div", { className: "hc-gms" }, g.couples.map(membreCouple)) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
@@ -1985,17 +2014,25 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", onClick: proposer }, F("Proposer des groupes")),
         h("button", { type: "button", className: "hc-btn-l", onClick: nouveauGroupe }, F("+ Nouveau groupe"))),
       grs.map(function (g, gi) {
-        return h("div", { key: g.id || g.__nv, className: "hc-ged-g" },
+        var alertes = doublonsDe(g).concat(conflitsDe(g)), nbC = (g.couples || []).length;
+        return h("div", { key: g.id || g.__nv, className: "hc-ged-gb" }, h("div", { className: "hc-ged-g" },
           h("input", { className: "hc-ged-nom", value: g.nom || "", "aria-label": F("Nom du groupe"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.nom = v; }); }); } }),
           /* 09/11 14h15 (Blandine : « quand on écrit l'heure ce n'est pas clair, on peut même entrer 8 chiffres ») : vrai sélecteur d'heure (roue sur iPhone), enregistré au format 10h00 */
           h("input", { className: "hc-ged-h", type: "time", step: 300, value: (function () { var m = String(g.heure_rdv || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })(), "aria-label": F("Heure de rendez-vous au paddock"), onChange: function (e) { var t = String(e.target.value || ""), mm = t.match(/^(\d{2}):(\d{2})/); var v = mm ? (Number(mm[1]) + "h" + mm[2]) : ""; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.heure_rdv = v; }); }); } }),
-          h("button", { type: "button", className: "hc-ged-x", "aria-label": F("Supprimer le groupe"), onClick: function () { majBrouillon(function (n) { for (var i = n.length - 1; i >= 0; i--) { var x = n[i]; if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) { if (x.id) x.__suppr = true; else n.splice(i, 1); } } }); } }, "×"));
+          /* 13/11 (Blandine) : le × demande confirmation avant de supprimer */
+          h("button", { type: "button", className: "hc-ged-x", "aria-label": F("Supprimer le groupe"), onClick: function () { setGrpSupp(grpSupp === cleG(g) ? null : cleG(g)); } }, "×")),
+          grpSupp === cleG(g) ? h("div", { className: "hc-ged-sup" },
+            h("span", null, F("Supprimer ce groupe ?") + " " + (g.nom || "") + " · " + nbC + " " + (nbC > 1 ? F("couples") : F("couple"))),
+            h("div", { className: "hc-ged-fin", style: { marginTop: 0 } },
+              h("button", { type: "button", className: "hc-btn-l", onClick: function () { setGrpSupp(null); } }, F("Garder")),
+              h("button", { type: "button", className: "hc-btn-l", onClick: function () { setGrpSupp(null); majBrouillon(function (n) { for (var i = n.length - 1; i >= 0; i--) { var x = n[i]; if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) { if (x.id) x.__suppr = true; else n.splice(i, 1); } } }); } }, F("Supprimer")))) : null,
+          alertes.length ? h("div", { className: "hc-grp-conf" }, alertes.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null);
       }),
       h("div", { className: "hc-ged-k" }, F("Couples de l’épreuve")),
       gEp.l.map(function (p, i) {
         var cl = cleCouple(p); var dans = null; grs.forEach(function (g) { if (g.couples.some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; })) dans = g; });
         return h("div", { key: i, className: "hc-ged-c" },
-          h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || ""))),
+          h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || "")), dans ? h("i", { className: "hc-ged-dans" }, F("dans ") + (String(dans.nom || "").replace(/^Groupe\s*/i, "G") || "G")) : null),   /* 13/11 : on voit qui est déjà placé */
           h("div", { className: "hc-ged-ch" }, grs.map(function (g, gi) { var on = dans === g; return h("button", { key: gi, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { affecter(p, on ? null : g); } }, String(g.nom || "").replace(/^Groupe\s*/i, "G") || ("G" + (gi + 1))); })));
       }),
       h("div", { className: "hc-ged-fin" },
@@ -3857,6 +3894,10 @@ var HC_CSS = [
   ".hc .hc-ged-g input.hc-ged-h{padding:9px 8px;color-scheme:dark;-webkit-appearance:none;appearance:none;text-align:center;min-height:40px}",
   ".hc .hc-ged-g input.hc-ged-h::-webkit-date-and-time-value{text-align:center}",
   ".hc .hc-ged-g input{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:#F3EEE4;font:inherit;font-size:14px;padding:9px 11px;min-width:0}",
+  ".hc .hc-ged-gb{display:flex;flex-direction:column;gap:6px}",
+  ".hc .hc-ged-sup{border:1px solid rgba(243,238,228,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;font-size:13px}",
+  ".hc .hc-ged-gb .hc-grp-conf{margin-top:0}",
+  ".hc .hc-ged-dans{font-style:normal;font-size:11px;color:#C9A66B;white-space:nowrap;flex:none}",
   ".hc .hc-ged-x{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:rgba(243,238,228,.7);font-size:18px;cursor:pointer}",
   ".hc .hc-ged-k{margin-top:8px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#C9A66B}",
   ".hc .hc-ged-c{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
