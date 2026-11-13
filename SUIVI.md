@@ -22,6 +22,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1320 — Passages : petit rond à droite par cavalier/cheval, encadré « À déclarer au jury » repensé, groupes rangés par groupe, chevaux sans doublon
+Blandine 13/11 12h53 → 13h05 (« Mets en ligne le reste en attendant et on peut tester ça pour cavaliers »). hype-ecran-saison.js v=154.
+- Par cavalier / par cheval : nom à gauche, petite photo ronde (cavalier, ou cheval en « Par cheval ») à droite, filet dessous — classe rcp-1. Par épreuve inchangé (modèle IMG_8420). Autres essais prêts : rcp-2 … rcp-14 (dont carrés : rcp-6, rcp-11 … rcp-14).
+- Encadré du coach « À déclarer au jury » : N° d'ordre en grand, cavalier et cheval en gras, « à la place de … » en italique, épreuve · heure, étiquette pour le jury (papiers / licence à donner, ou déjà engagé n° …), + les non partants. Habillage « sobre » (alr-0) en attendant son choix parmi alr-1 … alr-4. Plus de bordeaux : « à la place de » en ivoire gras italique.
+- Modifier les groupes : chaque groupe dans son bloc (liseré anthracite) avec SES couples dessous (« → G2 » pour déplacer), puis « Pas encore dans un groupe » (« + G1 »…), puis les non partants.
+- Chevaux : dans les Engagements, le champ Cheval est une liste des chevaux de l'équipe (+ « Un autre cheval… ») ; un nom tapé est ramené au cheval connu (« Dakota » → « Dakota ca »), aussi dans « Modifier les passages ».
+- Base (avec son accord « il faut rectifier ») : CSO Versailles, « Dakota » corrigé en « Dakota ca » (tour d'Aurélie, engagement d'Aurélie, « à la place de » du tour de Maelys).
+
 ## 20261113-1310 — Passages : retour au modèle « Par épreuve », bandeaux fins « N » par cavalier / par cheval, non partants en bas
 Blandine 13/11 12h43-12h50 (« plus rien ne ressemble à rien… on avait un truc qui était bien par épreuve » ; choix « N » ; « non partant… passe-les en bas »). hype-ecran-saison.js v=153.
 - Par épreuve (fiche, Engagements, Modifier les passages) : de nouveau son modèle IMG_8420 (grand bandeau photo arrondi). Le visuel D est retiré.
