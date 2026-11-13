@@ -994,7 +994,7 @@ var CSS2 = [
   /* 13/11 11h03 (Blandine : « 10 fois trop gros, je vois que 2 cavaliers par page ») : propositions plus compactes */
   /* 13/11 11h06 (Blandine : « j'ai toujours pas l'option non partant ») : un vrai bouton, plus un simple lien */
   /* 13/11 11h06 (Blandine : « à la place de Dakota… le faire ressortir en bordeaux, que le coach le voie bien ») */
-  ".rc-li .q>span.rc-alp{color:#D06A78 !important;font-style:normal;font-weight:500}",
+  ".rc-li .q>span.rc-alp{color:#D06A78 !important;font-style:normal;font-weight:500;white-space:normal;overflow:visible}",
   ".hc-alerte{margin:0 0 18px;padding:14px 16px;border:1px solid rgba(208,106,120,.55);border-radius:16px;background:rgba(208,106,120,.07)}",
   ".hc-alerte h3{margin:0 0 8px;font-family:Montserrat,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#D06A78}",
   ".hc-alerte button{display:block;width:100%;text-align:start;padding:7px 0;border:0;border-top:1px solid rgba(243,238,228,.07);background:none;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:13px;line-height:1.35;cursor:pointer}",
@@ -1003,6 +1003,12 @@ var CSS2 = [
   ".hc-alerte button em{font-style:normal;color:#D06A78}",
   ".hc-alerte button small{display:block;color:rgba(243,238,228,.55);font-size:11.5px}",
   ".hc-alerte button small.hc-al-ep{color:#F3EEE4;font-weight:600;letter-spacing:.02em;margin-bottom:2px}",
+  /* 13/11 12h44 (Blandine : « les mélanges doré et bordeaux, ça passe pas du tout ») : propositions de couleurs pour les changements */
+  "html.alt-1 .rc-li .q>span.rc-alp{color:#F3EEE4 !important;font-style:italic}html.alt-1 .hc-alerte{border-color:rgba(243,238,228,.45);background:rgba(243,238,228,.05)}html.alt-1 .hc-alerte h3,html.alt-1 .hc-alerte button em{color:#F3EEE4}html.alt-1 .hc-alerte button em{font-style:italic}",
+  "html.alt-2 .rc-li .q>span.rc-alp{color:#7FB6C0 !important}html.alt-2 .hc-alerte{border-color:rgba(95,163,174,.6);background:rgba(47,111,122,.16)}html.alt-2 .hc-alerte h3,html.alt-2 .hc-alerte button em{color:#7FB6C0}",
+  "html.alt-3 .rc-li .q>span.rc-alp{color:#E8A15A !important}html.alt-3 .hc-alerte{border-color:rgba(232,161,90,.55);background:rgba(232,161,90,.08)}html.alt-3 .hc-alerte h3,html.alt-3 .hc-alerte button em{color:#E8A15A}",
+  "html.alt-4 .rc-li .q>span.rc-alp{color:#F3EEE4 !important;font-weight:600}html.alt-4 .hc-alerte{border:0;background:#F3EEE4}html.alt-4 .hc-alerte h3{color:#0B0E0C}html.alt-4 .hc-alerte button{color:#0B0E0C;border-top-color:rgba(11,14,12,.12)}html.alt-4 .hc-alerte button em{color:#0B0E0C;font-weight:600;text-decoration:underline}html.alt-4 .hc-alerte button small{color:rgba(11,14,12,.6)}html.alt-4 .hc-alerte button small.hc-al-ep{color:#0B0E0C}",
+  "html.alt-5 .rc-li .q>span.rc-alp{color:#FF6B6B !important}html.alt-5 .hc-alerte{border-color:rgba(255,107,107,.6);background:rgba(255,107,107,.06)}html.alt-5 .hc-alerte h3,html.alt-5 .hc-alerte button em{color:#FF6B6B}html.alt-5 .rc-li .rc-mod{border-color:rgba(243,238,228,.3) !important}html.alt-5 .rc-li .rc-mod path{stroke:#F3EEE4}",
   ".e1 .rc-modnp{min-height:38px;padding:0 16px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#C9A66B;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer}",
   ".e1 .rc-modnp.on{border-color:#F3EEE4;color:#F3EEE4}",
   "html.rcv-a .rc-le{margin-bottom:18px}html.rcv-a .rc-ban{height:64px;border-radius:16px}html.rcv-a .rc-ban .t{bottom:9px}html.rcv-a .rc-ban .t b{font-size:22px}html.rcv-a .rc-li{padding:7px 0;grid-template-columns:22px 38px minmax(0,1fr) auto 32px !important}html.rcv-a .rc-li img,html.rcv-a .rc-vide3{width:38px;height:38px}",
@@ -1015,6 +1021,10 @@ var CSS2 = [
   "html.rcv-g .rc-le{display:grid;grid-template-columns:92px minmax(0,1fr);column-gap:12px;margin-bottom:18px;border-top:1px solid rgba(201,166,107,.3);padding-top:10px}html.rcv-g .rc-le>*{grid-column:2}html.rcv-g .rc-ban{grid-column:1 !important;grid-row:1 / span 30;height:auto;min-height:110px;border-radius:12px;margin:0}html.rcv-g .rc-ban img{object-position:50% 30%}html.rcv-g .rc-ban .voile{background:linear-gradient(180deg,rgba(7,10,8,0) 35%,rgba(7,10,8,.92))}html.rcv-g .rc-ban .t{left:8px;right:6px;bottom:8px}html.rcv-g .rc-ban .t b{font-size:16px;line-height:1.05;overflow-wrap:anywhere}html.rcv-g .rc-ban .t span{font-size:9.5px}html.rcv-g .rc-li{padding:5px 0;grid-template-columns:16px 32px minmax(0,1fr) auto 28px !important;gap:8px}html.rcv-g .rc-li img,html.rcv-g .rc-vide3{width:32px;height:32px}html.rcv-g .rc-li .rc-mod{width:28px;height:28px}html.rcv-g .rc-li .hh{font-size:16px}html.rcv-g .rc-li .q b{font-size:15.5px !important}",
   "html.rcv-h .rc-le{margin-bottom:18px}html.rcv-h .rc-ban{height:80px;border-radius:0;background:#070a08;border-bottom:1px solid rgba(201,166,107,.35)}html.rcv-h .rc-ban img{left:auto;right:0;width:62%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);mask-image:linear-gradient(90deg,transparent,#000 55%);object-position:50% 35%}html.rcv-h .rc-ban .voile{display:none}html.rcv-h .rc-ban .t{left:0;bottom:12px}html.rcv-h .rc-ban .t b{font-size:26px}html.rcv-h .rc-li{padding:6px 0;grid-template-columns:22px 36px minmax(0,1fr) auto 30px !important}html.rcv-h .rc-li img,html.rcv-h .rc-vide3{width:36px;height:36px}html.rcv-h .rc-li .rc-mod{width:30px;height:30px}",
   "html.rcv-i .rc-le{margin-bottom:16px}html.rcv-i .rc-ban{height:56px;border-radius:10px}html.rcv-i .rc-ban .t{bottom:auto;top:50%;transform:translateY(-50%);display:flex;align-items:baseline;justify-content:space-between}html.rcv-i .rc-ban .t b{font-size:21px}html.rcv-i .rc-li{position:relative;overflow:hidden;padding:9px 0;grid-template-columns:22px minmax(0,1fr) auto 30px !important}html.rcv-i .rc-li>img{position:absolute;right:0;top:0;width:58%;height:100%;border:0;border-radius:0;object-fit:cover;object-position:50% 30%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent,#000 70%);mask-image:linear-gradient(90deg,transparent,#000 70%);pointer-events:none}html.rcv-i .rc-li>.rc-vide3{display:none}html.rcv-i .rc-li>*:not(img){position:relative;z-index:1}html.rcv-i .rc-li .hh{text-shadow:0 1px 8px #000}html.rcv-i .rc-li .rc-mod{width:30px;height:30px;background:rgba(7,10,8,.55)}",
+  /* 13/11 12h48 (Blandine : « on avait un truc qui était bien sur la page par épreuve… les trois sont devenus horribles ») :
+     par épreuve = le modèle d'origine (IMG_8420, grand bandeau photo) ; par cavalier / par cheval = le même bandeau, en plus fin */
+  "html.rcv-m .g-cav .rc-ban,html.rcv-m .g-ch .rc-ban{height:76px}html.rcv-m .g-cav .rc-ban .t,html.rcv-m .g-ch .rc-ban .t{bottom:12px}html.rcv-m .g-cav .rc-ban .t b,html.rcv-m .g-ch .rc-ban .t b{font-size:25px}html.rcv-m .g-cav,html.rcv-m .g-ch{margin-bottom:20px}",
+  "html.rcv-n .g-cav .rc-ban,html.rcv-n .g-ch .rc-ban{height:76px;background:#070a08}html.rcv-n .g-cav .rc-ban img,html.rcv-n .g-ch .rc-ban img{left:auto;right:0;width:60%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 50%);mask-image:linear-gradient(90deg,transparent,#000 50%)}html.rcv-n .g-cav .rc-ban .voile,html.rcv-n .g-ch .rc-ban .voile{display:none}html.rcv-n .g-cav .rc-ban .t,html.rcv-n .g-ch .rc-ban .t{bottom:12px}html.rcv-n .g-cav .rc-ban .t b,html.rcv-n .g-ch .rc-ban .t b{font-size:25px}html.rcv-n .g-cav,html.rcv-n .g-ch{margin-bottom:20px}",
   "html.rc-leger .rc-ban{height:auto;border-radius:0;background:none;overflow:visible;margin:0 0 6px;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.28)}",
   "html.rc-leger .rc-ban img,html.rc-leger .rc-ban .voile{display:none}",
   "html.rc-leger .rc-ban .t{position:static}",
@@ -1255,7 +1265,7 @@ var HS_IMG_LOTS_CAV = ["images/concours-carte-passages.webp", "images/article-cs
 var HS_IMG_LOTS_CH = ["images/concours-carte-medias.webp", "images/galop1-hero-bai.webp", "images/galop6-hero-gris.webp", "images/concours-hero-bai-tresse.webp"];
 /* 13/11 12h16 (Blandine : « Mets D que je vois si ça passe ») : listes des passages en visuel D (petite vignette photo à côté du nom).
    Les autres visuels restent essayables : classe rcv-a, -b, -c, -e … -i sur <html>. */
-try { var _rcR = document.documentElement; if (!/\brcv-/.test(_rcR.className)) _rcR.classList.add("rcv-d"); } catch (eRcv) { }
+try { var _rcR = document.documentElement; if (!/\brcv-/.test(_rcR.className)) _rcR.classList.add("rcv-n");   /* 13/11 12h50 : choix N de Blandine */ } catch (eRcv) { }
 /* 13/11 : « piste PISTE 1 » devient « piste 1 » */
 function hsPiste(v) { var t = String(v || "").trim(); return "piste " + t.replace(/^piste\s*/i, ""); }
 var HS_IMG_LOTS_EP = ["images/article-cso-saut.webp", "images/article-cso-virage.webp", "images/article-cso-appel.webp", "images/article-cso-tuile.webp"];
@@ -1954,13 +1964,13 @@ function EcranConcours() {
     (parEpreuve.length && !(typeof window !== "undefined" && window.__pasAncien)) ? h("div", { key: "pu", className: "e1 hc-pu" }, (function () {
       var grp = {}, ordre = [];
       parEpreuve.forEach(function (g) { g.l.forEach(function (p) {
-        var k = pasVue === "ch" ? String(p.cheval_nom || "—") : pasVue === "cav" ? String(p.cavalier_id || nomP(p)) : g.ep;
-        if (!grp[k]) { grp[k] = { k: k, titre: pasVue === "ch" ? String(p.cheval_nom || "—") : pasVue === "cav" ? nomP(p) : g.ep, l: [] }; ordre.push(k); }
+        var k = pasVue === "ch" ? String(p.cheval_brut || p.cheval_nom || "—") : pasVue === "cav" ? String(p.cavalier_id || nomP(p)) : g.ep;
+        if (!grp[k]) { grp[k] = { k: k, titre: pasVue === "ch" ? String(p.cheval_brut || p.cheval_nom || "—") : pasVue === "cav" ? nomP(p) : g.ep, l: [] }; ordre.push(k); }
         grp[k].l.push(p);
       }); });
-      if (pasVue !== "ep") ordre.sort(function (a, b) { return grp[a].titre.localeCompare(grp[b].titre, "fr", { sensitivity: "base" }); });
+      /* 13/11 12h43 (Blandine : « non partant, ça sert à rien qu'elle reste au milieu… passe-les en bas ») */ function tousNp(k) { return grp[k].l.every(function (p) { return p.non_partant; }); } if (pasVue !== "ep") ordre.sort(function (a, b) { return (tousNp(a) - tousNp(b)) || grp[a].titre.localeCompare(grp[b].titre, "fr", { sensitivity: "base" }); });
       return ordre.map(function (k) {
-        var g = grp[k]; g.l.sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); });
+        var g = grp[k]; g.l.sort(function (a, b) { return (!!a.non_partant - !!b.non_partant) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
         var gEp = pasVue === "ep" ? parEpreuve.filter(function (x) { return x.ep === k; })[0] : null;
         return h("div", { key: "pu" + k, className: "rc-le g-" + pasVue },
           h("div", { className: "rc-ban" }, (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; var src = q ? ((typeof vignetteHype === "function") ? vignetteHype(phEq[q.cheval_id], 900, 300) : phEq[q.cheval_id]) : HS_IMG_LOTS_EP[ordre.indexOf(k) % 4]; return h("img", { src: src, alt: "" }); })(), h("div", { className: "voile" }), h("div", { className: "t" }, h("b", null, g.titre), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))))),
@@ -5599,9 +5609,9 @@ function EcranEngagements() {
     function groupesE(mode) {
       var g = {}, ord = [];
       ordreEp.forEach(function (e) { parEp[e].forEach(function (x) { var c = mode === "cav" ? "c" + x.i : (x.ch || F("cheval à choisir")); if (!g[c]) { g[c] = { titre: mode === "cav" ? (function () { var np = nomPrenom(x.nom); return [np[1], np[0]].filter(Boolean).join(" "); })() : c, l: [] }; ord.push(c); } g[c].l.push(Object.assign({ e: e }, x)); }); });
-      if (mode === "cav") ord.sort(function (a, b) { return Number(a.slice(1)) - Number(b.slice(1)); }); else ord.sort(function (a, b) { return a.localeCompare(b, "fr"); });
+      function tousNp(c) { return g[c].l.every(function (x) { return x.np; }); } if (mode === "cav") ord.sort(function (a, b) { return (tousNp(a) - tousNp(b)) || (Number(a.slice(1)) - Number(b.slice(1))); }); else ord.sort(function (a, b) { return (tousNp(a) - tousNp(b)) || a.localeCompare(b, "fr"); });
       return ord.map(function (c) {
-        var l = g[c].l.slice().sort(function (a, b) { return mode === "cav" ? a.n - b.n : (a.h ? hsMinutes(String(a.h).replace("~", "")) : 99999) - (b.h ? hsMinutes(String(b.h).replace("~", "")) : 99999); });
+        var l = g[c].l.slice().sort(function (a, b) { return (a.np - b.np) || (mode === "cav" ? a.n - b.n : (a.h ? hsMinutes(String(a.h).replace("~", "")) : 99999) - (b.h ? hsMinutes(String(b.h).replace("~", "")) : 99999)); });
         return h("div", { key: c, className: "rc-le g-" + mode },
           h("div", { className: "rc-ban" }, (function () { var q = l.filter(function (x) { return x.ch; })[0]; return h("img", { src: q ? photoCh(q.ch) : HS_IMG_LOTS_EP[ord.indexOf(c) % 4], alt: "" }); })(), h("div", { className: "voile" }), h("div", { className: "t" }, h("b", null, g[c].titre), h("span", null, l.length + (l.length > 1 ? F(" tours") : F(" tour"))))),
           l.map(function (x, j) { return ligneE(x, j, x.e, mode); }));
@@ -5663,6 +5673,7 @@ function EcranEngagements() {
         var l0 = parEp[e], connus = l0.filter(function (x) { return x.h; }).length, sorti = connus === l0.length && l0.length > 0;
         var liste = l0.slice();
         if (connus) liste.sort(function (a, b) { var ma = a.h ? hsMinutes(String(a.h).replace("~", "")) : 99999, mb = b.h ? hsMinutes(String(b.h).replace("~", "")) : 99999; return ma - mb; });
+        liste.sort(function (a, b) { return a.np - b.np; });   /* 13/11 : les non partants en bas (tri stable) */
         var phB = (l0.filter(function (x) { return x.ch; })[0] || {}).ch;
         return h("div", { key: e, className: "rc-le g-ep" },
           h("div", { className: "rc-ban" }, phB ? h("img", { src: photoCh(phB), alt: "" }) : null, h("div", { className: "voile" }),

@@ -22,6 +22,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1310 — Passages : retour au modèle « Par épreuve », bandeaux fins « N » par cavalier / par cheval, non partants en bas
+Blandine 13/11 12h43-12h50 (« plus rien ne ressemble à rien… on avait un truc qui était bien par épreuve » ; choix « N » ; « non partant… passe-les en bas »). hype-ecran-saison.js v=153.
+- Par épreuve (fiche, Engagements, Modifier les passages) : de nouveau son modèle IMG_8420 (grand bandeau photo arrondi). Le visuel D est retiré.
+- Par cavalier / par cheval : bandeau « N » de 76 px — nom sur fond noir à gauche, photo en fondu à droite (classe rcv-n sur <html> ; rcv-m = photo pleine largeur, gardée en réserve).
+- Non partants en bas : dans chaque groupe, et un cavalier/cheval entièrement non partant passe en dernier.
+- Par cheval : le titre du groupe n'affiche plus « (à la place de …) » ; « à la place de … » passe à la ligne au lieu d'être coupé.
+- EN ATTENTE : couleur des changements (bordeaux jugé « pas du tout » avec le doré) — 5 propositions montrées : ivoire, bleu pétrole, ambre, encadré clair, rouge sans doré (classes alt-1 … alt-5 déjà prêtes).
+
 ## 20261113-1305 — Passages des concours : visuel D (plus compact), alerte des changements pour la coach, bouton Non partant
 Blandine 13/11 11h03 → 12h16 (« 10 fois trop gros… 2 cavaliers par page » ; « Mets D que je vois si ça passe »). hype-ecran-saison.js v=152.
 - Listes des passages (fiche du concours, Engagements, Modifier les passages) en visuel D : petite vignette photo carrée à côté du nom du groupe, lignes serrées. Autres visuels essayables par classe sur <html> : rcv-a, -b, -c (compacts) ; rcv-e … -i (« cinéma » plus petits : bandeau fin, carte, affiche à gauche, photo en fondu à droite, photo dans chaque ligne).
