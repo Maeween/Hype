@@ -275,6 +275,12 @@ var HS_TR_BRUT = {
   "un autre groupe": ["another group", "otro grupo", "un altro gruppo", "別のグループ", "einer anderen Gruppe", "مجموعة أخرى", "另一个分组", "een andere groep", "outro grupo", "en annan grupp", "другой группе", "innej grupie", "다른 그룹"],
   " à ": [" at ", " a las ", " alle ", " ", " um ", " الساعة ", " ", " om ", " às ", " kl. ", " в ", " o ", " "],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up entrance. Remember to arrange for someone to hold your horse during the course walk.", "Por razones prácticas, agrupamos los recorridos. Los horarios en dorado son citas en la entrada de la pista de calentamiento. Prevé a alguien que sujete tu caballo durante el reconocimiento del recorrido.", "Per motivi pratici, raggruppiamo i passaggi. Gli orari in oro sono appuntamenti all’ingresso del campo prova. Ricordati di avere qualcuno che tenga il tuo cavallo durante la ricognizione del percorso.", "運営上の理由から、出番をグループにまとめています。金色の時刻は練習馬場入口での集合時刻です。コース下見の間、馬を持ってくれる人を手配しておいてください。", "Aus praktischen Gründen fassen wir die Starts in Gruppen zusammen. Die goldenen Uhrzeiten sind Treffpunkte am Eingang des Abreiteplatzes. Denk daran, jemanden zu organisieren, der dein Pferd während der Parcoursbesichtigung hält.", "لأسباب عملية، نجمع المرورات في مجموعات. الأوقات باللون الذهبي هي مواعيد عند مدخل ساحة التحمية. تذكّر أن تُرتّب شخصاً يمسك حصانك أثناء معاينة المسار.", "出于实际考虑，我们把出场分成几组。金色的时间是在热身场入口的集合时间。记得安排人在你看场地时帮你牵马。", "Om praktische redenen bundelen we de starts in groepen. De gouden tijden zijn afspraken bij de ingang van de losrijpiste. Zorg dat iemand je paard vasthoudt tijdens de parcoursverkenning.", "Por razões práticas, agrupamos as passagens. Os horários a dourado são encontros à entrada do picadeiro de aquecimento. Lembra-te de ter alguém para segurar o teu cavalo durante o reconhecimento do percurso.", "Av praktiska skäl samlar vi starterna i grupper. Tiderna i guld är samlingstider vid ingången till framridningen. Se till att någon kan hålla din häst under banvandringen.", "По практическим причинам мы объединяем выступления в группы. Время, выделенное золотым, — это встреча у входа на разминку. Позаботься, чтобы кто-то подержал твою лошадь во время просмотра маршрута.", "Ze względów praktycznych łączymy przejazdy w grupy. Godziny na złoto to zbiórki przy wejściu na rozprężalnię. Pamiętaj, aby ktoś potrzymał twojego konia podczas zapoznania z parkurem.", "편의상 출전을 그룹으로 묶었어요. 금색 시간은 워밍업장 입구 집합 시간이에요. 코스 답사 동안 말을 잡아 줄 사람을 꼭 준비하세요."],
+  "Modifier les horaires": ["Edit times", "Editar horarios", "Modifica orari", "時刻を編集", "Zeiten ändern", "تعديل الأوقات", "修改时间", "Tijden wijzigen", "Editar horários", "Ändra tider", "Изменить время", "Edytuj godziny", "시간 수정"],
+  "Reconnaissance par épreuve": ["Course walk per class", "Reconocimiento por prueba", "Ricognizione per prova", "競技ごとのコース下見", "Besichtigung pro Prüfung", "المعاينة حسب المسابقة", "按比赛看场", "Verkenning per proef", "Reconhecimento por prova", "Banvandring per klass", "Просмотр по соревнованиям", "Zapoznanie na konkurs", "종목별 코스 답사"],
+  "Horaires enregistrés.": ["Times saved.", "Horarios guardados.", "Orari salvati.", "時刻を保存しました。", "Zeiten gespeichert.", "تم حفظ الأوقات.", "时间已保存。", "Tijden opgeslagen.", "Horários guardados.", "Tider sparade.", "Время сохранено.", "Godziny zapisane.", "시간을 저장했어요."],
+  "une alerte par épreuve, 15 min avant, aux cavaliers de l’épreuve": ["one alert per class, 15 min before, to the riders in that class", "una alerta por prueba, 15 min antes, a los jinetes de la prueba", "un avviso per prova, 15 min prima, ai cavalieri della prova", "競技ごとに15分前、その競技の騎手に通知", "eine Erinnerung pro Prüfung, 15 Min. vorher, an die Reiter der Prüfung", "تنبيه لكل مسابقة قبل 15 دقيقة لفرسان المسابقة", "每个比赛提前15分钟提醒该比赛的骑手", "één melding per proef, 15 min vooraf, aan de ruiters van die proef", "um alerta por prova, 15 min antes, aos cavaleiros da prova", "en påminnelse per klass, 15 min före, till ryttarna i klassen", "одно напоминание на соревнование, за 15 мин, его участникам", "jedno przypomnienie na konkurs, 15 min wcześniej, dla jego jeźdźców", "종목별로 15분 전에 해당 종목 기수에게 알림"],
+  "passe à ": ["rides at ", "pasa a las ", "passa alle ", "の出番は ", "startet um ", "يمر في ", "出场时间 ", "start om ", "passa às ", "startar ", "выступает в ", "startuje o ", "출전 시간 "],
+  "après le premier passage du groupe": ["after the group's first round", "después del primer pase del grupo", "dopo il primo passaggio del gruppo", "（グループ最初の出番の後）", "nach dem ersten Start der Gruppe", "بعد أول مرور في المجموعة", "在本组第一个出场之后", "na de eerste start van de groep", "depois da primeira passagem do grupo", "efter gruppens första start", "после первого выступления группы", "po pierwszym przejeździe grupy", "그룹 첫 출전 이후"],
   "à la place de ": ["instead of ", "en lugar de ", "al posto di ", "の代わり：", "statt ", "بدلاً من ", "代替 ", "in plaats van ", "em vez de ", "i stället för ", "вместо ", "zamiast ", "대신: "],
   "Changer": ["Change", "Cambiar", "Cambia", "変更", "Ändern", "تغيير", "更换", "Wijzigen", "Mudar", "Ändra", "Изменить", "Zmień", "변경"],
   "Valider": ["Confirm", "Confirmar", "Conferma", "確定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Подтвердить", "Zatwierdź", "확인"],
@@ -1413,6 +1419,8 @@ function EcranConcours() {
   var _mo = React.useState(false); var menuOuv = _mo[0], setMenuOuv = _mo[1];
   var _ou = React.useState({}); var ouvert = _ou[0], setOuvert = _ou[1];
   var _io = React.useState(false); var infosOuv = _io[0], setInfosOuv = _io[1];
+  var _hf = React.useState(null); var horForm = _hf[0], setHorForm = _hf[1];   /* 13/11 : formulaire « Modifier les horaires » (coach) */
+  var _hm = React.useState(""); var horMsg = _hm[0], setHorMsg = _hm[1];
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
   var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq0 = _pq[1];
@@ -1737,9 +1745,11 @@ function EcranConcours() {
     { k: F("Rendez-vous"), v: ev.heure },
     { k: F("Embarquement"), v: ev.heure_embarquement },
     { k: F("Départ"), v: ev.heure_depart, alerte: true },
-    { k: F("Reconnaissance"), v: ev.heure_reco, alerte: true },
+    { k: F("Reconnaissance"), v: (Array.isArray(ev.recos) && ev.recos.length) ? "" : ev.heure_reco, alerte: true },
     { k: F("Début de l’épreuve"), v: ev.heure_epreuve }
   ].filter(function (x) { return x.v && String(x.v).trim(); });
+  /* 13/11 (Blandine : « quand il y a plusieurs recos, il faut 1 heure de reco par épreuve et une alerte par épreuve ») */
+  (Array.isArray(ev.recos) ? ev.recos : []).forEach(function (r, i) { if (r && r.heure) horaires.splice(Math.min(horaires.length, 3), 0, { k: F("Reconnaissance") + " · " + (r.ep || ""), v: r.heure, alerte: true }); });
   var aAlerte = horaires.some(function (x) { return x.alerte; });
   var lienPlan = ev.lieu ? ("https://maps.apple.com/?q=" + encodeURIComponent(ev.lieu)) : null;
   var fini = String(ev.date_fin || ev.date_jour || "").slice(0, 10) < (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
@@ -1979,6 +1989,15 @@ function EcranConcours() {
     oCh.forEach(function (k) { var x = parCh[k]; if (x.l.length > 1) out.push(x.nom + F(" est deux fois dans ce groupe") + " (" + x.l.join(", ") + ")"); });
     return out;
   }
+  /* 13/11 (Blandine : « 30 mn », par rapport au premier passage du groupe) : prévenir quand un couple passe plus de 30 min après le premier du groupe */
+  function attenteDe(g) {
+    var l = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)]; }).filter(function (p) { return p && !p.non_partant && hsMinutes(p.passage) < 9999; });
+    if (l.length < 2) return [];
+    l.sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); });
+    var m0 = hsMinutes(l[0].passage), out = [];
+    l.forEach(function (p) { var d = hsMinutes(p.passage) - m0; if (d > 30) out.push(prenomDe(p) + (p.ordre_passage ? " (" + F("N° ") + p.ordre_passage + ")" : "") + " " + F("passe à ") + p.passage + " · " + (d >= 60 ? Math.floor(d / 60) + " h " + String(d % 60).padStart(2, "0") : d + " min") + " " + F("après le premier passage du groupe") + " (" + l[0].passage + ")"); });
+    return out;
+  }
   function membreCouple(c, k) {
     var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, avatar_url: null };
     return h("div", { key: k, className: "hc-gm" + (moi && p.cavalier_id === moi.id ? " moi" : "") }, avatarHc(p, 46), h("b", null, prenomDe(p)), h("span", null, p.cheval_nom || c.cheval_nom || ""));
@@ -2068,21 +2087,29 @@ function EcranConcours() {
       if (cible) n.forEach(function (g) { if (g === cible || (g.id && g.id === cible.id) || (g.__nv && g.__nv === cible.__nv)) g.couples.push({ engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_nom || null }); });
     });
   }
-  function proposer() {   /* groupes de 4 à 6 couples dans l'ordre de passage ; rendez-vous 30 min avant le 1er passage du groupe quand on le connaît */
+  function proposer() {   /* groupes de 6 couples au plus, sur 30 min de passages au plus ; rendez-vous 30 min avant le 1er passage du groupe quand on le connaît */
     if (!gEp) return;
     /* 13/11 (Blandine : « il détruit tout ce que tu avais fait avant ») : les groupes déjà faits ne bougent plus — on ne répartit que les couples libres */
     var places = {}; (grpEd || []).forEach(function (g) { if (g.__suppr || hsNomEpreuve(g.epreuve) !== epPaddock) return; (g.couples || []).forEach(function (c) { places[c.engagement_id + ":" + (c.numero || 1)] = 1; }); });
     var dejaFaits = Object.keys(places).length > 0;
-    var l = gEp.l.filter(function (p) { return !places[cleCouple(p)] && !p.non_partant; }).sort(function (a, b) { return ((a.ordre_passage || 999) - (b.ordre_passage || 999)) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
+    var l = gEp.l.filter(function (p) { return !places[cleCouple(p)] && !p.non_partant; }).sort(function (a, b) { return (hsMinutes(a.passage) - hsMinutes(b.passage)) || ((a.ordre_passage || 999) - (b.ordre_passage || 999)); });
     if (!l.length) { setGrpMsg(F("Tous les couples sont déjà dans un groupe.")); return; }
-    var nbG = Math.max(1, Math.ceil(l.length / 6)); var taille = Math.ceil(l.length / nbG);
+    /* 13/11 (Blandine : « quand tu mets les 30 minutes… si je fais des groupes, propose-les avant le rendez-vous paddock ») :
+       un groupe ne dépasse pas 30 min entre son premier et son dernier passage (6 couples au plus) ; rendez-vous 30 min avant son 1er passage */
+    var parts = [], cour = null;
+    l.forEach(function (p) {
+      var m = minutesDe(p.passage);
+      if (!cour || cour.l.length >= 6 || (m != null && cour.m0 != null && m - cour.m0 > 30)) { cour = { m0: m, l: [] }; parts.push(cour); }
+      if (cour.m0 == null && m != null) cour.m0 = m;
+      cour.l.push(p);
+    });
     majBrouillon(function (n) {
       var k0 = prochainNum(n);
-      for (var k = 0; k < nbG; k++) {
-        var part = l.slice(k * taille, (k + 1) * taille); if (!part.length) continue;
-        var m1 = minutesDe(part[0].passage);
+      for (var k = 0; k < parts.length; k++) {
+        var part = parts[k].l; if (!part.length) continue;
+        var m1 = parts[k].m0;
         n.push({ __nv: Date.now() + Math.random() + k, agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + (k0 + k), heure_rdv: m1 == null ? "" : fmtMin(m1 - 30), publie: false, ordre: n.length,
-          couples: part.map(function (p) { return { engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_nom || null }; }) });
+          couples: part.map(function (p) { return { engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_brut || p.cheval_nom || null }; }) });
       }
     });
     setGrpMsg(dejaFaits ? F("Nouveaux groupes proposés pour les couples pas encore placés. Tes groupes déjà faits n’ont pas bougé. Vérifie, puis publie : rien n’est envoyé avant.") : F("Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant."));
@@ -2108,7 +2135,7 @@ function EcranConcours() {
   }
   function carteGroupe(g, gi) {
     var aMoi = moi && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; });
-    var conf = gestion ? doublonsDe(g).concat(conflitsDe(g)) : [];
+    var conf = gestion ? doublonsDe(g).concat(attenteDe(g), conflitsDe(g)) : [];
     /* 13/11 (Blandine : proposition 9) : heure de rendez-vous en grand à gauche, couples dans l'ordre de passage à droite (N°, photo, nom, cheval · heure) */
     var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || Object.assign({ pseudo: c.pseudo, cheval_nom: c.cheval_nom, cavalier_id: c.cavalier_id }, {}); })
       .sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
@@ -2131,7 +2158,7 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", onClick: proposer }, F("Proposer des groupes")),
         h("button", { type: "button", className: "hc-btn-l", onClick: nouveauGroupe }, F("+ Nouveau groupe"))),
       grs.map(function (g, gi) {
-        var alertes = doublonsDe(g).concat(conflitsDe(g)), nbC = (g.couples || []).length;
+        var alertes = doublonsDe(g).concat(attenteDe(g), conflitsDe(g)), nbC = (g.couples || []).length;
         return h("div", { key: g.id || g.__nv, className: "hc-ged-gb" }, h("div", { className: "hc-ged-g" },
           h("input", { className: "hc-ged-nom", value: g.nom || "", "aria-label": F("Nom du groupe"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.nom = v; }); }); } }),
           /* 09/11 14h15 (Blandine : « quand on écrit l'heure ce n'est pas clair, on peut même entrer 8 chiffres ») : vrai sélecteur d'heure (roue sur iPhone), enregistré au format 10h00 */
@@ -3446,14 +3473,49 @@ function EcranConcours() {
 
   /* 09/11 14h02 (Blandine : « cette partie ne devrait pas suivre de page en page… plutôt B ») — infos pratiques (lieu, départ,
      reconnaissance) + Je participe / Liste du van : seulement dans la carte Passages */
+  var recoBande = (Array.isArray(ev.recos) && ev.recos.length) ? ev.recos.filter(function (r) { return r && r.heure; }).map(function (r) { return r.heure; }).slice(0, 2).join(" · ") : ev.heure_reco;
+  /* 13/11 (Blandine : « l'embarquement, faut juste que tu me laisses rentrer l'heure » ; une reco par épreuve s'il y en a plusieurs) */
+  function versInput(v) { var m = minutesDe(v); return m == null ? "" : String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); }
+  function depuisInput(v) { return v ? fmtMin(minutesDe(v)) : ""; }
+  function ouvrirHoraires() {
+    var eps = parEpreuve.map(function (g) { return g.ep; }), anc = Array.isArray(ev.recos) ? ev.recos : [];
+    setHorMsg("");
+    setHorForm({ emb: versInput(ev.heure_embarquement), dep: versInput(ev.heure_depart), epr: versInput(ev.heure_epreuve), reco: versInput(ev.heure_reco),
+      recos: eps.length > 1 ? eps.map(function (ep) { var a = anc.filter(function (r) { return r && r.ep === ep; })[0]; return { ep: ep, heure: versInput(a ? a.heure : (anc.length ? "" : ev.heure_reco)) }; }) : null });
+  }
+  async function enregistrerHoraires() {
+    var f = horForm; if (!f) return;
+    var upd = { heure_embarquement: depuisInput(f.emb) || null, heure_depart: depuisInput(f.dep) || null, heure_epreuve: depuisInput(f.epr) || null };
+    if (f.recos) { var l = f.recos.filter(function (r) { return r.heure; }).map(function (r) { return { ep: r.ep, heure: depuisInput(r.heure) }; }); upd.recos = l.length ? l : null; upd.heure_reco = null; }
+    else { upd.heure_reco = depuisInput(f.reco) || null; upd.recos = null; }
+    try {
+      var r = await supa.from("club_agenda").update(upd).eq("id", idEv).select("id");
+      if (r && r.error) { setHorMsg(F("Erreur : ") + (r.error.message || "")); return; }
+      if (!r || !r.data || !r.data.length) { setHorMsg(F("Erreur : ") + "—"); return; }
+    } catch (e) { setHorMsg(F("Erreur : ") + String((e && e.message) || e)); return; }
+    setEv(Object.assign({}, ev, upd)); setHorForm(null); setHorMsg(F("Horaires enregistrés."));
+  }
+  function formHoraires() {
+    var f = horForm;
+    function champ(lib, cle) { return h("label", { className: "hc-chg-l" }, h("span", null, lib), h("input", { type: "time", value: f[cle] || "", onChange: function (e) { var n = Object.assign({}, f); n[cle] = e.target.value; setHorForm(n); } })); }
+    return h("div", { className: "hc-chg", style: { margin: "4px 0 10px" } },
+      champ(F("Embarquement"), "emb"), champ(F("Départ"), "dep"),
+      f.recos ? h("div", { className: "hc-chg-l" }, h("span", null, F("Reconnaissance par épreuve")),
+        f.recos.map(function (r, i) { return h("div", { key: i, style: { display: "grid", gridTemplateColumns: "1fr 120px", gap: 8, alignItems: "center", textTransform: "none", letterSpacing: 0, fontSize: 13, color: "#F3EEE4" } }, h("span", null, r.ep), h("input", { type: "time", value: r.heure || "", onChange: function (e) { var n = Object.assign({}, f, { recos: f.recos.map(function (x, j) { return j === i ? Object.assign({}, x, { heure: e.target.value }) : x; }) }); setHorForm(n); } })); }),
+        h("span", { style: { textTransform: "none", letterSpacing: 0 } }, F("une alerte par épreuve, 15 min avant, aux cavaliers de l’épreuve"))) : champ(F("Reconnaissance"), "reco"),
+      champ(F("Début de l’épreuve"), "epr"),
+      h("div", { className: "hc-ged-fin", style: { marginTop: 2 } },
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { setHorForm(null); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l", onClick: enregistrerHoraires }, F("Enregistrer"))));
+  }
   var blocPratique = h("div", { key: "prat", className: "hc-prat" },
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
       h("div", { className: "hc-bande" + (infosOuv ? " ouv" : "") },
         h("div", { className: "hc-b-ligne" },
           lieuCourt ? h("a", { className: "hc-b-case", href: lienPlan, target: "_blank", rel: "noopener" }, hcIcone("lieu"), h("div", null, h("b", null, lieuCourt))) : null,
           ev.heure_depart ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, hcIcone("heure"), h("div", null, h("small", null, F("Départ")), h("b", null, ev.heure_depart))) : null,
-          ev.heure_reco ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, hcIcone("reco"), h("div", null, h("small", null, F("Reconnaissance")), h("b", null, ev.heure_reco))) : null,
-          (!lieuCourt && !ev.heure_depart && !ev.heure_reco) ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, h("div", null, h("b", null, F("Infos pratiques")))) : null,
+          (recoBande) ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, hcIcone("reco"), h("div", null, h("small", null, F("Reconnaissance")), h("b", null, recoBande))) : null,
+          (!lieuCourt && !ev.heure_depart && !recoBande) ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, h("div", null, h("b", null, F("Infos pratiques")))) : null,
           h("button", { type: "button", className: "hc-b-chev", "aria-label": F("Infos pratiques"), onClick: function () { setInfosOuv(!infosOuv); } }, infosOuv ? "⌃" : (rtl ? "‹" : "›"))),
         infosOuv ? h("div", { className: "hc-b-detail" },
           h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Lieu")), h("b", null, ev.lieu || F("Pas encore indiqué"))),
@@ -3461,6 +3523,9 @@ function EcranConcours() {
               lienPlan ? h("a", { href: lienPlan, target: "_blank", rel: "noopener" }, F("Itinéraire") + (rtl ? " ‹" : " ›")) : null,
               /* 11/11 20h25 (Blandine : « je vois pas comment modifier le lieu ») : la coach corrige l'adresse ici */
               gestion ? h("button", { type: "button", onClick: modifierRdv, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Modifier") + (rtl ? " ‹" : " ›")) : null) : null),
+          gestion ? h("div", { className: "hs-row" }, h("div", { className: "g" }), h("button", { type: "button", onClick: ouvrirHoraires, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Modifier les horaires") + (rtl ? " ‹" : " ›"))) : null,
+          horForm ? formHoraires() : null,
+          horMsg ? h("div", { className: "hs-msg" }, horMsg) : null,
           horaires.length ? horaires.map(function (x, i) {
             return h("div", { key: i, className: "hs-row" }, h("div", { className: "g" }, h("b", null, x.k), x.alerte ? h("span", null, F("alerte 15 min avant")) : null), h("span", { className: "d" }, x.v));
           }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Les horaires ne sont pas encore indiqués.")))),

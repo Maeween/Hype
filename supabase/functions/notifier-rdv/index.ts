@@ -6,6 +6,9 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
 // - Rappels 15 min avant le départ et la reconnaissance (inscrits au rendez-vous) — inchangé.
 // - 09/11/2026 (Blandine) : PADDOCK — annonce quand la coach publie les groupes de détente,
 //   puis rappel 20 min avant l'heure de rendez-vous au paddock (cavaliers des couples du groupe).
+// - 13/11/2026 (Blandine) : une heure de reco PAR ÉPREUVE (club_agenda.recos = [{ep, heure}]) → un rappel
+//   15 min avant chaque reco, aux cavaliers engagés dans cette épreuve (remplaçant compris, non partants exclus).
+//   Paddock : le rappel suit le cavalier remplaçant et n'est plus envoyé aux non partants.
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
@@ -33,6 +36,33 @@ interface AgendaRow {
   date_jour: string
   heure_depart: string | null
   heure_reco: string | null
+  recos: { ep?: string; heure?: string }[] | null
+}
+
+function normEp(v: string | null | undefined): string {
+  return String(v || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "")
+}
+
+// 13/11 : passages d'un concours (qui monte vraiment : remplaçant compris, non partants marqués)
+async function toursDe(agendaId: string | number): Promise<{ cle: string; ep: string; user: string | null; np: boolean }[]> {
+  const { data: tours, error } = await supabase
+    .from("concours_tours")
+    .select("engagement_id, numero, epreuve, non_partant, cavalier_remplacant_id, cavalier_remplacant_nom")
+    .eq("agenda_id", agendaId)
+  if (error) throw error
+  const ids = [...new Set((tours ?? []).map((t: any) => t.engagement_id).filter(Boolean))]
+  const cav: Record<string, string> = {}
+  if (ids.length) {
+    const { data: engs, error: e2 } = await supabase.from("concours_engagements").select("id, cavalier_id").in("id", ids)
+    if (e2) throw e2
+    for (const e of (engs ?? []) as any[]) cav[e.id] = e.cavalier_id
+  }
+  return ((tours ?? []) as any[]).map((t) => ({
+    cle: `${t.engagement_id}:${t.numero || 1}`,
+    ep: normEp(t.epreuve),
+    user: t.cavalier_remplacant_id || (t.cavalier_remplacant_nom ? null : (cav[t.engagement_id] || null)),
+    np: !!t.non_partant,
+  }))
 }
 
 interface SubscriptionRow {
@@ -152,7 +182,15 @@ async function paddock(jour: string, now: Date): Promise<number> {
   if (error) throw error
   for (const g of (groupes ?? []) as any[]) {
     const ev = g.club_agenda || {}
-    const membres = (Array.isArray(g.couples) ? g.couples : []).map((c: any) => c && c.cavalier_id).filter(Boolean)
+    // 13/11 : le cavalier qui monte vraiment (remplaçant), jamais un non partant
+    let parCle: Record<string, { user: string | null; np: boolean }> = {}
+    try { for (const t of await toursDe(g.agenda_id)) parCle[t.cle] = { user: t.user, np: t.np } } catch (e) { console.error("tours paddock", e) }
+    const membres = (Array.isArray(g.couples) ? g.couples : []).map((c: any) => {
+      if (!c) return null
+      const t = parCle[`${c.engagement_id}:${c.numero || 1}`]
+      if (!t) return c.cavalier_id
+      return t.np ? null : t.user
+    }).filter(Boolean)
     const heure = parseFreeTime(g.heure_rdv)
     const libHeure = heure ? formatFrenchTime(heure.hour, heure.minute) : ""
     const dateEv = String(ev.date_jour || "")
@@ -210,7 +248,7 @@ Deno.serve(async (req) => {
 
     const { data: agenda, error: agendaError } = await supabase
       .from("club_agenda")
-      .select("id, titre, lieu, date_jour, heure_depart, heure_reco")
+      .select("id, titre, lieu, date_jour, heure_depart, heure_reco, recos")
       .eq("date_jour", jour)
 
     if (agendaError) throw agendaError
@@ -223,7 +261,9 @@ Deno.serve(async (req) => {
         { field: "heure_depart", label: "Départ" },
       ] as const
 
+      const recosEp = (Array.isArray(rdv.recos) ? rdv.recos : []).filter((r) => r && r.heure)
       for (const reminder of reminders) {
+        if (reminder.field === "heure_reco" && recosEp.length) continue   // 13/11 : remplacée par les recos par épreuve
         const rawTime = rdv[reminder.field]
         const parsedTime = parseFreeTime(rawTime)
         if (!parsedTime) {
@@ -278,6 +318,30 @@ Deno.serve(async (req) => {
         const rejected = results.filter((result) => result.status === "rejected")
         if (rejected.length > 0) console.error("Unexpected notification errors", rejected)
       }
+    }
+
+    // 13/11 : reconnaissance par épreuve — un rappel 15 min avant, aux cavaliers de l'épreuve
+    for (const rdv of (agenda ?? []) as AgendaRow[]) {
+      const recosEp = (Array.isArray(rdv.recos) ? rdv.recos : []).filter((r) => r && r.heure)
+      if (!recosEp.length) continue
+      try {
+        let tours: { cle: string; ep: string; user: string | null; np: boolean }[] | null = null
+        for (const r of recosEp) {
+          const pt = parseFreeTime(String(r.heure))
+          if (!pt) continue
+          const target = parisDateTime(jour, pt.hour, pt.minute)
+          if (!test && !isInReminderWindow(target, now)) continue
+          if (!tours) tours = await toursDe(rdv.id)
+          const cible = normEp(r.ep)
+          const ids = tours.filter((t) => !t.np && t.user && t.ep === cible).map((t) => t.user as string)
+          successfulSends += await envoyer(ids, {
+            titre: rdv.titre ?? "Concours",
+            corps: `Reconnaissance ${r.ep || ""} à ${formatFrenchTime(pt.hour, pt.minute)}${rdv.lieu ? ` · ${rdv.lieu}` : ""}`,
+            url: `/#r=${rdv.id}`,
+            tag: `rdv-${rdv.id}-reco-${cible}`,
+          })
+        }
+      } catch (e) { console.error("recos par épreuve", e) }
     }
 
     // 09/11 : paddock (une erreur ici ne doit pas empêcher les rappels de départ ci-dessus)
