@@ -162,6 +162,13 @@
         h("div", { style: { fontFamily: SERIF, fontWeight: 600, fontSize: 26, margin: "30px 0 4px" } }, t("tutosT")),
         h("svg", { width: 120, height: 10, viewBox: "0 0 120 10", style: { display: "block" } }, h("path", { d: "M1 8 C 35 1, 80 1, 119 6", stroke: CH, strokeWidth: 1, fill: "none" })),
         h("input", { value: rech, onChange: function (e) { setRech(e.target.value); }, placeholder: "🔍  " + t("cherche"), style: { width: "100%", border: "1px solid rgba(243,238,228,.15)", background: "transparent", color: IV, borderRadius: 12, padding: "11px 14px", fontFamily: M, fontSize: 16, margin: "12px 0 16px", boxSizing: "border-box" } }),
+        /* 13/11 : entrée du guide du coach (textes en français, 15 langues après relecture) */
+        h("div", { role: "button", tabIndex: 0, "data-aide-coach": "1", onClick: function () { setEcran("guide-coach"); }, style: { display: "flex", alignItems: "center", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(201,166,107,.55)", background: "#0B0E0C", cursor: "pointer", marginBottom: 16 } },
+          h("div", { style: { flex: 1, minWidth: 0, padding: "14px 16px" } },
+            h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", color: CH, fontWeight: 600 } }, "GUIDE COACH"),
+            h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, marginTop: 3, lineHeight: 1.1 } }, "Le guide du coach"),
+            h("div", { style: { fontSize: 12, color: IV3, marginTop: 4, lineHeight: 1.4 } }, "Organiser une journée de compétition, étape par étape.")),
+          h("img", { src: "images/portrait-defaut-noir.webp", alt: "", loading: "lazy", style: { display: "block", width: "38%", height: "auto", flexShrink: 0 } })),
         h("div", { style: { fontSize: 10, letterSpacing: "0.3em", color: IV3, marginBottom: 10 } }, t("secDebut")),
         tutosVus.length ? tutosVus.map(function (x, i) {
           return h("div", { key: x.id, role: "button", tabIndex: 0, onClick: function () { setTutoOuvert(x.id); }, style: { borderRadius: 14, overflow: "hidden", background: "#0E1517", border: "1px solid rgba(243,238,228,.08)", cursor: "pointer", marginBottom: 10 } },

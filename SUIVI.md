@@ -33,6 +33,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2156 — GUIDE DU COACH : entrée dans la page Aide, page « Le guide du coach », page « Journée de compétition »
+Blandine 13/11 21h46 (« je ne sais même pas comment on accède à tes pages de tuto […] une partie tuto, le guide du coach […] organiser une journée de compétition […] tous les tutos de cette journée-là »), 21h47 « Ok ».
+- Page Aide (hype-ecran-aide.js) : carte « Le guide du coach » en haut des petits tutos.
+- hype-ecran-coach.js v=3 : 3 vues — « Le guide du coach » (2hype.fr/#guide-coach : thème « Organiser une journée de compétition »), « Journée de compétition » (#coach-journee : 01 Engagements, puis Programme, Paddock, Jour J, Résultats marqués « Bientôt »), « Engagements » (#coach-engagements). Retour : Engagements → Journée → Guide → page précédente.
+- Page « Paddock » (#coach-paddock), textes mot pour mot de la maquette de Blandine (5 cartes + À savoir) ; cartes → fiche du concours. La frise passe d'une page du guide à l'autre (pages pas encore faites → page de l'appli).
+- Visuel provisoire (Blandine : « on finalisera le visuel après »). Français seulement.
+- index.html : routes #coach-…, adresse de partage selon la vue ; build 20261113-2156.
 ## 20261113-2155 — Groupes : « Enregistrer en brouillon » / « Enregistrer la version définitive et publier aux cavaliers » ; Hey Baby (Aide) connaît l'outil unique et le guide coach
 Blandine 13/11 20h38 (idée des noms de boutons) et 21h43 (« Ok », après le compte rendu de la conversation « documents / outil unique »). Fichiers : hype-ecran-saison.js (v=169), hype-ecran-aide.js (v=19), netlify/functions/assistant.js, index.html (build 20261113-2155, v=). Repris sur origin/main après les publications de l'autre conversation (outil unique, guide coach, builds 2050 → 2142) : rien d'écrasé.
 - Éditeur des groupes du paddock : « Enregistrer » → « Enregistrer en brouillon » ; « Publier aux cavaliers » → « Enregistrer la version définitive et publier aux cavaliers » (texte sur plusieurs lignes si besoin). 13 langues. L'encadré « Il te reste une étape » garde « Publier aux cavaliers ».
