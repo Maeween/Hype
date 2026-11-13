@@ -44,6 +44,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2229 — Guide du coach : harmonisation graphique et lisibilité (tous les chapitres), fonds pleine largeur, textes du chapitre Feuille de route
+Blandine 13/11 22h19 (cahier « Harmonisation graphique »), 22h21 (« pas besoin que ce soit rouge »), 22h22 (fonds de cartes pleine largeur + « Ok »), 22h25 (textes Feuille de route + 6 photos HD), 22h26 (cahier « lisibilité »).
+- Carte (composant commun) : fond photo sur toute la largeur, calé à droite, dégradé noir renforcé derrière le texte ; numéro champagne fin, filet, picto ivoire 24 px à gauche, titre 16 px semi-gras ivoire, phrase 14,5 px #DEDAD2, interligne 1,4 ; cartes qui grandissent selon le contenu.
+- Captures annotées : contour champagne discret au lieu du rouge.
+- Engagements : en-tête et fonds de la maquette (images/guide-coach/coach-eng-*). Feuille de route : en-tête, 6 fonds, camion (HD de Blandine) et nouveaux textes (Informations du concours, Horaires du concours, Ordre d'embarquement, Préparer le matériel, Matériel par cheval, Documents et vaccins ; À savoir ; vocal ; signature).
+- index.html : build 20261113-2229.
 ## 20261113-2219 — Guide du coach : chapitre 02 « Feuille de route », chapitre Engagements retravaillé ; bouton « Parler avec Hype »
 Blandine 13/11 22h10–22h18 (comparaison avec la maquette, « laisse le héros plus grand », « serrer un petit screen de l'endroit concerné… une petite flèche », « parler avec Hype, à la voix c'est redondant », cahier « Chapitre 02 : Feuille de route », « Ok »).
 - hype-ecran-coach.js : héros plus haut (cheval noir en grand, recadré sur la tête) ; cartes = numéro, filet, picto, titre, 1re phrase, photo cantonnée à droite (≈ 28 %) ; carte dépliée = texte + capture annotée de l'endroit + flèche → vers la page ; « À savoir » qui se déplie.
