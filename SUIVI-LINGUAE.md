@@ -1,3 +1,10 @@
+# 🗓️ 13/11 (10h40) — PAGE DES LANGUES EN BLEU NUIT (proposition A) — horselingo `a2e4b0a` [publier], « Ok »
+
+**Choix de Blandine** : « A pour langues » (liste), avec l'image fixe du cheval au ruban de drapeaux (la vidéo de la tête de cheval est gardée pour « Le tour du monde », page vue à chaque voyage ; la page des langues ne se voit qu'à la première visite ou en changeant de langue apprise).
+**Fait** : héros = lingua-langues.webp entier, bas découpé en courbe (trait bleu) ; « HORSE LINGO » + filet + « Quelle langue veux-tu apprendre ? » en Cormorant ; liste à filets : drapeau dans un rond lumineux, nom en Cormorant, phrase, bouton « Partir » à contour bleu. Aucun texte nouveau. Cache linguae-v20.
+**Tests (Chromium, 390 px)** : aucune erreur.
+**Reste (Horse Lingo)** : leçon (A/B), lexique, carnet de souvenirs ; titre « Le lexique » sur l'encart du lexique (proposé, sans réponse).
+
 # 🗓️ 13/11 (9h35) — « LE TOUR DU MONDE » EN BLEU NUIT — horselingo `61a7ada` [publier], « Ok »
 
 **Choix de Blandine** : la vidéo de la tête de cheval (accueil de Hype, copiée en tour-cheval.mp4) va sur « Le tour du monde », la page qu'on voit à chaque voyage (« c'est dommage de gâcher la vidéo » sur la page des langues, vue une seule fois). Itinéraire des 39 villes « un peu asymétrique comme sur l'autre page ».
