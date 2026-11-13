@@ -987,6 +987,10 @@ Petite structure familiale, enseignante DE.
 ```
 
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
+### 13/11 — build 20261113-1200 — Page Aide : tuto n° 10 « Rejoins la communauté »
+- Sur le « Ok » de Blandine (10h46) : tuto n° 10 (hype-ecran-aide.js v13), 15 langues, image communaute_v2_cavalieres_suivre_v1.webp entière — 1 accueil → carte « Ma communauté » + lien « Ouvrir la communauté », 2 « Le fil » et le cœur, 3 « Nouveaux profils » / « Cavaliers à suivre » → profil → « Suivre », 4 « Les classements », 5 « Le monde Hype ». Hey Baby (aide) connaît ce tuto.
+- Prochain : n° 11 « La santé de ton cheval ».
+
 ### 20261113-1150 — Envois de vidéos et de photos qui reprennent tout seuls (partout dans l'appli)
 - Blandine (10h37) : « Ok [A + B] et applique ça pour tous les envois de vidéo où que ce soit dans l'application » + « idem pour les envois de photos s'il y a eu un problème ».
 - VIDÉOS (les 6 endroits : séance du carnet, album de cheval, souvenirs, commentaires/vidéos, collections, vidéothèque de l'équipe) :
