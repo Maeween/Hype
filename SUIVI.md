@@ -22,6 +22,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1345 — Fiche concours : encart du coach sous les passages, phrase « Touche encore pour te retirer » retirée
+Blandine 13/11 13h36-13h37. hype-ecran-saison.js v=159.
+- « À déclarer au jury » placé juste après « Passages de l'équipe » (avant « Modifier les passages »). Ordre : Le concours → Je participe / Liste du van → Règles → Organisation du paddock → Passages → À déclarer au jury.
+- Phrase « Touche encore pour te retirer » supprimée (retoucher « Tu participes » retire toujours, sans confirmation).
+
 ## 20261113-1340 — Fiche concours : encart « Le concours » en haut, jury plus bas, règles du paddock, boutons sans liseré
 Blandine 13/11 13h27 → 13h34 (« on met en ligne le reste pendant ce temps-là »). hype-ecran-saison.js v=158.
 - Encart « Le concours » (style tickets) en tête : date dans le talon, adresse, horaires remplis (embarquement, départ, reconnaissance, début), boutons « Itinéraire › » (plan) et « Infos pratiques › » (déplie le détail : modifier adresse/horaires, ajouter à l'agenda). L'ancienne ligne « 📍 Versailles › » est retirée.

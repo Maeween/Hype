@@ -262,6 +262,7 @@ var HS_TR_BRUT = {
   "Prévois si besoin quelqu’un pour marcher ton cheval pendant la reconnaissance.": ["If needed, arrange for someone to walk your horse during the course walk."],
   "Prévois de quoi changer la cartouche de ton gilet airbag, ou une protection dorsale.": ["Bring a spare cartridge for your airbag vest, or a back protector."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance."],
+  "Tu ne participes plus à ce concours ?": ["You’re no longer taking part in this show?"],
   "Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.": ["Be right on time at the warm-up arena entrance: one late rider makes the whole team late."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance. Remember to bring someone to hold your horse during the course walk, and something to replace your airbag vest cartridge or a back protector, just in case."],
   "Ne quitte jamais le paddock sans l’accord de ta coach.": ["Never leave the warm-up arena without your coach's go-ahead.", "Nunca salgas del paddock sin el permiso de tu entrenadora.", "Non lasciare mai il campo prova senza il via della tua coach.", "コーチの許可なしに準備馬場を離れないこと。", "Verlass den Abreiteplatz nie ohne das Okay deiner Trainerin.", "لا تغادر ميدان الإحماء أبدًا دون موافقة مدربتك.", "未经教练同意切勿离开热身场。", "Verlaat de losrijring nooit zonder akkoord van je coach.", "Nunca saia do paddock sem o sinal da sua treinadora.", "Lämna aldrig framridningen utan din tränares klartecken.", "Никогда не уходи с разминки без разрешения тренера.", "Nigdy nie opuszczaj rozprężalni bez zgody trenerki.", "코치의 허락 없이 준비 마장을 떠나지 마세요."],
@@ -3788,7 +3789,7 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
         h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van"))),
       /* 13/11 13h27 (Blandine) : la petite phrase se met sous « Tu participes », plus collée à « À déclarer au jury » */
-      (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: -4 } }, F("Touche encore pour te retirer.")) : null,
+      /* 13/11 13h37 (Blandine : « tu peux la virer ») : plus de phrase « Touche encore pour te retirer » */
       fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
   /* 12/11 16h25 (Blandine : « plus de recul, plus d'aération, exactement comme sur la page Team Compétition ») : héros du même
      gabarit que la page Équipe (photo à droite fondue, sur-titre doré, grand titre, filet, phrase), blocs plus espacés */
@@ -3896,7 +3897,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocJury, blocModifPassages, blocPaddock, liensPassages] : (grpAuDessus ? [blocPratique, blocRegles, blocJury, blocPaddock, blocPassages, outilsPassages, liensPassages] : [blocPratique, blocRegles, blocJury, blocPassages, blocPaddock, outilsPassages, liensPassages])) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
+        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocPaddock, blocModifPassages, blocJury, liensPassages] : (grpAuDessus ? [blocPratique, blocRegles, blocPaddock, blocPassages, blocJury, outilsPassages, liensPassages] : [blocPratique, blocRegles, blocPassages, blocJury, blocPaddock, outilsPassages, liensPassages])) : null   /* 13/11 13h36 (Blandine : « l'encart du coach après les passages de l'équipe, les deux vont bien ensemble ») */,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, filOuv ? h("div", { key: "filw" }, blocFil, h("div", { style: { textAlign: "center", margin: "6px 0 18px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setFilOuv(false); setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 300); } }, F("Terminer")))) : null, medVue ? null : blocPartageConcours] : null)   /* 09/11 soir (maquette validée) : rien d'autre sous « Par cavalier / Par cheval » que le partage ; cartes Vidéothèque / Album retirées de cet onglet */   /* 09/11 16h31 (Blandine, capture barrée) : plus de filtres, de « Partager ce concours » ni de fil sous les médias */
         : null,
@@ -4554,6 +4555,7 @@ var HC_CSS = [
   ".hc .hc-b-case b{display:block;font-weight:500;font-size:14.5px;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
   ".hc .hc-b-chev{flex:none;width:30px;background:none;border:none;color:#C9A66B;font-size:18px}",
   ".hc .hc-b-detail{border-top:1px solid rgba(201,166,107,.2)}",
+  ".hc .hc-retrait{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:10px 0 0;font-size:13px;color:rgba(243,238,228,.8)}.hc .hc-retrait button{min-height:34px;padding:0 16px;border-radius:999px;border:0;background:#151b1b;color:#F3EEE4;font:inherit;cursor:pointer}",
   ".hc .hc-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}",
   ".hc .hc-act{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:rgba(7,10,8,.35);color:#F3EEE4;font-size:14px;letter-spacing:.01em}",
   ".hc .hc-act[disabled]{opacity:.5}",
