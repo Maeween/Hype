@@ -983,6 +983,12 @@ Petite structure familiale, enseignante DE.
 ```
 
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
+### 13/11 — build 20261113-1000 — Page Aide : tuto n° 8 « Lis le Mag, regarde les vidéos »
+- Sur le « Ok » de Blandine (09h10) : tuto n° 8 (hype-ecran-aide.js v10), 15 langues, image hype-encart-video.jpg entière — 1 accueil → « Culture équestre » + lien « Ouvrir Le Mag », 2 onglets et « Rechercher un article… », 3 accueil → « Vidéothèque », Galop puis thème + lien « Ouvrir la Vidéothèque », 4 étoile → « Mes vidéos » (avec l'historique), « Ajouter une vidéo » YouTube dans un thème, 5 vidéos ◈ = Premium + lien « Découvrir Hype Premium ». Hey Baby (aide) connaît ce tuto.
+- Petite retouche du tuto 7 : espaces insécables devant « : » (français).
+- ⚠️ Erreur signalée : le commit 3bd64a4 est parti avec seulement hype-ecran-aide.js (sans numéro de build, sans ?v, sans Hey Baby ni suivi) — même cause que le 13/11 à 08h45 (vérification arrêtée mais publication lancée quand même). Corrigé ici. Désormais : publication dans un script unique qui s'arrête à la moindre erreur.
+- Prochain : n° 9 « Mon carnet ».
+
 ### 13/11 — build 20261113-0910 — Page Aide : tuto n° 7 « Révise une reprise »
 - Sur le « Ok continue » de Blandine (08h49) : tuto n° 7 (hype-ecran-aide.js v9), 15 langues, image hero-reprises-or.webp entière — 1 onglet Galops → carte « Reprises de dressage » → « Découvrir les reprises » + lien « Ouvrir les reprises », 2 choisir sa reprise en haut, 3 « Vivre la reprise » → « Découvrir les modes » → « Voir la reprise » (et « Immersion »), 4 « M'entraîner à tracer » et « Challenge », 5 « Conseils du coach » + protocole officiel PDF (certaines reprises). Hey Baby (aide) connaît ce tuto (netlify/functions/assistant.js).
 - Prochain : n° 8 « Le Mag et la Vidéothèque ».
