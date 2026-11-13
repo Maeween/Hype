@@ -335,6 +335,25 @@ var HS_TR_BRUT = {
   " est deux fois dans ce groupe": [" is twice in this group", " está dos veces en este grupo", " è due volte in questo gruppo", " がこのグループに2回入っています", " ist zweimal in dieser Gruppe", " موجود مرتين في هذه المجموعة", " 在这个分组里出现了两次", " zit twee keer in deze groep", " está duas vezes neste grupo", " är två gånger i den här gruppen", " дважды в этой группе", " jest dwa razy w tej grupie", " 이(가) 이 그룹에 두 번 있어요"],
   "Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant.": ["Suggestion ready: check it, edit it if needed, then publish. Nothing is sent before that.", "Propuesta lista: revísala, modifícala si hace falta y publícala. No se envía nada antes.", "Proposta pronta: controllala, modificala se serve, poi pubblica. Prima non viene inviato nulla.", "提案ができました。確認し、必要なら修正してから公開してください。それまで何も送信されません。", "Vorschlag fertig: prüfe ihn, ändere ihn bei Bedarf und veröffentliche ihn dann. Vorher wird nichts verschickt.", "الاقتراح جاهز: راجعه وعدّله إن لزم ثم انشره. لا يُرسل شيء قبل ذلك.", "建议已生成：请检查、按需修改后再发布。发布前不会发送任何内容。", "Voorstel klaar: controleer het, pas het zo nodig aan en publiceer dan. Eerder wordt er niets verstuurd.", "Sugestão pronta: confira, ajuste se precisar e depois publique. Nada é enviado antes.", "Förslaget är klart: kontrollera, ändra vid behov och publicera sedan. Inget skickas innan dess.", "Предложение готово: проверь, при необходимости измени и опубликуй. До этого ничего не отправляется.", "Propozycja gotowa: sprawdź ją, w razie potrzeby zmień i opublikuj. Wcześniej nic nie zostanie wysłane.", "제안이 준비됐어요. 확인하고 필요하면 수정한 뒤 공개하세요. 그 전에는 아무것도 보내지지 않아요."],
   "✓ Groupes publiés : les cavaliers concernés sont prévenus, puis rappelés 20 minutes avant leur rendez-vous.": ["✓ Groups published: the riders concerned are notified, then reminded 20 minutes before their meeting time.", "✓ Grupos publicados: se avisa a los jinetes y se les recuerda 20 minutos antes de su cita.", "✓ Gruppi pubblicati: i cavalieri interessati vengono avvisati e poi ricordati 20 minuti prima.", "✓ グループを公開しました。該当する騎手に通知し、集合20分前にもお知らせします。", "✓ Gruppen veröffentlicht: Die betroffenen Reiter werden benachrichtigt und 20 Minuten vorher erinnert.", "✓ نُشرت المجموعات: يُبلَّغ الفرسان المعنيون ثم يُذكَّرون قبل موعدهم بعشرين دقيقة.", "✓ 分组已发布：相关骑手会收到通知，并在集合前 20 分钟收到提醒。", "✓ Groepen gepubliceerd: de betrokken ruiters krijgen een melding en 20 minuten vooraf een herinnering.", "✓ Grupos publicados: os cavaleiros são avisados e lembrados 20 minutos antes do encontro.", "✓ Grupperna är publicerade: ryttarna får ett meddelande och en påminnelse 20 minuter innan.", "✓ Группы опубликованы: всадники получат уведомление и напоминание за 20 минут до сбора.", "✓ Grupy opublikowane: jeźdźcy dostaną powiadomienie i przypomnienie 20 minut przed zbiórką.", "✓ 그룹을 공개했어요. 해당 라이더에게 알리고 집합 20분 전에 다시 알려 드려요."],
+  "Il te reste une étape : tes groupes ne sont pas encore en ligne. Les cavaliers ne les voient pas.": ["One step left: your groups aren't online yet. Riders can't see them.", "Te queda un paso: tus grupos aún no están publicados. Los jinetes no los ven.", "Ti manca un passaggio: i tuoi gruppi non sono ancora online. I cavalieri non li vedono.", "あと一歩：グループはまだ公開されていません。ライダーには見えません。", "Ein Schritt fehlt noch: Deine Gruppen sind noch nicht online. Die Reiter sehen sie nicht.", "بقيت خطوة واحدة: مجموعاتك لم تُنشر بعد. الفرسان لا يرونها.", "还差一步：你的分组尚未发布，骑手还看不到。", "Nog één stap: je groepen staan nog niet online. De ruiters zien ze niet.", "Falta um passo: os teus grupos ainda não estão publicados. Os cavaleiros não os veem.", "Ett steg kvar: dina grupper är inte publicerade än. Ryttarna ser dem inte.", "Остался один шаг: твои группы ещё не опубликованы. Всадники их не видят.", "Został jeden krok: twoje grupy nie są jeszcze opublikowane. Jeźdźcy ich nie widzą.", "한 단계 남았어요: 그룹이 아직 공개되지 않았어요. 기수들은 볼 수 없어요."],
+  "Groupes enregistrés. Les cavaliers ne les voient pas encore : tu veux les publier maintenant ?": ["Groups saved. Riders can't see them yet: publish them now?", "Grupos guardados. Los jinetes aún no los ven: ¿los publicas ahora?", "Gruppi salvati. I cavalieri non li vedono ancora: vuoi pubblicarli ora?", "グループを保存しました。ライダーにはまだ見えません。今すぐ公開しますか？", "Gruppen gespeichert. Die Reiter sehen sie noch nicht: jetzt veröffentlichen?", "حُفظت المجموعات. الفرسان لا يرونها بعد: هل تريد نشرها الآن؟", "分组已保存。骑手还看不到：现在发布吗？", "Groepen opgeslagen. De ruiters zien ze nog niet: nu publiceren?", "Grupos salvos. Os cavaleiros ainda não os veem: queres publicá-los agora?", "Grupperna är sparade. Ryttarna ser dem inte än: vill du publicera nu?", "Группы сохранены. Всадники их пока не видят: опубликовать сейчас?", "Grupy zapisane. Jeźdźcy jeszcze ich nie widzą: opublikować teraz?", "그룹을 저장했어요. 기수들은 아직 볼 수 없어요: 지금 공개할까요?"],
+  "Publier maintenant": ["Publish now", "Publicar ahora", "Pubblica ora", "今すぐ公開", "Jetzt veröffentlichen", "انشر الآن", "立即发布", "Nu publiceren", "Publicar agora", "Publicera nu", "Опубликовать сейчас", "Opublikuj teraz", "지금 공개"],
+  "✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe.": ["✓ Groups published. Only riders who turned on Hype notifications are told, then reminded 20 minutes before their meeting time: remember to send the info to the team too.", "✓ Grupos publicados. Solo los jinetes que activaron las notificaciones de Hype reciben el aviso y el recordatorio 20 minutos antes de su cita: acuérdate de enviar también la info al equipo.", "✓ Gruppi pubblicati. Solo i cavalieri che hanno attivato le notifiche di Hype vengono avvisati, poi ricordati 20 minuti prima dell’appuntamento: ricordati di mandare l’info anche alla squadra.", "✓ グループを公開しました。Hypeの通知をオンにしたライダーだけに知らせが届き、集合の20分前にリマインドされます。チームにも情報を送ってね。", "✓ Gruppen veröffentlicht. Nur Reiter mit aktivierten Hype-Benachrichtigungen werden informiert und 20 Minuten vor ihrem Treffpunkt erinnert: Schick die Info auch ans Team.", "✓ نُشرت المجموعات. لا يُبلَّغ إلا الفرسان الذين فعّلوا إشعارات Hype، ثم يُذكَّرون قبل موعدهم بـ20 دقيقة: لا تنسَ إرسال المعلومة إلى الفريق أيضًا.", "✓ 分组已发布。只有开启了 Hype 通知的骑手会收到通知，并在集合前 20 分钟收到提醒：记得也把信息发给团队。", "✓ Groepen gepubliceerd. Alleen ruiters die Hype-meldingen hebben aangezet krijgen bericht en een herinnering 20 minuten voor hun afspraak: stuur de info ook naar het team.", "✓ Grupos publicados. Só os cavaleiros que ativaram as notificações do Hype são avisados e lembrados 20 minutos antes do encontro: lembra-te de enviar a info também à equipa.", "✓ Grupperna är publicerade. Bara ryttare som har slagit på Hypes notiser får besked och en påminnelse 20 minuter före sin tid: skicka infon till laget också.", "✓ Группы опубликованы. Уведомление и напоминание за 20 минут до встречи получат только всадники, включившие уведомления Hype: не забудь отправить информацию и команде.", "✓ Grupy opublikowane. Powiadomienie i przypomnienie 20 minut przed zbiórką dostaną tylko jeźdźcy z włączonymi powiadomieniami Hype: wyślij informację także drużynie.", "✓ 그룹을 공개했어요. Hype 알림을 켠 기수만 알림을 받고, 집합 20분 전에 다시 알림을 받아요: 팀에도 정보를 보내 줘."],
+  "✓ Notifications activées : tu recevras ton heure de paddock et le rappel.": ["✓ Notifications on: you’ll get your paddock time and the reminder.", "✓ Notificaciones activadas: recibirás tu hora de paddock y el recordatorio.", "✓ Notifiche attivate: riceverai l’orario del paddock e il promemoria.", "✓ 通知をオンにしました：パドックの時間とリマインドが届きます。", "✓ Benachrichtigungen aktiviert: Du bekommst deine Abreitezeit und die Erinnerung.", "✓ فُعّلت الإشعارات: ستصلك ساعة البادوك والتذكير.", "✓ 通知已开启：你会收到热身场时间和提醒。", "✓ Meldingen aan: je krijgt je losrijtijd en de herinnering.", "✓ Notificações ativadas: vais receber a tua hora de paddock e o lembrete.", "✓ Notiser på: du får din framridningstid och påminnelsen.", "✓ Уведомления включены: ты получишь время разминки и напоминание.", "✓ Powiadomienia włączone: dostaniesz godzinę rozprężalni i przypomnienie.", "✓ 알림을 켰어요: 패덕 시간과 알림을 받게 돼요."],
+  "Activation impossible pour l’instant. Réessaie depuis Hype installé sur ton téléphone.": ["Can’t turn them on right now. Try again from Hype installed on your phone.", "No se pueden activar por ahora. Vuelve a intentarlo desde Hype instalado en tu teléfono.", "Impossibile attivarle per ora. Riprova da Hype installato sul telefono.", "今は有効にできません。スマホにインストールしたHypeからもう一度試してね。", "Aktivierung gerade nicht möglich. Versuch es nochmal über das auf deinem Handy installierte Hype.", "تعذّر التفعيل حاليًا. أعد المحاولة من Hype المثبّت على هاتفك.", "暂时无法开启。请在手机上安装的 Hype 里再试一次。", "Activeren lukt nu niet. Probeer het opnieuw vanuit Hype op je telefoon.", "Não foi possível ativar agora. Tenta de novo a partir do Hype instalado no telemóvel.", "Det går inte att slå på just nu. Försök igen från Hype installerat på telefonen.", "Сейчас не удалось включить. Попробуй снова из Hype, установленного на телефоне.", "Nie można teraz włączyć. Spróbuj ponownie z Hype zainstalowanego na telefonie.", "지금은 켤 수 없어요. 휴대폰에 설치한 Hype에서 다시 해 봐."],
+  "Les notifications de Hype sont bloquées sur ce téléphone : réactive-les dans les réglages pour recevoir ton heure de paddock et le rappel 20 minutes avant.": ["Hype notifications are blocked on this phone: turn them back on in Settings to get your paddock time and the reminder 20 minutes before.", "Las notificaciones de Hype están bloqueadas en este teléfono: reactívalas en los ajustes para recibir tu hora de paddock y el recordatorio 20 minutos antes.", "Le notifiche di Hype sono bloccate su questo telefono: riattivale nelle impostazioni per ricevere l’orario del paddock e il promemoria 20 minuti prima.", "このスマホではHypeの通知がブロックされています。設定でオンに戻すと、パドックの時間と20分前のリマインドが届きます。", "Hype-Benachrichtigungen sind auf diesem Handy blockiert: Aktiviere sie in den Einstellungen, um deine Abreitezeit und die Erinnerung 20 Minuten vorher zu bekommen.", "إشعارات Hype محظورة على هذا الهاتف: أعد تفعيلها من الإعدادات لتصلك ساعة البادوك والتذكير قبلها بـ20 دقيقة.", "此手机屏蔽了 Hype 通知：请在设置中重新开启，才能收到热身场时间和提前 20 分钟的提醒。", "Hype-meldingen zijn geblokkeerd op deze telefoon: zet ze weer aan in Instellingen om je losrijtijd en de herinnering 20 minuten vooraf te krijgen.", "As notificações do Hype estão bloqueadas neste telemóvel: reativa-as nas definições para receberes a hora de paddock e o lembrete 20 minutos antes.", "Hypes notiser är blockerade på den här telefonen: slå på dem igen i Inställningar för att få din framridningstid och påminnelsen 20 minuter innan.", "Уведомления Hype заблокированы на этом телефоне: включи их в настройках, чтобы получать время разминки и напоминание за 20 минут.", "Powiadomienia Hype są zablokowane na tym telefonie: włącz je w ustawieniach, aby dostać godzinę rozprężalni i przypomnienie 20 minut wcześniej.", "이 휴대폰에서 Hype 알림이 차단돼 있어요: 설정에서 다시 켜면 패덕 시간과 20분 전 알림을 받을 수 있어요."],
+  "Pour recevoir ton heure de paddock et le rappel 20 minutes avant, ajoute Hype à l’écran d’accueil de ton téléphone (Partager, puis « Sur l’écran d’accueil »), ouvre-le depuis là et active les notifications.": ["To get your paddock time and the reminder 20 minutes before, add Hype to your phone’s Home Screen (Share, then “Add to Home Screen”), open it from there and turn on notifications.", "Para recibir tu hora de paddock y el recordatorio 20 minutos antes, añade Hype a la pantalla de inicio (Compartir y luego «Añadir a pantalla de inicio»), ábrelo desde ahí y activa las notificaciones.", "Per ricevere l’orario del paddock e il promemoria 20 minuti prima, aggiungi Hype alla schermata Home (Condividi, poi «Aggiungi alla schermata Home»), aprilo da lì e attiva le notifiche.", "パドックの時間と20分前のリマインドを受け取るには、Hypeをホーム画面に追加し（共有→「ホーム画面に追加」）、そこから開いて通知をオンにしてね。", "Um deine Abreitezeit und die Erinnerung 20 Minuten vorher zu bekommen, füge Hype zum Home-Bildschirm hinzu (Teilen, dann „Zum Home-Bildschirm“), öffne es von dort und aktiviere die Benachrichtigungen.", "لتصلك ساعة البادوك والتذكير قبلها بـ20 دقيقة، أضف Hype إلى الشاشة الرئيسية (مشاركة ثم «إضافة إلى الشاشة الرئيسية»)، وافتحه من هناك وفعّل الإشعارات.", "要收到热身场时间和提前 20 分钟的提醒，请把 Hype 添加到主屏幕（分享 → “添加到主屏幕”），从那里打开并开启通知。", "Om je losrijtijd en de herinnering 20 minuten vooraf te krijgen: zet Hype op je beginscherm (Deel, dan ‘Zet op beginscherm’), open het van daaruit en zet meldingen aan.", "Para receberes a hora de paddock e o lembrete 20 minutos antes, adiciona o Hype ao ecrã principal (Partilhar e depois «Adicionar ao ecrã principal»), abre-o a partir daí e ativa as notificações.", "För att få din framridningstid och påminnelsen 20 minuter innan: lägg till Hype på hemskärmen (Dela, sedan ”Lägg till på hemskärmen”), öppna det därifrån och slå på notiser.", "Чтобы получать время разминки и напоминание за 20 минут, добавь Hype на экран «Домой» (Поделиться → «На экран „Домой“»), открой его оттуда и включи уведомления.", "Aby dostać godzinę rozprężalni i przypomnienie 20 minut wcześniej, dodaj Hype do ekranu początkowego (Udostępnij, potem „Do ekranu początkowego”), otwórz go stamtąd i włącz powiadomienia.", "패덕 시간과 20분 전 알림을 받으려면 Hype를 홈 화면에 추가하고(공유 → '홈 화면에 추가'), 거기서 열어 알림을 켜 줘."],
+  "Active les notifications pour recevoir ton heure de paddock et le rappel 20 minutes avant.": ["Turn on notifications to get your paddock time and the reminder 20 minutes before.", "Activa las notificaciones para recibir tu hora de paddock y el recordatorio 20 minutos antes.", "Attiva le notifiche per ricevere l’orario del paddock e il promemoria 20 minuti prima.", "通知をオンにすると、パドックの時間と20分前のリマインドが届きます。", "Aktiviere die Benachrichtigungen, um deine Abreitezeit und die Erinnerung 20 Minuten vorher zu bekommen.", "فعّل الإشعارات لتصلك ساعة البادوك والتذكير قبلها بـ20 دقيقة.", "开启通知，即可收到热身场时间和提前 20 分钟的提醒。", "Zet meldingen aan om je losrijtijd en de herinnering 20 minuten vooraf te krijgen.", "Ativa as notificações para receberes a hora de paddock e o lembrete 20 minutos antes.", "Slå på notiser för att få din framridningstid och påminnelsen 20 minuter innan.", "Включи уведомления, чтобы получать время разминки и напоминание за 20 минут.", "Włącz powiadomienia, aby dostać godzinę rozprężalni i przypomnienie 20 minut wcześniej.", "알림을 켜면 패덕 시간과 20분 전 알림을 받을 수 있어요."],
+  "Activer les notifications": ["Turn on notifications", "Activar las notificaciones", "Attiva le notifiche", "通知をオンにする", "Benachrichtigungen aktivieren", "تفعيل الإشعارات", "开启通知", "Meldingen aanzetten", "Ativar as notificações", "Slå på notiser", "Включить уведомления", "Włącz powiadomienia", "알림 켜기"],
+  "Horaires du concours lus sur ton document": ["Show times read from your document", "Horarios del concurso leídos en tu documento", "Orari del concorso letti dal tuo documento", "書類から読み取った大会の時間", "Turnierzeiten aus deinem Dokument gelesen", "مواعيد المسابقة المقروءة من مستندك", "从你的文件读到的比赛时间", "Wedstrijdtijden gelezen uit je document", "Horários do concurso lidos no teu documento", "Tävlingstider lästa från ditt dokument", "Время соревнований, прочитанное из документа", "Godziny zawodów odczytane z dokumentu", "문서에서 읽은 대회 시간"],
+  "reco pas trouvée": ["walk not found", "reconocimiento no encontrado", "ricognizione non trovata", "下見の時間なし", "Begehung nicht gefunden", "لم يُعثر على الاستطلاع", "未找到踏勘时间", "verkenning niet gevonden", "reconhecimento não encontrado", "banvandring hittades inte", "просмотр не найден", "nie znaleziono zapoznania", "답사 시간 없음"],
+  "début ": ["start ", "inicio ", "inizio ", "開始 ", "Beginn ", "البداية ", "开始 ", "start ", "início ", "start ", "начало ", "start ", "시작 "],
+  "début pas trouvé": ["start not found", "inicio no encontrado", "inizio non trovato", "開始時間なし", "Beginn nicht gefunden", "لم يُعثر على البداية", "未找到开始时间", "start niet gevonden", "início não encontrado", "start hittades inte", "начало не найдено", "nie znaleziono startu", "시작 시간 없음"],
+  "Ignorer": ["Ignore", "Ignorar", "Ignora", "無視", "Ignorieren", "تجاهل", "忽略", "Negeren", "Ignorar", "Ignorera", "Пропустить", "Pomiń", "무시"],
+  "Mettre dans le résumé": ["Add to the summary", "Poner en el resumen", "Metti nel riepilogo", "概要に入れる", "In die Übersicht übernehmen", "ضعها في الملخص", "放入摘要", "In het overzicht zetten", "Pôr no resumo", "Lägg in i översikten", "Добавить в сводку", "Dodaj do podsumowania", "요약에 넣기"],
+  "✓ Horaires du concours mis à jour : ils apparaissent dans le résumé en haut de la fiche.": ["✓ Show times updated: they appear in the summary at the top of the page.", "✓ Horarios del concurso actualizados: aparecen en el resumen arriba de la ficha.", "✓ Orari del concorso aggiornati: compaiono nel riepilogo in cima alla scheda.", "✓ 大会の時間を更新しました：ページ上部の概要に表示されます。", "✓ Turnierzeiten aktualisiert: Sie stehen in der Übersicht oben auf der Seite.", "✓ حُدّثت مواعيد المسابقة: تظهر في الملخص أعلى الصفحة.", "✓ 比赛时间已更新：显示在页面顶部的摘要中。", "✓ Wedstrijdtijden bijgewerkt: ze staan in het overzicht bovenaan.", "✓ Horários do concurso atualizados: aparecem no resumo no topo da ficha.", "✓ Tävlingstiderna är uppdaterade: de syns i översikten högst upp.", "✓ Время соревнований обновлено: оно в сводке вверху страницы.", "✓ Godziny zawodów zaktualizowane: są w podsumowaniu na górze strony.", "✓ 대회 시간을 업데이트했어요: 페이지 위쪽 요약에 보여요."],
+  "(estimée : 30 min avant le début, à vérifier)": ["(estimated: 30 min before the start, please check)", "(estimado: 30 min antes del inicio, compruébalo)", "(stimata: 30 min prima dell’inizio, da verificare)", "（推定：開始30分前、要確認）", "(geschätzt: 30 Min. vor Beginn, bitte prüfen)", "(تقديري: قبل البداية بـ30 دقيقة، تحقّق منه)", "（估计：开始前 30 分钟，请核实）", "(geschat: 30 min voor de start, controleer)", "(estimado: 30 min antes do início, verifica)", "(uppskattad: 30 min före start, kontrollera)", "(примерно: за 30 мин до начала, проверь)", "(szacunkowo: 30 min przed startem, sprawdź)", "(추정: 시작 30분 전, 확인 필요)"],
+  "Plus tard": ["Later", "Más tarde", "Più tardi", "あとで", "Später", "لاحقًا", "稍后", "Later", "Mais tarde", "Senare", "Позже", "Później", "나중에"],
   "✓ Groupes enregistrés (pas encore publiés).": ["✓ Groups saved (not published yet).", "✓ Grupos guardados (aún sin publicar).", "✓ Gruppi salvati (non ancora pubblicati).", "✓ グループを保存しました（未公開）。", "✓ Gruppen gespeichert (noch nicht veröffentlicht).", "✓ حُفظت المجموعات (لم تُنشر بعد).", "✓ 分组已保存（尚未发布）。", "✓ Groepen opgeslagen (nog niet gepubliceerd).", "✓ Grupos salvos (ainda não publicados).", "✓ Grupperna är sparade (inte publicerade ännu).", "✓ Группы сохранены (ещё не опубликованы).", "✓ Grupy zapisane (jeszcze nieopublikowane).", "✓ 그룹을 저장했어요(아직 비공개)."],
   "Enregistrement impossible : ": ["Couldn't save: ", "No se pudo guardar: ", "Impossibile salvare: ", "保存できません：", "Speichern nicht möglich: ", "تعذّر الحفظ: ", "无法保存：", "Opslaan mislukt: ", "Não foi possível salvar: ", "Kunde inte spara: ", "Не удалось сохранить: ", "Nie można zapisać: ", "저장할 수 없어요: "],
   /* 09/11 12h — fiche concours : outils des cartes, Mes engagements, Historique */
@@ -882,6 +901,8 @@ var CSS2 = [
   ".hs-duo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}",
   ".hs-note{font-size:11.5px;line-height:1.5;color:var(--hs-iv2);margin-top:10px}",
   ".hs-msg{font-size:12px;line-height:1.5;color:var(--hs-ch);margin-top:10px}",
+  ".hs-horep{display:flex;justify-content:center;align-items:baseline;flex-wrap:wrap;gap:6px 22px;padding:11px 8px 9px;color:#F3EEE4;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center}",
+  ".hs-horep b{font-size:19px;font-weight:600;letter-spacing:.01em;text-transform:none;margin-inline-start:7px;color:#F3EEE4}",
   ".hs-av{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px}",
   ".hs-av span{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(243,238,228,.12);border-radius:999px;padding:3px 10px 3px 3px;font-size:12px}",
   ".hs-av img{width:24px;height:24px;border-radius:50%;object-fit:cover;background:#0B0F0E}",
@@ -1627,7 +1648,22 @@ function EcranConcours() {
   var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
-  var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
+  var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];
+  var _gdq = React.useState(false); var grpDemande = _gdq[0], setGrpDemande = _gdq[1];
+  /* 13/11 19h32 (Blandine : « fais ce que tu penses au mieux ») : seuls les cavaliers qui ont activé les notifications reçoivent l'annonce et le rappel du paddock */
+  var _pse = React.useState(""); var pushEtatJ = _pse[0], setPushEtatJ = _pse[1];
+  var _psm = React.useState(""); var pushMsgJ = _psm[0], setPushMsgJ = _psm[1];
+  React.useEffect(function () { var vivantP = true; try { if (typeof hypePushEtat === "function") hypePushEtat().then(function (e) { if (vivantP) setPushEtatJ(e || ""); }); } catch (eP) { } return function () { vivantP = false; }; }, []);
+  async function activerPushJ() {
+    setPushMsgJ("");
+    try {
+      var r = (typeof hypePushActiver === "function") ? await hypePushActiver() : { error: "impossible" };
+      if (r && r.ok) { setPushEtatJ("actif"); setPushMsgJ(F("✓ Notifications activées : tu recevras ton heure de paddock et le rappel.")); }
+      else if (r && r.error === "refuse") { setPushEtatJ("refuse"); }
+      else if (r && r.error === "impossible") { setPushEtatJ("impossible"); }
+      else setPushMsgJ(F("Activation impossible pour l’instant. Réessaie depuis Hype installé sur ton téléphone."));
+    } catch (eA) { setPushMsgJ(F("Activation impossible pour l’instant. Réessaie depuis Hype installé sur ton téléphone.")); }
+  }   /* 13/11 19h21 (Blandine) : après « Enregistrer », demander si on publie */   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
   var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
   var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
   React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
@@ -2138,7 +2174,7 @@ function EcranConcours() {
         var g = grp[k]; g.l.sort(function (a, b) { return (!!a.non_partant - !!b.non_partant) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
         var gEp = pasVue === "ep" ? parEpreuve.filter(function (x) { return x.ep === k; })[0] : null;
         return h("div", { key: "pu" + k, className: "rc-le g-" + pasVue },
-          h("div", { className: "rc-ban" }, (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; var src = q ? ((typeof vignetteHype === "function") ? vignetteHype(phEq[q.cheval_id], 900, 300) : phEq[q.cheval_id]) : HS_IMG_LOTS_EP[ordre.indexOf(k) % 4]; return h("img", { src: src, alt: "" }); })(), h("div", { className: "voile" }), (function () { var u = pasVue === "cav" ? ((g.l[0] || {}).avatar_url || "") : pasVue === "ch" ? (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; return q ? phEq[q.cheval_id] : ""; })() : ""; var lettre = String(g.titre || "?").charAt(0).toUpperCase(); return h("span", { className: "rc-rond" }, u ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 160, 160) : u, alt: "" }) : h("i", null, lettre)); })(), h("div", { className: "t" }, h("b", null, g.titre), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))))),
+          h("div", { className: "rc-ban" }, (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; var src = q ? ((typeof vignetteHype === "function") ? vignetteHype(phEq[q.cheval_id], 900, 300) : phEq[q.cheval_id]) : HS_IMG_LOTS_EP[ordre.indexOf(k) % 4]; return h("img", { src: src, alt: "" }); })(), h("div", { className: "voile" }), (function () { var u = pasVue === "cav" ? ((g.l[0] || {}).avatar_url || "") : pasVue === "ch" ? (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; return q ? phEq[q.cheval_id] : ""; })() : ""; var lettre = String(g.titre || "?").charAt(0).toUpperCase(); return h("span", { className: "rc-rond" }, u ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 160, 160) : u, alt: "" }) : h("i", null, lettre)); })(), h("div", { className: "t" }, h("b", null, g.titre), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))))), (pasVue === "ep" ? hsBlocHorEp(h, F, ev, k, ordre.length) : null),
           g.l.map(function (p, j) {
             var moiLa = moi && p.cavalier_id === moi.id, res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
             var ep = hsNomEpreuve(p.epreuve || "");
@@ -2407,8 +2443,27 @@ function EcranConcours() {
       var rg = await supa.from("concours_groupes_detente").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
       if (rg && !rg.error) setGrpD(rg.data || []);
       setGrpEd(null);
-      setGrpMsg(publier ? F("✓ Groupes publiés : les cavaliers concernés sont prévenus, puis rappelés 20 minutes avant leur rendez-vous.") : F("✓ Groupes enregistrés (pas encore publiés)."));
+      setGrpMsg(publier ? F("✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe.") : "");
+      setGrpDemande(!publier);
     } catch (eG) { setGrpMsg(F("Enregistrement impossible : ") + String((eG && eG.message) || eG)); }
+    setGrpOcc(false);
+  }
+  /* 13/11 19h21 (Blandine : « que la coach comprenne qu'il lui reste une manip à faire ») : publier les groupes en brouillon,
+     sans repasser par « Modifier les groupes » — même effet que « Publier aux cavaliers » dans l'éditeur */
+  async function publierBrouillons() {
+    if (grpOcc) return; setGrpOcc(true); setGrpMsg("");
+    try {
+      var maint = new Date().toISOString();
+      var aPub = grpD.filter(function (g) { return g.id && !g.publie && hsNomEpreuve(g.epreuve || "") === epPaddock; });
+      for (var i = 0; i < aPub.length; i++) {
+        var r = await supa.from("concours_groupes_detente").update({ publie: true, publie_le: maint, annonce_envoyee: false, rappel_envoye: false, maj_le: maint }).eq("id", aPub[i].id).select("id");
+        if (r && r.error) throw r.error;
+      }
+      var rg = await supa.from("concours_groupes_detente").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
+      if (rg && !rg.error) setGrpD(rg.data || []);
+      setGrpDemande(false);
+      setGrpMsg(F("✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe."));
+    } catch (eP) { setGrpMsg(F("Enregistrement impossible : ") + String((eP && eP.message) || eP)); }
     setGrpOcc(false);
   }
   function carteGroupe(g, gi) {
@@ -2491,14 +2546,29 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { enregistrerGroupes(false); } }, F("Enregistrer")),
         h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: function () { enregistrerGroupes(true); } }, grpOcc ? "…" : F("Publier aux cavaliers"))));
   }
+  var grpBrouillon = grpD.some(function (g) { return g.id && !g.publie && hsNomEpreuve(g.epreuve || "") === epPaddock && (g.couples || []).length; });
   var blocPaddock = (parEpreuve.length && (gestion || grpD.some(function (g) { return g.publie; }))) ? h("div", { key: "pad", className: "hc-pad" },
     h("div", { className: "hc-pad-tete" },
       h("div", { className: "hc-pad-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 8, r: 3 }), h("circle", { cx: 5.5, cy: 9.5, r: 2.2 }), h("circle", { cx: 18.5, cy: 9.5, r: 2.2 }), h("path", { d: "M6.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M1.8 17.5c.4-2.2 1.8-3.6 3.7-3.6M22.2 17.5c-.4-2.2-1.8-3.6-3.7-3.6" })))),
       h("div", { className: "hc-pad-tt" }, h("h2", null, F("Organisation du paddock")), h("span", null, F("Groupes de détente") + " · " + (epPaddock || ""))),
       (gestion && !grpEd) ? h("button", { type: "button", className: "hc-btn-l", onClick: ouvrirEditeur }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" })), F("Modifier les groupes")) : null),
+    (gestion && !grpEd && !grpDemande && grpBrouillon) ? h("div", { className: "hc-pad-etape" },   /* 13/11 19h21 : rappel « il reste une étape » tant qu'un groupe est en brouillon */
+      h("p", null, F("Il te reste une étape : tes groupes ne sont pas encore en ligne. Les cavaliers ne les voient pas.")),
+      h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: publierBrouillons }, grpOcc ? "…" : F("Publier aux cavaliers"))) : null,
+    (!gestion && (monGroupe || mesLignes.length) && pushEtatJ && pushEtatJ !== "actif") ? h("div", { className: "hc-pad-etape" },   /* 13/11 19h32 : C — inviter à activer les notifications */
+      h("p", null, pushEtatJ === "refuse" ? F("Les notifications de Hype sont bloquées sur ce téléphone : réactive-les dans les réglages pour recevoir ton heure de paddock et le rappel 20 minutes avant.")
+        : (pushEtatJ === "impossible" ? F("Pour recevoir ton heure de paddock et le rappel 20 minutes avant, ajoute Hype à l’écran d’accueil de ton téléphone (Partager, puis « Sur l’écran d’accueil »), ouvre-le depuis là et active les notifications.")
+        : F("Active les notifications pour recevoir ton heure de paddock et le rappel 20 minutes avant."))),
+      pushEtatJ === "inactif" ? h("button", { type: "button", className: "hc-btn-l fort", onClick: activerPushJ }, F("Activer les notifications")) : null) : null,
+    pushMsgJ ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 10 } }, pushMsgJ) : null,
     (!gestion && monGroupe) ? h("div", { className: "hc-pad-moi" }, F("Ton groupe : ") + (monGroupe.nom || "") + (monGroupe.heure_rdv ? F(" · rendez-vous au paddock à ") + monGroupe.heure_rdv : "")) : null,
     (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.")   /* 13/11 13h22 (Blandine : « prévoir de quoi changer la cartouche d'airbag ou une protection dorsale au cas où ») */) : null,   /* 13/11 : message validé par Blandine */
     grpEd ? editeur() : (grpEp.length ? h("div", { className: "hc-grps" }, grpEp.filter(function (g) { return gestion || g.publie; }).map(carteGroupe)) : h("div", { className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Pas encore de groupe pour cette épreuve : touche « Modifier les groupes ».") : F("Les groupes de détente apparaîtront quand ta coach les aura publiés."))),
+    (gestion && !grpEd && grpDemande && grpBrouillon) ? h("div", { className: "hc-pad-etape" },
+      h("p", null, F("Groupes enregistrés. Les cavaliers ne les voient pas encore : tu veux les publier maintenant ?")),
+      h("div", { className: "hc-pad-etape-b" },
+        h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { setGrpDemande(false); } }, F("Plus tard")),
+        h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: publierBrouillons }, grpOcc ? "…" : F("Publier maintenant")))) : null,
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
@@ -4728,6 +4798,9 @@ var HC_CSS = [
   ".hc .hc-btn-l.fort{border-color:#C9A66B;font-weight:600}",
   ".hc .hc-btn-l[disabled]{opacity:.5}",
   ".hc .hc-pad-moi{font-size:13.5px;color:#C9A66B;margin:-4px 0 14px}",
+  ".hc .hc-pad-etape{border:1px solid rgba(201,166,107,.55);border-radius:12px;padding:12px 13px;margin-bottom:12px;background:rgba(201,166,107,.05);display:flex;flex-direction:column;align-items:flex-start;gap:10px}",
+  ".hc .hc-pad-etape p{margin:0;font-size:13px;line-height:1.5;color:#F3EEE4}",
+  ".hc .hc-pad-etape-b{display:flex;gap:8px;align-self:stretch;justify-content:flex-end}",
   ".hc .hc-grps{display:grid;grid-template-columns:1fr;gap:12px}",
   "@media (min-width:600px){.hc .hc-grps{grid-template-columns:1fr 1fr}}",
   ".hc .hc-grp{border:1px solid rgba(201,166,107,.3);border-radius:16px;padding:14px 14px 12px}",
@@ -5313,7 +5386,7 @@ async function hsLireProgramme(images, equipe, onJob) {
   var sv = sess && sess.data && sess.data.session;
   if (!sv || !sv.access_token) throw new Error("session");
   var system = "Tu lis le programme ou une liste de depart d'un concours d'equitation (photo, capture d'ecran ou page de PDF). "
-    + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"numero\":\"numero de l'epreuve ou vide\",\"nom\":\"nom recopie (ex. Club 3 Grand Prix)\",\"heure\":\"heure de DEBUT de l'epreuve HHhMM (premier depart en piste, JAMAIS l'heure de reconnaissance ; si seule la reconnaissance est indiquee : vide)\",\"piste\":\"piste ou carriere ou vide\",\"jour\":\"AAAA-MM-JJ ou vide\"}],"
+    + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"numero\":\"numero de l'epreuve ou vide\",\"nom\":\"nom recopie (ex. Club 3 Grand Prix)\",\"heure\":\"heure de DEBUT de l'epreuve HHhMM (premier depart en piste, JAMAIS l'heure de reconnaissance ; si seule la reconnaissance est indiquee : vide)\",\"reco\":\"heure de la RECONNAISSANCE qui s'applique a cette epreuve HHhMM, sinon vide. Il n'y a pas toujours une reconnaissance par epreuve : une reconnaissance commune vaut pour toutes les epreuves qu'elle nomme (ex. Reconnaissance Club 2, Club 1, Club elite 10h20) ET, sur la meme piste, pour toutes les epreuves ecrites apres elle jusqu'a la reconnaissance suivante (ex. Reco 8h00, Club 3, Club 2, Club 1, Reco 12h00 : la reco de 8h00 vaut pour Club 3, Club 2 et Club 1, qui s'enchainent). Une simple ouverture de piste n'est pas une reconnaissance. Pour une epreuve a la suite d'une autre, heure de debut = vide (n'invente pas d'heure)\",\"piste\":\"piste ou carriere ou vide\",\"jour\":\"AAAA-MM-JJ ou vide\"}],"
     + "\"adresse\":\"adresse COMPLETE du lieu du concours si elle est ecrite (nom du club ou du centre equestre, rue, code postal, ville), sinon vide ; jamais l'adresse de l'organisateur ou du secretariat si elle est differente\",\"passages\":[{\"epreuve\":\"nom ou numero de l'epreuve\",\"ordre\":\"numero d'ordre de passage ou vide\",\"heure\":\"heure de passage HHhMM ou vide\",\"cavalier\":\"nom du cavalier recopie\",\"cheval\":\"nom du cheval recopie\",\"piste\":\"piste ou vide\"}]}. "
     + "Les passages : seulement les lignes de ces cavaliers s'ils apparaissent (sinon aucune) : " + JSON.stringify((equipe || []).slice(0, 40)) + ". "
     + "IMPORTANT (pages FFE Compet « Ordre de passage ») : il n'y a souvent PAS de colonne N° ni d'heure. Chaque partant est un bloc (cavalier, club, cheval, entraineur) avec un NOMBRE ECRIT JUSTE AU-DESSUS (1, 2, 3...) : ce nombre est son ordre de passage, mets-le dans ordre. Le titre de la page donne l'epreuve (ex. Epreuve n 03 ... CSO Club 2 Grand Prix) : utilise-la pour epreuve. Pas d'heure = heure vide, c'est normal. "
@@ -5421,6 +5494,25 @@ function hsNomChoisi(garde, pseudo, reel) {
   return reel || g || String(pseudo || "").trim();
 }
 /* 04/11 23h31 (Blandine : « impose un espace entre l'épreuve et l'indice : Club 3, Amat 2 ; si on l'oublie, mets-le toi ») */
+/* 13/11 19h38 (Blandine : « l'heure de reco, l'heure de début d'épreuve, à chaque fois… qu'en un clin d'œil on voie les infos ») :
+   reco et début d'une épreuve d'après les horaires du concours (formulaire ou programme lu) ; ligne blanche centrée sous le bandeau */
+function hsHorEp(ev, ep, nbEp) {
+  var r = "", d = "", cle = hsNomEpreuve(ep || "").toLowerCase(), l = (ev && Array.isArray(ev.horaires)) ? ev.horaires : [], rc = (ev && Array.isArray(ev.recos)) ? ev.recos : [];
+  function exact(a) { a = hsNomEpreuve(a || "").toLowerCase(); return !!a && a === cle; }
+  function proche(a) { a = hsNomEpreuve(a || "").toLowerCase(); return !!a && !!cle && (a.indexOf(cle) >= 0 || cle.indexOf(a) >= 0); }
+  [exact, proche].forEach(function (meme) {
+    l.forEach(function (x) { if (x && x.heure && meme(x.ep)) { if (x.type === "reco" && !r) r = x.heure; if (x.type === "debut" && !d) d = x.heure; } });
+    rc.forEach(function (x) { if (!r && x && x.heure && meme(x.ep)) r = x.heure; });
+  });
+  if (nbEp === 1 && ev) { if (!r && ev.heure_reco) r = ev.heure_reco; if (!d && ev.heure_epreuve) d = ev.heure_epreuve; }
+  return { reco: r, debut: d };
+}
+function hsBlocHorEp(h, F, ev, ep, nbEp) {
+  var x = hsHorEp(ev, ep, nbEp); if (!x.reco && !x.debut) return null;
+  return h("div", { className: "hs-horep" },
+    x.reco ? h("span", null, F("Reco"), h("b", null, hsHeurePropre(x.reco) || x.reco)) : null,
+    x.debut ? h("span", null, F("Début"), h("b", null, hsHeurePropre(x.debut) || x.debut)) : null);
+}
 function hsNomEpreuve(t) {
   return hsCorrigerEpreuve(String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim());
 }
@@ -6197,7 +6289,7 @@ function EcranEngagements() {
         var phB = (l0.filter(function (x) { return x.ch; })[0] || {}).ch;
         return h("div", { key: e, className: "rc-le g-ep" },
           h("div", { className: "rc-ban" }, phB ? h("img", { src: photoCh(phB), alt: "" }) : null, h("div", { className: "voile" }),
-            h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (l0.some(function (x) { return x.lu; }) ? F("ordre du chronométreur · heures estimées") : (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti"))))))),
+            h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (l0.some(function (x) { return x.lu; }) ? F("ordre du chronométreur · heures estimées") : (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti"))))))), hsBlocHorEp(h, F, ev, e, ordreEp.length),
           liste.map(function (x, j) { return ligneE(x, j, e, "ep"); }));
       })) : null);
   }
@@ -7646,9 +7738,40 @@ function EcranJourJ(props) {
         if (!heure && !piste) return;
         props.push({ i: i, n: n, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, num: eL && eL.numero ? String(eL.numero) : "", ordre: ordreConnu ? String(ordreConnu) : "", coche: true });
       }); });
-      setProg({ props: props, epreuves: lu.epreuves });
-      setProgLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur cette image."))));
+      /* 13/11 19h37 (Blandine : « je veux que l'outil le fasse, qu'il apprenne à le faire ») : l'outil lit aussi la reco et le début
+         de chaque épreuve de l'équipe et les propose pour le résumé du haut (horaires du concours) */
+      var hor = [], vusEp = {};
+      lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) {
+        var ep = hsNomEpreuve(String(l["epreuve" + n] || "").trim()); if (!ep || vusEp[ep]) return; vusEp[ep] = true;
+        var eL = lu.epreuves.filter(function (x) { return x && memeEp(x.nom, ep); })[0] || null;
+        var reco = eL && eL.reco ? hsHeurePropre(eL.reco) : "", debut = eL && eL.heure ? hsHeurePropre(eL.heure) : "";
+        /* 13/11 19h40 (Blandine : « normalement c'est 30 minutes avant… des fois ils la réduisent à 15 ») : reco non écrite
+           mais début connu → reco estimée 30 min avant le début, signalée « à vérifier » */
+        var est = false; if (!reco && debut && hsMinutes(debut) < 9999) { reco = hsHeure(hsMinutes(debut) - 30); est = true; }
+        hor.push({ ep: ep, reco: reco, est: est, debut: debut, piste: eL && eL.piste ? String(eL.piste) : "" });
+      }); });
+      if (!hor.some(function (x) { return x.reco || x.debut; })) hor = [];
+      setProg({ props: props, epreuves: lu.epreuves, hor: hor });
+      setProgLect((props.length || hor.length) ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur cette image."))));
     } catch (eL2) { setProgLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
+  }
+  async function appliquerHorairesLus() {
+    if (!prog || !prog.hor || !prog.hor.length || !ev) return;
+    var eps = prog.hor.map(function (x) { return x.ep; });
+    var garde = (Array.isArray(ev.horaires) ? ev.horaires : []).filter(function (x) { return x && !((x.type === "reco" || x.type === "debut") && eps.indexOf(x.ep) >= 0 && prog.hor.some(function (y) { return y.ep === x.ep && (x.type === "reco" ? y.reco : y.debut); })); });
+    var l = garde.slice();
+    prog.hor.forEach(function (x) { if (x.reco) l.push({ type: "reco", ep: x.ep, lib: null, heure: x.reco }); if (x.debut) l.push({ type: "debut", ep: x.ep, lib: null, heure: x.debut }); });
+    var recos = l.filter(function (x) { return x.type === "reco" && x.heure; }).map(function (x) { return { ep: x.ep || "", heure: x.heure }; });
+    var deb = l.filter(function (x) { return x.type === "debut" && x.heure; }).map(function (x) { return x.heure; }).sort(function (a, b) { return hsMinutes(a) - hsMinutes(b); })[0] || null;
+    var upd = { horaires: l.length ? l : null, recos: recos.length ? recos : null, heure_reco: null, heure_epreuve: deb };
+    try {
+      var r = await supa.from("club_agenda").update(upd).eq("id", idEv).select("id");
+      if (r && r.error) throw r.error;
+      if (!r || !r.data || !r.data.length) throw new Error("—");
+      setEv(Object.assign({}, ev, upd));
+      setProg(prog.props.length ? Object.assign({}, prog, { hor: [] }) : null);
+      setMsg(F("✓ Horaires du concours mis à jour : ils apparaissent dans le résumé en haut de la fiche."));
+    } catch (eH) { setMsg(F("Enregistrement impossible : ") + String((eH && eH.message) || eH)); }
   }
   function appliquerProgramme() {
     if (!prog) return;
@@ -7707,8 +7830,14 @@ function EcranJourJ(props) {
               F(" cavaliers à l’heure").trim()));
         }),
         h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, F("Calcul : 2 chevaux en piste ; le n° 1 et le n° 2 entrent au début de l’épreuve, chacun des suivants quand celui d’avant-avant sort. Les forfaits avancent l’heure, les barrages et les pauses la reculent."))),
-      progLect && progLect !== "en_cours" ? h("div", { className: "hs-note" }, progLect) : null,
+      progLect && progLect !== "en_cours" ? h("div", { className: "hc-pad-etape", style: { marginTop: 10 } }, h("p", null, progLect)) : null,   /* 13/11 19h37 : « il m'a rien dit » — réponse toujours visible */
       adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
+      (prog && prog.hor && prog.hor.length) ? h("div", { className: "hc-pad-etape", style: { marginTop: 10 } },
+        h("p", null, h("b", null, F("Horaires du concours lus sur ton document"))),
+        prog.hor.map(function (x, k) { return h("p", { key: "hl" + k, style: { color: "rgba(243,238,228,.85)" } }, x.ep + " · " + [x.reco ? F("reco ") + x.reco + (x.est ? " " + F("(estimée : 30 min avant le début, à vérifier)") : "") : F("reco pas trouvée"), x.debut ? F("début ") + x.debut : F("début pas trouvé"), x.piste ? hsPiste(x.piste) : ""].filter(Boolean).join(" · ")); }),
+        h("div", { className: "hc-pad-etape-b" },
+          h("button", { type: "button", className: "hc-btn-l", onClick: function () { setProg(prog.props.length ? Object.assign({}, prog, { hor: [] }) : null); } }, F("Ignorer")),
+          h("button", { type: "button", className: "hc-btn-l fort", onClick: appliquerHorairesLus }, F("Mettre dans le résumé")))) : null,
       prog && prog.props.length ? h("div", { className: "hs-carte", style: { marginTop: 10 } },
         prog.epreuves.length ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Lu : ") + prog.epreuves.map(function (x) { return [x.numero ? "n° " + x.numero : "", x.nom, x.heure ? hsHeurePropre(x.heure) : "", x.piste ? hsPiste(x.piste) : ""].filter(Boolean).join(" "); }).join(" · ")))) : null,
         prog.props.map(function (x, k) {
@@ -7733,7 +7862,7 @@ function EcranJourJ(props) {
           var cid0 = (l0.map(function (p) { return (lignes[p.i] || {})["_cid" + p.n]; }).filter(function (c) { return c && phJ[c]; })[0]);
           return h("div", { key: "jje" + ie, className: "rc-le g-ep" },
             h("div", { className: "rc-ban" }, cid0 ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(phJ[cid0], 900, 300) : phJ[cid0], alt: "" }) : h("img", { src: HS_IMG_LOTS_EP[ie % 4], alt: "" }), h("div", { className: "voile" }),
-              h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours") : F(" tour"))))),
+              h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours") : F(" tour"))))), hsBlocHorEp(h, F, ev, e, ordreE.length),
             l0.map(function (p, j0) {
               var cle = String((lignes[p.i] || {}).id) + "-" + p.n, conf = conflits[p.i + "-" + p.n], cid = (lignes[p.i] || {})["_cid" + p.n], ph = cid && phJ[cid];
               var hm = (function () { var m = String(p.hp || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })();
