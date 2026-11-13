@@ -813,7 +813,7 @@ function EcranMaSaison() {
       /* 12/11 16h30 (Blandine : « que ce soit accessible par un onglet dans Ma saison », « les performances cavaliers aussi ») :
          deux cartes photo, comme sur la fiche concours — Médias de la saison et Performances des cavaliers */
       h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, margin: "26px 0 6px" } },
-        [["med", F("Médias de la saison"), HS_IMG_CONCOURS.medias, function () { try { window.__concoursId = "__saison"; window.__engagementsId = "__saison"; } catch (e) { } setEcran("concours"); }],
+        [["med", F("Médias de la saison"), HS_IMG_CONCOURS.medias, function () { try { window.__teamMediasOnglet = "videos"; } catch (e) { } setEcran("team-medias")   /* 13/11 : une seule page Médias */; }],
          ["perf", F("Performances"), "images/cavalier-acces-performances.webp", function () { setEcran("performances-cavaliers"); }]].map(function (c) {
           return h("button", { key: "msc" + c[0], type: "button", onClick: c[3], style: { position: "relative", aspectRatio: "1.5", borderRadius: 13, overflow: "hidden", border: "1px solid rgba(201,166,107,.32)", background: "linear-gradient(160deg,#141a1c,#0a0d0e)", padding: 0, cursor: "pointer" } },
             h("img", { src: c[2], alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e0) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
@@ -987,6 +987,19 @@ var CSS2 = [
   ".rc-li .q>span{display:block;font-size:11px;color:var(--hs-iv2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".rc-li .hh{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-variant-numeric:tabular-nums}",
   ".rc-li .hh.vide{color:var(--hs-iv3)}",
+  /* 13/11 10h31 (Blandine : « un système identique à chaque fois et bien l'aérer… un peu surchargé ») : plus de grande photo
+     en tête de groupe — un titre simple et un filet ; des lignes plus aérées. Même dessin aux Engagements, aux Passages de
+     l'équipe et dans « Modifier les passages ». */
+  ".rc-le{margin-bottom:30px}",
+  "html.rc-leger .rc-ban{height:auto;border-radius:0;background:none;overflow:visible;margin:0 0 6px;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.28)}",
+  "html.rc-leger .rc-ban img,html.rc-leger .rc-ban .voile{display:none}",
+  "html.rc-leger .rc-ban .t{position:static}",
+  "html.rc-leger .rc-ban .t b{font-size:24px;color:#F3EEE4}",
+  "html.rc-leger .rc-ban .t span{display:block;margin-top:4px;color:rgba(243,238,228,.5)}",
+  ".rc-li{padding:14px 0}",
+  ".rc-li .q b{font-size:18px;color:#F3EEE4}",
+  ".rc-li .q>span{font-size:11.5px;color:rgba(243,238,228,.55);margin-top:3px}",
+  ".rc-li .k{font-size:18px;color:rgba(243,238,228,.45)}",
   ".rc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}",
   ".rc-rail::-webkit-scrollbar{display:none}",
   ".rc-ch{flex:0 0 72%;max-width:300px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(16,26,29,.6),rgba(7,10,8,.4))}",
@@ -1252,7 +1265,11 @@ function hsPhotoProfil(p) {
    droit de voir quand même les concours qui sont prévus ») — l’équipe et l’appartenance de la personne (membre du groupe, ou modératrice = la coach) */
 var HS_EQUIPE = null;
 async function hsEquipe() {
-  if (HS_EQUIPE) return HS_EQUIPE;
+  /* 13/11 09h20 (Blandine : photos de Feinn dans les Médias de la saison) : l'équipe gardée en mémoire restait celle ouverte
+     en premier — si on passe d'une équipe à l'autre (Feinn / SEP), on relit la bonne. */
+  var tcH = null; try { tcH = (typeof hypeTeamCourante === "function") ? hypeTeamCourante() : null; } catch (eT) { }
+  if (HS_EQUIPE && (!tcH || String(tcH.id) === String(HS_EQUIPE.id))) return HS_EQUIPE;
+  HS_EQUIPE = null;
   try {
     var rg = (typeof hypeRequeteTeam === "function") ? await hypeRequeteTeam("id, nom") : null;
     var G = rg && !rg.error && rg.data; if (!G || !G.id) return null;
@@ -1356,7 +1373,7 @@ function EcranConcours() {
   var _mxs = React.useState({}); var medXSel = _mxs[0], setMedXSel = _mxs[1];   /* 09/11 20h30 : cheval / cavalier choisi dans Par cheval / Par cavalier ({ ch: id, cav: id }) */
   var _mxf = React.useState(""); var medXFil = _mxf[0], setMedXFil = _mxf[1];   /* filtre croisé « Avec … » */
   var _mxt = React.useState(false); var medXTous = _mxt[0], setMedXTous = _mxt[1];   /* « Voir tous les chevaux » */   /* largeur réelle de la partie Médias (colonnes de la galerie) */   /* 09/11 soir (maquette validée) : "" = galerie ; "cav" / "ch" / "ep" = vue Explorer les médias */
-  var _mpg = React.useState(function () { try { var d = window.__medPageDirect || null; return d ? { ch: !!d.ch, id: String(d.id) } : null; } catch (e) { return null; } }); var medPage = _mpg[0], setMedPage = _mpg[1];   /* 09/11 22h45 : page d'un cavalier / d'un cheval (haut de la page vidéo) */
+  var _mpg = React.useState(function () { try { var d = window.__medPageDirect || null; return d ? (d.couple ? { couple: true, cav: String(d.cav), ch: String(d.ch) } : { ch: !!d.ch, id: String(d.id) }) : null; } catch (e) { return null; } }); var medPage = _mpg[0], setMedPage = _mpg[1];   /* 09/11 22h45 : page d'un cavalier / d'un cheval (haut de la page vidéo) */
   /* 10/11 06h25 — PAGE D'UN COUPLE (cavalier + cheval) : toutes leurs vidéos de l'équipe, QUEL QUE SOIT LE CONCOURS
      (idée de Blandine « Evan sur Rizotto », maquette validée le 09/11). Chargées à part, du plus récent au plus ancien. */
   var _cpl = React.useState({ k: "", l: null }); var cplD = _cpl[0], setCplD = _cpl[1];
@@ -1440,6 +1457,14 @@ function EcranConcours() {
     setPassagesEq0(typeof v === "function" ? function (o) { return dec(v(o)); } : dec(v));
   }
   var _chg = React.useState(null); var chg = _chg[0], setChg = _chg[1];   /* 13/11 : panneau « Changer » ouvert (cheval / cavalier d'un passage) */
+  /* 13/11 : photos des chevaux des passages de l'équipe (médaillons, comme aux Engagements) */
+  var _phq = React.useState({}); var phEq = _phq[0], setPhEq = _phq[1];
+  React.useEffect(function () {
+    var ids = []; (passagesEq || []).forEach(function (p) { if (p.cheval_id && ids.indexOf(p.cheval_id) === -1 && phEq[p.cheval_id] === undefined) ids.push(p.cheval_id); });
+    if (!ids.length) return; var vif = true;
+    supa.from("chevaux").select("id, photo_url").in("id", ids.slice(0, 100)).then(function (r) { if (!vif || !r || r.error) return; var o = Object.assign({}, phEq); (r.data || []).forEach(function (c) { o[c.id] = c.photo_url || ""; }); setPhEq(o); });
+    return function () { vif = false; };
+  }, [(passagesEq || []).length]);
   var _oc = React.useState(function () { if (SAISON) return "medias"; try { if (window.__medPageDirect) { window.__medPageDirect = null; return "medias"; } } catch (e) { } return null; }); var ongletChoisi = _oc[0], setOngletC = _oc[1];   /* null = carte choisie selon le moment (09/11) */
   var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   React.useEffect(function () {
@@ -1894,6 +1919,49 @@ function EcranConcours() {
     parEpreuve.length ? h("div", { key: "pv", className: "vr-dep-t hc-pas-vue" }, [["ep", F("Par épreuve")], ["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) {
       return h("button", { key: o[0], type: "button", className: "vr-dep-b" + (pasVue === o[0] ? " on" : ""), "aria-pressed": pasVue === o[0], onClick: function () { setPasVue(o[0]); } }, o[1]);
     })) : null,
+    /* 13/11 10h31 (Blandine : « quand tu passes par cavalier, par cheval… ça change complètement à chaque fois ») : UN SEUL dessin
+       pour les trois vues — titre de groupe simple, puis des lignes : n°, médaillon, nom en blanc, le reste en gris, l'heure,
+       et pour la coach un crayon qui ouvre « Modifier les passages » sur cette ligne. Ancien rendu : window.__pasAncien. */
+    (parEpreuve.length && !(typeof window !== "undefined" && window.__pasAncien)) ? h("div", { key: "pu", className: "e1 hc-pu" }, (function () {
+      var grp = {}, ordre = [];
+      parEpreuve.forEach(function (g) { g.l.forEach(function (p) {
+        var k = pasVue === "ch" ? String(p.cheval_nom || "—") : pasVue === "cav" ? String(p.cavalier_id || nomP(p)) : g.ep;
+        if (!grp[k]) { grp[k] = { k: k, titre: pasVue === "ch" ? String(p.cheval_nom || "—") : pasVue === "cav" ? nomP(p) : g.ep, l: [] }; ordre.push(k); }
+        grp[k].l.push(p);
+      }); });
+      if (pasVue !== "ep") ordre.sort(function (a, b) { return grp[a].titre.localeCompare(grp[b].titre, "fr", { sensitivity: "base" }); });
+      return ordre.map(function (k) {
+        var g = grp[k]; g.l.sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); });
+        var gEp = pasVue === "ep" ? parEpreuve.filter(function (x) { return x.ep === k; })[0] : null;
+        return h("div", { key: "pu" + k, className: "rc-le" },
+          h("div", { className: "rc-ban" }, (function () { var q = g.l.filter(function (x) { return x.cheval_id && phEq[x.cheval_id]; })[0]; var src = q ? ((typeof vignetteHype === "function") ? vignetteHype(phEq[q.cheval_id], 900, 300) : phEq[q.cheval_id]) : HS_IMG_LOTS_EP[ordre.indexOf(k) % 4]; return h("img", { src: src, alt: "" }); })(), h("div", { className: "voile" }), h("div", { className: "t" }, h("b", null, g.titre), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))))),
+          g.l.map(function (p, j) {
+            var moiLa = moi && p.cavalier_id === moi.id, res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
+            var ep = hsNomEpreuve(p.epreuve || "");
+            var chB = p.cheval_brut || p.cheval_nom, aLaPlace = (p.cheval_initial_nom && p.cheval_initial_nom !== chB) ? F("à la place de ") + p.cheval_initial_nom : "";
+            var principal = pasVue === "cav" ? (chB || F("cheval à choisir")) : nomP(p);
+            var second = pasVue === "cav" ? [ep, p.piste ? F("piste ") + p.piste : ""] : pasVue === "ch" ? [ep, p.piste ? F("piste ") + p.piste : ""] : [chB || F("cheval à choisir"), p.piste ? F("piste ") + p.piste : ""];
+            var ph = pasVue === "ch" ? p.avatar_url : (p.cheval_id && phEq[p.cheval_id]);
+            var num = p.ordre_passage || p.ordre || null;
+            return h("div", { key: j, className: "rc-li" + (p.non_partant ? " np" : ""), style: Object.assign({ gridTemplateColumns: gestion ? "26px 44px minmax(0,1fr) auto 32px" : "26px 44px minmax(0,1fr) auto" }, p.non_partant ? { opacity: 0.45 } : null, moiLa ? { background: "rgba(201,166,107,.06)" } : null) },
+              h("div", { className: "k" }, num ? String(num) : String(j + 1)),
+              ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "" }) : h("span", { className: "rc-vide3", style: { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } }, String(principal || "?").charAt(0).toUpperCase()),
+              h("div", { className: "q" }, h("b", null, principal), h("span", null, second.filter(Boolean).join(" · ")), aLaPlace ? h("span", { style: { fontStyle: "italic", color: "rgba(244,236,222,.5)" } }, aLaPlace) : null),
+              h("div", { className: "hh" + (p.passage ? "" : " vide") }, p.non_partant ? F("non partant") : (res || p.passage || "—")),
+              gestion ? h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier"), onClick: function () { var cl = cleCouple(p); setChg(chg && chg.cle === cl ? null : { cle: cl, ch: "", chNom: "", cav: "", cavNom: "" }); } },
+                h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))) : null,
+              /* 13/11 10h32 : modifier sur place — changer de cheval ou de cavalier (l'ancien reste « à la place de »), non partant
+                 (sans supprimer, réversible), heure et piste */
+              (gestion && chg && chg.cle === cleCouple(p)) ? h("div", { className: "rc-modp", style: { gridColumn: "1 / -1", border: "none", padding: "4px 0 10px", display: "flex", flexDirection: "column", gap: 12 } },
+                panneauChanger(p),
+                grpMsg ? h("div", { className: "hs-msg", style: { margin: 0 } }, grpMsg) : null,
+                h("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "space-between" } },
+                  h("button", { type: "button", className: "hc-btn-l", onClick: function () { basculerNonPartant(p); } }, p.non_partant ? F("Remettre partant") : F("Non partant")),
+                  h("button", { type: "button", className: "hc-btn-l", onClick: function () { setChg(null); try { window.__jjEdite = String(p.engagement_id) + "-" + (p.numero || 1); } catch (e) { } ouvrirModifPassages(); } }, F("Heure et piste") + " ›"))) : null);
+          }),
+          (gestion && gEp) ? panneauDecaler(gEp) : null);
+      });
+    })()) :
     (parEpreuve.length && pasVue !== "ep") ? h("div", { key: "pq", className: "hc-eps" }, (function () {
       var parCh = pasVue === "ch", grp = {}, ordre = [];
       parEpreuve.forEach(function (g, gi) { g.l.forEach(function (p) {
@@ -1906,17 +1974,19 @@ function EcranConcours() {
         var g = grp[k], ouv = !chFerme[k], eps = []; g.l.forEach(function (x) { if (eps.indexOf(x.ep) === -1) eps.push(x.ep); });
         return h("section", { key: "q" + k, className: "hc-ep" + (ouv ? " ouv" : "") },
           h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { var n = Object.assign({}, chFerme); n[k] = ouv; setChFerme(n); } },
-            h("b", null, g.nom),
-            h("span", null, eps.join(", ") + " · " + g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))),
+            /* 13/11 10h25 (Blandine : « on voit le nom de l'épreuve avant le nom du cavalier… laisse le nom du cavalier plus visible et
+               l'épreuve moins flash ») : le nom en ivoire, l'épreuve en gris discret */
+            h("b", { style: { color: "#F3EEE4" } }, g.nom),
+            h("span", { style: { color: "rgba(243,238,228,.55)" } }, eps.join(", ") + " · " + g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))),
             h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
           ouv ? h("div", { className: "hc-ep-l" }, g.l.map(function (x, j) {
             return h("div", { key: j, className: "hc-pl" + (x.moi ? " moi" : "") },
-              h("span", { className: "hc-pl-q" }, h("b", { style: { color: "#C9A66B" } }, x.ep), x.autre ? h("span", null, " · " + x.autre) : null, x.n ? h("span", null, " · " + F("N° ") + x.n) : null),
+              h("span", { className: "hc-pl-q" }, x.autre ? h("b", { style: { color: "#F3EEE4", fontWeight: 600 } }, x.autre) : null, h("span", { style: { color: "rgba(243,238,228,.55)", fontWeight: 400 } }, (x.autre ? " · " : "") + x.ep), x.n ? h("span", { style: { color: "rgba(243,238,228,.55)" } }, " · " + F("N° ") + x.n) : null),
               x.h ? h("span", { className: "hc-pl-h" }, x.h) : null);
           })) : null);
       });
     })()) : null,
-    (parEpreuve.length && pasVue === "ep") ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
+    (parEpreuve.length && pasVue === "ep" && (typeof window !== "undefined" && window.__pasAncien)) ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
       var ouv = !epFerme[g.ep];
       var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
       return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
@@ -2578,7 +2648,7 @@ function EcranConcours() {
     carteLien("pc", "perf", F("Performances chevaux"), F("Classement de la saison"), "images/team-competition-performances-hero.webp", function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (e) { } setEcran("performances-chevaux"); }),
     moi ? carteLien("pm", "moi", F("Mes performances"), F("Tous tes résultats de la saison"), "images/cavalier-acces-performances.webp", function () { try { window.__perfCavalierId = moi.id; } catch (e) { } setEcran("performances-cavalier"); }) : null]);
   var liensMedias = cartesLiens("cl-med", [
-    (equipe && equipe.id) ? carteLien("vt", "vid", F("Vidéothèque de la Team"), F("Toutes les vidéos de l’équipe"), "images/cavalier-acces-videos.webp", function () { try { window.__concoursId = "__saison"; window.__engagementsId = "__saison"; } catch (e) { } setEcran("concours"); }) : null,
+    (equipe && equipe.id) ? carteLien("vt", "vid", F("Vidéothèque de la Team"), F("Toutes les vidéos de l’équipe"), "images/cavalier-acces-videos.webp", function () { try { window.__teamMediasOnglet = "videos"; } catch (e) { } setEcran("team-medias")   /* 13/11 : une seule page Médias */; }) : null,
     carteLien("al", "alb", F("Album de l’écurie"), F("Les photos du club"), "images/albumEcurieEncart.jpg", function () { setEcran("album-ecurie"); })]);
   var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
     (!fini && (epsRes.some(function (x) { return x.url; }) || ev.lien_direct)) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
@@ -3466,9 +3536,10 @@ function EcranConcours() {
   var outilsPassages = (gestion && !jjOuv) ? h("div", { key: "op", className: "hc-outils" },
     outil("modp", F("Modifier les passages"), F("Heures et pistes, ordre de passage ou programme (photo, capture ou PDF), direct du chronométreur."), ouvrirModifPassages)) : null;
   var blocModifPassages = (gestion && jjOuv && typeof EcranJourJ === "function") ? h("div", { key: "jj", className: "hc-jj" },
-    h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Modifier les passages"))),
-    h(EcranJourJ, { integre: true }),
-    h("div", { className: "hc-jj-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: fermerModifPassages }, F("Terminer")))) : null;
+    h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Modifier les passages")),
+      /* 13/11 10h25 (Blandine : « je devrais pas avoir à scroller 20 fois pour fermer ») : on ferme aussi d'en haut */
+      h("button", { type: "button", onClick: fermerModifPassages, "aria-label": F("Fermer"), style: { flex: "0 0 auto", minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,.22)", background: "none", color: "#F3EEE4", fontSize: 12.5, cursor: "pointer" } }, "✕ " + F("Fermer"))),
+    h(EcranJourJ, { integre: true, onFermer: fermerModifPassages })) : null;   /* « Terminer » du bas remplacé par « Fermer » dans la barre qui reste visible */
   var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
     ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
       : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages)) : null;
@@ -4341,6 +4412,7 @@ var HC_CSS = [
   ".hs.hs-int{min-height:0!important;padding-bottom:0!important;background:none!important}",
   ".hs.hs-int .hs-in{padding:0;max-width:none}",
   ".hc .hc-jj{margin-top:8px}",
+  ".hc .hc-jj .hs-coll{bottom:calc(env(safe-area-inset-bottom) + 84px)}",   /* 13/11 : la barre Enregistrer / Fermer reste au-dessus de la barre du bas */
   ".hc .hc-jj-fin{display:flex;justify-content:flex-end;margin:14px 0 6px}",
   ".hc .hc-pl-plus{display:flex;justify-content:center;padding:12px 0 6px}",
   ".hc .hc-dec-b{display:flex;flex-direction:column;align-items:flex-end;padding:12px 0}",
@@ -4796,7 +4868,7 @@ function hsCorrigerEpreuve(t) {
    concours_engagements (hsMiroir). 08/11 : Jour J, la fiche du concours (Ma journée) et le dossier lisent les 5 tours ;
    la liste du van ne lit que le cheval du 1er tour (une liste par cheval) ; Ma saison ne lit pas les engagements. */
 function hsToursDepuis(l, liste) {
-  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, ordre_passage: t.ordre_passage || null, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : ""), cheval_initial_nom: t.cheval_initial_nom || null, remplacant_id: t.cavalier_remplacant_id || null, remplacant_nom: t.cavalier_remplacant_nom || null }; });
+  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, ordre_passage: t.ordre_passage || null, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : ""), cheval_initial_nom: t.cheval_initial_nom || null, cheval_initial_id: t.cheval_initial_id || null, non_partant: !!t.non_partant, remplacant_id: t.cavalier_remplacant_id || null, remplacant_nom: t.cavalier_remplacant_nom || null }; });   /* 13/11 : non partant et cheval d'origine gardés */
   var o = [];
   [1, 2].forEach(function (n) {
     var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
@@ -4831,7 +4903,7 @@ function EcranEngagements() {
   var idEv = hsIdConcours();
 
   /* 12/11 02h25 (Blandine : « rien n'était replié », choix D + « l'onglet qui permettait de switcher du cavalier au cheval et à l'épreuve ») */
-  var _rcO = React.useState(false); var rcOuvert = _rcO[0], setRcOuvert = _rcO[1];
+  var _rcO = React.useState(true);   /* 13/11 (Blandine : « je ne les vois même plus, les engagements ») : ouvert d’office */ var rcOuvert = _rcO[0], setRcOuvert = _rcO[1];
   var _rcT = React.useState("cav"); var rcTab = _rcT[0], setRcTab = _rcT[1];
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
@@ -5217,7 +5289,8 @@ function EcranEngagements() {
         if (rdT && rdT.error) throw new Error(row.nom + " : " + (rdT.error.message || rdT.error));
         if (toursL.length) {
           var riT = await supa.from("concours_tours").insert(toursL.map(function (t, k) {
-            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve ? hsNomEpreuve(t.epreuve) : null,   /* 09/11 : fautes rectifiées à l'enregistrement */ cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null, ordre_passage: t.ordre_passage || null };
+            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve ? hsNomEpreuve(t.epreuve) : null,   /* 09/11 : fautes rectifiées à l'enregistrement */ cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), non_partant: !!t.non_partant, cheval_initial_nom: t.cheval_initial_nom || null, cheval_initial_id: t.cheval_initial_id || null, cavalier_remplacant_id: t.remplacant_id || null, cavalier_remplacant_nom: t.remplacant_nom || null,   /* 13/11 (Blandine : « ça ne met pas l'ancien cheval… ça fausse tout ») : réécrire les tours ne perd plus le non-partant ni le cheval d'origine */
+              passage: t.passage || null, piste: t.piste || null, ordre_passage: t.ordre_passage || null };
           })).select("id");
           if (riT && riT.error) throw new Error(row.nom + " : " + (riT.error.message || riT.error));
         }
@@ -5430,9 +5503,51 @@ function EcranEngagements() {
       var n = k0 + 1, e = String(t.epreuve || "").trim(), c = String(t.cheval_nom || "").trim(); if (!e && !c) return;
       var k = e || F("Épreuve à choisir"); if (!parEp[k]) { parEp[k] = []; ordreEp.push(k); }
       var hS = String(t.passage || "").trim(), lu = (!hS && l.id && c) ? ordreLu[l.id + "|" + c.toLowerCase()] : null;
-      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: hS || (lu && lu.h ? "~" + lu.h : ""), lu: !!lu, ordreLu: lu ? lu.ordre : 0, piste: String(t.piste || "").trim() });
+      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: hS || (lu && lu.h ? "~" + lu.h : ""), lu: !!lu, ordreLu: lu ? lu.ordre : 0, piste: String(t.piste || "").trim(), np: !!t.non_partant, ini: t.cheval_initial_nom || "" });
     }); });
     ordreEp.sort(function (a, b) { return (eps.indexOf(a) === -1 ? 99 : eps.indexOf(a)) - (eps.indexOf(b) === -1 ? 99 : eps.indexOf(b)) || a.localeCompare(b, "fr"); });
+    /* 13/11 (Blandine : « reproduire un système identique à chaque fois et bien l'aérer ») : une seule ligne pour les trois
+       vues (par cavalier, par cheval, par épreuve) — n°, médaillon, nom en ivoire, détail discret, heure, crayon. */
+    function ligneE(x, j, e, mode) {
+            var k = x.ch ? kTour(x.i, x.n) : 0, np = nomPrenom(x.nom), nomC = [np[1], np[0]].filter(Boolean).join(" ");
+            var princ = mode === "cav" ? (x.ch || F("cheval à choisir")) : nomC;
+            var det = mode === "cav" ? [x.e, x.piste ? F("piste ") + x.piste : ""] : mode === "ch" ? [x.e, x.piste ? F("piste ") + x.piste : ""] : [x.ch || F("cheval à choisir"), x.piste ? F("piste ") + x.piste : ""];
+            return h("div", { key: mode + j + "-" + x.i + "-" + x.n, className: "rc-li", style: x.np ? { opacity: 0.45 } : null },
+              h("div", { className: "k" }, String(j + 1)),
+              (function () { if (mode !== "ch") return x.ch ? photoCh(x.ch) : ""; var p0 = cavDe(lignes[x.i] || {}); return p0 && p0.avatar_url ? hsPhotoProfil(p0) : ""; })() ? h("img", { src: (function () { if (mode !== "ch") return photoCh(x.ch); var p0 = cavDe(lignes[x.i] || {}); return hsPhotoProfil(p0); })(), alt: "" }) : h("span", { className: "rc-vide3", style: { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } }, String(princ || "?").charAt(0).toUpperCase()),
+              h("div", { className: "q" }, h("b", null, princ),
+                h("span", null, det.filter(Boolean).join(" · ")),
+                x.ini ? h("span", { style: { fontStyle: "italic", color: "rgba(243,238,228,.5)" } }, F("à la place de ") + x.ini) : null),
+              h("div", { className: "hh" + (x.h && !x.np ? "" : " vide") }, x.np ? F("non partant") : (x.h || "—")),
+              h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier ou supprimer"), onClick: function () { var t0 = ((lignes[x.i] || {}).tours || [])[x.n - 1] || {}; setMsgC(""); setModTour(modTour && modTour.i === x.i && modTour.k === x.n - 1 ? null : { i: x.i, k: x.n - 1, ep: t0.epreuve || e, ch: t0.cheval_nom || x.ch || "", sup: false }); } },
+                h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))),
+              (modTour && modTour.i === x.i && modTour.k === x.n - 1) ? h("div", { className: "rc-modp" },
+                h("label", null, h("span", null, F("Épreuve")), h("input", { type: "text", list: "rc-eps", value: modTour.ep, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ep: ev2.target.value })); } })),
+                h("datalist", { id: "rc-eps" }, eps.concat(ordreEp).filter(function (v, iv, tt) { return v && tt.indexOf(v) === iv; }).map(function (v) { return h("option", { key: v, value: v }); })),
+                h("label", null, h("span", null, F("Cheval")), h("input", { type: "text", list: "d3-chevaux-m", value: modTour.ch, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ch: ev2.target.value })); } })),
+                h("datalist", { id: "d3-chevaux-m" }, (chevaux || []).map(function (c) { return h("option", { key: c.id || c.nom, value: c.nom }); })),
+                modTour.sup ? h("div", { className: "rc-modc" }, h("span", null, F("Supprimer ce tour de ") + [np[1], np[0]].filter(Boolean).join(" ") + " ?"),
+                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(Object.assign({}, modTour, { sup: false })); } }, F("Non")),
+                    h("button", { type: "button", className: "rc-modx", onClick: function () { var mt = modTour; setModTour(null); retirerTour(mt.i, mt.k); } }, F("Oui, supprimer")))
+                  : h("div", { className: "rc-moda" },
+                    /* 13/11 (Blandine : « je ne veux pas le supprimer… pouvoir l'annoncer non partante, et revenir en arrière ») */
+                    (function () { var t0 = ((lignes[x.i] || {}).tours || [])[x.n - 1] || {}; var npV = modTour.np !== undefined ? modTour.np : !!t0.non_partant;
+                      return h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(Object.assign({}, modTour, { np: !npV })); } }, npV ? "✓ " + F("Non partant") + " · " + F("annuler") : F("Non partant")); })(),
+                    h("button", { type: "button", className: "rc-modx", onClick: function () { setModTour(Object.assign({}, modTour, { sup: true })); } }, F("Supprimer ce tour")),
+                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(null); } }, F("Annuler")),
+                    h("button", { type: "button", className: "rc-modok", onClick: validerModif }, F("Enregistrer")))) : null);
+    }
+    function groupesE(mode) {
+      var g = {}, ord = [];
+      ordreEp.forEach(function (e) { parEp[e].forEach(function (x) { var c = mode === "cav" ? "c" + x.i : (x.ch || F("cheval à choisir")); if (!g[c]) { g[c] = { titre: mode === "cav" ? (function () { var np = nomPrenom(x.nom); return [np[1], np[0]].filter(Boolean).join(" "); })() : c, l: [] }; ord.push(c); } g[c].l.push(Object.assign({ e: e }, x)); }); });
+      if (mode === "cav") ord.sort(function (a, b) { return Number(a.slice(1)) - Number(b.slice(1)); }); else ord.sort(function (a, b) { return a.localeCompare(b, "fr"); });
+      return ord.map(function (c) {
+        var l = g[c].l.slice().sort(function (a, b) { return mode === "cav" ? a.n - b.n : (a.h ? hsMinutes(String(a.h).replace("~", "")) : 99999) - (b.h ? hsMinutes(String(b.h).replace("~", "")) : 99999); });
+        return h("div", { key: c, className: "rc-le" },
+          h("div", { className: "rc-ban" }, (function () { var q = l.filter(function (x) { return x.ch; })[0]; return h("img", { src: q ? photoCh(q.ch) : HS_IMG_LOTS_EP[ord.indexOf(c) % 4], alt: "" }); })(), h("div", { className: "voile" }), h("div", { className: "t" }, h("b", null, g[c].titre), h("span", null, l.length + (l.length > 1 ? F(" tours") : F(" tour"))))),
+          l.map(function (x, j) { return ligneE(x, j, x.e, mode); }));
+      });
+    }
     return h("div", { className: "rc" },
       h("div", { className: "rc-tete" },
         h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true" },
@@ -5443,7 +5558,10 @@ function EcranEngagements() {
         h("p", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
       h("button", { type: "button", className: "rc-plier", "aria-expanded": rcOuvert, onClick: function () { setRcOuvert(!rcOuvert); } }, h("span", null, rcOuvert ? F("Replier le récapitulatif") : F("Voir le récapitulatif")), h("i", { "aria-hidden": "true" }, rcOuvert ? "▴" : "▾")),
       rcOuvert ? h("div", { className: "rc-ong", role: "tablist" }, [["cav", F("Par cavalier")], ["ch", F("Par cheval")], ["ep", F("Par épreuve")]].map(function (o) { return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": rcTab === o[0], className: rcTab === o[0] ? "on" : "", onClick: function () { setRcTab(o[0]); } }, o[1]); })) : null,
-      (rcOuvert && rcTab === "cav") ? h(React.Fragment, null,
+      (rcOuvert && rcTab !== "ep" && !window.__rcAncien) ? h(React.Fragment, null,
+        h("div", { className: "rc-t" }, h("h3", null, rcTab === "cav" ? F("Les cavaliers") : F("Les chevaux")), h("span", null, nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
+        groupesE(rcTab)) : null,
+      (rcOuvert && rcTab === "cav" && window.__rcAncien) ? h(React.Fragment, null,
       /* les cavalières : cartes photo deux par ligne, comme les cartes chevaux du « programme » (D) — essai demandé par Blandine
          07/11 01h32. Fond : sa photo de profil si elle en a une, sinon la photo de son premier cheval. */
       h("div", { className: "rc-t" }, h("h3", null, F("Les cavaliers")), h("span", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
@@ -5461,7 +5579,7 @@ function EcranEngagements() {
             h("ol", null, tours.length ? tours.map(function (t, k) { return h("li", { key: k }, (t.c || F("cheval à choisir")), t.k ? h("span", { className: "sup" }, String(t.k)) : null, t.e ? h("em", null, " · " + t.e) : null); }) : h("li", { className: "libre" }, F("chevaux à choisir")))));
       }))) : null,
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
-      (rcOuvert && rcTab === "ch" && nomsCh.length) ? h(React.Fragment, null,
+      (rcOuvert && rcTab === "ch" && nomsCh.length && window.__rcAncien) ? h(React.Fragment, null,
         h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")))),
         h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, nomsCh.map(function (c) {
           var m = montes[c] || [], cases = [];
@@ -5490,29 +5608,7 @@ function EcranEngagements() {
         return h("div", { key: e, className: "rc-le" },
           h("div", { className: "rc-ban" }, phB ? h("img", { src: photoCh(phB), alt: "" }) : null, h("div", { className: "voile" }),
             h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (l0.some(function (x) { return x.lu; }) ? F("ordre du chronométreur · heures estimées") : (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti"))))))),
-          liste.map(function (x, j) {
-            var k = x.ch ? kTour(x.i, x.n) : 0, np = nomPrenom(x.nom);
-            return h("div", { key: j, className: "rc-li" },
-              h("div", { className: "k" }, String(j + 1)),
-              x.ch ? h("img", { src: photoCh(x.ch), alt: "" }) : h("span", { className: "rc-vide3" }),
-              h("div", { className: "q" }, h("b", null, [np[1], np[0]].filter(Boolean).join(" ")),
-                h("span", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null, x.piste ? " · " + F("piste ") + x.piste : "")),
-              h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"),
-              h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier ou supprimer"), onClick: function () { var t0 = ((lignes[x.i] || {}).tours || [])[x.n - 1] || {}; setMsgC(""); setModTour(modTour && modTour.i === x.i && modTour.k === x.n - 1 ? null : { i: x.i, k: x.n - 1, ep: t0.epreuve || e, ch: t0.cheval_nom || x.ch || "", sup: false }); } },
-                h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))),
-              (modTour && modTour.i === x.i && modTour.k === x.n - 1) ? h("div", { className: "rc-modp" },
-                h("label", null, h("span", null, F("Épreuve")), h("input", { type: "text", list: "rc-eps", value: modTour.ep, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ep: ev2.target.value })); } })),
-                h("datalist", { id: "rc-eps" }, eps.concat(ordreEp).filter(function (v, iv, tt) { return v && tt.indexOf(v) === iv; }).map(function (v) { return h("option", { key: v, value: v }); })),
-                h("label", null, h("span", null, F("Cheval")), h("input", { type: "text", list: "d3-chevaux-m", value: modTour.ch, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ch: ev2.target.value })); } })),
-                h("datalist", { id: "d3-chevaux-m" }, (chevaux || []).map(function (c) { return h("option", { key: c.id || c.nom, value: c.nom }); })),
-                modTour.sup ? h("div", { className: "rc-modc" }, h("span", null, F("Supprimer ce tour de ") + [np[1], np[0]].filter(Boolean).join(" ") + " ?"),
-                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(Object.assign({}, modTour, { sup: false })); } }, F("Non")),
-                    h("button", { type: "button", className: "rc-modx", onClick: function () { var mt = modTour; setModTour(null); retirerTour(mt.i, mt.k); } }, F("Oui, supprimer")))
-                  : h("div", { className: "rc-moda" },
-                    h("button", { type: "button", className: "rc-modx", onClick: function () { setModTour(Object.assign({}, modTour, { sup: true })); } }, F("Supprimer ce tour")),
-                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(null); } }, F("Annuler")),
-                    h("button", { type: "button", className: "rc-modok", onClick: validerModif }, F("Enregistrer")))) : null);
-          }));
+          liste.map(function (x, j) { return ligneE(x, j, e, "ep"); }));
       })) : null);
   }
   /* ═══ 07/11/2026 23h20 — P1 + D3 (choix de Blandine) : on engage en 3 touchers, cavalier ou cavalière → cheval → épreuve,
@@ -5563,7 +5659,12 @@ function EcranEngagements() {
     if (!ep) { setMsgC(F("Indique l’épreuve.")); return; }
     var n = lignes.slice(), l = Object.assign({}, n[modTour.i]), t = (l.tours || []).slice(), u = Object.assign({}, t[modTour.k]);
     var chChange = ch && ch !== u.cheval_nom;
-    u.epreuve = ep; if (ch) u.cheval_nom = ch; if (chChange) { u.cheval_id = null; }
+    var ancienCh = u.cheval_nom, ancienId = u.cheval_id || null;
+    u.epreuve = ep; if (ch) u.cheval_nom = ch; if (chChange) { u.cheval_id = null;
+      /* 13/11 (Blandine : changer de cheval doit garder « à la place de [l'ancien] ») */
+      var iniN = u.cheval_initial_nom || ancienCh, iniI = u.cheval_initial_nom ? (u.cheval_initial_id || null) : ancienId;
+      if (ch === iniN) { u.cheval_initial_nom = null; u.cheval_initial_id = null; } else { u.cheval_initial_nom = iniN || null; u.cheval_initial_id = iniI; } }
+    if (modTour.np !== undefined) u.non_partant = !!modTour.np;
     t[modTour.k] = u; l.tours = t; n[modTour.i] = l;
     setLignes(n); setModifie(true); setModTour(null);
     setMsgC("✓ " + F("Engagement modifié : ") + ep + (ch ? " · " + ch : ""));
@@ -5965,8 +6066,8 @@ function EcranEngagements() {
       adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
       blocOrdre(),   /* 10/11 : la lecture en cours et son résultat tout en haut */
       carteConcours(),
+      recapFin(),   /* 13/11 : les engagements en premier, le formulaire pour en ajouter ensuite */
       composeur(),
-      recapFin(),
       sansTour(),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seuls toi et le cavalier concerné les voient. Chacun voit son engagement sur la fiche du concours.")),
       /* actions */
@@ -6779,7 +6880,7 @@ function EcranJourJ(props) {
           var rT = await supa.from("concours_tours").select("*").eq("agenda_id", idEv).order("numero", { ascending: true });
           if (rT && rT.error) throw rT.error;
           var parE = {}; ((rT && rT.data) || []).forEach(function (t) { (parE[t.engagement_id] = parE[t.engagement_id] || []).push(t); });
-          LJ.forEach(function (l) { hsToursDepuis(l, parE[l.id]).forEach(function (t, k) { var n = k + 1; l["epreuve" + n] = t.epreuve; l["cheval" + n + "_nom"] = t.cheval_nom; l["passage" + n] = t.passage; l["piste" + n] = t.piste; l["ordre" + n] = t.ordre_passage; }); });
+          LJ.forEach(function (l) { hsToursDepuis(l, parE[l.id]).forEach(function (t, k) { var n = k + 1; l["epreuve" + n] = t.epreuve; l["cheval" + n + "_nom"] = t.cheval_nom; l["passage" + n] = t.passage; l["piste" + n] = t.piste; l["ordre" + n] = t.ordre_passage; l["_oep" + n] = t.epreuve || ""; l["_och" + n] = t.cheval_nom || ""; l["_cid" + n] = t.cheval_id || null; l["_ini" + n] = t.cheval_initial_nom || ""; l["_inid" + n] = t.cheval_initial_id || null; }); });
         } catch (eTo) { }
         if (vif) { setLignes(LJ); setBase(hsOrdreBase(LJ)); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
@@ -6787,6 +6888,17 @@ function EcranJourJ(props) {
     return function () { vif = false; };
   }, [idEv]);
 
+  var _edp = React.useState(function () { try { var e0 = window.__jjEdite || ""; window.__jjEdite = ""; return e0; } catch (e) { return ""; } }); var edPass = _edp[0], setEdPass = _edp[1];
+  /* 13/11 10h30 (Blandine : « un visuel similaire dans les trois… celui que j'aime le mieux c'est la dernière page ») : les passages
+     ont le dessin de la liste des Engagements (bandeau par épreuve, n°, médaillon du cheval, nom, heure, crayon) */
+  var _phj = React.useState({}); var phJ = _phj[0], setPhJ = _phj[1];
+  React.useEffect(function () {
+    if (!lignes || !lignes.length) return; var ids = [];
+    lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { var c = l["_cid" + n]; if (c && ids.indexOf(c) === -1 && !phJ[c]) ids.push(c); }); });
+    if (!ids.length) return; var vif = true;
+    supa.from("chevaux").select("id, nom, photo_url").in("id", ids.slice(0, 100)).then(function (r) { if (!vif || !r || r.error) return; var o = Object.assign({}, phJ); (r.data || []).forEach(function (c) { o[c.id] = c.photo_url || ""; }); setPhJ(o); });
+    return function () { vif = false; };
+  }, [lignes && lignes.length]);   /* 13/11 : le passage dont on change l'épreuve / le cheval */
   function poser(i, k, v) { var n = lignes.slice(); n[i] = Object.assign({}, n[i]); n[i][k] = v; setLignes(n); var m = Object.assign({}, modif); m[n[i].id] = true; setModif(m); setMsg(""); }
   /* toutes les passes de la journée, dans l'ordre de l'heure */
   var passes = [];
@@ -6826,6 +6938,11 @@ function EcranJourJ(props) {
       for (var k = 0; k < ids.length; k++) {
         var l = lignes.filter(function (x) { return x.id === ids[k]; })[0]; if (!l) continue;
         var row = { passage1: hsHeurePropre(l.passage1) || null, piste1: String(l.piste1 || "").trim() || null, passage2: hsHeurePropre(l.passage2) || null, piste2: String(l.piste2 || "").trim() || null, passage_maj_le: maint };
+        [1, 2].forEach(function (nC) {   /* 13/11 : épreuve / cheval des tours 1 et 2 recopiés dans la ligne d'engagement */
+          var eC = String(l["epreuve" + nC] || "").trim(), cC = String(l["cheval" + nC + "_nom"] || "").trim();
+          if (l["_oep" + nC] !== undefined && eC !== String(l["_oep" + nC] || "")) row["epreuve" + nC] = eC ? hsNomEpreuve(eC) : null;
+          if (l["_och" + nC] !== undefined && cC !== String(l["_och" + nC] || "")) { row["cheval" + nC + "_nom"] = cC || null; row["cheval" + nC + "_id"] = null; }
+        });
         var r = await supa.from("concours_engagements").update(row).eq("id", l.id).select("id");
         if (r && r.error) throw new Error(l.nom + " : " + (r.error.message || r.error));
         if (!r || !r.data || !r.data.length) throw new Error(l.nom + F(" : refusé par la base"));
@@ -6833,6 +6950,13 @@ function EcranJourJ(props) {
         for (var nT = 1; nT <= 5; nT++) {
           if (!(l["epreuve" + nT] || l["cheval" + nT + "_nom"])) continue;
           var majT = { passage: hsHeurePropre(l["passage" + nT]) || null, piste: String(l["piste" + nT] || "").trim() || null, passage_maj_le: maint };
+          /* 13/11 10h26 (Blandine : « qu'on puisse le modifier dans les passages aussi, et que ça se mette à jour partout ») : l'épreuve
+             et le cheval changés ici sont écrits au même endroit que depuis les Engagements (concours_tours + colonnes 1 et 2) */
+          var epN = String(l["epreuve" + nT] || "").trim(), chN = String(l["cheval" + nT + "_nom"] || "").trim();
+          if (l["_oep" + nT] !== undefined && epN !== String(l["_oep" + nT] || "")) majT.epreuve = epN ? hsNomEpreuve(epN) : null;
+          if (l["_och" + nT] !== undefined && chN !== String(l["_och" + nT] || "")) { majT.cheval_nom = chN || null; majT.cheval_id = null;
+            var iniJ = l["_ini" + nT] || l["_och" + nT] || "", iniJid = l["_ini" + nT] ? (l["_inid" + nT] || null) : (l["_cid" + nT] || null);
+            if (chN === iniJ) { majT.cheval_initial_nom = null; majT.cheval_initial_id = null; } else { majT.cheval_initial_nom = iniJ || null; majT.cheval_initial_id = iniJid; } }   /* 13/11 : « à la place de » gardé */
           if (l["ordre" + nT] !== undefined) majT.ordre_passage = l["ordre" + nT] || null;
           var rT2 = await supa.from("concours_tours").update(majT).eq("engagement_id", l.id).eq("numero", nT).select("id");
           if (rT2 && rT2.error) throw new Error(l.nom + " : " + (rT2.error.message || rT2.error));
@@ -6846,7 +6970,8 @@ function EcranJourJ(props) {
         if (!rd || !rd.data || !rd.data.length) throw new Error(F("lien du direct : refusé par la base"));
         setEv(Object.assign({}, ev, { lien_direct: t || null }));
       }
-      setModif({}); setBase(hsOrdreBase(lignes));
+      setModif({}); setBase(hsOrdreBase(lignes)); setEdPass("");
+      setLignes(lignes.map(function (l0) { var c0 = Object.assign({}, l0); [1, 2, 3, 4, 5].forEach(function (nO) { if (c0["_oep" + nO] !== undefined) { c0["_oep" + nO] = String(c0["epreuve" + nO] || ""); c0["_och" + nO] = String(c0["cheval" + nO + "_nom"] || ""); } }); return c0; }));
       /* 04/11 22h : prévenir chaque cavalière concernée sur son téléphone (fonction serveur notifier-passage) */
       var faitMsg = F("✓ Enregistré. Les cavaliers voient leur nouvelle heure sur la fiche du concours.");
       if (prevenir && ids.length) {
@@ -7003,11 +7128,49 @@ function EcranJourJ(props) {
           h("button", { type: "button", className: "hs-btn", onClick: appliquerProgramme }, F("Appliquer")),
           h("button", { type: "button", className: "hs-btn", onClick: function () { setProg(null); } }, F("Annuler")))) : null,
       h("div", { className: "hs-sec" }, h("b", null, F("Les passages"))),
+      h("datalist", { id: "jj-eps" }, passes.map(function (x) { return x.ep; }).filter(function (v, iv, tt) { return v && tt.indexOf(v) === iv; }).map(function (v) { return h("option", { key: v, value: v }); })),
+      h("datalist", { id: "jj-chs" }, passes.map(function (x) { return x.ch; }).filter(function (v, iv, tt) { return v && tt.indexOf(v) === iv; }).map(function (v) { return h("option", { key: v, value: v }); })),
       !passes.length ? h("div", { className: "hs-vide" }, F("Aucun couple engagé. Commence par la page Engagements.")) :
+      (typeof window !== "undefined" && window.__jjAncien) ? null :
+      h("div", { className: "e1 jj-l" }, (function () {
+        var parE = {}, ordreE = [];
+        passes.forEach(function (p) { var e = p.ep || F("Épreuve à préciser"); if (!parE[e]) { parE[e] = []; ordreE.push(e); } parE[e].push(p); });
+        return ordreE.map(function (e, ie) {
+          var l0 = parE[e].slice().sort(function (a, b) { var ma = a.hp ? hsMinutes(String(a.hp)) : 99999, mb = b.hp ? hsMinutes(String(b.hp)) : 99999; return ma - mb; });
+          var cid0 = (l0.map(function (p) { return (lignes[p.i] || {})["_cid" + p.n]; }).filter(function (c) { return c && phJ[c]; })[0]);
+          return h("div", { key: "jje" + ie, className: "rc-le" },
+            h("div", { className: "rc-ban" }, cid0 ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(phJ[cid0], 900, 300) : phJ[cid0], alt: "" }) : h("img", { src: HS_IMG_LOTS_EP[ie % 4], alt: "" }), h("div", { className: "voile" }),
+              h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours") : F(" tour"))))),
+            l0.map(function (p, j0) {
+              var cle = String((lignes[p.i] || {}).id) + "-" + p.n, conf = conflits[p.i + "-" + p.n], cid = (lignes[p.i] || {})["_cid" + p.n], ph = cid && phJ[cid];
+              var hm = (function () { var m = String(p.hp || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })();
+              return h("div", { key: cle, className: "rc-li", style: conf ? { background: "rgba(201,166,107,.08)" } : null },
+                h("div", { className: "k" }, String(j0 + 1)),
+                ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "" }) : h("span", { className: "rc-vide3", style: { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } }, String(p.ch || "?").charAt(0).toUpperCase()),
+                h("div", { className: "q" }, h("b", null, p.nom), h("span", null, [p.ch || F("cheval à choisir"), p.pi ? F("piste ") + p.pi : ""].filter(Boolean).join(" · "))),
+                h("div", { className: "hh" + (p.hp ? "" : " vide") }, p.hp ? hsHeurePropre(p.hp) || p.hp : "—"),
+                h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier"), onClick: function () { setEdPass(edPass === cle ? "" : cle); } },
+                  h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))),
+                conf ? h("div", { style: { gridColumn: "1 / -1", fontSize: 11.5, color: "#C9A66B" } }, F("En même temps que ") + conf + F(", sur une autre piste")) : null,
+                edPass === cle ? h("div", { className: "rc-modp" },
+                  h("label", null, h("span", null, F("Heure")), h("input", { type: "time", step: 60, style: { colorScheme: "dark" }, value: hm, onChange: function (ev2) { poser(p.i, "passage" + p.n, ev2.target.value); } })),
+                  h("label", null, h("span", null, F("Piste")), h("input", { type: "text", value: p.pi || "", placeholder: F("ex. 1, Bleue"), onChange: function (ev2) { poser(p.i, "piste" + p.n, ev2.target.value); } })),
+                  h("label", null, h("span", null, F("Épreuve")), h("input", { type: "text", list: "jj-eps", value: p.ep || "", onChange: function (ev2) { poser(p.i, "epreuve" + p.n, ev2.target.value); } })),
+                  h("label", null, h("span", null, F("Cheval")), h("input", { type: "text", list: "jj-chs", value: p.ch || "", onChange: function (ev2) { poser(p.i, "cheval" + p.n + "_nom", ev2.target.value); } })),
+                  h("button", { type: "button", className: "hs-btn", style: { marginTop: 2 }, onClick: function () { setEdPass(""); } }, F("OK"))) : null);
+            }));
+        });
+      })()),
+      (!passes.length || !(typeof window !== "undefined" && window.__jjAncien)) ? null :
       h("div", { className: "hs-carte" }, passes.map(function (p) {
         var cle = p.i + "-" + p.n, conf = conflits[cle];
         return h("div", { key: cle, className: "hs-couple", style: conf ? { background: "rgba(201,166,107,.08)" } : null },
-          h("div", { className: "hs-couple-t", style: { marginBottom: 6 } }, h("b", { style: { fontSize: 17 } }, p.nom), h("span", { style: { fontSize: 11.5, color: "rgba(243,238,228,.64)" } }, [p.ep, p.ch].filter(Boolean).join(" · "))),
+          h("div", { className: "hs-couple-t", style: { marginBottom: 6, display: "flex", alignItems: "baseline", gap: 8 } }, h("b", { style: { fontSize: 17 } }, p.nom), h("span", { style: { flex: 1, minWidth: 0, fontSize: 11.5, color: "rgba(243,238,228,.64)" } }, [p.ep, p.ch].filter(Boolean).join(" · ")),
+            /* 13/11 10h26 : changer l'épreuve ou le cheval de ce passage, ici même */
+            h("button", { type: "button", "aria-label": F("Changer l’épreuve ou le cheval"), onClick: function () { setEdPass(edPass === cle ? "" : cle); }, style: { flex: "0 0 auto", background: "none", border: "1px solid rgba(243,238,228,.2)", borderRadius: 999, padding: "4px 10px", color: "#F3EEE4", fontSize: 11, cursor: "pointer" } }, edPass === cle ? F("Fermer") : F("Modifier"))),
+          edPass === cle ? h("div", { className: "hs-g2", style: { marginBottom: 8 } },
+            h("div", { className: "hs-champ" }, h("label", null, F("Épreuve")), h("input", { type: "text", list: "jj-eps", value: p.ep || "", onChange: function (e) { poser(p.i, "epreuve" + p.n, e.target.value); } })),
+            h("div", { className: "hs-champ" }, h("label", null, F("Cheval")), h("input", { type: "text", list: "jj-chs", value: p.ch || "", onChange: function (e) { poser(p.i, "cheval" + p.n + "_nom", e.target.value); } }))) : null,
           conf ? h("div", { style: { fontSize: 11.5, color: "#C9A66B", marginBottom: 6 } }, F("En même temps que ") + conf + F(", sur une autre piste")) : null,
           h("div", { className: "hs-g2" },
             h("div", { className: "hs-champ" }, h("label", null, F("Heure de passage")), h("input", { type: "time", step: 60, style: { colorScheme: "dark" }, value: (function () { var m = String(p.hp || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })(), onChange: function (e) { var t = String(e.target.value || ""), mm = t.match(/^(\d{2}):(\d{2})/); poser(p.i, "passage" + p.n, mm ? (Number(mm[1]) + "h" + mm[2]) : ""); } })),
@@ -7049,7 +7212,10 @@ function EcranJourJ(props) {
         h("label", { style: { display: "flex", alignItems: "center", gap: 10, fontSize: 12.5, color: "rgba(243,238,228,.8)", marginBottom: 10 } },
           h("input", { type: "checkbox", checked: prevenir, onChange: function (e) { setPrevenir(e.target.checked); }, style: { width: 20, minHeight: 20, height: 20, accentColor: "#C9A66B" } }),
           F("Prévenir les cavaliers sur leur téléphone")),
-        h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré")))),
+        (integre && props.onFermer) ? h("div", { style: { display: "flex", gap: 10 } },
+            h("button", { type: "button", className: "hs-btn plein", style: { flex: 1 }, disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré"))),
+            h("button", { type: "button", className: "hs-btn", style: { flex: "0 0 auto", paddingInline: 18 }, disabled: occupe, onClick: async function () { if (aModif) await enregistrer(); props.onFermer(); } }, aModif ? F("Enregistrer et fermer") : F("Fermer")))
+          : h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 

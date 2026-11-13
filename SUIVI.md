@@ -22,6 +22,19 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1225 — Médias de la Team (série « grand cheval noir », par cavalier, vidéos dépliées O3) + passages des concours unifiés
+Demandes de Blandine du 13/11 (matin), publication : « Si tu veux mets en ligne et on refait le point après ».
+- hype-ecran-team-medias.js (v=48) : héros de la série « grand cheval noir » (ronds Cavaliers / Chevaux / Concours, titre en bas à gauche, courbe) ; « Par cavalier » en premier ; bandeaux alternés séparés par des traits droits ; toucher un cavalier déplie ses vidéos en encart O3 (les plus récentes d'abord) ; petits ronds photo = seulement des photos du bon couple ; titre d'une vidéo → page du couple ; onglets Vidéos · Photos ; « Tes vidéos, tes règles » replié ; Entraînement rangé dans Vidéos.
+- index.html : lien #tm et entrée « team-medias » ; page vidéo : titre et boutons sous l'image (plus sur l'image).
+- hype-ecran-team.js (v=57) : « Médias » de la Team ouvre la page Médias de la Team.
+- hype-ecran-saison.js (v=151) : « Médias de la saison » mène à la page Médias de la Team ; cache de l'équipe vérifié (plus de photos d'une autre équipe) ; retour arrière vers la bonne page média.
+- Passages (fiche du concours, « Modifier les passages », Engagements) : UN seul dessin partout, celui de son modèle (IMG_8420, Engagements « Les épreuves ») — bandeau photo par groupe, n°, médaillon photo, nom en ivoire, cheval/épreuve en gris, heure, crayon ; Par épreuve / Par cavalier / Par cheval ont la même forme (fin des cartes et des cases aux Engagements). Version sans photo de bandeau gardée sous html.rc-leger.
+- Crayon : petit panneau sous la ligne — changer de cheval ou de cavalier (l'ancien reste « à la place de … » sur sa ligne), Non partant / Remettre partant (sans supprimer le tour), Heure et piste ›.
+- « Modifier les passages » : « ✕ Fermer » en haut, barre « Enregistrer et fermer » toujours visible ; épreuve et cheval modifiables par ligne (mis à jour aussi dans les engagements).
+- Engagements : la liste est ouverte d'office et passe AVANT le formulaire « Nouvel engagement » ; non partant et ancien cheval conservés quand on réenregistre (avant : effacés).
+- Textes nouveaux en FR seulement (traductions après validation).
+- À revoir avec Blandine après publication : l'ensemble ; petits titres au-dessus des ronds des pages couple/cavalier/cheval ; héros « grand cheval noir » à étendre aux sous-pages cavaliers, chevaux, écurie.
+
 ## 20261113-1015 — Agenda : passages déjà dans un groupe retirés
 - Blandine 09h13 : « les passages, t'es pas obligé… surtout le rendez-vous paddock » ; 09h14 « Ok » (publier).
 - hype-ecran-saison.js v=150 : dans « Ajouter à mon agenda », un passage déjà couvert par un groupe publié du cavalier n'est plus ajouté (le rendez-vous paddock suffit) ; les passages restent pour un cavalier hors groupe.

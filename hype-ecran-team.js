@@ -1355,7 +1355,8 @@ function EcranTeamCompetition() {
      puis « Les plus aimées » (2 vidéos côte à côte, une seule = pleine largeur) et « Derniers partages » (idem ; absents si vides). */
   function ouvrirMedias(onglet, idVideo) {
     /* 12/11 16h30 (Blandine : une seule page pour les médias) : Photos et Vidéos ouvrent les Médias de la saison (page Médias des concours, tous concours) */
-    if (!idVideo && (onglet === "videos" || onglet === "photos" || onglet === "travail")) { try { window.__concoursId = "__saison"; window.__engagementsId = "__saison"; } catch (eS) { } setEcran("concours"); return; }
+    /* 13/11 09h20 (Blandine préfère la page Médias de la Team, avec ses onglets) : plus de détour par les Médias de la saison */
+    if (window.__saisonMediasAncien && !idVideo && (onglet === "videos" || onglet === "photos" || onglet === "travail")) { try { window.__concoursId = "__saison"; window.__engagementsId = "__saison"; } catch (eS) { } setEcran("concours"); return; }
     try { window.__teamMediasGroupe = groupe && groupe.id; window.__teamMediasOnglet = onglet || "accueil"; window.__teamMediasOuvrir = idVideo || null; } catch (eO) { }
     setEcran("team-medias");
   }

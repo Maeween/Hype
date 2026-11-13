@@ -121,8 +121,15 @@ function EcranTeamMedias() {
     } catch (e) { setErreur(String((e && e.message) || e)); }
     setChangePriv("");
   }
+  /* 13/11 10h21 (Blandine : « ok pour le repli de Tes règles ») : les encarts d'explication sont repliés sur une ligne ;
+     on les touche pour les déplier. */
+  var _encO = React.useState({}); var encartsOuv = _encO[0], setEncartsOuv = _encO[1];
   function encart(cle, titre, lignes) {
-    return h("div", { key: cle, style: { margin: "14px 0 6px", padding: "14px 16px", borderRadius: 12, border: "1px solid rgba(201,166,107,.28)", background: "linear-gradient(145deg,rgba(201,166,107,.05),rgba(201,166,107,0))" } },
+    var ouvE = !!encartsOuv[cle];
+    if (!ouvE) return h("button", { key: cle, type: "button", "aria-expanded": false, onClick: function () { var o2 = Object.assign({}, encartsOuv); o2[cle] = true; setEncartsOuv(o2); },
+      style: { display: "flex", alignItems: "center", gap: 10, width: "100%", margin: "14px 0 6px", padding: "11px 16px", borderRadius: 12, border: "1px solid rgba(201,166,107,.28)", background: "transparent", color: IV, fontFamily: SERIF, fontSize: 18, textAlign: "start", cursor: "pointer" } },
+      h("span", { style: { flex: 1 } }, titre), h("span", { "aria-hidden": "true", style: { color: CH, fontSize: 16 } }, "\u203a"));
+    return h("div", { key: cle, onClick: function () { var o2 = Object.assign({}, encartsOuv); o2[cle] = false; setEncartsOuv(o2); }, style: { cursor: "pointer", margin: "14px 0 6px", padding: "14px 16px", borderRadius: 12, border: "1px solid rgba(201,166,107,.28)", background: "linear-gradient(145deg,rgba(201,166,107,.05),rgba(201,166,107,0))" } },
       h("div", { style: { fontFamily: SERIF, fontSize: 21, color: IV, marginBottom: 6 } }, titre),
       lignes.map(function (t, i) { return h("p", { key: i, dir: "auto", style: { fontFamily: M, fontSize: 12, lineHeight: 1.6, color: IV2, margin: i ? "6px 0 0" : 0 } }, t); }));
   }
@@ -520,7 +527,17 @@ function EcranTeamMedias() {
       try {
         if (v0.agenda_id) {
           var r = await supa.from("commentaires").select("user_id, photo_url, medias, prive").eq("cible", "agenda:" + v0.agenda_id).order("created_at", { ascending: false }).limit(60);
-          ((r && !r.error && r.data) || []).forEach(function (po) { if (po.prive && !(moi && po.user_id === moi.id)) return; ajoute(po.photo_url); (Array.isArray(po.medias) ? po.medias : []).forEach(ajoute); });
+          /* 13/11 09h20 (Blandine : « ça m'ouvre une photo de Liam sur Elfe avec écrit Ella sur Aceitunero ») : le rond photo
+             prenait la dernière photo du concours, de n'importe qui. On ne garde que les photos où ce cheval ou ce cavalier
+             est identifié ; sinon la photo du cheval ; sinon pas de rond photo. */
+          var candC = [];
+          ((r && !r.error && r.data) || []).forEach(function (po) { if (po.prive && !(moi && po.user_id === moi.id)) return; [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { u = String(u || ""); if (u && candC.indexOf(u) === -1) candC.push(u); }); });
+          var chV = (v0.chevaux || []).map(String), cavV = (v0.cavaliers || []).map(String);
+          if (candC.length && (chV.length || cavV.length)) {
+            var ri = await supa.from("identifications").select("photo_url, type, cible_id, statut").in("photo_url", candC.slice(0, 200));
+            var bons = {}; ((ri && !ri.error && ri.data) || []).forEach(function (q) { if (q.statut === "refuse" || q.statut === "refusee") return; var cid = String(q.cible_id || ""); if ((q.type === "cheval" && chV.indexOf(cid) !== -1) || (q.type === "cavalier" && cavV.indexOf(cid) !== -1)) bons[q.photo_url] = 1; });
+            candC.forEach(function (u) { if (bons[u]) ajoute(u); });
+          }
         }
       } catch (eR) { }
       if (out.length < 3) (v0.chevaux || []).forEach(function (c) { var ch = chevauxParId[c]; if (ch && ch.photo_url) ajoute(ch.photo_url); });
@@ -559,11 +576,40 @@ function EcranTeamMedias() {
       h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 64px)", lineHeight: 1, margin: 0, color: IV } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Média", "Media", "Медиа", "Media", "미디어", "رسانه‌ها")),
       h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(17px, 4.6vw, 21px)", margin: "8px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "", (groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")));
 
+  /* 13/11 10h12 (Blandine : « uniformiser tous les héros des pages médias, que ça fasse une série ») : même haut que les pages
+     Médias d'un concours / d'un cavalier / d'un cheval / du couple — le grand cheval noir, les ronds à droite avec leur nom,
+     le titre en bas à gauche, la courbe dorée. Les ronds ouvrent l'onglet correspondant. Ancien haut : window.__tmHeroAncien. */
+  function icoSerie(n) {
+    var d = n === "ch" ? "M7.5 20.5c.2-3.6 1.6-6.3 4.2-8.2l-1.3-3.6 2.9 1.9c.6-.9 1.4-2.3 1.6-4.1l1.4 2.4c2.5 1.4 3.9 3.6 4.1 6.3l-2.2.6-1.6-1.6-2.2 1.3c.3 1.8.1 3.5-.6 5"
+      : n === "conc" ? "M8 4h8v4.5a4 4 0 0 1-8 0zM8 6H5.5a2.5 2.5 0 0 0 2.6 3.4M16 6h2.5a2.5 2.5 0 0 1-2.6 3.4M12 12.5V16M9 20h6M10 16h4v4h-4z"
+      : "M12 11.6a3.8 3.8 0 1 0 0-7.6 3.8 3.8 0 0 0 0 7.6zM4.6 20.5c.9-3.9 3.8-6 7.4-6s6.5 2.1 7.4 6";
+    return h("svg", { viewBox: "0 0 24 24", width: 27, height: 27, "aria-hidden": "true" }, h("path", { d: d, fill: "none", stroke: CH, strokeWidth: 1.2, strokeLinecap: "round", strokeLinejoin: "round" }));
+  }
+  function rondSerie(k, lib, vueK) {
+    return h("button", { key: k, type: "button", onClick: function () { setOnglet("videos"); setVue(vueK); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); setTimeout(function () { try { var el = document.getElementById("tm-sel-vue"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 60); },
+      style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 6, background: "none", border: "none", padding: 0, color: IV, cursor: "pointer" } },
+      h("span", { style: { width: 50, height: 50, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.75)", background: "rgba(7,10,8,0.55)", display: "flex", alignItems: "center", justifyContent: "center" } }, icoSerie(k)),
+      h("span", { style: { fontFamily: M, fontSize: 11.5, color: IV, textShadow: "0 1px 8px rgba(0,0,0,.8)" } }, lib));
+  }
+  var heroSerie = h("div", { style: { position: "relative", height: "min(calc(100svh - 190px), 720px)", minHeight: 460, overflow: "hidden", background: "#050607" } },
+    h("img", { src: "images/galop1-hero-bai.webp", alt: "", decoding: "async", style: { position: "absolute", left: 0, right: 0, bottom: 30, width: "100%", height: "calc(100% - 230px)", objectFit: "cover", objectPosition: "78% 45%", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%)" } }),   /* comme la série : le cheval sous les ronds */
+    h("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, bottom: 0, height: 160, background: "linear-gradient(180deg, rgba(5,6,7,0), #070A08)" } }),
+    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back"),
+      style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer", zIndex: 2 } }, rtl ? "›" : "‹"),
+    h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 70px)", insetInlineEnd: 14, display: "flex", flexDirection: "column", gap: 16, zIndex: 2 } },
+      rondSerie("cav", T("Cavaliers", "Riders"), "cavaliere"), rondSerie("ch", T("Chevaux", "Horses"), "cheval"), rondSerie("conc", T("Concours", "Shows"), "concours")),
+    h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 54, zIndex: 2, maxWidth: "70%" } },
+      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(40px, 11vw, 58px)", lineHeight: 1, margin: 0, color: IV, textShadow: "0 2px 14px rgba(0,0,0,.6)" } }, T("Médias", "Media")),
+      h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(16px, 4.4vw, 20px)", margin: "6px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "", (groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")),
+    h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: 0, width: "100%", height: 50, transform: rtl ? "scaleX(-1)" : "none" } },
+      h("path", { d: "M0 56 C 140 52, 260 36, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })));
+  if (!(typeof window !== "undefined" && window.__tmHeroAncien)) hero = heroSerie;
+
   var ONGLETS = [["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상", "ویدیوها")], ["epingles", T("Épingles HB", "HB pins", "Pines HB", "Pin HB", "HBピン", "HB-Pins", "تثبيتات HB", "HB 收藏", "HB-pins", "Pins HB", "HB-nålar", "Закладки HB", "Przypięte HB", "HB 핀", "سنجاق‌های HB")], ["theorie", T("Théorie", "Theory", "Teoría", "Teoria", "理論", "Theorie", "النظرية", "理论", "Theorie", "Teoria", "Teori", "Теория", "Teoria", "이론", "دانش نظری")]];   /* 10/11 22h (Blandine : « que ce soit celui de la vidéo d'abord ») : Vidéos en premier */
   var barreOnglets = h("div", { role: "tablist", style: { display: "flex", gap: 8, margin: "22px 0 0" } },
     ONGLETS.map(function (o) {
       var on = onglet === o[0];
-      return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setOnglet(o[0]); setCavOuverte(null); setChOuvert(null); },
+      return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setOnglet(o[0]); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); },
         style: { flex: 1, minHeight: 46, padding: "9px 6px", borderRadius: 12, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.12)"),
           background: on ? "linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95))" : "rgba(16,26,29,.45)",
           boxShadow: on ? "0 8px 22px -12px rgba(0,0,0,.95), inset 0 0 0 .5px rgba(201,166,107,.35)" : "none",
@@ -638,7 +684,12 @@ function EcranTeamMedias() {
               : verrou ? ICONE_CADENAS
               : h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
-      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff,
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } },
+        /* 13/11 : toucher « Ella × Aceitunero » ouvre la page du couple (souligné discret pour qu'on comprenne) */
+        (couple && v.cavaliers.length === 1 && v.chevaux.length === 1)
+          ? h("span", { role: "link", tabIndex: 0, onClick: function (e) { e.stopPropagation(); e.preventDefault(); ouvrirCouple(v.cavaliers[0], v.chevaux[0]); },
+              style: { borderBottom: "1px solid " + CH3, cursor: "pointer" } }, titreAff)
+          : titreAff,
         v.resultat ? h("span", { style: { color: CH, fontWeight: 600, whiteSpace: "nowrap" } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null),
       /* 12/11 01h00 (Blandine : « savoir si c'est moi qui l'ai mise ou elles ») : « par Maëlys » / « par toi », en tout discret au bout de la ligne */
       (function () {
@@ -698,14 +749,112 @@ function EcranTeamMedias() {
      « Voir tout » ouvre la page au grand cheval noir (toutes ses vidéos de l'équipe, tous concours confondus). Une vidéo
      n'existe qu'une fois : publiée, modifiée ou supprimée ici ou sur la fiche du concours, elle l'est partout. */
   function versPageMedias(estCh, id, liste) {
+    if (!window.__medSautAncien) return false;   /* 13/11 09h20 (Blandine : « j'arrive sur une nouvelle page média ») : on reste sur cette page */
     var ag = null; (liste || []).forEach(function (v) { if (!ag && v.agenda_id) ag = v.agenda_id; });
     if (!ag) (videos || []).forEach(function (v) { if (!ag && v.agenda_id) ag = v.agenda_id; });
     if (!ag) return false;
     try { window.__concoursId = ag; window.__engagementsId = ag; window.__concoursPhoto = null; window.__medPageDirect = { ch: estCh, id: String(id) }; } catch (e) { return false; }
     setEcran("concours"); return true;
   }
+  /* 13/11 10h10 (Blandine : la page du couple existe déjà, « elle est magnifique ») : « Ella × Aceitunero » ouvre CETTE page
+     (celle des ronds à droite, toute la saison) ; la page couple faite ici ne sert qu'en secours (aucun concours rattaché). */
+  function ouvrirCouple(cav, ch) {
+    var ag = null; (videos || []).forEach(function (v) { if (!ag && v.agenda_id && v.cavaliers.indexOf(cav) !== -1) ag = v.agenda_id; });
+    if (!ag) (videos || []).forEach(function (v) { if (!ag && v.agenda_id) ag = v.agenda_id; });
+    if (ag) { try { window.__concoursId = ag; window.__engagementsId = ag; window.__concoursPhoto = null; window.__medPageDirect = { couple: true, cav: String(cav), ch: String(ch) }; } catch (e) { } setEcran("concours"); return; }
+    setOnglet("videos"); setCoupleOuv({ cav: cav, ch: ch });
+  }
   function ouvrirCavaliere(p) { if (versPageMedias(false, p.id, videosDe(p))) return; setOngletCheval("tous"); setCavOuverte(p.id); try { window.scrollTo(0, 0); } catch (e) { } }
 
+  /* 13/11 09h20 (Blandine : « une présentation qui différencie plus les cavaliers, dans l'idée d'hier avec les alternances
+     séparées par les courbes ; quand tu cliques sur un cavalier, ça déplie ses vidéos qu'on fait circuler de gauche à droite,
+     les dernières en premier ») : un bandeau par cavalier (photo d'un côté, puis de l'autre), une courbe entre deux ; toucher
+     le bandeau déplie ses vidéos en ligne, sans changer de page. Ancien rendu : window.__cavAncien. */
+  function bandeauCav(p, i) {
+    var VAR = (typeof window !== "undefined" && window.__cavVar) || "A";   /* 13/11 09h46 : A validé (fermé) */
+    if (VAR === "B" || VAR === "C") return rangCav(p, i, VAR);
+    var siennes = videosDe(p).slice().sort(function (a, b) { return String(b.date_video || b.cree_le || "").localeCompare(String(a.date_video || a.cree_le || "")); });
+    var n = siennes.length, ouv = cavDepl === p.id && n > 0, droite = i % 2 === 0, cote = droite ? "right" : "left";
+    var der = siennes.filter(function (v) { return vignetteDe(v) && peutLire(v); })[0];
+    var img = photoProfil(p) || (der ? vignetteDe(der) : "") || "images/portrait-defaut-" + ["gris", "alezan", "noir", "isabelle"][i % 4] + ".webp";
+    var msq = "linear-gradient(" + (droite ? "270deg" : "90deg") + ", transparent 0%, #000 30%)";
+    var nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
+    var sous = n ? compte(n, T("vidéo", "video"), T("vidéos", "videos")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse"), T("chevaux", "horses")) : "") : T("Pas encore de vidéo", "No video yet");
+    var dDer = n ? dateCourte(siennes[0].date_video || siennes[0].cree_le) : "";
+    return h("div", { key: "bc" + p.id },
+      i > 0 ? h("div", { "aria-hidden": "true", style: { height: 1, margin: "14px 0", background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.45) 20%, rgba(201,166,107,0.45) 80%, rgba(201,166,107,0))" } }) : null,   /* 13/11 09h30 : traits droits */
+      h("button", { type: "button", "aria-expanded": ouv, disabled: !n && !estDuGroupe, onClick: function () { if (!n) { if (estDuGroupe) ouvrirAjout({ cav: [p.id] }); return; } setCavDepl(ouv ? null : p.id); },
+        style: { position: "relative", display: "block", width: "100%", height: 116, padding: 0, border: "none", background: "none", color: IV, cursor: "pointer", overflow: "hidden", textAlign: droite ? "start" : "end" } },
+        h("span", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "44%", overflow: "hidden", pointerEvents: "none" } },
+          h("img", { src: (typeof vignetteHype === "function" && /^https?:/.test(img)) ? vignetteHype(img, 360, 260) : img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } },
+            style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", WebkitMaskImage: msq, maskImage: msq, opacity: n ? 1 : 0.55 } })),
+        h("span", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 4, width: "58%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end" } },
+          dDer ? h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CH } }, T("Dernière vidéo", "Latest video") + " · " + dDer) : null,
+          h("span", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 27, lineHeight: 1.08, marginTop: 4, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, nomProfil(p)),
+          h("span", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 4, fontFamily: M, fontSize: 11.5, color: IV3 } }, sous,
+            n ? h("span", { "aria-hidden": "true", style: { color: CH, fontSize: 15, transform: ouv ? "rotate(90deg)" : "none", transition: "transform .2s" } }, "›")
+              : (estDuGroupe ? h("span", { style: { color: CH } }, "+ " + T("Ajouter", "Add")) : null)))),
+      ouv ? (function () {
+        /* 13/11 09h46 (Blandine : « ça c'est bien quand c'est fermé ») — ouvert : O1 vignettes aérées ; O2 grandes vignettes qui
+           s'arrêtent une par une ; O3 les vidéos posées dans un encart (fond un peu plus clair, cadre fin) */
+        var OV = (typeof window !== "undefined" && window.__cavOuv) || "O3";   /* 13/11 10h27 : O3 choisi par Blandine */
+        var grand = OV !== "O1", larg = grand ? "0 0 min(76%, 340px)" : "0 0 clamp(148px, 21vw, 210px)";
+        var rang = h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: grand ? 16 : 18, overflowX: "auto", scrollSnapType: grand ? "x mandatory" : "none", scrollPaddingInline: 18, margin: OV === "O3" ? "0 -16px" : "18px -18px 26px", padding: OV === "O3" ? "4px 16px 6px" : "6px 18px 14px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } },
+          siennes.map(function (v) { return h("div", { key: "bw" + v.id, style: { flex: larg, scrollSnapAlign: "start", minWidth: 0 } }, tuileVideo(v, "bd" + p.id + v.id, true)); }),
+          estDuGroupe ? h("div", { key: "aj", style: { flex: grand ? "0 0 min(40%, 170px)" : "0 0 clamp(148px, 21vw, 210px)", scrollSnapAlign: "start" } }, tuileAjout("bdaj" + p.id, 0, false, { cav: [p.id] })) : null);
+        if (OV !== "O3") return rang;
+        return h("div", { style: { margin: "14px 0 24px", padding: "18px 16px 14px", borderRadius: 18, background: "linear-gradient(180deg, #121618, #0C0F11)", border: "1px solid rgba(201,166,107,0.22)", overflow: "hidden" } },
+          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH, marginBottom: 12 } }, T("Les vidéos de", "Videos of") + " " + String(nomProfil(p)).split(/\s+/)[0]), rang);
+      })() : null);
+  }
+  /* 13/11 09h30 (Blandine : « pas trop fan, fais-moi d'autres propositions ») — B : une rangée par cavalier (petite photo ronde,
+     prénom), ses vidéos tout de suite visibles en ligne, les plus récentes d'abord ; C : la dernière vidéo en grand, les autres
+     se déplient en ligne ; D : les cavaliers en ronds en haut, ses vidéos dessous (cf. rondsCav). */
+  function videosRecentes(p) { return videosDe(p).slice().sort(function (a, b) { return String(b.date_video || b.cree_le || "").localeCompare(String(a.date_video || a.cree_le || "")); }); }
+  function ligneVideos(liste, cle, p) {
+    return h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 18, overflowX: "auto", margin: "6px -18px 0", padding: "6px 18px 12px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } },
+      liste.map(function (v) { return tuileVideo(v, cle + v.id, false); }),
+      estDuGroupe ? h("div", { key: "aj", style: { flex: "0 0 clamp(148px, 21vw, 210px)" } }, tuileAjout(cle + "aj", 0, false, { cav: [p.id] })) : null);
+  }
+  function courbe(i) { return h("div", { "aria-hidden": "true", style: { height: 1, margin: "22px 0 12px", background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.4) 20%, rgba(201,166,107,0.4) 80%, rgba(201,166,107,0))" } }); }
+  function enteteCav(p, n, droite) {
+    var nbCh = chevauxDe(videosDe(p)).filter(function (c) { return c !== "_sans"; }).length;
+    return h("div", { style: { display: "flex", alignItems: "center", gap: 12, flexDirection: droite ? "row-reverse" : "row", textAlign: droite ? "end" : "start", margin: "6px 0 10px" } },
+      avatar(p, 46),
+      h("div", { style: { minWidth: 0, flex: 1 } },
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 25, lineHeight: 1.1 } }, nomProfil(p)),
+        h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, n ? compte(n, T("vidéo", "video"), T("vidéos", "videos")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse"), T("chevaux", "horses")) : "") : T("Pas encore de vidéo", "No video yet"))));
+  }
+  function rangCav(p, i, VAR) {
+    var siennes = videosRecentes(p), n = siennes.length, droite = VAR === "C" ? false : i % 2 === 1;
+    if (VAR === "B") return h("div", { key: "rb" + p.id }, i > 0 ? courbe(i) : null, enteteCav(p, n, droite), n ? ligneVideos(siennes, "rb" + p.id, p) : (estDuGroupe ? ligneVideos([], "rb" + p.id, p) : null));
+    /* C */
+    var ouv = cavDepl === p.id, der = siennes[0];
+    return h("div", { key: "rc" + p.id }, i > 0 ? courbe(i) : null, enteteCav(p, n, false),
+      der ? h("div", { style: { maxWidth: 560 } }, tuileVideo(der, "rcg" + der.id, true)) : (estDuGroupe ? tuileAjout("rcaj" + p.id, 0, true, { cav: [p.id] }) : null),
+      n > 1 ? h("button", { type: "button", onClick: function () { setCavDepl(ouv ? null : p.id); }, style: { display: "block", margin: "8px 0 4px", background: "none", border: "none", padding: "6px 0", color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } },
+        ouv ? T("Masquer les autres vidéos", "Hide the other videos") : "+ " + compte(n - 1, T("autre vidéo", "other video"), T("autres vidéos", "other videos")) + " ›") : null,
+      (ouv && n > 1) ? ligneVideos(siennes.slice(1), "rcl" + p.id, p) : null);
+  }
+  function rondsCav(liste) {
+    var avec = liste.filter(function (p) { return videosDe(p).length; });
+    var sel = (cavDepl && liste.filter(function (p) { return p.id === cavDepl; })[0]) || avec[0] || liste[0];
+    if (!sel) return null;
+    var siennes = videosRecentes(sel);
+    return h("div", null,
+      h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 14, overflowX: "auto", margin: "6px -18px 0", padding: "6px 18px 10px", scrollbarWidth: "none" } },
+        liste.map(function (p) {
+          var on = p.id === sel.id, n = videosDe(p).length;
+          return h("button", { key: "rd" + p.id, type: "button", onClick: function () { setCavDepl(p.id); }, style: { flex: "0 0 auto", width: 74, background: "none", border: "none", padding: 0, color: IV, cursor: "pointer", opacity: n ? 1 : 0.45 } },
+            h("div", { style: { width: 66, height: 66, margin: "0 auto", borderRadius: "50%", padding: 2, border: "1.5px solid " + (on ? CH : "rgba(243,238,228,0.14)") } }, h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" } }, avatar(p, 60))),
+            h("div", { style: { fontFamily: M, fontSize: 11, marginTop: 6, color: on ? IV : IV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, String(nomProfil(p)).split(/\s+/)[0]),
+            h("div", { style: { fontFamily: M, fontSize: 9.5, color: IV3, marginTop: 1 } }, n ? String(n) : "–"));
+        })),
+      courbe(0),
+      enteteCav(sel, siennes.length, false),
+      siennes.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + COLS + ", minmax(0, 1fr))", gap: "14px 10px" } }, siennes.map(function (v) { return tuileVideo(v, "rdv" + v.id, true); }))
+        : (estDuGroupe ? tuileAjout("rdaj" + sel.id, 0, true, { cav: [sel.id] }) : vide(T("Pas encore de vidéo", "No video yet"))));
+  }
   function sectionCavaliere(p, i) {
     var siennes = videosDe(p), nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
     var sousTitre = siennes.length ? compte(siennes.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상", "ویدیو"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상", "ویدیو")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse", "caballo", "cavallo", "頭の馬", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리 말", "اسب"), T("chevaux", "horses", "caballos", "cavalli", "頭の馬", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошади", "konie", "마리 말", "اسب")) : "")
@@ -757,7 +906,26 @@ function EcranTeamMedias() {
 
   /* ───────── vue PAR CHEVAL (mêmes vidéos, mêmes rattachements) : une section par cheval, 2 vidéos, « Voir tout » ouvre
      la page du cheval avec un onglet par cavalière. Les chevaux n'apparaissent que s'ils ont au moins une vidéo. ───────── */
-  var _vu = React.useState("concours"); var vue = _vu[0], setVue = _vu[1];   /* 12/11 16h : la page s'ouvre sur les encarts de concours */
+  var _vu = React.useState("cavaliere");   /* 13/11 09h20 (Blandine : « je commencerai par les cavaliers ») */
+  var _cdp = React.useState(null); var cavDepl = _cdp[0], setCavDepl = _cdp[1];   /* 13/11 : le bandeau de cavalier déplié */
+  var _cpo = React.useState(null); var coupleOuv = _cpo[0], setCoupleOuv = _cpo[1];   /* 13/11 : page d'un couple { cav, ch } */
+  var _cpd = React.useState(null); var coupleDonnees = _cpd[0], setCoupleDonnees = _cpd[1];
+  React.useEffect(function () {
+    if (!coupleOuv) return; var vif = true, cle = coupleOuv.cav + "|" + coupleOuv.ch;
+    try { window.scrollTo(0, 0); } catch (e) { }
+    (async function () {
+      var res = [], photos = [];
+      try { var rr = await supa.from("resultats").select("concours, epreuve, place, partants, date_epreuve").eq("cavalier_id", coupleOuv.cav).eq("cheval_id", coupleOuv.ch).neq("visible", false).order("date_epreuve", { ascending: false }).limit(60); res = (rr && !rr.error && rr.data) || []; } catch (eR) { }
+      try {
+        var ri = await supa.from("identifications").select("photo_url, type, cible_id, statut").in("cible_id", [coupleOuv.cav, coupleOuv.ch]).limit(800);
+        var par = {}; ((ri && !ri.error && ri.data) || []).forEach(function (q) { if (/refus/.test(String(q.statut || ""))) return; var u = String(q.photo_url || ""); if (!u || /^teamvideo:|^mux:/.test(u) || ((typeof estUrlVideo === "function") && estUrlVideo(u))) return; par[u] = par[u] || {}; par[u][q.type] = 1; });
+        Object.keys(par).forEach(function (u) { if (par[u].cheval && par[u].cavalier) photos.push(u); });
+      } catch (eI) { }
+      if (vif) setCoupleDonnees({ cle: cle, res: res, photos: photos });
+    })();
+    return function () { vif = false; };
+  }, [coupleOuv && (coupleOuv.cav + "|" + coupleOuv.ch)]);
+  var vue = _vu[0], setVue = _vu[1];   /* 12/11 16h : la page s'ouvre sur les encarts de concours */
   var _cho = React.useState(null); var chOuvert = _cho[0], setChOuvert = _cho[1];
   var _ocv = React.useState("tous"); var ongletCav = _ocv[0], setOngletCav = _ocv[1];
   function videosDuCheval(c) { return (videos || []).filter(function (v) { return v.chevaux.indexOf(c) !== -1; }); }
@@ -783,6 +951,40 @@ function EcranTeamMedias() {
         h("div", { style: { marginTop: 12, maxWidth: 560 } },
           deux.length === 2 ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, deux.map(function (v) { return tuileVideo(v, "cv" + c + v.id, true); }))
             : grilleEquilibree(deux, "lc" + c, 2, { ch: [c] }))));
+  }
+  /* 13/11 09h25 (Blandine : « fais les 4 » — point 3) : PAGE D'UN COUPLE (cavalier × cheval), ouverte en touchant
+     « Ella × Aceitunero » sous une vidéo : ses vidéos (les plus récentes d'abord, de gauche à droite), ses photos (celles où
+     le cheval et le cavalier sont identifiés) et ses résultats. Reste sur la page Médias ; « ‹ Retour » revient à la liste. */
+  function pageCouple(cp) {
+    var vids = (videos || []).filter(function (v) { return v.cavaliers.indexOf(cp.cav) !== -1 && v.chevaux.indexOf(cp.ch) !== -1; })
+      .sort(function (a, b) { return String(b.date_video || b.cree_le || "").localeCompare(String(a.date_video || a.cree_le || "")); });
+    var pr = profilsParId[cp.cav], prenom = pr ? String(nomProfil(pr)).split(/\s+/)[0] : "";
+    var d = coupleDonnees && coupleDonnees.cle === cp.cav + "|" + cp.ch ? coupleDonnees : null;
+    function titreRub(t) { return h("div", { style: { display: "flex", alignItems: "center", gap: 12, margin: "26px 0 12px" } }, h("span", { style: { fontFamily: SERIF, fontSize: 24, color: IV } }, t), h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg," + CH2 + ",transparent)" } })); }
+    return h("div", { style: { marginTop: 14 } },
+      h("button", { type: "button", onClick: function () { setCoupleOuv(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Retour", "Back")),
+      h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginTop: 6 } },
+        photoCheval(cp.ch, 64),
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH } }, T("Couple", "Pair")),
+          h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 28, lineHeight: 1.08, marginTop: 3 } }, prenom + " × " + nomCheval(cp.ch)),
+          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(vids.length, T("vidéo", "video"), T("vidéos", "videos")) + (d && d.res.length ? " · " + compte(d.res.length, T("résultat", "result"), T("résultats", "results")) : "")))),
+      titreRub(T("Vidéos", "Videos")),
+      vids.length ? h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 10, overflowX: "auto", margin: "0 -18px", padding: "4px 18px 10px", scrollbarWidth: "none" } }, vids.map(function (v) { return tuileVideo(v, "cp" + v.id, false); }))
+        : vide(T("Pas encore de vidéo de ce couple.", "No video of this pair yet.")),
+      titreRub(T("Photos", "Photos")),
+      !d ? chargement() : d.photos.length ? h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 8, overflowX: "auto", margin: "0 -18px", padding: "0 18px 8px", scrollbarWidth: "none" } },
+          d.photos.map(function (u, k) { return h("button", { key: "cph" + k, type: "button", onClick: function () { setVisuMuet(false); setVisu(u); }, style: { flex: "0 0 auto", height: 150, padding: 0, border: "none", borderRadius: 10, overflow: "hidden", background: PAN, cursor: "pointer" } },
+            h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 400, 300) : u, alt: "", loading: "lazy", style: { height: "100%", width: "auto", display: "block" } })); }))
+        : vide(T("Pas encore de photo où les deux sont identifiés.", "No photo with both tagged yet.")),
+      titreRub(T("Résultats", "Results")),
+      !d ? chargement() : d.res.length ? h("div", null, d.res.map(function (r, k) {
+          return h("div", { key: "cr" + k, style: { display: "flex", alignItems: "baseline", gap: 12, padding: "10px 0", borderTop: k ? "1px solid rgba(243,238,228,0.07)" : "none" } },
+            h("span", { style: { flex: "0 0 64px", fontFamily: SERIF, fontSize: 20, color: r.place === 1 ? CH : IV } }, r.place ? (r.place === 1 ? T("1er", "1st") : r.place + T("e", "th")) : "—"),
+            h("span", { style: { flex: 1, minWidth: 0 } },
+              h("span", { style: { display: "block", fontFamily: M, fontSize: 12.5, color: IV } }, r.epreuve || ""),
+              h("span", { style: { display: "block", fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 2 } }, [r.concours, dateCourte(r.date_epreuve), r.partants ? r.partants + " " + T("partants", "starters") : ""].filter(Boolean).join(" · "))));
+        })) : vide(T("Pas encore de résultat enregistré pour ce couple.", "No result recorded for this pair yet.")));
   }
   function pageCheval(c) {
     var siens = videosDuCheval(c), cavs = cavalieresDe(siens);
@@ -810,14 +1012,16 @@ function EcranTeamMedias() {
   function selecteurVue() {
     function lien(cle, txt) {
       var on = vue === cle;
-      return h("button", { key: cle, type: "button", onClick: function () { setVue(cle); setCavOuverte(null); setChOuvert(null); },
+      return h("button", { key: cle, type: "button", onClick: function () { setVue(cle); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); },
         style: { background: "none", border: "none", borderBottom: "1px solid " + (on ? CH : "transparent"), padding: "8px 0 6px", minHeight: 36, color: on ? IV : IV3, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: largeur < 420 ? "0.12em" : "0.2em", whiteSpace: "nowrap", flex: "0 0 auto", textTransform: "uppercase", cursor: "pointer" } }, txt);
     }
-    return h("div", { "data-hscroll": "1", style: { display: "flex", gap: largeur < 420 ? 16 : 22, marginTop: 18, overflowX: "auto", scrollbarWidth: "none" } }, lien("concours", T("Par concours", "By competition", "Por concurso", "Per concorso", "競技会別", "Nach Turnier", "حسب المسابقة", "按比赛", "Per wedstrijd", "Por concurso", "Per tävling", "По соревнованиям", "Według zawodów", "대회별", "بر اساس مسابقه")), lien("cavaliere", T("Par cavalier", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiter", "حسب الفارس", "按骑手", "Per ruiter", "Por cavaleiro", "Per ryttare", "По всадникам", "Według jeźdźca", "라이더별", "بر اساس سوارکار")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب")));
+    return h("div", { id: "tm-sel-vue", "data-hscroll": "1", style: { display: "flex", gap: largeur < 420 ? 16 : 22, marginTop: 18, scrollMarginTop: 20, overflowX: "auto", scrollbarWidth: "none" } }, lien("cavaliere", T("Par cavalier", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiter", "حسب الفارس", "按骑手", "Per ruiter", "Por cavaleiro", "Per ryttare", "По всадникам", "Według jeźdźca", "라이더별", "بر اساس سوارکار")), lien("concours", T("Par concours", "By competition", "Por concurso", "Per concorso", "競技会別", "Nach Turnier", "حسب المسابقة", "按比赛", "Per wedstrijd", "Por concurso", "Per tävling", "По соревнованиям", "Według zawodów", "대회별", "بر اساس مسابقه")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب"), lien("travail", T("Entraînement", "Training"))));
   }
 
   function ongletVideos() {
     if (videos === null || membres === null) return chargement();
+    if (coupleOuv) return pageCouple(coupleOuv);
+    if (vue === "travail") return h("div", null, selecteurVue(), ongletTravail());   /* 13/11 : l'entraînement sous les Vidéos */
     if (vue === "cavaliere") {
       var ouverte = cavOuverte && (membres || []).filter(function (p) { return p.id === cavOuverte; })[0];
       if (ouverte) return pageCavaliere(ouverte);
@@ -848,10 +1052,11 @@ function EcranTeamMedias() {
     } else if (vue === "cavaliere") {
       /* les cavalières qui ont des vidéos d'abord, puis les autres par ordre alphabétique */
       var liste = (membres || []).slice().sort(function (a, b) { var d = videosDe(b).length - videosDe(a).length; return d || nomProfil(a).localeCompare(nomProfil(b)); });
-      corps = !liste.length ? vide(T("Aucun cavalier dans l'équipe pour l'instant.", "No riders in the team yet.", "Aún no hay jinetes en el equipo.", "Ancora nessun cavaliere nella squadra.", "チームにはまだライダーがいません。", "Noch keine Reiter im Team.", "لا توجد فرسان في الفريق بعد.", "团队中还没有骑手。", "Nog geen ruiters in het team.", "Ainda não há cavaleiros na equipa.", "Inga ryttare i laget än.", "В команде пока нет всадников.", "W drużynie nie ma jeszcze jeźdźców.", "아직 팀에 라이더가 없어요.", "فعلاً هیچ سوارکاری در تیم نیست.")) : h("div", null, h("div", null, liste.filter(function (p) { return tousCav || videosDe(p).length; }).map(sectionCavaliere),
+      corps = !liste.length ? vide(T("Aucun cavalier dans l'équipe pour l'instant.", "No riders in the team yet.", "Aún no hay jinetes en el equipo.", "Ancora nessun cavaliere nella squadra.", "チームにはまだライダーがいません。", "Noch keine Reiter im Team.", "لا توجد فرسان في الفريق بعد.", "团队中还没有骑手。", "Nog geen ruiters in het team.", "Ainda não há cavaleiros na equipa.", "Inga ryttare i laget än.", "В команде пока нет всадников.", "W drużynie nie ma jeszcze jeźdźców.", "아직 팀에 라이더가 없어요.", "فعلاً هیچ سوارکاری در تیم نیست.")) : h("div", null, h("div", null, liste.filter(function (p) { return tousCav || videosDe(p).length; }).map((typeof window !== "undefined" && window.__cavAncien) ? sectionCavaliere : bandeauCav),
         liste.some(function (p) { return !videosDe(p).length; }) ? h("div", { style: { textAlign: "center", padding: "14px 0 4px" } }, h("button", { type: "button", onClick: function () { setTousCav(!tousCav); }, style: { minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } },
           tousCav ? T("Masquer les cavaliers sans vidéo", "Hide riders without videos", "Ocultar jinetes sin vídeos", "Nascondi i cavalieri senza video", "動画のないライダーを隠す", "Reiter ohne Video ausblenden", "إخفاء الفرسان بلا فيديو", "隐藏没有视频的骑手", "Ruiters zonder video verbergen", "Ocultar cavaleiros sem vídeos", "Dölj ryttare utan video", "Скрыть всадников без видео", "Ukryj jeźdźców bez filmów", "영상 없는 기수 숨기기", "پنهان کردن سوارکاران بدون ویدیو")
             : T("Afficher aussi les cavaliers sans vidéo", "Also show riders without videos", "Mostrar también jinetes sin vídeos", "Mostra anche i cavalieri senza video", "動画のないライダーも表示", "Auch Reiter ohne Video zeigen", "عرض الفرسان بلا فيديو أيضًا", "也显示没有视频的骑手", "Ook ruiters zonder video tonen", "Mostrar também cavaleiros sem vídeos", "Visa även ryttare utan video", "Показать и всадников без видео", "Pokaż też jeźdźców bez filmów", "영상 없는 기수도 보기", "نمایش سوارکاران بدون ویدیو هم") + " (" + liste.filter(function (p) { return !videosDe(p).length; }).length + ")")) : null));
+      if (((typeof window !== "undefined" && window.__cavVar) || "A") === "D" && liste.length) corps = rondsCav(liste);
     } else {
       var chs = []; (videos || []).forEach(function (v) { v.chevaux.forEach(function (c) { if (chs.indexOf(c) === -1) chs.push(c); }); });
       chs.sort(function (a, b) { var d = videosDuCheval(b).length - videosDuCheval(a).length; return d || nomCheval(a).localeCompare(nomCheval(b)); });
@@ -891,7 +1096,7 @@ function EcranTeamMedias() {
       ["photos", PORTES.photos.titre, ph0 ? ((typeof vignetteHype === "function") ? vignetteHype(ph0.photos[0], 300, 360) : ph0.photos[0]) : PORTES.photos.img]];
     return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: largeur >= 700 ? 12 : 9, marginTop: 20 } }, C.map(function (c) {
       var on = onglet === c[0];
-      return h("button", { key: "cm" + c[0], type: "button", "aria-pressed": on, onClick: function () { if (c[0] === "videos") setVue("concours"); allerOnglet(c[0]); },
+      return h("button", { key: "cm" + c[0], type: "button", "aria-pressed": on, onClick: function () { if (c[0] === "videos") setVue("cavaliere"); allerOnglet(c[0]); },
         style: { position: "relative", aspectRatio: "1.05", borderRadius: 13, overflow: "hidden", border: on ? "1.5px solid " + CH : "1px solid rgba(201,166,107,.32)", background: "linear-gradient(160deg,#141a1c,#0a0d0e)", padding: 0, cursor: "pointer" } },
         h("img", { src: c[2], alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
         h("span", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "26px 6px 11px", background: "linear-gradient(180deg, rgba(7,10,8,0), rgba(7,10,8,.85))", color: IV, fontFamily: M, fontSize: 12.5, fontWeight: 600, textAlign: "center" } }, c[1]));
@@ -1630,6 +1835,7 @@ function EcranTeamMedias() {
       dureeDe: function (u) { var x = videoDe(u); return x ? duree(x.duree) : ""; },
       onChoisir: function (u) { var x = videoDe(u); if (x) lire(x); },
       titre: v.titre || titre, surTitre: v.concours || v.lieu || "", date: dLong, ronds: tvRonds,
+      onTitre: ((v.cavaliers || []).length === 1 && (v.chevaux || []).length === 1) ? function () { var cp = { cav: v.cavaliers[0], ch: v.chevaux[0] }; fermer(); ouvrirCouple(cp.cav, cp.ch); } : null,   /* 13/11 : le nom du couple ouvre sa page */
       onFermer: fermer,
       /* 08/11 23h40 (corrections visuelles) : son et collection passent dans le menu ••• de la page ; la navigation se fait par les miniatures */
       menu: [
@@ -1805,6 +2011,13 @@ null)) });
     h("div", { style: { maxWidth: 820, margin: "0 auto" } },
       hero,
       h("div", { style: { padding: "0 18px 24px" } },
+        /* 13/11 10h17 (Blandine : « et du coup, les photos, elles sont où ? ») : on passe d'une rubrique à l'autre sans remonter */
+        (["videos", "travail", "photos"].indexOf(onglet) !== -1) ? h("div", { role: "tablist", style: { display: "flex", gap: 8, margin: "18px 0 4px" } },
+          [["videos", T("Vidéos", "Videos")], ["photos", T("Photos", "Photos")]]   /* 13/11 10h21 : Travail devient un onglet des Vidéos */.map(function (r) {
+            var on = onglet === r[0] || (r[0] === "videos" && onglet === "travail");
+            return h("button", { key: "rub" + r[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setOnglet(r[0]); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); },
+              style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + (on ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"), background: on ? "#1A1E21" : "transparent", color: on ? IV : IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, r[1]);
+          })) : null,
         onglet === "accueil" ? null : retourAccueil(),
         onglet === "accueil" ? null : enteteRubrique(onglet),
         erreur ? ((!moi || /permission denied|not authorized|jwt/i.test(String(erreur))) ? carteAcces() : h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ", "بارگذاری ممکن نیست: ") + erreur)) : null,
