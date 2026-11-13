@@ -35224,7 +35224,7 @@ function BlocResultatsCavaliere(props) {
   function titreV2(avecVoir) {
     return h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 12 } },
       h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavTabR ? (grR ? 34 : (cavOrdiR ? 28 : 26)) : 23, color: "#F3EEE4", whiteSpace: "nowrap" } }, sien ? T("Mes r\u00e9sultats", "My results", "Mis resultados", "I miei risultati", "\u79c1\u306e\u6210\u7e3e", "Meine Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u064a", "我的成绩", "Mijn resultaten", "Meus resultados", "Mina resultat", "Мои результаты", "Moje wyniki", "내 결과", "نتایج من") : T("Ses r\u00e9sultats", "Their results", "Sus resultados", "I suoi risultati", "\u6210\u7e3e", "Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u0647\u0627", "TA的成绩", "Hun resultaten", "Os resultados dele(a)", "Deras resultat", "Результаты", "Jej wyniki", "그의 결과", "نتایجش")),
-      h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", rgba(201,166,107,0.5), transparent)" } }),
+      h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", " + ((avecVoir && !(typeof window !== "undefined" && window.__principauxAncien)) ? "rgba(70,138,156,0.8)" : "rgba(201,166,107,0.5)") + ", transparent)" } }),
       avecVoir ? h("button", { onClick: voirToutV2, style: { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#C9A66B", fontFamily: M, fontSize: 12, whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "دیدن همه") + " " + flV2) : null);
   }
   function sousTitreV2(icone, titre, sous, droite) {
@@ -35342,6 +35342,9 @@ function BlocResultatsCavaliere(props) {
     /* niveau le plus haut couru (tout parcours avec un résultat) */
     var hN = null; bR.forEach(function (f) { var hh = hEp(f.ep); if (hh == null) return; if (!hN || hh > hN.hh || (hh === hN.hh && (f.pl || 999) < (hN.f.pl || 999))) hN = { hh: hh, f: f }; });
     if (!recs.length && !hN) return null;
+    /* 13/11 03h57 (Blandine : « au lieu du doré qui fait séparation, du bleu pétrole… adapter la couleur à la page ») : essai A fond noir / B fond pétrole */
+    var RVAR = (typeof window !== "undefined" && window.__recCavVar) || "A";
+    var SEPc = "rgba(70,138,156,0.7)";
     var TETES = ["images/portrait-defaut-gris.webp", "images/portrait-defaut-alezan.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp"];
     var mg = cavTabR ? (grR ? "0 -32px" : "0 -22px") : "0 -14px";
     var el = [];
@@ -35358,7 +35361,7 @@ function BlocResultatsCavaliere(props) {
     recs.forEach(function (r, i) {
       var droite = i % 2 === 0, cote = droite ? "right" : "left";
       var msq = "linear-gradient(" + (droite ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";
-      el.push(h("svg", { key: "rcb" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(243,238,228,0.16)", strokeWidth: 1 })));
+      el.push(h("svg", { key: "rcb" + i, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: i % 2 === 0 ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: SEPc, strokeWidth: 1.2 })));
       el.push(h("div", { key: r.k, role: "button", tabIndex: 0, onClick: voirToutV2, style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer" } },
         h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "46%", overflow: "hidden", pointerEvents: "none" } },
           h("img", { src: TETES[i % TETES.length], alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", transform: droite ? "scaleX(-1)" : undefined, WebkitMaskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)", maskImage: droite ? msq : "linear-gradient(270deg, transparent 0%, #000 18%)" } })),
@@ -35366,7 +35369,7 @@ function BlocResultatsCavaliere(props) {
           h("div", null, r.l1),
           h("div", { style: { fontFamily: M, fontSize: 11.5, lineHeight: 1.45, color: "rgba(243,238,228,0.8)", marginTop: 4 } }, r.l2))));
     });
-    return h("div", { "data-records-cavalier": "1", style: { position: "relative", margin: mg, marginTop: 14, background: "#000", paddingBottom: 6 } }, el);   /* fond noir : les têtes de chevaux sont sur fond noir */
+    return h("div", { "data-records-cavalier": "1", style: { position: "relative", margin: mg, marginTop: 14, background: RVAR === "B" ? "linear-gradient(180deg, #0C1D23 0%, #08141A 50%, #05080B 100%)" : "#000", borderTop: "1px solid " + SEPc, paddingBottom: 6 } }, el);   /* fond noir : les têtes de chevaux sont sur fond noir */
   }
   function pleinV2() {
     var ANC = (typeof window !== "undefined" && window.__principauxAncien);
@@ -35386,7 +35389,7 @@ function BlocResultatsCavaliere(props) {
     });
     return h(React.Fragment, null,
       encartV2(
-        h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "62%", height: 260, backgroundImage: "url(images/team-competition-performances-hero.webp)", backgroundSize: "cover", backgroundPosition: "70% 30%", opacity: 0.42, WebkitMaskImage: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent, #000 45%), linear-gradient(180deg, #000 40%, transparent)", WebkitMaskComposite: "source-in", maskImage: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent, #000 45%), linear-gradient(180deg, #000 40%, transparent)", maskComposite: "intersect", pointerEvents: "none" } }),
+        ANC ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "62%", height: 260, backgroundImage: "url(images/team-competition-performances-hero.webp)", backgroundSize: "cover", backgroundPosition: "70% 30%", opacity: 0.42, WebkitMaskImage: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent, #000 45%), linear-gradient(180deg, #000 40%, transparent)", WebkitMaskComposite: "source-in", maskImage: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent, #000 45%), linear-gradient(180deg, #000 40%, transparent)", maskComposite: "intersect", pointerEvents: "none" } }) : null,   /* 13/11 03h57 (Blandine) : plus d image derrière « Mes résultats » avec les records */
         titreV2(true),
         forts.length ? sousTitreV2(icCoupeV2, T("Principaux r\u00e9sultats", "Main results", "Resultados principales", "Risultati principali", "\u4e3b\u306a\u6210\u7e3e", "Wichtigste Ergebnisse", "\u0623\u0628\u0631\u0632 \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "主要成绩", "Belangrijkste resultaten", "Principais resultados", "Viktigaste resultat", "Главные результаты", "Najważniejsze wyniki", "주요 결과", "نتایج اصلی"), T("Ses plus belles performances", "Their finest performances", "Sus mejores actuaciones", "Le sue prestazioni migliori", "\u6700\u9ad8\u306e\u30d1\u30d5\u30a9\u30fc\u30de\u30f3\u30b9", "Die sch\u00f6nsten Leistungen", "\u0623\u062c\u0645\u0644 \u0625\u0646\u062c\u0627\u0632\u0627\u062a\u0647\u0627", "TA最精彩的表现", "Hun mooiste prestaties", "Suas melhores performances", "Deras finaste prestationer", "Лучшие выступления", "Jej najpiękniejsze występy", "가장 빛난 성적", "بهترین عملکردهایش")) : null,
         forts.length ? h("div", { style: { position: "relative", display: "flex", flexDirection: "column", gap: 8, marginTop: 12 } }, lignesP) : null,
