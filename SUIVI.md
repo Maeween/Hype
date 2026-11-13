@@ -34,6 +34,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 23:58 — (suivi seul) Dressage : la reprise dictée par le juge — maquette montrée
+- Maquette « Juger une reprise » montrée (héros façon Vidéothèque, figure en cours en grand, gros micro, note + commentaire écrits par Hey Baby, feuille qui se remplit, total et moyenne automatiques). Reprises = REPRISES_FFE déjà dans Hype (Galop 3 à 7, notes sur 5 ou 10).
+- Blandine (23h58) : « énorme… plus besoin de lapins » (les personnes qui courent porter les protocoles du juge au secrétariat pour recompter) → chaque feuille part directement au secrétariat : calcul des points automatique, plusieurs juges (E / H / C) moyennés, classement en direct, résultats publiés sans recopie.
+- Questions en attente avant de coder : 1) pour quels concours (internes / Challenge SEP Dressage / entraînements / examens) ; 2) qui peut juger ; 3) où on l'ouvre (fiche concours > Passages, Challenge SEP) ; 4) notes d'ensemble dictées pareil.
+
 ## 2026-11-13 23:40 — build 20261113-2340 — Outil : 7 nouveautés (concours retrouvé, engagements FFE, ordonnances, papiers qui expirent, contrats, juments, factures) + héros « Vidéothèque »
 - RÈGLE DESIGN (Blandine 23h25, à garder pour tous les héros) : comme la Vidéothèque — la photo ENTIÈRE en haut, fondu vers le noir, fine courbe dorée, et le TITRE EN DESSOUS de la photo, jamais par-dessus la tête du cheval. Petite courbe dorée « de temps en temps », sans excès.
 - Concours retrouvé tout seul : l'outil lit date / lieu / n° FFE (champ « concours ») et cherche dans club_agenda (type concours, ±3 jours) + concours_feuille.numero ; carte « Le concours » (retrouvé ✓, ou choix si plusieurs, ou « ajoute-le à l'agenda »). concId remplace props.concoursId partout dans l'outil.
