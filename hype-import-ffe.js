@@ -1216,6 +1216,16 @@
       titre = "Cette saison était déjà là";
       phrase = "Les " + doublons + " ligne" + (doublons > 1 ? "s de ce fichier étaient" : " de ce fichier était")
         + " déjà dans son palmarès. Rien n'a été ajouté, et rien n'a été perdu.";
+      /* 13/11 01h15 (Blandine : « ça marche toujours pas ») : cet écran TAISAIT les chevaux inconnus quand le reste
+         était déjà là. Il les dit maintenant, avec ce qui a été tenté pour eux. */
+      try {
+        var lstI2 = E.inconnus ? Object.keys(E.inconnus).filter(function (k) { return k && k !== "?"; }) : [];
+        if (lstI2.length) {
+          titre = "Il reste des chevaux à ranger";
+          phrase += " Mais " + lstI2.map(function (k) { return E.inconnus[k] + " ligne" + (E.inconnus[k] > 1 ? "s" : "") + " sur « " + k + " »"; }).join(", ")
+            + " n'ont pas pu être écrites : " + (E.autoCree ? "la création de leur fiche a échoué" + (E.erreurCreation ? " (" + E.erreurCreation + ")" : "") + "." : "aucune fiche de ce nom chez toi.");
+        }
+      } catch (eI2) { }
     } else if (envoyees === 0) {
       titre = "Rien à enregistrer";
       phrase = "Ce fichier ne contient aucune épreuve courue — que des forfaits "
@@ -1375,7 +1385,7 @@
               E.err = "Aucun r\u00e9sultat lisible dans ces fichiers. " + fu.problemes.join(" ");
               E.etape = "choix"; refaire(); return;
             }
-            E.lignes = fu.lignes; E.cavalier = ""; E.niveau = "classe"; E.sif = null; E.club = "";
+            E.lignes = fu.lignes; E.cavalier = ""; E.autoCree = false; E.creees = null; E.erreurCreation = null; E.inconnus = null; E.niveau = "classe"; E.sif = null; E.club = "";
             try { window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; window.__hypeCavalierPdfFFE = null; } catch (eW2) { }
             var chv = Object.keys(fu.parCheval);
             E.avisMulti = chv.length + " cheval" + (chv.length > 1 ? "aux" : "") + " : " + chv.map(function (k) { return k + " (" + fu.parCheval[k] + ")"; }).join(", ") + "." + (fu.problemes.length ? " \u26a0\ufe0f " + fu.problemes.join(" ") : "");
@@ -1394,7 +1404,7 @@
                 "entière de ton telemat, ta page « Engagements et performances » FFE Compet ou la page « Résultats détaillés » d'une épreuve, et non une capture en image.";
             E.etape = "choix"; refaire(); return;
           }
-          E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
+          E.lignes = o.lignes; E.cavalier = ""; E.autoCree = false; E.creees = null; E.erreurCreation = null; E.inconnus = null; E.niveau = "classe";
           /* 22/09 : un PDF « Résultats détaillés » - pas de verrou d identité (aucun nom de cheval
              en en-tête : chaque ligne porte le sien), et le club est reconnu d office. */
           E.sif = (o.format === "sif") ? { clubs: o.clubs || [], epreuve: o.epreuve || "", concours: o.concours || "", date: o.date || null } : null;
@@ -1572,7 +1582,7 @@
       if (aCreer.length) {
         E.autoCree = true; E.creees = []; E.occupe = true; E.creation = "auto"; refaire();
         var joliN = function (k) { return String(k).toLowerCase().replace(/(^|[\s\-'])([a-z\u00e0-\u00ff])/g, function (m0, a0, b0) { return a0 + b0.toUpperCase(); }); };
-        aCreer.reduce(function (ch, k) { return ch.then(function () { return Promise.resolve(options.onCreerCheval(joliN(k))).then(function (rC) { if (rC && !rC.error) E.creees.push(joliN(k)); }).catch(function () { }); }); }, Promise.resolve())
+        aCreer.reduce(function (ch, k) { return ch.then(function () { return Promise.resolve(options.onCreerCheval(joliN(k))).then(function (rC) { if (rC && !rC.error) E.creees.push(joliN(k)); else E.erreurCreation = String((rC && rC.error) || "sans réponse"); }).catch(function () { }); }); }, Promise.resolve())
           .then(function () {
             E.creation = null; E.occupe = false;
             E.avantEnreg = E.enregistres || 0; E.avantDoublons = E.doublons || 0; E.relance = true;

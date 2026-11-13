@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0155 — Import FFE : les chevaux restés de côté sont enfin dits
+- L'écran « Cette saison était déjà là » taisait les chevaux inconnus : il les nomme maintenant, et dit si la création de leur fiche a échoué (avec la raison).
+- La création automatique repart à zéro à chaque nouveau fichier (avant, un deuxième fichier dans la même ouverture ne recréait rien).
+- Vérifié : son fichier .xls se lit (124 lignes, 16 chevaux), et la création d'une fiche passe en base sous son compte (essai annulé). hype-import-ffe.js v=38.
+
 ## 20261113-0150 — Performances : retour aux bandeaux d'avant
 - Blandine : « remets comme c'était avant, c'est un carnage ». Le module Performances revient à son état du build 0140 (photos des bandeaux à leur ancienne largeur, sans le tri par année du build 0145). v=27.
 
