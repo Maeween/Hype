@@ -1,3 +1,10 @@
+# 🗓️ 13/11 (17h30) — CARTE DU TOUR DU MONDE : ENTOURAGE EN BLEU NUIT (proposition A) — horselingo `060106b` [publier], « Ok 1 »
+
+**Choix de Blandine** : « le globe, faut qu'on le laisse comme il est… il est joli » — on ne touche ni au globe ni à son image de cavaliers ; on aménage seulement ce qui est autour. Parmi 3 propositions (A liste encadrée, B courbe + texte centré, C courbe + chiffres romains), elle a choisi **A**.
+**Fait (lingo-globe.html, CSS seulement)** : titre « LE TOUR DU MONDE » en Cormorant sans lueur turquoise, filet bleu doux ; boutons + / − / ◎ à contour fin bleu ; liste dans un encadré fin, noms de villes en Cormorant, pays en petites capitales, « Nommer » en bleu (plus de doré), statut (« À découvrir »…) en petit bouton à contour ; ville recommandée sans fond doré ; filtres à contour fin, centrés, filtre choisi en bleu sans aplat ; léger fondu sous l'image. Cormorant ajouté aux polices de la page. Aucun texte nouveau. Cache linguae-v22.
+**Tests (Chromium, 390 px)** : aucune erreur.
+**Reste (Horse Lingo)** : lexique et carnet de souvenirs ; titre « Le lexique » sur l'encart (proposé).
+
 # 🗓️ 13/11 (16h15) — LEÇON EN BLEU NUIT — horselingo `856388c` [publier], « OK »
 
 **Choix de Blandine** (après plusieurs séries de propositions : « vraiment pas… très laid » pour les cartes postales/polaroid/cahier ; « dans le design de la Vidéothèque… avec des belles photos de chevaux ») : photo de cheval de Hype ENTIÈRE dans un encart ombré **centré** (choix « 2 »), courbe bleue bien **décollée** de la photo et du mot, mot en Cormorant et **tous les textes centrés** (« attention à bien centrer le texte à chaque fois »).
