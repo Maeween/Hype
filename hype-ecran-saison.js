@@ -353,6 +353,8 @@ var HS_TR_BRUT = {
   "Mettre dans le résumé": ["Add to the summary", "Poner en el resumen", "Metti nel riepilogo", "概要に入れる", "In die Übersicht übernehmen", "ضعها في الملخص", "放入摘要", "In het overzicht zetten", "Pôr no resumo", "Lägg in i översikten", "Добавить в сводку", "Dodaj do podsumowania", "요약에 넣기"],
   "✓ Horaires du concours mis à jour : ils apparaissent dans le résumé en haut de la fiche.": ["✓ Show times updated: they appear in the summary at the top of the page.", "✓ Horarios del concurso actualizados: aparecen en el resumen arriba de la ficha.", "✓ Orari del concorso aggiornati: compaiono nel riepilogo in cima alla scheda.", "✓ 大会の時間を更新しました：ページ上部の概要に表示されます。", "✓ Turnierzeiten aktualisiert: Sie stehen in der Übersicht oben auf der Seite.", "✓ حُدّثت مواعيد المسابقة: تظهر في الملخص أعلى الصفحة.", "✓ 比赛时间已更新：显示在页面顶部的摘要中。", "✓ Wedstrijdtijden bijgewerkt: ze staan in het overzicht bovenaan.", "✓ Horários do concurso atualizados: aparecem no resumo no topo da ficha.", "✓ Tävlingstiderna är uppdaterade: de syns i översikten högst upp.", "✓ Время соревнований обновлено: оно в сводке вверху страницы.", "✓ Godziny zawodów zaktualizowane: są w podsumowaniu na górze strony.", "✓ 대회 시간을 업데이트했어요: 페이지 위쪽 요약에 보여요."],
   "(estimée : 30 min avant le début, à vérifier)": ["(estimated: 30 min before the start, please check)", "(estimado: 30 min antes del inicio, compruébalo)", "(stimata: 30 min prima dell’inizio, da verificare)", "（推定：開始30分前、要確認）", "(geschätzt: 30 Min. vor Beginn, bitte prüfen)", "(تقديري: قبل البداية بـ30 دقيقة، تحقّق منه)", "（估计：开始前 30 分钟，请核实）", "(geschat: 30 min voor de start, controleer)", "(estimado: 30 min antes do início, verifica)", "(uppskattad: 30 min före start, kontrollera)", "(примерно: за 30 мин до начала, проверь)", "(szacunkowo: 30 min przed startem, sprawdź)", "(추정: 시작 30분 전, 확인 필요)"],
+  "✓ Lecture terminée.": ["✓ Reading done.", "✓ Lectura terminada.", "✓ Lettura terminata.", "✓ 読み取り完了。", "✓ Lesen beendet.", "✓ اكتملت القراءة.", "✓ 读取完成。", "✓ Lezen klaar.", "✓ Leitura concluída.", "✓ Läsningen är klar.", "✓ Чтение завершено.", "✓ Odczyt zakończony.", "✓ 읽기 완료."],
+  "Vérifie ce que j’ai trouvé ci-dessous, puis valide chaque partie.": ["Check what I found below, then confirm each part.", "Revisa lo que encontré abajo y valida cada parte.", "Controlla qui sotto cosa ho trovato, poi conferma ogni parte.", "下で見つけた内容を確認して、各項目を確定してね。", "Prüf unten, was ich gefunden habe, und bestätige jeden Teil.", "تحقّق ممّا وجدته أدناه، ثم ثبّت كل جزء.", "检查下面我找到的内容，然后逐项确认。", "Controleer hieronder wat ik vond en bevestig elk deel.", "Verifica abaixo o que encontrei e valida cada parte.", "Kolla vad jag hittade nedan och bekräfta varje del.", "Проверь ниже, что я нашёл, и подтверди каждую часть.", "Sprawdź poniżej, co znalazłem, i zatwierdź każdą część.", "아래에서 찾은 내용을 확인하고 항목마다 확정해 줘."],
   "Plus tard": ["Later", "Más tarde", "Più tardi", "あとで", "Später", "لاحقًا", "稍后", "Later", "Mais tarde", "Senare", "Позже", "Później", "나중에"],
   "✓ Groupes enregistrés (pas encore publiés).": ["✓ Groups saved (not published yet).", "✓ Grupos guardados (aún sin publicar).", "✓ Gruppi salvati (non ancora pubblicati).", "✓ グループを保存しました（未公開）。", "✓ Gruppen gespeichert (noch nicht veröffentlicht).", "✓ حُفظت المجموعات (لم تُنشر بعد).", "✓ 分组已保存（尚未发布）。", "✓ Groepen opgeslagen (nog niet gepubliceerd).", "✓ Grupos salvos (ainda não publicados).", "✓ Grupperna är sparade (inte publicerade ännu).", "✓ Группы сохранены (ещё не опубликованы).", "✓ Grupy zapisane (jeszcze nieopublikowane).", "✓ 그룹을 저장했어요(아직 비공개)."],
   "Enregistrement impossible : ": ["Couldn't save: ", "No se pudo guardar: ", "Impossibile salvare: ", "保存できません：", "Speichern nicht möglich: ", "تعذّر الحفظ: ", "无法保存：", "Opslaan mislukt: ", "Não foi possível salvar: ", "Kunde inte spara: ", "Не удалось сохранить: ", "Nie można zapisać: ", "저장할 수 없어요: "],
@@ -1680,7 +1682,12 @@ function EcranConcours() {
   var _io = React.useState(false); var infosOuv = _io[0], setInfosOuv = _io[1];
   var _oem = React.useState(false); var ordreEmbOuv = _oem[0], setOrdreEmbOuv = _oem[1];
   var _mif = React.useState(false); var modInf = _mif[0], setModInf = _mif[1];
-  var _hf = React.useState(null); var horForm = _hf[0], setHorForm = _hf[1];   /* 13/11 : formulaire « Modifier les horaires » (coach) */
+  var _hf = React.useState(null); var horForm = _hf[0], setHorForm = _hf[1];
+  /* 13/11 19h45 (Blandine : « elle n'est pas apparue quand même ») : le formulaire ouvert avant la lecture du programme gardait des cases vides
+     (et « Enregistrer » aurait effacé les heures) ; il reprend maintenant les horaires à jour */
+  var horSig = ev ? JSON.stringify([ev.horaires || null, ev.recos || null, ev.heure_reco || null, ev.heure_epreuve || null]) : "";
+  var _hsg = React.useState(horSig); var horSigVu = _hsg[0], setHorSigVu = _hsg[1];
+  React.useEffect(function () { if (horSig === horSigVu) return; setHorSigVu(horSig); if (horForm) { try { ouvrirHoraires(); } catch (eO) { } } }, [horSig]);   /* 13/11 : formulaire « Modifier les horaires » (coach) */
   var _hm = React.useState(""); var horMsg = _hm[0], setHorMsg = _hm[1];
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
@@ -7715,7 +7722,15 @@ function EcranJourJ(props) {
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
-      var lu = await hsLireProgramme(imgs, equipe);
+      /* 13/11 19h43 (Blandine : « si quelqu'un clique sur fermer, ça continue de charger quand même derrière ») : comme la lecture
+         de l'ordre de passage, le n° de la lecture est gardé sur le téléphone ; en revenant sur la page, le résultat est repris */
+      var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem("hype_lecture_prog_" + idEv, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
+      try { localStorage.removeItem("hype_lecture_prog_" + idEv); } catch (eR) { }
+      traiterProg(lu);
+    } catch (eL2) { setProgLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
+  }
+  function traiterProg(lu) {
+    try {
       setAdrLue(hsAdresseDiff(lu.adresse, ev && ev.lieu) ? lu.adresse : "");
       function norm(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
       function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
@@ -7752,9 +7767,26 @@ function EcranJourJ(props) {
       }); });
       if (!hor.some(function (x) { return x.reco || x.debut; })) hor = [];
       setProg({ props: props, epreuves: lu.epreuves, hor: hor });
+      /* 13/11 19h45 (Blandine : « quand il a fini de charger, il te dit rien… il faut vraiment aller scroller ») */
+      setTimeout(function () { try { var elR = document.getElementById("jj-prog-res"); if (elR) elR.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, 250);
       setProgLect((props.length || hor.length) ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur cette image."))));
     } catch (eL2) { setProgLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
   }
+  React.useEffect(function () {
+    if (lignes === null || !idEv) return;
+    var cle = "hype_lecture_prog_" + idEv, o = null;
+    try { o = JSON.parse(localStorage.getItem(cle) || "null"); } catch (eP) { }
+    if (!o || !o.jobId) return;
+    if (Date.now() - (o.t || 0) > 15 * 60000) { try { localStorage.removeItem(cle); } catch (eR) { } return; }
+    var vivantL = true; setProgLect("en_cours");
+    hsAttendreLecture(o.jobId).then(function (texte) {
+      try { localStorage.removeItem(cle); } catch (eR) { }
+      if (!vivantL) return;
+      var lu = texte; if (typeof texte === "string") { var m = texte.match(/\{[\s\S]*\}/); var ob = JSON.parse(m ? m[0] : texte) || {}; lu = { epreuves: Array.isArray(ob.epreuves) ? ob.epreuves : [], passages: Array.isArray(ob.passages) ? ob.passages : [], adresse: String(ob.adresse || "").trim() }; }
+      traiterProg(lu);
+    }).catch(function (eA) { try { localStorage.removeItem(cle); } catch (eR) { } if (vivantL) setProgLect(F("Lecture impossible : ") + String((eA && eA.message) || eA)); });
+    return function () { vivantL = false; };
+  }, [lignes === null, idEv]);
   async function appliquerHorairesLus() {
     if (!prog || !prog.hor || !prog.hor.length || !ev) return;
     var eps = prog.hor.map(function (x) { return x.ep; });
@@ -7830,8 +7862,15 @@ function EcranJourJ(props) {
               F(" cavaliers à l’heure").trim()));
         }),
         h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, F("Calcul : 2 chevaux en piste ; le n° 1 et le n° 2 entrent au début de l’épreuve, chacun des suivants quand celui d’avant-avant sort. Les forfaits avancent l’heure, les barrages et les pauses la reculent."))),
+      progLect === "en_cours" ? h("div", { className: "d3-ordre", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", marginTop: 12 } },   /* 13/11 19h43 : « on se rend pas compte qu'il faut attendre » */
+        h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 170, height: 170, borderRadius: "50%", objectFit: "cover" } }),
+        h(HsPhraseLecture, { F: F }),
+        h("div", { className: "d3-msg", style: { marginTop: 0 } }, F("Je lis ton document (1 à 3 min). Tu peux quitter la page : je continue, et le résultat t’attendra ici."))) : null,
       progLect && progLect !== "en_cours" ? h("div", { className: "hc-pad-etape", style: { marginTop: 10 } }, h("p", null, progLect)) : null,   /* 13/11 19h37 : « il m'a rien dit » — réponse toujours visible */
       adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
+      h("div", { id: "jj-prog-res", style: { scrollMarginTop: 90 } }),
+      (prog && (prog.props.length || (prog.hor && prog.hor.length))) ? h("div", { className: "hc-pad-etape", style: { marginTop: 10, borderColor: "#C9A66B" } },
+        h("p", null, h("b", null, F("✓ Lecture terminée.")), " ", F("Vérifie ce que j’ai trouvé ci-dessous, puis valide chaque partie."))) : null,
       (prog && prog.hor && prog.hor.length) ? h("div", { className: "hc-pad-etape", style: { marginTop: 10 } },
         h("p", null, h("b", null, F("Horaires du concours lus sur ton document"))),
         prog.hor.map(function (x, k) { return h("p", { key: "hl" + k, style: { color: "rgba(243,238,228,.85)" } }, x.ep + " · " + [x.reco ? F("reco ") + x.reco + (x.est ? " " + F("(estimée : 30 min avant le début, à vérifier)") : "") : F("reco pas trouvée"), x.debut ? F("début ") + x.debut : F("début pas trouvé"), x.piste ? hsPiste(x.piste) : ""].filter(Boolean).join(" · ")); }),
