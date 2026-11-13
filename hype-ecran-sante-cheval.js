@@ -541,6 +541,14 @@ function EcranSanteCheval() {
     var d = dernierFait(f.types), pr = prochaineDe(f.types);
     var j = pr ? joursAvant(pr.date_prochaine) : null;
     var retard = (j !== null && j < 0);
+    /* 13/11 (Blandine : « ça te met une date en rouge qui n est pas bonne, et quand tu ouvres le vaccin, tout est en vert ») :
+       la carte Vaccin prenait la date « prochaine » brute d une ligne (une vieille ligne du carnet lu, 2014). Elle suit
+       maintenant le MEME calcul que la page Vaccins (etatsSuivi -> etatVaccins) : meme date, meme couleur. */
+    if (f.types.length === 1 && f.types[0] === "vaccin") {
+      var eV = etatsSuivi().filter(function (x) { return x.f.cle === f.cle; })[0];
+      pr = (eV && eV.lim) ? { date_prochaine: isoDe(eV.lim), precision_prochaine: "jour" } : null;
+      retard = !!(eV && eV.etat === "retard");
+    }
     var coulP = retard ? "#FF6B6B" : TQ;
     var lib = { fontFamily: M, fontSize: 11.5, color: "rgba(243,238,228,0.62)" };
     return h("div", { key: f.cle, role: "button", onClick: function () { setFamille(f.cle); },
@@ -684,6 +692,20 @@ function EcranSanteCheval() {
       ".vxp-ph .aj{border-style:dashed;flex-direction:column;gap:6px}",
       ".vxp-vide{font-size:12.5px;color:rgba(243,238,228,.5);padding:10px 2px}",
       ".vxp-note{font-size:10.5px;line-height:1.5;color:rgba(243,238,228,.42);margin-top:24px}",
+      ".vxp-rap{margin:10px 0 2px;border:1px solid rgba(201,166,107,.28);border-radius:14px;background:rgba(255,255,255,.025);font-size:13px;color:rgba(243,238,228,.85)}",
+      ".vxp-rap .tt,.vxp-rap.fait{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer}",
+      ".vxp-rap .tt span,.vxp-rap.fait span{flex:1;min-width:0}",
+      ".vxp-rap .ch{width:16px;height:16px;fill:none;stroke:#C9A66B;stroke-width:1.6;transition:transform .2s}",
+      ".vxp-rap.ouv .ch{transform:rotate(180deg)}",
+      ".vxp-rap.fait em{font-style:normal;color:#C9A66B;font-size:12px}",
+      ".vxp-rap .cp{padding:0 14px 14px}",
+      ".vxp-rap .q{font-family:'Cinzel',Georgia,serif;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A66B;margin-bottom:8px}",
+      ".vxp-rap .ch2{display:grid;grid-template-columns:1fr 1fr;gap:8px}",
+      ".vxp-rap .ch2 button{padding:9px 8px;border-radius:999px;border:1px solid rgba(243,238,228,.18);background:transparent;color:rgba(243,238,228,.75);font:inherit;font-size:12.5px;cursor:pointer}",
+      ".vxp-rap .ch2 button.on{border-color:#C9A66B;color:#E8D3A8;background:rgba(201,166,107,.08)}",
+      ".vxp-rap .ag{display:block;width:100%;margin-top:12px;padding:11px;border-radius:999px;border:1px solid #C9A66B;background:transparent;color:#C9A66B;font:inherit;font-size:13px;letter-spacing:.04em;cursor:pointer}",
+      ".vxp-rap .ag:disabled{opacity:.4}",
+      ".vxp-rap .nb{font-size:11px;line-height:1.5;color:rgba(243,238,228,.5);margin-top:8px;text-align:center}",
       ".vxp-gal{position:fixed;inset:0;z-index:9650;background:rgba(3,5,4,.97);display:flex;flex-direction:column;color:#F3EEE4;font-family:'Montserrat',sans-serif}",
       ".vxp-gal .haut{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 14px) 18px 10px}",
       ".vxp-gal .haut b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;min-width:0}",
@@ -837,8 +859,78 @@ function EcranSanteCheval() {
         peutEcrire ? h("button", { type: "button", className: "bt sup", onClick: function () { setGalerie(null); setDocVu(Object.assign({}, d, { confSup: true })); } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제", "حذف")) : null));
     return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
   }
+  /* 13/11 (Blandine : « quand on est sur la page de vaccination et qu on veut swiper en arriere pour revenir sur la page
+     sante, ca marche pas ») : ces pages plein ecran portent data-noswipe (le routeur les ignore), elles gerent donc
+     elles-memes le geste retour : glisser vers la droite depuis le bord gauche (vers la gauche en arabe / persan) = fermer. */
+  function swipeRetour(fermer) {
+    var d = null;
+    var rtl = false; try { rtl = document.documentElement.dir === "rtl"; } catch (eR) { }
+    return {
+      onTouchStart: function (ev) { var t = ev.touches && ev.touches[0]; if (!t) { d = null; return; } var w = window.innerWidth || 400; var bord = rtl ? (w - t.clientX) : t.clientX; d = bord < 40 ? { x: t.clientX, y: t.clientY } : null; },
+      onTouchEnd: function (ev) { if (!d) return; var t = ev.changedTouches && ev.changedTouches[0]; var x0 = d.x, y0 = d.y; d = null; if (!t) return; var dx = (t.clientX - x0) * (rtl ? -1 : 1), dy = Math.abs(t.clientY - y0); if (dx > 70 && dy < 60) fermer(); }
+    };
+  }
+  /* 13/11 (Blandine) : sous l encart « A jour », un petit encart pour etre prevenu avant la prochaine vaccination.
+     On choisit QUAND (1 mois, 15 jours, 1 semaine avant, le jour J — plusieurs possibles) et on l ajoute a l agenda
+     du telephone (fichier calendrier partage, comme l export des soins). UID stable par cheval + vaccin et SEQUENCE
+     croissante : un nouvel ajout REMPLACE le rendez-vous au lieu d en creer un deuxieme. Rien n est ecrit en base.
+     Le mail viendra dans un deuxieme temps. */
+  function encartRappelVac(aVenir) {
+    if (!aVenir || !aVenir.length || typeof hypeIcsRemettre !== "function" || typeof hypeIcsPlier !== "function") return null;
+    var e0 = aVenir[0], dIso = isoDe(e0.lim);
+    var memes = aVenir.filter(function (e) { return Math.abs(e.lim.getTime() - e0.lim.getTime()) < 86400000; });
+    var r = rapVac || { ouvert: false, j: { 15: 1, 0: 1 }, mot: "" };
+    var maj = function (o) { setRapVac(Object.assign({}, r, o)); };
+    var dateTxt = dateCourte(dIso, "jour");
+    var choix = [
+      [30, T("1 mois avant", "1 month before", "1 mes antes", "1 mese prima", "1か月前", "1 Monat vorher", "قبل شهر", "提前1个月", "1 maand ervoor", "1 mês antes", "1 månad innan", "За 1 месяц", "Miesiąc wcześniej", "1개월 전", "۱ ماه قبل")],
+      [15, T("15 jours avant", "15 days before", "15 días antes", "15 giorni prima", "15日前", "15 Tage vorher", "قبل 15 يومًا", "提前15天", "15 dagen ervoor", "15 dias antes", "15 dagar innan", "За 15 дней", "15 dni wcześniej", "15일 전", "۱۵ روز قبل")],
+      [7, T("1 semaine avant", "1 week before", "1 semana antes", "1 settimana prima", "1週間前", "1 Woche vorher", "قبل أسبوع", "提前1周", "1 week ervoor", "1 semana antes", "1 vecka innan", "За 1 неделю", "Tydzień wcześniej", "1주 전", "۱ هفته قبل")],
+      [0, T("Le jour J", "On the day", "El mismo día", "Il giorno stesso", "当日", "Am Tag selbst", "في اليوم نفسه", "当天", "Op de dag zelf", "No próprio dia", "Samma dag", "В тот же день", "W dniu szczepienia", "당일", "همان روز")]
+    ];
+    function ajouter() {
+      var js = choix.map(function (c) { return c[0]; }).filter(function (k) { return r.j[k]; });
+      if (!js.length) return;
+      var noms = memes.map(function (e) { return e.nom; }).join(" + ");
+      var titre = "🐴 HYPE — " + T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepienie", "백신", "واکسن") + " " + noms + " — " + nomCourt;
+      var d = String(dIso).replace(/-/g, "");
+      var lend = new Date(e0.lim.getTime()); lend.setDate(lend.getDate() + 1);
+      var d2 = lend.getFullYear() + ("0" + (lend.getMonth() + 1)).slice(-2) + ("0" + lend.getDate()).slice(-2);
+      var esc = function (v) { return (typeof hypeIcsEchapper === "function") ? hypeIcsEchapper(v) : String(v); };
+      var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hype//Sante & soins//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VEVENT",
+        "UID:vaccin-" + String(chId || nomCourt).replace(/[^A-Za-z0-9-]/g, "") + "-" + memes.map(function (e) { return e.k; }).join("") + "@hype",
+        "SEQUENCE:" + Math.floor(Date.now() / 1000),
+        "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""),
+        "DTSTART;VALUE=DATE:" + d, "DTEND;VALUE=DATE:" + d2, hypeIcsPlier("SUMMARY:" + esc(titre)), "TRANSP:TRANSPARENT"];
+      js.forEach(function (k) { L.push("BEGIN:VALARM", k > 0 ? "TRIGGER:-P" + k + "D" : "TRIGGER:PT0S", "ACTION:DISPLAY", hypeIcsPlier("DESCRIPTION:" + esc(titre)), "END:VALARM"); });
+      L.push("END:VEVENT", "END:VCALENDAR");
+      hypeIcsRemettre("hype-vaccin-" + dIso + ".ics", L.join("\r\n") + "\r\n").then(function (res) {
+        if (res) maj({ ouvert: false, fait: js, mot: res });
+      });
+    }
+    var cloche = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", style: { width: 18, height: 18, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, flex: "0 0 auto" } }, h("path", { d: "M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" }));
+    if (r.fait && !r.ouvert) {
+      var lib = r.fait.map(function (k) { return k === 0 ? T("le jour J", "on the day", "el mismo día", "il giorno stesso", "当日", "am Tag selbst", "في اليوم نفسه", "当天", "op de dag zelf", "no próprio dia", "samma dag", "в тот же день", "w dniu", "당일", "همان روز") : (k === 30 ? T("1 mois avant", "1 month before", "1 mes antes", "1 mese prima", "1か月前", "1 Monat vorher", "قبل شهر", "提前1个月", "1 maand ervoor", "1 mês antes", "1 månad innan", "за месяц", "miesiąc wcześniej", "1개월 전", "۱ ماه قبل") : k + T(" j avant", " days before", " días antes", " gg prima", "日前", " Tage vorher", " أيام قبل", "天前", " d ervoor", " dias antes", " d innan", " дн. до", " dni wcześniej", "일 전", " روز قبل")); }).join(" · ");
+      return h("div", { className: "vxp-rap fait", role: "button", onClick: function () { maj({ ouvert: true }); } }, cloche,
+        h("span", null, T("Rappel dans ton agenda : ", "Reminder in your calendar: ", "Recordatorio en tu agenda: ", "Promemoria nel tuo calendario: ", "カレンダーに通知：", "Erinnerung im Kalender: ", "تذكير في تقويمك: ", "日历提醒：", "Herinnering in je agenda: ", "Lembrete na tua agenda: ", "Påminnelse i kalendern: ", "Напоминание в календаре: ", "Przypomnienie w kalendarzu: ", "캘린더 알림: ", "یادآور در تقویم: ") + lib),
+        h("em", null, T("Modifier", "Edit", "Modificar", "Modifica", "変更", "Ändern", "تعديل", "修改", "Wijzigen", "Alterar", "Ändra", "Изменить", "Zmień", "수정", "ویرایش")));
+    }
+    return h("div", { className: "vxp-rap" + (r.ouvert ? " ouv" : "") },
+      h("div", { className: "tt", role: "button", onClick: function () { maj({ ouvert: !r.ouvert }); } }, cloche,
+        h("span", null, T("Être prévenu avant le ", "Get a reminder before ", "Recibir un aviso antes del ", "Ricevere un avviso prima del ", "次の日の前に通知を受け取る：", "Erinnerung vor dem ", "تلقي تذكير قبل ", "在此日期前提醒我：", "Herinnering vóór ", "Ser avisado antes de ", "Få en påminnelse före ", "Напомнить до ", "Przypomnij przed ", "다음 날짜 전에 알림 받기: ", "یادآوری پیش از ") + dateTxt + " ?"),
+        h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", className: "ch" }, h("path", { d: "M6 9l6 6 6-6" }))),
+      r.ouvert ? h("div", { className: "cp" },
+        h("div", { className: "q" }, T("Quand ?", "When?", "¿Cuándo?", "Quando?", "いつ？", "Wann?", "متى؟", "什么时候？", "Wanneer?", "Quando?", "När?", "Когда?", "Kiedy?", "언제?", "چه زمانی؟")),
+        h("div", { className: "ch2" }, choix.map(function (c) {
+          var on = !!r.j[c[0]];
+          return h("button", { key: "c" + c[0], type: "button", className: on ? "on" : "", onClick: function () { var j = Object.assign({}, r.j); if (on) delete j[c[0]]; else j[c[0]] = 1; maj({ j: j }); } }, (on ? "✓ " : "") + c[1]);
+        })),
+        h("button", { type: "button", className: "ag", disabled: !Object.keys(r.j).length, onClick: ajouter },
+          T("Ajouter à l’agenda du téléphone", "Add to the phone calendar", "Añadir al calendario del teléfono", "Aggiungi al calendario del telefono", "スマホのカレンダーに追加", "Zum Handykalender hinzufügen", "إضافة إلى تقويم الهاتف", "添加到手机日历", "Toevoegen aan de agenda van je telefoon", "Adicionar à agenda do telemóvel", "Lägg till i telefonens kalender", "Добавить в календарь телефона", "Dodaj do kalendarza w telefonie", "휴대폰 캘린더에 추가", "افزودن به تقویم گوشی")),
+        h("div", { className: "nb" }, T("Ton téléphone te prévient aux dates choisies. Le rappel par mail arrive bientôt.", "Your phone will remind you on the chosen dates. Email reminders are coming soon.", "Tu teléfono te avisará en las fechas elegidas. El aviso por correo llegará pronto.", "Il telefono ti avviserà nelle date scelte. Il promemoria via e-mail arriva presto.", "選んだ日にスマホが通知します。メールでの通知はまもなく対応予定です。", "Dein Handy erinnert dich an den gewählten Tagen. Erinnerungen per E-Mail kommen bald.", "سيذكّرك هاتفك في التواريخ المختارة. التذكير بالبريد الإلكتروني قادم قريبًا.", "手机会在所选日期提醒你。邮件提醒即将推出。", "Je telefoon herinnert je op de gekozen data. Herinneringen per mail komen binnenkort.", "O teu telemóvel avisa-te nas datas escolhidas. O lembrete por e-mail chega em breve.", "Telefonen påminner dig på de valda datumen. Påminnelser via e-post kommer snart.", "Телефон напомнит в выбранные дни. Напоминания по почте скоро появятся.", "Telefon przypomni Ci w wybrane dni. Przypomnienia e-mailem już wkrótce.", "선택한 날짜에 휴대폰이 알려 줘요. 메일 알림은 곧 추가돼요.", "گوشی‌ات در تاریخ‌های انتخاب‌شده یادآوری می‌کند. یادآوری ایمیلی به‌زودی می‌آید."))) : null);
+  }
   function pageVaccins(l) {
-    cssPageVac();
+    cssPageVac(); cssSante();   /* 13/11 (Blandine) : nom du cheval au-dessus du titre (sx-kicker) */
     var E = etatVaccins(l), dv = docsVaccins(l);
     var auj = new Date(); auj.setHours(0, 0, 0, 0);
     /* --- etat global, lisible en une seconde --- */
@@ -892,7 +984,7 @@ function EcranSanteCheval() {
     var etatBox = h("div", { className: "vxp-etat", style: { borderColor: ({ ok: "rgba(150,205,170,.4)", bientot: "rgba(232,200,135,.45)", retard: "rgba(227,154,136,.5)", aucun: "rgba(201,166,107,.35)", incomplet: "rgba(232,200,135,.45)" })[global], background: "linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01))" } },
       h("div", { className: "r", style: { color: global === "aucun" ? "#C9A66B" : cg } }, global === "ok" ? "✓" : (global === "aucun" ? "＋" : "!")),
       h("div", { style: { minWidth: 0 } },
-        h("b", null, titreG),
+        h("b", null, nomCourt + " · " + titreG),   /* 13/11 (Blandine) : le nom aussi dans l encart, pour une capture prise plus bas */
         texteG ? h("div", { className: "t" }, texteG) : null,
         notes.map(function (n, i) { return h("div", { key: "n" + i, className: "n" }, n); })));
     /* --- onglets par vaccin --- */
@@ -973,7 +1065,7 @@ function EcranSanteCheval() {
     var svgCam = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M4 8h3l2-2.5h6L17 8h3v11H4z" }), h("circle", { cx: 12, cy: 13.2, r: 3.6 }));
     var svgPlus = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" }));
     var fermer = function () { setFamille(null); setVacOuvert(null); setVacTout(false); };
-    var page = h("div", { className: "vxp", "data-noswipe": "true" },
+    var page = h("div", Object.assign({ className: "vxp", "data-noswipe": "true" }, swipeRetour(fermer)),
       h("div", { className: "vxp-hero" },
         (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
         h("button", { type: "button", className: "vxp-rond", onClick: fermer, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "بازگشت") }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M14.5 5.5 8 12l6.5 6.5" }))),
@@ -981,10 +1073,12 @@ function EcranSanteCheval() {
         h("div", { className: "vxp-photo" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", fetchpriority: "high" })),
         courbeVac("c2", "M0 92 C 130 90, 240 62, 400 8"),
         h("div", { className: "vxp-in", style: { paddingBottom: 0 } }, h("div", { className: "vxp-titre" },
+          h("span", { className: "sx-kicker" }, nomCourt),   /* 13/11 (Blandine) : on sait de quel cheval il s agit, meme sur une capture */
           h("h1", null, T("Vaccins", "Vaccines", "Vacunas", "Vaccini", "ワクチン", "Impfungen", "اللقاحات", "疫苗", "Vaccinaties", "Vacinas", "Vaccinationer", "Прививки", "Szczepienia", "백신", "واکسن‌ها")),
           h("p", null, T("Le carnet de vaccination.", "The vaccination record.", "La cartilla de vacunación.", "Il libretto delle vaccinazioni.", "ワクチン手帳。", "Der Impfpass.", "دفتر التطعيمات.", "疫苗接种本。", "Het vaccinatieboekje.", "A caderneta de vacinação.", "Vaccinationsboken.", "Паспорт прививок.", "Książeczka szczepień.", "예방접종 수첩.", "کارت واکسیناسیون."))))),
       h("div", { className: "vxp-in" },
         etatBox,
+        encartRappelVac(aVenir),
         h("div", { className: "vxp-ligne" },
           peutEcrire ? h("button", { type: "button", className: "vxp-mes", onClick: function () { ouvrirGuide(); } }, svgCam, T("Photographier le carnet", "Photograph the record", "Fotografiar la cartilla", "Fotografa il libretto", "手帳を撮影する", "Impfpass fotografieren", "تصوير الدفتر", "拍摄疫苗本", "Boekje fotograferen", "Fotografar a caderneta", "Fotografera boken", "Сфотографировать паспорт", "Sfotografuj książeczkę", "수첩 촬영하기", "عکس گرفتن از دفترچه")) : h("span", null),
           peutEcrire ? h("button", { type: "button", className: "vxp-plus", onClick: function () { setFeuille({ soin: null, type: "vaccin" }); }, "aria-label": T("Ajouter un vaccin", "Add a vaccine", "Añadir una vacuna", "Aggiungi un vaccino", "ワクチンを追加", "Impfung hinzufügen", "إضافة لقاح", "添加疫苗", "Vaccin toevoegen", "Adicionar uma vacina", "Lägg till en vaccination", "Добавить прививку", "Dodaj szczepienie", "백신 추가", "افزودن واکسن") }, svgPlus) : null),
@@ -1027,12 +1121,12 @@ function EcranSanteCheval() {
       var bordB = { ok: "rgba(150,205,170,.4)", bientot: "rgba(232,200,135,.45)", retard: "rgba(227,154,136,.5)", aucun: "rgba(201,166,107,.35)" }[k];
       boite = h("div", { className: "vxp-etat", style: { borderColor: bordB, background: "linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01))" } },
         h("div", { className: "r", style: { color: coulB } }, k === "ok" ? "✓" : (k === "aucun" ? "＋" : "!")),
-        h("div", { style: { minWidth: 0 } }, h("b", null, titreB), texteB ? h("div", { className: "t" }, texteB) : null));
+        h("div", { style: { minWidth: 0 } }, h("b", null, nomCourt + " · " + titreB), texteB ? h("div", { className: "t" }, texteB) : null));
     }
     var svgPlus = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" }));
     var svgDoc = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 3h7l4 4v14H7zM14 3v4h4M9.5 12h6M9.5 15.5h4" }));
     var fermer = function () { setFamille(null); setFamTout(""); };
-    var page = h("div", { className: "vxp", "data-noswipe": "true" },
+    var page = h("div", Object.assign({ className: "vxp", "data-noswipe": "true" }, swipeRetour(fermer)),
       h("div", { className: "vxp-hero" },
         (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
         h("button", { type: "button", className: "vxp-rond", onClick: fermer, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "بازگشت") }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M14.5 5.5 8 12l6.5 6.5" }))),
@@ -1672,7 +1766,8 @@ function EcranSanteCheval() {
   /* (945) « Lire le carnet de vaccination » : photo(s) ou PDF -> liste des injections (date, vaccin, maladies) a verifier,
      puis enregistrement en soins « vaccin » (+ la photo gardee comme document « page du carnet » si coche). */
   var stLc = React.useState(null); var lectCarnet = stLc[0], setLectCarnet = stLc[1];
-  var stVo = React.useState(null); var vacOuvert = stVo[0], setVacOuvert = stVo[1];   /* 07/11 carte de vaccin ouverte */
+  var stVo = React.useState(null); var vacOuvert = stVo[0], setVacOuvert = stVo[1];
+  var stRp = React.useState(null); var rapVac = stRp[0], setRapVac = stRp[1];   /* 13/11 encart « Etre prevenu » : { ouvert, j: {30:1,15:1,...}, mot } */   /* 07/11 carte de vaccin ouverte */
   var stVg = React.useState({}); var vignettes = stVg[0], setVignettes = stVg[1];     /* 07/11 vignettes des pages du carnet */
   /* 07/11 (Blandine : « qu'on puisse prendre les photos des vaccins et de la première page du carnet en précisant au
      cavalier ce qu'il faut photographier et que ça montre le PDF à garder en mémoire », proposition acceptée « Ok continue ») :
@@ -2448,11 +2543,12 @@ function EcranSanteCheval() {
     "aria-hidden": "true",
     style: {
       position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" /* (1003) */, backgroundColor: "#060709",
-      /* 07/11 (Blandine, maquette « Ta photo en haut + en fond » choisie, « en gardant taille normale ») : quand le cheval a une
+      /* 13/11 (Blandine) : voiles un peu plus sombres sur la photo de fond (« on a du mal a lire, surtout quand il y a des couleurs sur la photo »).
+         07/11 (Blandine, maquette « Ta photo en haut + en fond » choisie, « en gardant taille normale ») : quand le cheval a une
          photo, elle sert AUSSI de fond a toute la page — meme photo qu en haut, taille normale (cover, sans zoom), fond fixe,
          assombrie par deux voiles pour que tout reste lisible. Sans photo : l ancien fond Sante, inchange. */
       backgroundImage: photoVue
-        ? "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.35) 30%, rgba(6,7,9,0.70) 65%, rgba(6,7,9,0.95) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.85) 0%, rgba(6,7,9,0.45) 55%, rgba(6,7,9,0.20) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
+        ? "linear-gradient(180deg, rgba(6,7,9,0.70) 0%, rgba(6,7,9,0.55) 30%, rgba(6,7,9,0.80) 65%, rgba(6,7,9,0.96) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.88) 0%, rgba(6,7,9,0.60) 55%, rgba(6,7,9,0.40) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
         : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/sante-fond-defaut.webp')",   /* 07/11 (Blandine) : sans photo, SA photo du cheval bai tete baissee en fond (a la place du cheval bleu), tete jamais coupee */
       /* 07/11 (Blandine) : sans photo, le cheval du fond est decale pour ne pas passer sous l image du haut :
          telephone = en bas de l ecran (sous le haut de page) ; tablette / ordinateur = a gauche (l image du haut est a droite). Tete jamais coupee. */

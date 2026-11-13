@@ -26,6 +26,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1435 — Page Santé du cheval : nom du cheval, rappel agenda, fond plus sombre, swipe retour, date de la carte Vaccin
+Blandine 13/11 14h05 → 14h31 (« Ok », « Et oui B »). Un seul fichier : hype-ecran-sante-cheval.js (v=21).
+- Page Vaccins : nom du cheval en petit doré au-dessus de « Vaccins » ; nom aussi dans l'encart d'état (« Cyrus Laury · À jour »), comme sur les autres rubriques (vermifuge, ferrure…), pour qu'une capture d'écran dise toujours de quel cheval il s'agit. Photos d'ambiance gardées (« elles sont jolies, te casse pas »).
+- Encart « 🔔 Être prévenu avant le … ? » sous l'état : choix 1 mois / 15 j / 1 semaine / jour J (plusieurs), « Ajouter à l'agenda du téléphone » (fichier calendrier, même partage que l'export des soins, UID stable par cheval + vaccin : un nouvel ajout remplace). Rien en base. Rappel par MAIL (Brevo) = 2e temps, pas fait.
+- Fond de page (quand c'est la photo du cheval) plus sombre : lisibilité sur les photos colorées.
+- Swipe retour (bord gauche → droite, inversé en arabe/persan) sur la page Vaccins et les pages de rubrique (data-noswipe bloquait le routeur). Pas encore testé sur un vrai iPhone.
+- BUG corrigé : la carte « Vaccin » du Suivi affichait en rouge « Prochain 22/11/2014 » (date prochaine brute d'une vieille ligne du carnet lu) alors que la page Vaccins était verte. La carte suit maintenant le même calcul que la page Vaccins.
+- Captures vérifiées dans une copie de test (vraie police, vraies images).
+
+> 🟧 À FAIRE ENSUITE (Blandine, 13/11 14h31, choix B) — OUTIL UNIQUE « AJOUTER UN PAPIER » sur la Santé du cheval : remplace les 3 entrées actuelles (« Photographier le carnet », « Lire le carnet de vaccination », « Joindre une page / + Document »). Photo ou PDF → rangé dans un encart « Papiers du cheval » (rouvrir / retélécharger) → lecture de TOUT (vaccins, n° SIRE, père, mère, naissance, autres soins) → récapitulatif à valider → remplit la page Vaccins ET la fiche du cheval. Constat : la lecture actuelle ne relève QUE les dates de vaccins — le PDF SIRE ajouté le 13/11 n'a rempli ni le SIRE ni les parents. Vérifier en base comment SIRE / parents sont rangés (ne pas écraser l'import FFE). Étape 1 = outil + encart ; étape 2 = lecture complète.
+
 ## 20261113-1420 — Ordre d'embarquement sans les heures de passage
 Blandine 13/11 14h12 (« j'ai peur que ça leur embrouille la tête » ; « Ok »). hype-ecran-saison.js : la liste montre seulement n°, cheval, cavalier ; l'ordre reste calculé sur le premier passage de chaque cheval (le dernier à passer embarque en premier).
 
