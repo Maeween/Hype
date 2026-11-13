@@ -172,6 +172,25 @@ function EcranPerformancesCheval(props) {
     if (modeCav) libres = libres.filter(function (f) { return !(f.d && typeof hypePerfSaisonDe === "function" && hypePerfSaisonDe(f.d) === saisonCour); });
     libres.forEach(function (f) { f.haut = hauteurEp(f.ep); });
     var haute = null; libres.forEach(function (f) { if (f.haut != null && (!haute || f.haut > haute.haut || (f.haut === haute.haut && (f.pl < haute.pl || (f.pl === haute.pl && (f.part || 0) > (haute.part || 0)))))) haute = f; });
+    /* 13/11 01h25 (Blandine : « il me prend une C1 à 1m25 alors que ma plus haute épreuve, c'est une B1 Open à 1m35 ») : la plus
+       haute épreuve se cherche dans TOUS les parcours courus, classés ou non (sa B1 Open du 11/11/2000 est « Non classé »).
+       Ni éliminés, ni abandons, ni forfaits : un parcours terminé. */
+    try {
+      var hMax = null;
+      vis.forEach(function (r) {
+        if (!r || !r.date_epreuve) return;
+        var place = (r.place != null && r.place !== "") ? Number(r.place) : null;
+        var st = String(r.statut || "");
+        if (place == null && !(st === "hors_classement" || (st === "" && r.concours))) return;
+        if (modeCav && typeof hypePerfSaisonDe === "function" && hypePerfSaisonDe(String(r.date_epreuve)) === saisonCour) return;
+        var hr = hauteurEp(r.epreuve); if (hr == null) return;
+        if (!hMax || hr > hMax.haut || (hr === hMax.haut && (place != null ? place : 999) < (hMax.pl != null ? hMax.pl : 999))) hMax = { id: r.id, pl: place, part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", cavId: r.cavalier_id || null, d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4), haut: hr, nc: place == null };
+      });
+      if (hMax && (!haute || hMax.haut > haute.haut)) {
+        var dejaL = libres.filter(function (f) { return f.id && f.id === hMax.id; })[0];
+        haute = dejaL || hMax;
+      }
+    } catch (eHm) { }
     var triG = function (a, b) { return ((b.part || 0) - (a.part || 0)) || ((b.haut || 0) - (a.haut || 0)) || (a.pl - b.pl); };
     var pods = libres.filter(function (f) { return f !== haute && f.pl <= 3 && (f.part == null || f.part >= 5); }).sort(triG);   /* un podium sur moins de 5 partants n est pas un « beau moment » */
     var cls = libres.filter(function (f) { return f !== haute && f.pl > 3 && estClasseQ(f); }).sort(triG);
@@ -1248,7 +1267,7 @@ function estClasseQ(f) {
         var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
         var hTxt = (f.haut != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(f.haut.toFixed(2)).replace(".", ",") + " m" : "";   /* pas de doublon si la hauteur est déjà écrite */
         var propreC = function (n) { if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
-        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, f.plusHaute ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta plus haute épreuve", "Your highest class") : T("Sa plus haute épreuve", "Highest class")) : null, h("span", { style: { color: CHAMP } }, rangTxt(f.pl)), f.part ? " " + SUR() + " " + f.part : ""),
+        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, f.plusHaute ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta plus haute épreuve", "Your highest class") : T("Sa plus haute épreuve", "Highest class")) : null, (f.pl == null ? h("span", { style: { color: CHAMP } }, T("Parcours couru", "Completed round")) : h("span", { style: { color: CHAMP } }, rangTxt(f.pl))), (f.part && f.pl != null) ? " " + SUR() + " " + f.part : ""),
           h(React.Fragment, null, [f.ep, hTxt].filter(Boolean).join(" · ") || concoursC(f), h("br"), [propreC(concoursC(f)), annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")), ph, function () { allerAuFort(f); });
       })));
     }
@@ -1350,7 +1369,17 @@ function estClasseQ(f) {
       var anCourt = function (lib) { return String(lib).replace(/^(\d{4})-\d{2}(\d{2})$/, "$1–$2"); };
       var ouvrirS = function (x, i) { var o = arOuv[x.cle] != null ? arOuv[x.cle] : false; return [o, function () { var n = Object.assign({}, arOuv); n[x.cle] = !o; setArOuv(n); }]; };
       var listeOuv = function (x) { var st = hypePerfStatsHisto(x.ls), nq = x.ls.filter(estClasseQ).length, t = [st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : "", nq ? nq + " " + L_Q(nq) : ""].filter(Boolean).join(" · ");
-        return h("div", { style: { padding: "8px 22px 10px" } }, t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "2px 0 8px" } }, t) : null, x.ls.map(function (f, j) { return ligneA(f, j); })); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
+        /* 13/11 01h22 (Blandine : « je vois plus où choisir ce que je veux afficher ») : les pastilles d affichage de l ancienne liste
+           (Tous, Classés, Podiums, Sans faute) reviennent dans le déroulé ; le choix devient sa vue par défaut, comme avant. */
+        var cleF = filtres[x.cle] || vueDefaut || "tous"; if (cleF === "sf" && !estProprio) cleF = "tous";
+        var nbF = {}; FILTRES_SEC.forEach(function (fx) { nbF[fx[0]] = filtrer(x.ls, fx[0]).length; });
+        var pastilles = h("div", { style: { display: "flex", gap: 6, padding: "2px 0 8px", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+          FILTRES_SEC.filter(function (fx) { return fx[0] === "tous" || fx[0] === cleF || nbF[fx[0]]; }).map(function (fx) {
+            var on = cleF === fx[0];
+            return h("button", { key: "pf" + x.cle + fx[0], type: "button", onClick: function () { var n = Object.assign({}, filtres); n[x.cle] = fx[0]; setFiltres(n); try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(fx[0]); } catch (eVp) { } }, style: { flex: "0 0 auto", minHeight: 30, padding: "0 10px", borderRadius: 999, border: on ? "1.5px solid #C9A66B" : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? "#F3EEE4" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 11, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, fx[1] + " (" + nbF[fx[0]] + ")");
+          }));
+        var lsF = filtrer(x.ls, cleF);
+        return h("div", { style: { padding: "8px 22px 10px" } }, t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "2px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
       var photoBloc = function (ph, hauteur, cote) { return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "62%", display: "flex", justifyContent: cote === "right" ? "flex-end" : "flex-start", alignItems: "center", pointerEvents: "none" } },
         ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block", mixBlendMode: "lighten", WebkitMaskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)", maskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)" } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };

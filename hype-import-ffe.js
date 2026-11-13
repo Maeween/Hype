@@ -954,6 +954,9 @@
       '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs fichiers' : 'Choisir un fichier') + '</b>' +
       '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet' : 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet (tout ton palmarès d\'un coup)') + '</span>' +
       '<input type="file" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
+    h += '<div class="hi-zone" style="margin-top:10px;cursor:default"><b>Ou colle ta page FFE Compet</b>' +
+      '<span>Plus besoin de chercher le fichier : sur FFE Compet, page « Engagements et performances », sélectionne tout et copie. Puis appuie longuement sur le cadre ci-dessous et choisis « Coller ».</span>' +
+      '<div contenteditable="true" data-hi="coller" inputmode="none" style="margin-top:10px;min-height:46px;padding:12px;border:1px dashed rgba(201,166,107,.6);border-radius:12px;font-size:13px;color:rgba(243,238,228,.7);text-align:center;-webkit-user-select:text;user-select:text">Appuie longuement ici, puis « Coller »</div></div>';
     h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
       '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
       '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
@@ -1365,6 +1368,51 @@
     function refaire() { rendre(hote, options); }
 
     /* le champ de fichier ne se délègue pas : il change, il ne se tape pas */
+    var lireTexte = function (txt) {
+          var o = window.HYPE_IMPORT.lire(txt);
+          if (!o.lignes.length) {
+            E.err = (o.format === "ffecompet")
+              ? "Ce PDF FFE Compet ne contient que des engagements non partants : aucun résultat à importer."
+              : "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
+                "entière de ton telemat, ta page « Engagements et performances » FFE Compet ou la page « Résultats détaillés » d'une épreuve, et non une capture en image.";
+            E.etape = "choix"; refaire(); return;
+          }
+          E.lignes = o.lignes; E.cavalier = ""; E.autoCree = false; E.creees = null; E.erreurCreation = null; E.inconnus = null; E.niveau = "classe";
+          /* 22/09 : un PDF « Résultats détaillés » - pas de verrou d identité (aucun nom de cheval
+             en en-tête : chaque ligne porte le sien), et le club est reconnu d office. */
+          E.sif = (o.format === "sif") ? { clubs: o.clubs || [], epreuve: o.epreuve || "", concours: o.concours || "", date: o.date || null } : null;
+          E.club = "";
+          if (E.sif) {
+            try { window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; window.__hypeCavalierPdfFFE = null; } catch (eW) { }
+            try { E.club = window.HYPE_IMPORT.clubReconnu(E.sif.clubs, (typeof window !== "undefined" && window.__hypeEcuriesImport) || []); } catch (eC) { E.club = ""; }
+          }
+          window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
+          E.etape = "niveau"; refaire();
+    };
+    /* 13/11 01h25 (Blandine : « la sélection des fichiers sur mon téléphone… ça rend fou ») : COLLER au lieu de chercher un fichier.
+       Sur FFE Compet, page « Engagements et performances » : tout sélectionner, copier, puis coller ici. Safari colle le TABLEAU
+       (text/html) : il passe par le même lecteur que le fichier .xls (qui est lui aussi un tableau). Repli : texte à tabulations. */
+    var zc = hote.querySelector('[data-hi="coller"]');
+    if (zc && !zc.__hiBranche) {
+      zc.__hiBranche = true;
+      zc.addEventListener("paste", function (ev) {
+        try { ev.preventDefault(); } catch (eP) { }
+        var cd = ev.clipboardData || (typeof window !== "undefined" && window.clipboardData) || null;
+        var html = "", txt = "";
+        try { html = cd ? (cd.getData("text/html") || "") : ""; } catch (eH) { }
+        try { txt = cd ? (cd.getData("text/plain") || cd.getData("text") || "") : ""; } catch (eT) { }
+        if (!/<tr[\s>]/i.test(html) && txt) {
+          var echT = function (x) { return String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
+          html = "<table>" + txt.split(/\r?\n/).map(function (l) { return "<tr>" + l.split("\t").map(function (c) { return "<td>" + echT(c) + "</td>"; }).join("") + "</tr>"; }).join("") + "</table>";
+        }
+        if (!html) { E.err = "Rien n'a été collé. Sur FFE Compet, sélectionne toute la page, copie, puis colle ici."; refaire(); return; }
+        E.err = null; E.nomFichier = "page FFE Compet collée"; E.etape = "lecture"; refaire();
+        Promise.resolve("__HYPE_XLS__" + html).then(lireTexte).catch(function (e) {
+          E.err = "Ce qui a été collé n'a pas pu être lu. " + (e && e.message ? e.message : "");
+          E.etape = "choix"; refaire();
+        });
+      });
+    }
     var f = hote.querySelector('[data-hi="fichier"]');
     if (f && !f.__hiBranche) {
       f.__hiBranche = true;
@@ -1395,27 +1443,7 @@
           return;
         }
         E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
-        window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
-          var o = window.HYPE_IMPORT.lire(txt);
-          if (!o.lignes.length) {
-            E.err = (o.format === "ffecompet")
-              ? "Ce PDF FFE Compet ne contient que des engagements non partants : aucun résultat à importer."
-              : "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
-                "entière de ton telemat, ta page « Engagements et performances » FFE Compet ou la page « Résultats détaillés » d'une épreuve, et non une capture en image.";
-            E.etape = "choix"; refaire(); return;
-          }
-          E.lignes = o.lignes; E.cavalier = ""; E.autoCree = false; E.creees = null; E.erreurCreation = null; E.inconnus = null; E.niveau = "classe";
-          /* 22/09 : un PDF « Résultats détaillés » - pas de verrou d identité (aucun nom de cheval
-             en en-tête : chaque ligne porte le sien), et le club est reconnu d office. */
-          E.sif = (o.format === "sif") ? { clubs: o.clubs || [], epreuve: o.epreuve || "", concours: o.concours || "", date: o.date || null } : null;
-          E.club = "";
-          if (E.sif) {
-            try { window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; window.__hypeCavalierPdfFFE = null; } catch (eW) { }
-            try { E.club = window.HYPE_IMPORT.clubReconnu(E.sif.clubs, (typeof window !== "undefined" && window.__hypeEcuriesImport) || []); } catch (eC) { E.club = ""; }
-          }
-          window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
-          E.etape = "niveau"; refaire();
-        }).catch(function (e) {
+        window.HYPE_IMPORT.texteDuPdf(fic).then(lireTexte).catch(function (e) {
           E.err = "Le fichier n'a pas pu être lu. " + (e && e.message ? e.message : "");
           E.etape = "choix"; refaire();
         });

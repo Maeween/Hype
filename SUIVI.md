@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0215 — Import par copier-coller, pastilles d'affichage, plus haute épreuve
+- Import FFE : nouveau cadre « Ou colle ta page FFE Compet » (page « Engagements et performances » copiée puis collée). Le tableau collé passe par le même lecteur que le fichier .xls (testé : 124 lignes, 16 chevaux). Les lignes collées sans nom de cavalier sont rattachées à son nom FFE relié (import depuis sa page Performances). hype-import-ffe.js v=39. Reste à valider sur un vrai copier-coller iPhone depuis FFE Compet.
+- Performances : les pastilles Tous / Classés / Podiums (et Sans faute pour la propriétaire) reviennent dans chaque saison déroulée ; le choix reste sa vue par défaut.
+- Performances : « Ta plus haute épreuve » se cherche dans tous les parcours terminés, classés ou non (sa B1 Open du 11/11/2000, non classée, à 1,35 m) ; la carte dit « Parcours couru ». v=29.
+- En attente : photos des bandeaux (besoin de ses vraies photos pour des captures fiables).
+
 ## 20261113-0205 — Import FFE : LA vraie cause des fiches jamais créées
 - L'écran d'import ne recevait pas la fonction de création de fiche (onCreerCheval n'était pas transmis par HypeImportEcran depuis le 07/10). Résultat : ni création automatique, ni bouton « Crée sa fiche ». Ajouté dans les options passées à HYPE_IMPORT.rendre.
 - Constaté sur sa capture de 01h18 : les 12 chevaux inconnus arrivaient bien à l'écran (« Il reste des chevaux à ranger »), mais « aucune fiche de ce nom chez toi » = création jamais tentée.
