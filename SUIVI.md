@@ -22,6 +22,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1350 — Bandeaux d'épreuve plus bas, boutons Par épreuve / cavalier / cheval sur fond sombre
+Blandine 13/11 13h37-13h39 (choix « 3 »). hype-ecran-saison.js v=160.
+- Bandeaux d'épreuve (g-ep) : 96 px au lieu de 118, titre 26 px, 14 px d'espace avant la liste.
+- Sélecteurs Par épreuve / Par cavalier / Par cheval (fiche + Engagements) : fond sombre sans liseré, choisi un peu plus clair (classe pv-3 ; pv-1 pétrole, pv-2 anthracite en réserve).
+
 ## 20261113-1345 — Fiche concours : encart du coach sous les passages, phrase « Touche encore pour te retirer » retirée
 Blandine 13/11 13h36-13h37. hype-ecran-saison.js v=159.
 - « À déclarer au jury » placé juste après « Passages de l'équipe » (avant « Modifier les passages »). Ordre : Le concours → Je participe / Liste du van → Règles → Organisation du paddock → Passages → À déclarer au jury.
