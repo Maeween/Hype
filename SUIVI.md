@@ -42,6 +42,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Fichiers : hype-outil-doc.js (v=6), index.html (build), SUIVI.md.
 - Reste : entrées/sorties du registre (date d'entrée, provenance, départ) non gérées par l'outil.
 
+
+## 20261113-2210 — Guide du coach, chapitre 01 Engagements refait (textes ChatGPT, cartes qui se déplient, photos de Blandine, 7 chapitres)
+Blandine 13/11 21h59 (cahier « Chapitre 01 : Engagements »), 22h03 (« déplier vers le bas quand c'est trop long »), 22h05 (photos), 22h06 (« catastrophe visuelle » → cartes simplifiées façon maquette), 22h09 (« si tes cavaliers et tes chevaux ont déjà un profil… tout se remplit automatiquement »).
+- hype-ecran-coach.js : 4 cartes (Préparer mes engagements / Gère tes engagements, même en vocal / Sortir ma fiche d'engagement / Mise à jour automatique) + nouvel « À savoir » ; carte = numéro, filet, picto, titre, 1re phrase, photo à droite qui s'efface ; toucher = déplie le détail + bouton « Ouvrir … › » ; photo du camion en bas ; frise et liste des chapitres à 7 (Engagements, Feuille de route, Programme, Passages, Paddock, Jour J, Résultats), les non faits « Bientôt » ; frise défilante.
+- Images : images/guide-coach/coach-eng-dossard|vocal|fiche|registre.webp, coach-camion.webp (découpées dans la maquette, petites : à remplacer par des versions grandes).
+- À vérifier : SIRE pas encore sur la fiche d'engagement (licences oui) ; dicter des engagements à l'outil (à confirmer) ; registre d'élevage (en cours dans l'autre conversation). index.html : build 20261113-2210.
 ## 20261113-2156 — GUIDE DU COACH : entrée dans la page Aide, page « Le guide du coach », page « Journée de compétition »
 Blandine 13/11 21h46 (« je ne sais même pas comment on accède à tes pages de tuto […] une partie tuto, le guide du coach […] organiser une journée de compétition […] tous les tutos de cette journée-là »), 21h47 « Ok ».
 - Page Aide (hype-ecran-aide.js) : carte « Le guide du coach » en haut des petits tutos.
