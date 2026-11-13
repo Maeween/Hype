@@ -74,6 +74,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2254 — Guide du coach : les 7 chapitres finalisés (cahier « Finalisation des sept chapitres »)
+Blandine 13/11 22h47–22h51 (textes ChatGPT Passages, Jour J, Résultats, Paddock 05, Programme 04, cahier de finalisation, photos HD).
+- hype-ecran-coach.js : Engagements, Feuille de route, Programme, Passages, Paddock (6 cartes dont « Publier mes groupes »), Jour J, Résultats — tous ouverts dans la liste des chapitres (#coach-programme, #coach-passages, #coach-jourj, #coach-resultats…). Textes = mots exacts du cahier.
+- Encart vocal commun « Dicte tes consignes à Hype. » + exemples horaires ; plus de « Décale la Club 2 » (commande vocale pas encore disponible) ; bouton réel « Parler avec Hype ».
+- Jour J 04 complété d'après le code : alertes avant le départ et avant chaque reconnaissance. Résultats 03 : renvoi vers « Performances chevaux ».
+- En-têtes de même hauteur, photo différente par chapitre ; photos HD Passages / Programme ; captures annotées champagne (images/guide-coach/coach-cap-*.jpg) ; la frise centre le chapitre ouvert. index.html : build 20261113-2254.
 ## 20261113-2242 — Guide du coach : chapitre 03 « Programme »
 Blandine 13/11 22h40 (textes ChatGPT « Programme »). hype-ecran-coach.js : 4 cartes (Importer mes listes de départ, Récupérer les horaires, Calculer les passages, Actualiser mon programme), À savoir, encart vocal « Gère ton concours en vocal » avec exemples ; captures images/guide-coach/coach-cap-prog-*.jpg ; chapitre actif dans la liste. À vérifier : « Décale la Club 2 de 20 minutes » à la voix (l'outil ne sait pas encore décaler une épreuve ; le bouton « Décaler l'épreuve » oui). index.html : build 20261113-2242.
 ## 20261113-2241 — Guide du coach : textes courts Engagements et Paddock ; page du concours : encart « Ton rendez-vous au paddock »
