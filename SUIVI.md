@@ -13,6 +13,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0430 — Héros façon Vidéothèque sur les sous-pages (étape 1/4)
+- Blandine (03h09) : « le design de la Vidéothèque partout… touche pas à ma page Team ». hypeHeroSousPageCavalier (index.html) passe au dessin Vidéothèque : courbe dorée en haut, photo ENTIÈRE fondue sur fond noir, courbe dorée dessous, petit titre doré + nom Cormorant + sous-titre italique à droite. Concerne les sous-pages d'un cavalier (Photos, Vidéos, Actualités, Résultats) et d'un cheval (Photos, etc.). Ancien dessin : window.__heroAncien = true.
+- Étapes suivantes (une à la fois, captures avant) : 2 page principale du cavalier, 3 page principale d'un cheval, 4 page de l'écurie. Page Team : ne pas toucher.
+
 ## 20261113-0420 — Performances du cavalier : « Tes temps forts », boutons anthracite, trait au lieu de « Non classé »
 - « Tes derniers concours » -> « Tes temps forts » (page du cavalier) : les résultats choisis à la main (fort_force), classés ou non ; à défaut, les 3 derniers concours. Bouton « Choisir mes temps forts » sous les cartes ; la fenêtre affiche en tête les temps forts choisis avec ✕ pour les retirer. L'ancien bouton « Choisir ses moments forts » et la liste « Souvenirs » disparaissent de la page du cavalier (doublon). Page du cheval inchangée (Blandine : « la page cheval, pas besoin de la refaire »).
 - Boutons en gris anthracite (fond #14181A, contour ivoire fin, texte ivoire) via une feuille de style de la page ; « Par saison / Par cheval » idem ; liens en ivoire. Le doré reste aux titres.
