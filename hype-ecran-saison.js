@@ -275,6 +275,10 @@ var HS_TR_BRUT = {
   "un autre groupe": ["another group", "otro grupo", "un altro gruppo", "別のグループ", "einer anderen Gruppe", "مجموعة أخرى", "另一个分组", "een andere groep", "outro grupo", "en annan grupp", "другой группе", "innej grupie", "다른 그룹"],
   " à ": [" at ", " a las ", " alle ", " ", " um ", " الساعة ", " ", " om ", " às ", " kl. ", " в ", " o ", " "],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up entrance. Remember to arrange for someone to hold your horse during the course walk.", "Por razones prácticas, agrupamos los recorridos. Los horarios en dorado son citas en la entrada de la pista de calentamiento. Prevé a alguien que sujete tu caballo durante el reconocimiento del recorrido.", "Per motivi pratici, raggruppiamo i passaggi. Gli orari in oro sono appuntamenti all’ingresso del campo prova. Ricordati di avere qualcuno che tenga il tuo cavallo durante la ricognizione del percorso.", "運営上の理由から、出番をグループにまとめています。金色の時刻は練習馬場入口での集合時刻です。コース下見の間、馬を持ってくれる人を手配しておいてください。", "Aus praktischen Gründen fassen wir die Starts in Gruppen zusammen. Die goldenen Uhrzeiten sind Treffpunkte am Eingang des Abreiteplatzes. Denk daran, jemanden zu organisieren, der dein Pferd während der Parcoursbesichtigung hält.", "لأسباب عملية، نجمع المرورات في مجموعات. الأوقات باللون الذهبي هي مواعيد عند مدخل ساحة التحمية. تذكّر أن تُرتّب شخصاً يمسك حصانك أثناء معاينة المسار.", "出于实际考虑，我们把出场分成几组。金色的时间是在热身场入口的集合时间。记得安排人在你看场地时帮你牵马。", "Om praktische redenen bundelen we de starts in groepen. De gouden tijden zijn afspraken bij de ingang van de losrijpiste. Zorg dat iemand je paard vasthoudt tijdens de parcoursverkenning.", "Por razões práticas, agrupamos as passagens. Os horários a dourado são encontros à entrada do picadeiro de aquecimento. Lembra-te de ter alguém para segurar o teu cavalo durante o reconhecimento do percurso.", "Av praktiska skäl samlar vi starterna i grupper. Tiderna i guld är samlingstider vid ingången till framridningen. Se till att någon kan hålla din häst under banvandringen.", "По практическим причинам мы объединяем выступления в группы. Время, выделенное золотым, — это встреча у входа на разминку. Позаботься, чтобы кто-то подержал твою лошадь во время просмотра маршрута.", "Ze względów praktycznych łączymy przejazdy w grupy. Godziny na złoto to zbiórki przy wejściu na rozprężalnię. Pamiętaj, aby ktoś potrzymał twojego konia podczas zapoznania z parkurem.", "편의상 출전을 그룹으로 묶었어요. 금색 시간은 워밍업장 입구 집합 시간이에요. 코스 답사 동안 말을 잡아 줄 사람을 꼭 준비하세요."],
+  "Ajouter à mon agenda": ["Add to my calendar", "Añadir a mi agenda", "Aggiungi al mio calendario", "カレンダーに追加", "Zu meinem Kalender hinzufügen", "أضف إلى تقويمي", "添加到我的日历", "Toevoegen aan mijn agenda", "Adicionar à minha agenda", "Lägg till i min kalender", "Добавить в мой календарь", "Dodaj do mojego kalendarza", "내 캘린더에 추가"],
+  "Rendez-vous au paddock": ["Warm-up meeting", "Cita en la pista de calentamiento", "Appuntamento al campo prova", "練習馬場集合", "Treffpunkt Abreiteplatz", "موعد ساحة التحمية", "热身场集合", "Afspraak losrijpiste", "Encontro no aquecimento", "Samling vid framridningen", "Встреча на разминке", "Zbiórka na rozprężalni", "워밍업장 집합"],
+  "Passage": ["Round", "Pase", "Passaggio", "出番", "Start", "مرور", "出场", "Start", "Passagem", "Start", "Выступление", "Przejazd", "출전"],
+  "Ton téléphone n’a pas accepté le fichier d’agenda. Ouvre Hype dans Safari et réessaie.": ["Your phone did not accept the calendar file. Open Hype in Safari and try again.", "Tu teléfono no aceptó el archivo de agenda. Abre Hype en Safari e inténtalo de nuevo.", "Il telefono non ha accettato il file del calendario. Apri Hype in Safari e riprova.", "電話がカレンダーファイルを受け付けませんでした。SafariでHypeを開いてもう一度お試しください。", "Dein Telefon hat die Kalenderdatei nicht angenommen. Öffne Hype in Safari und versuche es erneut.", "لم يقبل هاتفك ملف التقويم. افتح Hype في Safari وحاول مجدداً.", "你的手机没有接受日历文件。请在 Safari 中打开 Hype 再试一次。", "Je telefoon accepteerde het agendabestand niet. Open Hype in Safari en probeer opnieuw.", "O telemóvel não aceitou o ficheiro da agenda. Abre o Hype no Safari e tenta de novo.", "Telefonen tog inte emot kalenderfilen. Öppna Hype i Safari och försök igen.", "Телефон не принял файл календаря. Открой Hype в Safari и попробуй снова.", "Telefon nie przyjął pliku kalendarza. Otwórz Hype w Safari i spróbuj ponownie.", "휴대폰이 캘린더 파일을 받지 않았어요. Safari에서 Hype를 열고 다시 시도하세요."],
   "Modifier les horaires": ["Edit times", "Editar horarios", "Modifica orari", "時刻を編集", "Zeiten ändern", "تعديل الأوقات", "修改时间", "Tijden wijzigen", "Editar horários", "Ändra tider", "Изменить время", "Edytuj godziny", "시간 수정"],
   "Reconnaissance par épreuve": ["Course walk per class", "Reconocimiento por prueba", "Ricognizione per prova", "競技ごとのコース下見", "Besichtigung pro Prüfung", "المعاينة حسب المسابقة", "按比赛看场", "Verkenning per proef", "Reconhecimento por prova", "Banvandring per klass", "Просмотр по соревнованиям", "Zapoznanie na konkurs", "종목별 코스 답사"],
   "Horaires enregistrés.": ["Times saved.", "Horarios guardados.", "Orari salvati.", "時刻を保存しました。", "Zeiten gespeichert.", "تم حفظ الأوقات.", "时间已保存。", "Tijden opgeslagen.", "Horários guardados.", "Tider sparade.", "Время сохранено.", "Godziny zapisane.", "시간을 저장했어요."],
@@ -3495,6 +3499,43 @@ function EcranConcours() {
     } catch (e) { setHorMsg(F("Erreur : ") + String((e && e.message) || e)); return; }
     setEv(Object.assign({}, ev, upd)); setHorForm(null); setHorMsg(F("Horaires enregistrés."));
   }
+  /* 13/11 (Blandine : « avant c'était pas mal, on pouvait mettre plusieurs alarmes et plusieurs horaires ») : un fichier d'agenda
+     avec chaque horaire en événement et une alarme 15 min avant (départ, reco, passages) / 20 min (paddock) ; embarquement sans alarme */
+  function ajouterAgenda() {
+    try {
+      var jour = String(ev.date_jour || "").slice(0, 10).replace(/-/g, ""); if (!jour) return;
+      function hh(m) { return String(Math.floor(m / 60)).padStart(2, "0") + String(m % 60).padStart(2, "0") + "00"; }
+      function nettoie(t) { return String(t || "").replace(/[\r\n]+/g, " ").replace(/([,;])/g, "\\$1"); }
+      var items = [];
+      function aj(titre, v, alarme) { var m = minutesDe(v); if (m == null) return; items.push({ t: titre, m: m, a: alarme }); }
+      aj(F("Embarquement"), ev.heure_embarquement, null);
+      aj(F("Départ"), ev.heure_depart, 15);
+      var mesEps = mesLignes.map(function (x) { return hsNomEpreuve(x.ep || ""); });
+      if (Array.isArray(ev.recos) && ev.recos.length) ev.recos.forEach(function (r) { if (r && r.heure && (gestion || !mesEps.length || mesEps.indexOf(hsNomEpreuve(r.ep || "")) >= 0)) aj(F("Reconnaissance") + " · " + r.ep, r.heure, 15); });
+      else aj(F("Reconnaissance"), ev.heure_reco, 15);
+      aj(F("Début de l’épreuve"), ev.heure_epreuve, null);
+      if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; })) aj(F("Rendez-vous au paddock") + " · " + (g.nom || "") + " · " + hsNomEpreuve(g.epreuve || ""), g.heure_rdv, 20); });
+      if (!gestion) mesLignes.forEach(function (x) { aj(F("Passage") + (x.nu ? " · " + F("tour ") + x.nu : "") + " · " + (x.ep || "") + (x.ch ? " · " + x.ch : ""), x.hp, 15); });
+      if (!items.length) { setHorMsg(F("Les horaires ne sont pas encore indiqués.")); return; }
+      var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hype//Concours//FR", "CALSCALE:GREGORIAN"];
+      items.forEach(function (it, i) {
+        L.push("BEGIN:VEVENT", "UID:hype-" + idEv + "-" + i + "@hype", "DTSTAMP:" + jour + "T000000", "DTSTART:" + jour + "T" + hh(it.m), "DTEND:" + jour + "T" + hh(Math.min(it.m + 15, 1439)),
+          "SUMMARY:" + nettoie(it.t + " · " + (ev.titre || "")), ev.lieu ? "LOCATION:" + nettoie(ev.lieu) : "", "URL:https://2hype.fr/#r=" + idEv);
+        if (it.a) L.push("BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + nettoie(it.t), "TRIGGER:-PT" + it.a + "M", "END:VALARM");
+        L.push("END:VEVENT");
+      });
+      L.push("END:VCALENDAR");
+      var texte = L.filter(Boolean).join("\r\n");
+      var nom = "hype-" + String(ev.titre || "concours").replace(/[^a-z0-9]+/gi, "-").toLowerCase() + ".ics";
+      var fi = null; try { fi = new File([texte], nom, { type: "text/calendar" }); } catch (eF) { }
+      if (fi && navigator.canShare && navigator.canShare({ files: [fi] }) && navigator.share) {
+        navigator.share({ files: [fi], title: ev.titre || "" }).catch(function (e) { if (!(e && e.name === "AbortError")) setHorMsg(F("Ton téléphone n’a pas accepté le fichier d’agenda. Ouvre Hype dans Safari et réessaie.")); });
+        return;
+      }
+      try { var u = URL.createObjectURL(new Blob([texte], { type: "text/calendar" })); var a = document.createElement("a"); a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove(); }
+      catch (eB) { setHorMsg(F("Ton téléphone n’a pas accepté le fichier d’agenda. Ouvre Hype dans Safari et réessaie.")); }
+    } catch (eA) { setHorMsg(F("Erreur : ") + String((eA && eA.message) || eA)); }
+  }
   function formHoraires() {
     var f = horForm;
     function champ(lib, cle) { return h("label", { className: "hc-chg-l" }, h("span", null, lib), h("input", { type: "time", value: f[cle] || "", onChange: function (e) { var n = Object.assign({}, f); n[cle] = e.target.value; setHorForm(n); } })); }
@@ -3525,6 +3566,7 @@ function EcranConcours() {
               gestion ? h("button", { type: "button", onClick: modifierRdv, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Modifier") + (rtl ? " ‹" : " ›")) : null) : null),
           gestion ? h("div", { className: "hs-row" }, h("div", { className: "g" }), h("button", { type: "button", onClick: ouvrirHoraires, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Modifier les horaires") + (rtl ? " ‹" : " ›"))) : null,
           horForm ? formHoraires() : null,
+          !fini ? h("div", { className: "hs-row" }, h("div", { className: "g" }), h("button", { type: "button", onClick: ajouterAgenda, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Ajouter à mon agenda") + (rtl ? " ‹" : " ›"))) : null,
           horMsg ? h("div", { className: "hs-msg" }, horMsg) : null,
           horaires.length ? horaires.map(function (x, i) {
             return h("div", { key: i, className: "hs-row" }, h("div", { className: "g" }, h("b", null, x.k), x.alerte ? h("span", null, F("alerte 15 min avant")) : null), h("span", { className: "d" }, x.v));
