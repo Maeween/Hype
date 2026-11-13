@@ -263,13 +263,28 @@ var HS_TR_BRUT = {
   "Prévois de quoi changer la cartouche de ton gilet airbag, ou une protection dorsale.": ["Bring a spare cartridge for your airbag vest, or a back protector."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance."],
   "Tu ne participes plus à ce concours ?": ["You’re no longer taking part in this show?"],
-  "Informations du concours": ["Show information"],
+  "Informations du concours": ["Competition information"],
+  "Ajouter à l’agenda": ["Add to calendar"],
+  "Reco": ["Course walk"],
+  "Début": ["Start"],
+  "Autre": ["Other"],
+  "Ajouter un horaire": ["Add a time"],
+  "Quoi ? (ex. remise des prix)": ["What? (e.g. prize giving)"],
+  "Une alerte part 15 min avant chaque reco, aux cavaliers de l’épreuve.": ["A reminder goes out 15 min before each course walk to the riders of that class."],
+  "Tu participes": ["You’re taking part"],
+  "Analyser avec Hey Baby": ["Analyse with Hey Baby"],
+  "Photo du couple": ["Photo of the pair"],
+  "Parcours": ["Round"],
+  "Fermer": ["Close"],
   "Modifier l’adresse": ["Edit the address"],
   "1er passage ": ["1st round "],
   "reco ": ["course walk "],
   "Ordre d’embarquement": ["Loading order"],
   "Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.": ["The first horse loaded is the one competing last; the last one loaded comes out first."],
   "Pas encore d’ordre de passage.": ["No start order yet."],
+  "Agenda": ["Calendar"],
+  "L’adresse": ["The address"],
+  "Les horaires": ["The times"],
   "Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.": ["Be right on time at the warm-up arena entrance: one late rider makes the whole team late."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance. Remember to bring someone to hold your horse during the course walk, and something to replace your airbag vest cartridge or a back protector, just in case."],
   "Ne quitte jamais le paddock sans l’accord de ta coach.": ["Never leave the warm-up arena without your coach's go-ahead.", "Nunca salgas del paddock sin el permiso de tu entrenadora.", "Non lasciare mai il campo prova senza il via della tua coach.", "コーチの許可なしに準備馬場を離れないこと。", "Verlass den Abreiteplatz nie ohne das Okay deiner Trainerin.", "لا تغادر ميدان الإحماء أبدًا دون موافقة مدربتك.", "未经教练同意切勿离开热身场。", "Verlaat de losrijring nooit zonder akkoord van je coach.", "Nunca saia do paddock sem o sinal da sua treinadora.", "Lämna aldrig framridningen utan din tränares klartecken.", "Никогда не уходи с разминки без разрешения тренера.", "Nigdy nie opuszczaj rozprężalni bez zgody trenerki.", "코치의 허락 없이 준비 마장을 떠나지 마세요."],
@@ -1057,6 +1072,43 @@ var CSS2 = [
   ".hc-infos-w .hc-pas-tete{margin-top:40px !important}.hc-infos-w .hc-alerte.hc-infos{margin-top:0}",
   ".hc-alerte.al2 .hc-inf-ep{display:flex;flex-direction:column;gap:4px;margin-top:6px}.hc-alerte.al2 .hc-inf-ep>span{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;font-family:Montserrat,sans-serif;font-size:13px;color:rgba(243,238,228,.75)}.hc-alerte.al2 .hc-inf-ep i{font-style:normal;font-weight:600;color:#F3EEE4;min-width:84px}",
   ".hc-infos .hc-chg label span,.hc-infos .hc-chg-l span{color:rgba(243,238,228,.6) !important}",
+  /* 13/11 14h59 : actions de l'encart du concours — 3 habillages (ia-1 liens texte, ia-2 tuiles icône, ia-3 barre) */
+  ".hc-alerte.al2 .hc-inf-a{display:flex;flex-wrap:nowrap;gap:8px;margin-top:10px}",
+  ".hc-alerte.al2 .hc-ia{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:54px;padding:6px 4px;border:0;border-radius:12px;background:#151b1b;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:11.5px;text-decoration:none;cursor:pointer}",
+  ".hc-alerte.al2 .hc-ia.on{background:#1d2626}",
+  ".hc-alerte.al2 .hc-inf-mod{display:flex;gap:16px;margin-top:8px}.hc-alerte.al2 .hc-inf-mod button{border:0;background:none;padding:6px 0;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}",
+  "html.ia-1 .hc-alerte.al2 .hc-inf-a{gap:0;flex-wrap:wrap}html.ia-1 .hc-alerte.al2 .hc-ia{flex:0 0 auto;flex-direction:row;min-height:0;background:none;padding:4px 14px 4px 0;font-size:13px;gap:6px}html.ia-1 .hc-alerte.al2 .hc-ia svg{width:15px;height:15px}html.ia-1 .hc-alerte.al2 .hc-ia span{text-decoration:underline;text-underline-offset:3px}",
+  /* 13/11 16h14 — propositions A / B / C de l'encart du concours */
+  ".hc .ic-w .ic-tete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.hc .ic-w .ic-date{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1;color:#F3EEE4}.hc .ic-w .ic-lieu{margin-top:8px;font-family:Montserrat,sans-serif;font-weight:600;font-size:14.5px;color:#F3EEE4}.hc .ic-w .ic-adr{margin-top:2px;font-family:Montserrat,sans-serif;font-size:12.5px;color:rgba(243,238,228,.55)}",
+  ".hc .ic-w .ic-crayon{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:0;background:#151b1b;color:rgba(243,238,228,.8);display:flex;align-items:center;justify-content:center;cursor:pointer}.hc .ic-w .ic-crayon.on{background:#1d2626;color:#F3EEE4}",
+  ".hc .ic-w .ic-liens{display:flex;gap:20px;margin-top:12px}.hc .ic-w .ic-liens a,.hc .ic-w .ic-liens button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:2px 0;color:rgba(243,238,228,.85);font-family:Montserrat,sans-serif;font-size:12.5px;text-decoration:none;cursor:pointer}.hc .ic-w .ic-liens svg{width:15px;height:15px}.hc .ic-w .ic-liens span{border-bottom:1px solid rgba(243,238,228,.3);padding-bottom:1px}",
+  ".hc .ic-w .ic-mod{display:flex;gap:18px;margin-top:10px}.hc .ic-w .ic-mod button{border:0;background:none;padding:4px 0;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.hc .ic-w .ic-form{margin-top:10px}.hc .ic-w .ic-msg,.hc .ic-w .ic-vide{margin-top:12px;font-family:Montserrat,sans-serif;font-size:12.5px;color:rgba(243,238,228,.55)}",
+  ".hc .ic-w svg *{stroke:currentColor}.hc .ic-w button svg *,.hc .ic-w a svg *{stroke:currentColor}",
+  /* A */
+  ".hc .ic-a{padding:4px 2px 0}.hc .ic-a .ic-tl{position:relative;margin-top:22px;padding:2px 0}.hc .ic-a .ic-tl:before{content:'';position:absolute;left:71px;top:14px;bottom:14px;width:1px;background:rgba(243,238,228,.16)}.hc .ic-a .ic-tl-l{display:grid;grid-template-columns:60px 22px 1fr;align-items:baseline;padding:7px 0}.hc .ic-a .ic-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;color:#F3EEE4;text-align:right}.hc .ic-a .ic-pt{position:relative;align-self:center;justify-self:center;width:7px;height:7px;border-radius:50%;background:#0b0f0f;border:1px solid rgba(243,238,228,.6);margin-left:1px}.hc .ic-a .ic-x b{display:block;font-family:Montserrat,sans-serif;font-weight:600;font-size:13.5px;color:#F3EEE4}.hc .ic-a .ic-x small{display:block;font-family:Montserrat,sans-serif;font-size:11.5px;color:rgba(243,238,228,.5)}",
+  ".hc .ic-a .ic-barre{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;border-top:1px solid rgba(243,238,228,.1);border-bottom:1px solid rgba(243,238,228,.1)}.hc .ic-a .ic-barre button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 4px;border:0;background:none;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:11.5px;line-height:1.25;cursor:pointer}.hc .ic-a .ic-barre button+button{border-left:1px solid rgba(243,238,228,.1)}.hc .ic-a .ic-barre button.on{background:#121818}.hc .ic-a .ic-barre svg *{stroke:#F3EEE4}",
+  /* B */
+  ".hc .ic-b{padding:22px 20px 8px;border-radius:20px;background:#0f1414}.hc .ic-b .ic-gh{display:flex;gap:30px;margin-top:22px}.hc .ic-b .ic-gh b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:40px;line-height:1;color:#F3EEE4}.hc .ic-b .ic-gh small{display:block;margin-top:4px;font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.5)}",
+  ".hc .ic-b .ic-eps{margin-top:18px}.hc .ic-b .ic-eps>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-top:1px solid rgba(243,238,228,.08);font-family:Montserrat,sans-serif}.hc .ic-b .ic-eps b{font-weight:600;font-size:13.5px;color:#F3EEE4}.hc .ic-b .ic-eps span{font-size:12.5px;color:rgba(243,238,228,.65);white-space:pre}",
+  ".hc .ic-b .ic-liste{margin:16px -20px 0;border-top:1px solid rgba(243,238,228,.08)}.hc .ic-b .ic-liste button{display:grid;grid-template-columns:30px 1fr auto;align-items:center;width:100%;padding:14px 20px;border:0;border-bottom:1px solid rgba(243,238,228,.06);background:none;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:14px;text-align:left;cursor:pointer}.hc .ic-b .ic-liste button:last-child{border-bottom:0}.hc .ic-b .ic-liste i{font-style:normal;color:rgba(243,238,228,.45);font-size:18px}.hc .ic-b .ic-liste button.on i{color:#F3EEE4;font-size:14px}.hc .ic-b .ic-liste svg *{stroke:rgba(243,238,228,.8)}",
+  /* D / E / F (13/11 16h35 : « un truc joli… comme le paddock… clair, joli, classe ») */
+  ".hc .ic-f .ic-rg-i>svg *{stroke:#C9A66B !important}.hc .ic-w .ic-sous{margin:-18px 0 0;text-align:center;font-family:Montserrat,sans-serif;font-size:13px;color:rgba(243,238,228,.6)}.hc .ic-w .ic-cr-c{display:flex;justify-content:center;margin-top:12px}.hc .ic-w .ic-ct{font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(243,238,228,.5);margin-bottom:10px}",
+  ".hc .ic-w .ic-ronds{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px}.hc .ic-w .ic-ronds button{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:11.5px;line-height:1.25;cursor:pointer}.hc .ic-w .ic-rd{width:52px;height:52px;border-radius:50%;background:#151b1b;display:flex;align-items:center;justify-content:center}.hc .ic-w .ic-ronds button.on .ic-rd{background:#1f2a2a}.hc .ic-w .ic-ronds svg *{stroke:#F3EEE4}",
+  ".hc .ic-d .ic-carte{margin-top:16px;padding:18px 18px 16px;border:1px solid rgba(201,166,107,.28);border-radius:18px;background:#0a0d0d}.hc .ic-d .ic-lieu{margin-top:0}.hc .ic-d .ic-pg{display:grid;grid-template-columns:auto 1fr;gap:0 18px;align-items:center}.hc .ic-d .ic-pg-g{padding-right:18px;border-right:1px solid rgba(201,166,107,.3)}.hc .ic-d .ic-pg-g small{display:block;font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}.hc .ic-d .ic-pg-g b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:46px;line-height:1;color:#C9A66B}.hc .ic-d .ic-pg-l>div{display:flex;align-items:baseline;gap:12px;padding:6px 0}.hc .ic-d .ic-pg-l i{font-style:normal;min-width:44px;font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:#C9A66B}.hc .ic-d .ic-pg-l span{font-family:Montserrat,sans-serif;font-size:13px;color:#F3EEE4}",
+  ".hc .ic-e .ic-fp{position:relative;margin-top:6px;padding:28px 22px 26px;text-align:center;border:1px solid rgba(201,166,107,.4);border-radius:4px;background:#0a0d0d;outline:1px solid rgba(201,166,107,.18);outline-offset:-7px}.hc .ic-e .ic-ct{margin-bottom:8px}.hc .ic-e .ic-ct2{margin:26px 0 10px}.hc .ic-e .ic-date{font-size:31px}.hc .ic-e .ic-orn{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 14px}.hc .ic-e .ic-orn span{width:46px;height:1px;background:rgba(201,166,107,.6)}.hc .ic-e .ic-orn i{width:6px;height:6px;transform:rotate(45deg);border:1px solid #C9A66B}.hc .ic-e .ic-lieu{margin-top:0}.hc .ic-e .ic-liens{justify-content:center}.hc .ic-e .ic-fp-l>div{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:5px 0;align-items:baseline}.hc .ic-e .ic-fp-l i{font-style:normal;text-align:right;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;color:#C9A66B}.hc .ic-e .ic-fp-l span{text-align:left;font-family:Montserrat,sans-serif;font-size:13px;color:#F3EEE4}",
+  ".hc .ic-f .ic-rg-c{margin-top:18px;padding:8px 18px;border:1px solid rgba(201,166,107,.28);border-radius:18px;background:#0a0d0d}.hc .ic-f .ic-rg-i{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:12px 0}.hc .ic-f .ic-rg-i+.ic-rg-i{border-top:1px solid rgba(243,238,228,.07)}.hc .ic-f .ic-rg-i>svg{margin-top:2px}.hc .ic-f .ic-lieu{margin-top:0}.hc .ic-f .ic-rg-h>div{display:flex;align-items:baseline;gap:12px}.hc .ic-f .ic-rg-h b{min-width:50px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;line-height:1;color:#F3EEE4}.hc .ic-f .ic-rg-h span{font-family:Montserrat,sans-serif;font-size:13.5px;color:rgba(243,238,228,.8)}",
+  ".hc .ice .ic-fp{padding:20px 16px 18px}.hc .ice .ic-cr-a{position:absolute;top:12px;right:12px}.hc .ice .ic-cr-a .ic-crayon{width:32px;height:32px}.hc .ice .ic-date{font-size:27px}.hc .ice .ic-lieu{margin-top:6px;font-size:13.5px}.hc .ice .ic-liens{margin-top:8px}.hc .ice .ic-orn{margin:14px 0 12px}",
+  ".hc .ice-v1 .ic-rge{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.hc .ice-v1 .ic-rge>div{display:flex;align-items:baseline;gap:8px;padding:4px 0}.hc .ice-v1 .ic-rge i{font-style:normal;min-width:46px;text-align:right;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:#C9A66B}.hc .ice-v1 .ic-rge span{text-align:left;font-family:Montserrat,sans-serif;font-size:12px;color:#F3EEE4}",
+  ".hc .ice-v2 .ic-rge{display:flex}.hc .ice-v2 .ic-rge+.ic-rge{margin-top:10px}.hc .ice-v2 .ic-rge>div{flex:1 1 0;min-width:0;padding:0 4px}.hc .ice-v2 .ic-rge>div+div{border-left:1px solid rgba(201,166,107,.25)}.hc .ice-v2 .ic-rge i{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;line-height:1.05;color:#C9A66B}.hc .ice-v2 .ic-rge span{display:block;margin-top:3px;font-family:Montserrat,sans-serif;font-size:11px;line-height:1.25;color:rgba(243,238,228,.8)}",
+  ".hc .ice-v3 .ic-fil{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;font-family:Montserrat,sans-serif;font-size:12.5px;color:#F3EEE4}.hc .ice-v3 .ic-fil i{font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:#C9A66B}.hc .ice-v3 .ic-fil span{white-space:nowrap}",
+  ".hc .ice .ic-ronds{margin-top:16px}.hc .ice .ic-rd{width:46px;height:46px}",
+  /* C */
+  ".hc .ic-c .ic-band{display:block !important;overflow:visible !important;padding:0 !important;background:none !important}.hc .ic-c .ic-rg{display:flex;border-radius:16px;background:#0f1414;overflow:hidden}.hc .ic-c .ic-rg+.ic-rg{margin-top:8px}.hc .ic-c .ic-rg>div{flex:1 1 0;min-width:0;padding:14px 6px 12px;text-align:center}.hc .ic-c .ic-rg>div+div{border-left:1px solid rgba(243,238,228,.08)}.hc .ic-c .ic-rg b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:26px;line-height:1;color:#F3EEE4}.hc .ic-c .ic-rg small{display:block;margin-top:6px;font-family:Montserrat,sans-serif;font-size:11px;line-height:1.25;color:rgba(243,238,228,.6)}",
+  ".hc .ic-fh{display:flex;flex-direction:column;gap:8px}.hc .ic-fh-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hc .ic-fh-c{display:flex;flex-direction:column;gap:4px}.hc .ic-fh-c span,.hc .ic-fh-t{font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.55)}.hc .ic-fh-t{margin-top:6px}.hc .ic-fh input,.hc .ic-fh select{min-width:0;height:38px;padding:0 8px;border:1px solid rgba(243,238,228,.14);border-radius:10px;background:#0b0f0f;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:13px}.hc .ic-w .ic-form{margin-top:10px;padding:16px 14px !important;border:0 !important;border-radius:16px;background:#0f1414 !important}.hc .ic-fh .hc-ged-fin{display:flex;gap:10px}.hc .ic-fh .hc-ged-fin .hc-btn-l{flex:1;text-align:center}.hc .ic-fh-l{display:grid;grid-template-columns:76px 1fr 96px 22px;gap:6px;align-items:center}.hc .ic-fh-lib{grid-column:1 / -1}.hc .ic-fh-x{border:0;background:none;color:rgba(243,238,228,.55);font-size:20px;cursor:pointer;padding:0}.hc .ic-fh-plus{align-self:flex-start;border:0;background:none;padding:6px 0;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.hc .ic-fh-n{font-family:Montserrat,sans-serif;font-size:11.5px;color:rgba(243,238,228,.5)}",
+  ".hc .ic-c .ic-billet{display:grid;grid-template-columns:74px 1fr;border-radius:16px;background:#0f1414;overflow:hidden}.hc .ic-c .ic-souche{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px dashed rgba(243,238,228,.18);background:#121919}.hc .ic-c .ic-souche small{font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,238,228,.55)}.hc .ic-c .ic-souche b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:38px;line-height:1;color:#F3EEE4}.hc .ic-c .ic-bc{padding:16px 16px 14px}.hc .ic-c .ic-lieu{margin-top:0}",
+  ".hc .ic-c .ic-band{display:flex;overflow-x:auto;margin-top:10px;border-radius:16px;background:#0f1414;scrollbar-width:none}.hc .ic-c .ic-band>div{flex:1 0 82px;padding:14px 8px 12px;text-align:center}.hc .ic-c .ic-band>div+div{border-left:1px solid rgba(243,238,228,.08)}.hc .ic-c .ic-band b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;line-height:1;color:#F3EEE4}.hc .ic-c .ic-band small{display:block;margin-top:6px;font-family:Montserrat,sans-serif;font-size:10.5px;line-height:1.25;color:rgba(243,238,228,.55)}",
+  ".hc .ic-c .ic-ronds{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px}.hc .ic-c .ic-ronds button{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:11.5px;line-height:1.25;cursor:pointer}.hc .ic-c .ic-rd{width:52px;height:52px;border-radius:50%;background:#151b1b;display:flex;align-items:center;justify-content:center}.hc .ic-c .ic-ronds button.on .ic-rd{background:#1f2a2a}.hc .ic-c .ic-ronds svg *{stroke:#F3EEE4}",
+  "html.ia-3 .hc-alerte.al2 .hc-inf-a{gap:0;border:1px solid rgba(243,238,228,.14);border-radius:999px;overflow:hidden}html.ia-3 .hc-alerte.al2 .hc-ia{flex-direction:row;min-height:40px;border-radius:0;background:none;gap:6px;font-size:12px}html.ia-3 .hc-alerte.al2 .hc-ia+.hc-ia{border-left:1px solid rgba(243,238,228,.14)}html.ia-3 .hc-alerte.al2 .hc-ia svg{width:15px;height:15px}html.ia-3 .hc-alerte.al2 .hc-ia.on{background:#151b1b}",
   "html.alr-5 .hc-alerte.al2{background:none;border:0;padding:0}html.alr-5 .hc-alerte.al2 .al-t{font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:26px;font-weight:500;border-bottom:0;padding:0 0 10px}html.alr-5 .hc-alerte.al2 .al-i{grid-template-columns:64px minmax(0,1fr);gap:0;margin-bottom:10px;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:14px;background:#0e1212;overflow:hidden}html.alr-5 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.12)}html.alr-5 .hc-alerte.al2 .al-n{align-self:stretch;border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 0}html.alr-5 .hc-alerte.al2 .al-c{padding:12px 14px}",
   "html.alr-6 .hc-alerte.al2 .al-i{grid-template-columns:1fr;padding:10px 0}html.alr-6 .hc-alerte.al2 .al-n{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:4px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em}html.alr-6 .hc-alerte.al2 .al-n small{font-size:12px;letter-spacing:.06em;margin:0;color:inherit}html.alr-6 .hc-alerte.al2 .al-c{flex-direction:row;flex-wrap:wrap;column-gap:8px;row-gap:2px;align-items:baseline}html.alr-6 .hc-alerte.al2 .al-l1{flex-basis:100%;font-size:15px}html.alr-6 .hc-alerte.al2 .al-l2{font-size:15px}html.alr-6 .hc-alerte.al2 .al-l3:before{content:'· '}html.alr-6 .hc-alerte.al2 .al-tag{flex-basis:auto;margin-top:2px}",
   "html.alr-7 .hc-alerte.al2{border:0;border-top:1px solid var(--al,#C9A66B);border-bottom:1px solid var(--al,#C9A66B);border-radius:0;background:none;padding:2px 0 6px}html.alr-7 .hc-alerte.al2 .al-t{justify-content:center;gap:12px;border-bottom:0;font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:24px;font-weight:500}html.alr-7 .hc-alerte.al2 .al-i{border-top:1px solid rgba(243,238,228,.07)}html.alr-7 .hc-alerte.al2 .al-n{font-size:34px}",
@@ -1345,7 +1397,7 @@ var HS_IMG_LOTS_CH = ["images/concours-carte-medias.webp", "images/galop1-hero-b
 /* 13/11 12h16 (Blandine : « Mets D que je vois si ça passe ») : listes des passages en visuel D (petite vignette photo à côté du nom).
    Les autres visuels restent essayables : classe rcv-a, -b, -c, -e … -i sur <html>. */
 try { var _rcR = document.documentElement; if (!/\brcv-/.test(_rcR.className)) _rcR.classList.add("rcv-n");   /* 13/11 12h50 : choix N de Blandine */ if (!/\brcp-/.test(_rcR.className)) _rcR.classList.add("rcp-1");   /* 13/11 13h05 : par cavalier / par cheval, nom à gauche et petit rond à droite */
-  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-5");   /* 13/11 13h09 : encadré du jury en « tickets » (choix de Blandine) */ if (!/\bbtn-/.test(_rcR.className)) _rcR.classList.add("btn-3"); if (!/\bpv-/.test(_rcR.className)) _rcR.classList.add("pv-3");   /* 13/11 13h39 : Par épreuve / cavalier / cheval sur fond sombre (choix 3) */   /* 13/11 13h26 : boutons de la coach sur fond sombre, sans cadre (choix 3) */ } catch (eRcv) { }
+  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-5");   /* 13/11 13h09 : encadré du jury en « tickets » (choix de Blandine) */ if (!/\bbtn-/.test(_rcR.className)) _rcR.classList.add("btn-3"); if (!/\bpv-/.test(_rcR.className)) _rcR.classList.add("pv-3"); if (!/\bic-/.test(_rcR.className)) { _rcR.classList.add("ic-e"); _rcR.classList.add("ice-3"); }   /* 13/11 16h47 (Blandine : « E3 ») : encart du concours en faire-part compact, heures au fil du texte */   /* 13/11 13h39 : Par épreuve / cavalier / cheval sur fond sombre (choix 3) */   /* 13/11 13h26 : boutons de la coach sur fond sombre, sans cadre (choix 3) */ } catch (eRcv) { }
 /* 13/11 12h55 (Blandine : « j'ai mis Dakota à la place de Dakota ca… tu décomptes comme deux chevaux ») : un nom tapé est ramené
    au cheval connu (même nom sans tenir compte des majuscules, ou début de nom qui ne correspond qu'à un seul cheval) */
 function hsChevalConnu(nom, liste) {
@@ -1359,6 +1411,22 @@ function hsChevalConnu(nom, liste) {
 /* 13/11 : « piste PISTE 1 » devient « piste 1 » */
 /* 13/11 13h27 : « Club 2 Grand Prix » → « Club 2 GP » dans les étiquettes, pour tenir sur une ligne */
 function hsEpCourt(e) { return hsNomEpreuve(e || "").replace(/\bGrand Prix\b/i, "GP"); }
+/* 13/11 16h21 : les horaires du concours tels que le coach les a saisis (embarquement, départ, puis reco / début / autre par épreuve), triés */
+function hsHorairesCoach(ev, eps, F) {
+  var l = [];
+  if (ev.heure_embarquement) l.push({ t: ev.heure_embarquement, l: F("Embarquement") });
+  if (ev.heure_depart) l.push({ t: ev.heure_depart, l: F("Départ") });
+  if (Array.isArray(ev.horaires) && ev.horaires.length) {
+    ev.horaires.forEach(function (x) { if (!x || !x.heure) return; var ep = x.ep ? hsEpCourt(x.ep) : ""; l.push({ t: x.heure, l: x.type === "reco" ? F("Reco") + (ep ? " " + ep : "") : x.type === "debut" ? F("Début") + (ep ? " " + ep : "") : (x.lib || "") + (ep ? " " + ep : "") }); });
+  } else {
+    var un = (eps || []).length === 1 ? hsEpCourt(eps[0]) : "";
+    if (Array.isArray(ev.recos) && ev.recos.length) ev.recos.forEach(function (r) { if (r && r.heure) l.push({ t: r.heure, l: F("Reco") + " " + hsEpCourt(r.ep || "") }); });
+    else if (ev.heure_reco) l.push({ t: ev.heure_reco, l: F("Reco") + (un ? " " + un : "") });
+    if (ev.heure_epreuve) l.push({ t: ev.heure_epreuve, l: F("Début") + (un ? " " + un : "") });
+  }
+  return l.sort(function (a, b) { return hsMinutes(a.t) - hsMinutes(b.t); });
+}
+function hsVille(l) { var t = String(l == null ? "" : l).trim(); if (t.indexOf(",") < 0) return t; var p = t.split(",").map(function (x) { return x.trim(); }).filter(Boolean); return (p[p.length - 1] || "").replace(/^\d{4,5}\s*/, "").trim() || t; }
 function hsPiste(v) { var t = String(v || "").trim(); return "piste " + t.replace(/^piste\s*/i, ""); }
 var HS_IMG_LOTS_EP = ["images/article-cso-saut.webp", "images/article-cso-virage.webp", "images/article-cso-appel.webp", "images/article-cso-tuile.webp"];
 function hsPhotoDe(id) {
@@ -1508,11 +1576,14 @@ function EcranConcours() {
   /* 10/11 06h25 — PAGE D'UN COUPLE (cavalier + cheval) : toutes leurs vidéos de l'équipe, QUEL QUE SOIT LE CONCOURS
      (idée de Blandine « Evan sur Rizotto », maquette validée le 09/11). Chargées à part, du plus récent au plus ancien. */
   var _cpl = React.useState({ k: "", l: null }); var cplD = _cpl[0], setCplD = _cpl[1];
+  var _cpj = React.useState(null); var cplJoue = _cpj[0], setCplJoue = _cpj[1];
+  var _cpu = React.useState(""); var cplUrl = _cpu[0], setCplUrl = _cpu[1];   /* 13/11 16h46 (Blandine : « que la vidéo se lise directement à la page du couple ») */
   /* 10/11 18h10 (Blandine : « la vidéothèque de la Team renvoie vers les pages par cavalier, par cheval et par couple ») :
      ouverte depuis la vidéothèque, la page d'un cavalier / d'un cheval montre TOUTES ses vidéos de l'équipe, tous concours
      et entraînements confondus. Une vidéo n'existe qu'une fois (team_videos) : publiée ou modifiée d'un côté, elle l'est partout. */
   var _msa = React.useState(function () { try { return !!window.__medPageDirect; } catch (e) { return false; } }); var medSaison = _msa[0];
   var cplCle = !medPage || medPage.conc ? "" : medPage.couple ? medPage.cav + "|" + medPage.ch : medSaison ? (medPage.ch ? "h:" : "c:") + medPage.id : "";
+  React.useEffect(function () { setCplJoue(null); setCplUrl(""); }, [cplCle]);   /* changer de couple referme la vidéo en cours */
   React.useEffect(function () {
     if (!cplCle || cplD.k === cplCle || typeof supa === "undefined" || !supa) return;
     var vif = true, l = [], noms = { cav: {}, ch: {} };
@@ -1532,7 +1603,7 @@ function EcranConcours() {
         }
         ids = ids.slice(0, 200);
         if (ids.length) {
-          var r = await supa.from("team_videos").select("id, agenda_id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, privee, cree_le").in("id", ids).order("cree_le", { ascending: false });
+          var r = await supa.from("team_videos").select("id, agenda_id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, privee, sans_son, cree_le").in("id", ids).order("cree_le", { ascending: false });
           if (r && r.data) await hsTvPrivees(r.data);
           var rc = await supa.from("team_videos_cavaliers").select("video_id, user_id").in("video_id", ids);
           var rh = await supa.from("team_videos_chevaux").select("video_id, cheval_id").in("video_id", ids);
@@ -1572,6 +1643,7 @@ function EcranConcours() {
   var _ou = React.useState({}); var ouvert = _ou[0], setOuvert = _ou[1];
   var _io = React.useState(false); var infosOuv = _io[0], setInfosOuv = _io[1];
   var _oem = React.useState(false); var ordreEmbOuv = _oem[0], setOrdreEmbOuv = _oem[1];
+  var _mif = React.useState(false); var modInf = _mif[0], setModInf = _mif[1];
   var _hf = React.useState(null); var horForm = _hf[0], setHorForm = _hf[1];   /* 13/11 : formulaire « Modifier les horaires » (coach) */
   var _hm = React.useState(""); var horMsg = _hm[0], setHorMsg = _hm[1];
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
@@ -1898,7 +1970,7 @@ function EcranConcours() {
       hsCourbe(h, "c2", "M0 92 C 130 90, 240 62, 400 8"),
       h("div", { className: "hs-in" }, h("div", { className: "hs-titre" }, h("h1", { style: String(titre || "").length > 14 ? { fontSize: "clamp(34px,9.5vw,52px)", lineHeight: 1.05 } : null }, titre), sous ? h("p", null, sous) : null)));
   }
-  var sousTitre = ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "";
+  var sousTitre = ev ? [hsPlage(ev), hsVille(ev.lieu)].filter(Boolean).join(" · ") : "";   /* 13/11 15h : la ville seule dans le héros */
   if (!ev) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" }, heroC(F("Concours"), ""), h("div", { className: "hs-in" },
     erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Impossible d’ouvrir ce concours : ") + erreur) : h("div", { className: "hs-attente", "aria-busy": "true" }, "…")));
 
@@ -2931,7 +3003,20 @@ function EcranConcours() {
   function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
   function vignetteDe(x) { if (x && x.bloque) return ""; if (x.video && x.ch && x.ch.length && chPhotos[x.ch[0]]) { var pc = chPhotos[x.ch[0]]; return (typeof vignetteHype === "function") ? vignetteHype(pc, 800, 500) : pc; }   /* 09/11 16h16 (Blandine) : couverture des vidéos = photo du cheval */
     if (x.tv) return x.tv.vignette || (x.tv.video_mux_id ? "https://image.mux.com/" + x.tv.video_mux_id + "/thumbnail.jpg?width=640&fit_mode=preserve" : hsVignetteVideo(x.tv.media)); if (x.video) return hsVignetteVideo(x.url); return (typeof grandeImageHype === "function") ? grandeImageHype(x.url, 900) : x.url; }
+  async function lireDansCouple(x) {
+    setCplJoue(x); setCplUrl("");
+    try { var dfl = document.getElementById("hcp-defile"); if (dfl) dfl.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { }
+    try {
+      var adr = "";
+      if (x.tv) { var r = await supa.rpc("team_video_lecture", { p_id: x.tv.id }); adr = r && !r.error && r.data ? String(r.data) : ""; }
+      else adr = String(x.url || "");
+      if (!adr) throw new Error("adr");
+      setCplUrl(/^mux:/.test(adr) ? "https://stream.mux.com/" + adr.replace(/^mux:/, "") + ".m3u8" : adr);
+    } catch (e) { setCplJoue(null); ouvrirMedia(Object.assign({}, x, { __page: true })); }
+  }
   function ouvrirMedia(x) {
+    /* 13/11 17h25 (Blandine : « 1 ») : dans la page du couple, la vidéo se lit en haut de la page, à la place du grand cheval */
+    if (x && x.video && !x.bloque && medPage && medPage.couple && !x.__page) { lireDansCouple(x); return; }
     if (x && x.bloque) { setMedMsg("\uD83D\uDD12 " + F("Cette vidéo est privée : seuls le cavalier et son coach peuvent la voir.")); setTimeout(function () { setMedMsg(""); }, 3500); return; }
     if (x.tv) { ouvrirVideo(x.tv); return; }
     if (x.video && /^mux:/.test(x.url)) { try { window.__videoParcours = { media: x.url, proprio: x.auteur, pseudo: (medG.auteurs || {})[x.auteur] || "", agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); return; }
@@ -3495,7 +3580,27 @@ function EcranConcours() {
         ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 170, 170) : ph, alt: "", loading: "lazy" }) : h("b", null, String(nm || "?").charAt(0).toUpperCase()),
         h("i", null, nm));
     }
-    var corpsPg = h("div", { className: "hpv-in" },
+    var cvV = pgCpl ? "1" : "";
+    var cvX = (cvV && cplJoue && pgL.indexOf(cplJoue) !== -1) ? cplJoue : (cvV && cplJoue ? pgL.filter(function (x) { return x.cle === cplJoue.cle; })[0] : null);
+    function cvCadre(x) {
+      if (cplUrl) {
+        var sansSon = !!(x.tv && x.tv.sans_son);
+        var vEl = h("video", { key: "v" + cplUrl, src: cplUrl, poster: apercu(x, 1400) || undefined, controls: true, playsInline: true, autoPlay: true, muted: sansSon, style: { position: "absolute", inset: 0, width: "100%", height: "100%", background: "#000" } });
+        return h("div", { className: "cv-f" }, (/stream\.mux\.com\//.test(cplUrl) && typeof HypeLecteurMuxTest === "function") ? h(HypeLecteurMuxTest, { key: "m" + cplUrl, src: cplUrl, sansPleinEcranAuto: true, sansSon: sansSon, repli: vEl }) : vEl);
+      }
+      return h("div", { className: "cv-f" }, vrImg(x, 1400), h("i", { className: "vr-play cv-play cv-att", "aria-hidden": "true" }, h("b", null)), (x.video && dureeTxt(x.duree)) ? h("i", { className: "vr-d" }, dureeTxt(x.duree)) : null);
+    }
+    function cvInfos(x, ferme) {
+      var dt = ""; try { dt = new Date(String(x.date || "").slice(0, 10) + "T12:00:00").toLocaleDateString(lg || "fr", { day: "numeric", month: "long" }); } catch (e) { }
+      return h("div", { className: "cv-i" },
+        h("div", { className: "cv-m" }, h("b", null, x.epreuve || F("Parcours")), h("span", null, [x.tv && x.tv.resultat, dt].filter(Boolean).join(" · ")), ferme ? h("button", { type: "button", className: "cv-x", "aria-label": F("Fermer"), onClick: function () { setCplJoue(null); } }, "×") : null),
+        h("div", { className: "cv-a" },
+          /* l'analyse Hey Baby reste dans la page de lecture d'une vidéo, qui la propose déjà */
+          h("button", { type: "button", onClick: function () { ouvrirMedia(Object.assign({}, x, { __page: true })); } }, "\u2726 " + F("Analyser avec Hey Baby")),
+          pgB.length ? h("button", { type: "button", onClick: function () { try { var el = document.getElementById("cv-photos"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } }, F("Photo du couple")) : null));
+    }
+    var corpsPg = h("div", { className: "hpv-in" + (cvV === "1" && cvX ? " cv1-on" : "") },
+      (cvV === "1" && cvX) ? h("div", { className: "cv1" }, cvCadre(cvX)) : null,
       h("div", { className: "hpv-scene" },
         h("div", { className: "hpv-photo fond" }, h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype("images/galop1-hero-bai.webp", 1400) : "images/galop1-hero-bai.webp", alt: "" })),
         h("button", { type: "button", className: "hpv-rond hpv-retour", onClick: function () { if (pgSa) { pgVersVt(); return; } if (pgConc) setOngletC(""); setMedPage(null); setMedPgSel(null); }, "aria-label": F("Retour") },
@@ -3539,6 +3644,7 @@ function EcranConcours() {
         pgConc ? h("div", { className: "vr" }, vrPrincipal(true)) : h("div", { className: "vr" },
         pgSa ? null : vrCourbe(1, "pc1"),   /* 09/11 23h47 (Blandine : « baisse le titre Vidéos, il est collé ») : courbe dorée comme sur la page Médias */
         !pgL.length ? h("div", { className: "hs-note hc-md-vide" }, ((pgCpl || pgSa) && cplD.k !== cplCle) ? "…" : pgSa ? F("Pas encore de vidéo.") : F("Pas encore de média sur ce concours.")) : null,
+        (cvV === "1" && cvX) ? cvInfos(cvX, true) : null,
         pgBig ? h("div", { key: "a" },
           pgTitre(pgV.length ? F("Vidéos") : F("Photos"), pgA.length, false),
           rcTel ? rythmeCompact("pg" + medPage.id + (medPage.ch ? "c" : "v"), pgA) : rcOrdi ? galerieEscalier("pg" + medPage.id + (medPage.ch ? "c" : "v"), pgA) : [
@@ -3547,7 +3653,7 @@ function EcranConcours() {
             pgRest.length ? h("div", { className: "vr-ronds" }, pgRest.slice(0, 3).map(function (x) { return h("button", { key: x.cle, type: "button", onClick: function () { setMedPgSel(x.cle); }, "aria-label": F("Afficher ce média") }, vrImg(x, 240)); })) : null),
           pgRest.length > 3 ? h("div", { className: "vr-rang vr-deroule" }, (pgTout ? pgRest.slice(3) : pgRest.slice(3, 6)).map(function (x) { return vrCase(x, "vr-p", 600); })) : null,
           pgRest.length > 6 ? h("button", { type: "button", className: "vr-voir", onClick: function () { setPgTout(!pgTout); } }, pgTout ? F("Réduire") : F("Voir les autres") + " (" + (pgRest.length - 6) + ")", h("i", { "aria-hidden": "true" }, pgTout ? "⌃" : "⌄")) : null]) : null,
-        pgB.length ? h("div", { key: "b" },
+        pgB.length ? h("div", { key: "b", id: "cv-photos" },
           pgTitre(F("Photos"), pgB.length, true),
           rcTel ? rythmeCompact("pgp" + medPage.id + (medPage.ch ? "c" : "v"), pgB) : rcOrdi ? galerieEscalier("pgp" + medPage.id + (medPage.ch ? "c" : "v"), pgB) : h("div", { className: "vr-eq", "data-hscroll": "1" }, pgB.map(function (x) { return vrCase(x, "vr-e", 600); }))) : null,
         h("div", { className: "vr-filet" })),
@@ -3712,7 +3818,15 @@ function EcranConcours() {
   function ouvrirHoraires() {
     var eps = parEpreuve.map(function (g) { return g.ep; }), anc = Array.isArray(ev.recos) ? ev.recos : [];
     setHorMsg("");
-    setHorForm({ emb: versInput(ev.heure_embarquement), dep: versInput(ev.heure_depart), epr: versInput(ev.heure_epreuve), reco: versInput(ev.heure_reco),
+    /* 13/11 16h21 : liste libre d'horaires (reco / début / autre, par épreuve) que le coach complète à volonté */
+    var lH = Array.isArray(ev.horaires) && ev.horaires.length ? ev.horaires.map(function (x) { return { type: x.type || "autre", ep: x.ep || "", lib: x.lib || "", heure: versInput(x.heure) }; }) : [];
+    if (!lH.length) {
+      if (anc.length) anc.forEach(function (r) { if (r && r.heure) lH.push({ type: "reco", ep: r.ep || "", lib: "", heure: versInput(r.heure) }); });
+      else if (ev.heure_reco) lH.push({ type: "reco", ep: eps.length === 1 ? eps[0] : "", lib: "", heure: versInput(ev.heure_reco) });
+      if (ev.heure_epreuve) lH.push({ type: "debut", ep: eps.length === 1 ? eps[0] : "", lib: "", heure: versInput(ev.heure_epreuve) });
+      if (!lH.length) eps.forEach(function (ep) { lH.push({ type: "reco", ep: ep, lib: "", heure: "" }); lH.push({ type: "debut", ep: ep, lib: "", heure: "" }); });
+    }
+    setHorForm({ l: lH, emb: versInput(ev.heure_embarquement), dep: versInput(ev.heure_depart), epr: versInput(ev.heure_epreuve), reco: versInput(ev.heure_reco),
       recos: eps.length > 1 ? eps.map(function (ep) { var a = anc.filter(function (r) { return r && r.ep === ep; })[0]; return { ep: ep, heure: versInput(a ? a.heure : (anc.length ? "" : ev.heure_reco)) }; }) : null });
   }
   async function enregistrerHoraires() {
@@ -3765,6 +3879,41 @@ function EcranConcours() {
       try { var u = URL.createObjectURL(new Blob([texte], { type: "text/calendar" })); var a = document.createElement("a"); a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove(); }
       catch (eB) { setHorMsg(F("Ton téléphone n’a pas accepté le fichier d’agenda. Ouvre Hype dans Safari et réessaie.")); }
     } catch (eA) { setHorMsg(F("Erreur : ") + String((eA && eA.message) || eA)); }
+  }
+  async function enregistrerHoraires2() {
+    var f = horForm; if (!f) return;
+    var l = (f.l || []).filter(function (x) { return x.heure; }).map(function (x) { return { type: x.type, ep: x.ep || null, lib: x.type === "autre" ? (x.lib || "").trim() : null, heure: depuisInput(x.heure) }; });
+    var recos = l.filter(function (x) { return x.type === "reco"; }).map(function (x) { return { ep: x.ep || "", heure: x.heure }; });   /* les rappels 15 min avant continuent de partir */
+    var deb = l.filter(function (x) { return x.type === "debut"; }).map(function (x) { return x.heure; }).sort(function (a, b) { return hsMinutes(a) - hsMinutes(b); })[0] || null;
+    var upd = { heure_embarquement: depuisInput(f.emb) || null, heure_depart: depuisInput(f.dep) || null, horaires: l.length ? l : null, recos: recos.length ? recos : null, heure_reco: null, heure_epreuve: deb };
+    try {
+      var r = await supa.from("club_agenda").update(upd).eq("id", idEv).select("id");
+      if (r && r.error) { setHorMsg(F("Erreur : ") + (r.error.message || "")); return; }
+      if (!r || !r.data || !r.data.length) { setHorMsg(F("Erreur : ") + "—"); return; }
+    } catch (e) { setHorMsg(F("Erreur : ") + String((e && e.message) || e)); return; }
+    setEv(Object.assign({}, ev, upd)); setHorForm(null); setHorMsg(F("Horaires enregistrés."));
+  }
+  /* 13/11 16h21 (Blandine : « il faut qu'ils puissent ajouter d'autres cases… l'heure de reco, l'heure de début d'épreuve, pour chaque épreuve ») */
+  function formHoraires2() {
+    var f = horForm, eps = parEpreuve.map(function (g) { return g.ep; });
+    function maj(i, cle, v) { setHorForm(Object.assign({}, f, { l: f.l.map(function (x, j) { if (j !== i) return x; var n = Object.assign({}, x); n[cle] = v; return n; }) })); }
+    function champ(lib, cle) { return h("label", { className: "ic-fh-c" }, h("span", null, lib), h("input", { type: "time", value: f[cle] || "", onChange: function (e) { var n = Object.assign({}, f); n[cle] = e.target.value; setHorForm(n); } })); }
+    return h("div", { className: "ic-fh" },
+      h("div", { className: "ic-fh-2" }, champ(F("Embarquement"), "emb"), champ(F("Départ"), "dep")),
+      h("div", { className: "ic-fh-t" }, F("Par épreuve")),
+      (f.l || []).map(function (x, i) {
+        return h("div", { key: i, className: "ic-fh-l" },
+          h("select", { value: x.type, onChange: function (e) { maj(i, "type", e.target.value); } }, h("option", { value: "reco" }, F("Reco")), h("option", { value: "debut" }, F("Début")), h("option", { value: "autre" }, F("Autre"))),
+          h("select", { value: x.ep || "", onChange: function (e) { maj(i, "ep", e.target.value); } }, h("option", { value: "" }, "—"), eps.map(function (ep) { return h("option", { key: ep, value: ep }, hsEpCourt(ep)); })),
+          h("input", { type: "time", value: x.heure || "", onChange: function (e) { maj(i, "heure", e.target.value); } }),
+          h("button", { type: "button", className: "ic-fh-x", "aria-label": F("Retirer"), onClick: function () { setHorForm(Object.assign({}, f, { l: f.l.filter(function (y, j) { return j !== i; }) })); } }, "×"),
+          x.type === "autre" ? h("input", { type: "text", className: "ic-fh-lib", placeholder: F("Quoi ? (ex. remise des prix)"), value: x.lib || "", onChange: function (e) { maj(i, "lib", e.target.value); } }) : null);
+      }),
+      h("button", { type: "button", className: "ic-fh-plus", onClick: function () { setHorForm(Object.assign({}, f, { l: (f.l || []).concat([{ type: "reco", ep: eps.length === 1 ? eps[0] : "", lib: "", heure: "" }]) })); } }, "+ " + F("Ajouter un horaire")),
+      h("div", { className: "ic-fh-n" }, F("Une alerte part 15 min avant chaque reco, aux cavaliers de l’épreuve.")),
+      h("div", { className: "hc-ged-fin", style: { marginTop: 6 } },
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { setHorForm(null); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l", onClick: enregistrerHoraires2 }, F("Enregistrer"))));
   }
   function formHoraires() {
     var f = horForm;
@@ -3859,7 +4008,7 @@ function EcranConcours() {
               h("span", { className: "al-l3" }, [hsNomEpreuve(p.epreuve || ""), p.passage].filter(Boolean).join(" · ")),
               tag ? h("span", { className: "al-tag" + (tagOk ? " ok" : "") }, tag) : null));
         }
-        return h("div", { key: "jury", className: "hc-alerte al2", role: "status" },
+        return h("div", { key: "jury", className: "hc-jury-w" }, h("div", { className: "hc-alerte al2", role: "status" },
           h("div", { className: "al-t" }, h("span", null, F("À déclarer au jury")), h("i", null, String(nbT))),
           l.map(function (p, i) {
             var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
@@ -3884,7 +4033,7 @@ function EcranConcours() {
               lnp.map(function (p, i) {
                 var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
                 return h("span", { key: i, className: "al-npl" }, h("b", null, (p.ordre_passage ? F("N° ") + p.ordre_passage : "–") + " · " + (ch || "?")), " · " + qui + (p.epreuve ? " · " + hsEpCourt(p.epreuve) : ""));
-              }))) : null);
+              }))) : null));
       })();
   return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
     heroC(ev.titre || F("Concours"), sousTitre),
@@ -3913,30 +4062,7 @@ function EcranConcours() {
           var reco = r ? r.heure : (parEpreuve.length === 1 ? ev.heure_reco : "");
           return { ep: hsEpCourt(g.ep), reco: reco, debut: ps[0] || (parEpreuve.length === 1 ? ev.heure_epreuve : "") };
         }).filter(function (x) { return x.reco || x.debut; });
-        return h("div", { className: "hc-infos-w" },
-          h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))),
-          h("div", { className: "hc-alerte al2 hc-infos" },
-            h("div", { className: "al-i" },
-              h("span", { className: "al-n" }, h("small", null, mois || ""), jour || "–"),
-              h("span", { className: "al-c" },
-                h("span", { className: "al-l1" }, h("b", null, ev.lieu || F("Lieu pas encore indiqué"))),
-                gen.length ? h("span", { className: "hc-inf-h" }, gen.map(function (x, i) { return h("span", { key: i }, h("small", null, x[0]), h("b", null, x[1])); })) : null,
-                parE.length ? h("span", { className: "hc-inf-ep" }, parE.map(function (x, i) { return h("span", { key: i }, h("i", null, x.ep), x.reco ? h("span", null, F("reco ") + x.reco) : null, x.debut ? h("span", null, F("1er passage ") + x.debut) : null); })) : null,
-                (!gen.length && !parE.length) ? h("span", { className: "al-l3" }, F("Les horaires ne sont pas encore indiqués.")) : null,
-                h("span", { className: "hc-inf-a" },
-                  gMaps ? h("a", { className: "al-tag", href: gMaps, target: "_blank", rel: "noopener" }, F("Itinéraire") + " ›") : null,
-                  !fini ? h("button", { type: "button", className: "al-tag ok", onClick: ajouterAgenda }, F("Ajouter à mon agenda")) : null,
-                  gestion ? h("button", { type: "button", className: "al-tag ok", onClick: modifierRdv }, F("Modifier l’adresse")) : null,
-                  gestion ? h("button", { type: "button", className: "al-tag ok", onClick: function () { if (horForm) setHorForm(null); else ouvrirHoraires(); } }, F("Modifier les horaires")) : null),
-                horForm ? formHoraires() : null,
-                horMsg ? h("span", { className: "al-l3" }, horMsg) : null)),
-            /* 13/11 13h42 (Blandine : « insérer dans l'encart les boutons sombres Tu participes, Liste du van ») */
-            h("div", { className: "hc-actions hc-act-in" },
-              h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
-              h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van")),
-              /* 13/11 13h45 (Blandine : « rajoute le troisième bouton ordre d'embarquement ») : les chevaux dans l'ordre de leur 1er passage */
-              h("button", { type: "button", className: "hc-act" + (ordreEmbOuv ? " on" : ""), onClick: function () { setOrdreEmbOuv(!ordreEmbOuv); } }, hcIcone("heure"), F("Ordre d’embarquement"))),
-            ordreEmbOuv ? (function () {
+        var panOrdreEmb = function () { return (function () {
               var vus = {}, l = [];
               (passagesEq || []).filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) {
                 var ch = p.cheval_brut || p.cheval_nom; if (!ch || vus[ch.toLowerCase()]) return; vus[ch.toLowerCase()] = 1;
@@ -3949,7 +4075,165 @@ function EcranConcours() {
                 l.length ? l.map(function (x, i) { return h("div", { key: i, className: "hc-emb-l" }, h("span", { className: "n" }, String(i + 1)), h("span", null, h("b", null, x.ch), " · " + x.qui)); })   /* 13/11 14h12 (Blandine) : sans les heures de passage, pour ne pas embrouiller */
                   : h("div", { className: "al-l3" }, F("Pas encore d’ordre de passage.")),
                 h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")));
-            })() : null,
+            })(); };
+        /* 13/11 16h14 (Blandine : « la présentation du concours, tu peux faire mieux que ça ») : propositions A / B / C */
+        var vIC = (function () { var m = (document.documentElement.className || "").match(/\bic-([a-f])\b/g); return m ? m[m.length - 1].slice(3) : ""; })();
+        if (vIC) {
+          var jourL = "";
+          if (/^\d{4}-\d{2}-\d{2}$/.test(d)) { try { jourL = new Date(d + "T12:00:00").toLocaleDateString(lg || "fr", { weekday: "long", day: "numeric", month: "long" }); jourL = jourL.charAt(0).toUpperCase() + jourL.slice(1); } catch (eJ) { jourL = ""; } }
+          var lp = String(ev.lieu || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+          var lieuNom = lp[0] || F("Lieu pas encore indiqué"), lieuAdr = lp.slice(1).join(", ");
+          var tl = [];
+          gen.forEach(function (x) { tl.push({ t: x[1], l: x[0] }); });
+          parE.forEach(function (x) { if (x.reco) tl.push({ t: x.reco, l: F("Reco") + " · " + x.ep }); if (x.debut) tl.push({ t: x.debut, l: x.ep, s: F("1er passage") }); });
+          tl.sort(function (a, b) { return hsMinutes(a.t) - hsMinutes(b.t); });
+          var svgI = function (dP) { return h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: dP, fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" })); };
+          var P_LIEU = "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21zM12 12.2a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2z", P_AG = "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4", P_MOD = "M4 20h4L19 9l-4-4L4 16v4z";
+          var crayon = gestion ? h("button", { type: "button", className: "ic-crayon" + (modInf ? " on" : ""), "aria-label": F("Modifier"), onClick: function () { setModInf(!modInf); } }, svgI(P_MOD)) : null;
+          var panMod = h(React.Fragment, null,
+            (gestion && modInf) ? h("div", { className: "ic-mod" },
+              h("button", { type: "button", onClick: function () { setModInf(false); modifierRdv(); } }, F("L’adresse") + " ›"),
+              h("button", { type: "button", onClick: function () { setModInf(false); if (horForm) setHorForm(null); else ouvrirHoraires(); } }, F("Les horaires") + " ›")) : null,
+            horForm ? h("div", { className: "hc-alerte al2 ic-form" }, formHoraires2()) : null,
+            horMsg ? h("div", { className: "ic-msg" }, horMsg) : null);
+          var liens = h("div", { className: "ic-liens" },
+            gMaps ? h("a", { href: gMaps, target: "_blank", rel: "noopener" }, svgI(P_LIEU), h("span", null, F("Itinéraire"))) : null,
+            !fini ? h("button", { type: "button", onClick: ajouterAgenda }, svgI(P_AG), h("span", null, F("Ajouter à l’agenda"))) : null);
+          var actJ = { k: "j", ic: "ok", t: jeViens ? F("Tu participes") : F("Je participe"), on: jeViens, dis: occupe || fini, f: fini ? undefined : basculerJeViens };
+          var actV = { k: "v", ic: "van", t: F("Liste du van"), f: function () { prep("liste-van"); } };
+          var actE = { k: "e", ic: "heure", t: F("Ordre d’embarquement"), on: ordreEmbOuv, f: function () { setOrdreEmbOuv(!ordreEmbOuv); } };
+          var horairesVides = !tl.length ? h("div", { className: "ic-vide" }, F("Les horaires ne sont pas encore indiqués.")) : null;
+          var corps;
+          if (vIC === "a") {
+            /* A — Le programme de la journée : date, lieu, puis une ligne de temps */
+            corps = h("div", { className: "ic-a" },
+              h("div", { className: "ic-tete" }, h("div", null, h("div", { className: "ic-date" }, jourL || "–"), h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null), crayon),
+              liens, panMod,
+              tl.length ? h("div", { className: "ic-tl" }, tl.map(function (x, i) { return h("div", { key: i, className: "ic-tl-l" }, h("span", { className: "ic-t" }, x.t), h("span", { className: "ic-pt" }), h("span", { className: "ic-x" }, h("b", null, x.l), x.s ? h("small", null, x.s) : null)); })) : horairesVides,
+              h("div", { className: "ic-barre" }, [actJ, actV, actE].map(function (a) { return h("button", { key: a.k, type: "button", className: a.on ? "on" : "", disabled: a.dis, onClick: a.f }, hcIcone(a.ic), h("span", null, a.t)); })));
+          } else if (vIC === "b") {
+            /* B — Les grandes heures : deux grands chiffres, les épreuves, puis une liste d'actions */
+            corps = h("div", { className: "ic-b" },
+              h("div", { className: "ic-tete" }, h("div", null, h("div", { className: "ic-date" }, jourL || "–"), h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null), crayon),
+              liens, panMod,
+              gen.length ? h("div", { className: "ic-gh" }, gen.map(function (x, i) { return h("div", { key: i }, h("b", null, x[1]), h("small", null, x[0])); })) : null,
+              parE.length ? h("div", { className: "ic-eps" }, parE.map(function (x, i) { return h("div", { key: i }, h("b", null, x.ep), h("span", null, [x.reco ? F("Reco") + " " + x.reco : null, x.debut ? F("1er passage") + " " + x.debut : null].filter(Boolean).join("  ·  "))); })) : null,
+              (!gen.length && !parE.length) ? horairesVides : null,
+              h("div", { className: "ic-liste" }, [actJ, actV, actE].map(function (a) { return h("button", { key: a.k, type: "button", className: a.on ? "on" : "", disabled: a.dis, onClick: a.f }, hcIcone(a.ic), h("span", null, a.t), h("i", null, a.k === "j" ? (a.on ? "✓" : "") : "›")); })));
+          } else if (vIC === "d" || vIC === "e" || vIC === "f") {
+            var hcL = hsHorairesCoach(ev, parEpreuve.map(function (g) { return g.ep; }), F);
+            var sousT = [jourL, hsVille(ev.lieu)].filter(Boolean).join(" · ");
+            var ronds = h("div", { className: "ic-ronds" }, [actJ, actV, actE].map(function (a) { return h("button", { key: a.k, type: "button", className: a.on ? "on" : "", disabled: a.dis, onClick: a.f }, h("span", { className: "ic-rd" }, hcIcone(a.ic)), h("span", null, a.t)); }));
+            var fin = h(React.Fragment, null, ordreEmbOuv ? panOrdreEmb() : null, fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
+            if (vIC === "d") {
+              /* D — Comme l'organisation du paddock : deux cartes, « Le lieu » puis « Le programme » (grande heure de départ à gauche) */
+              var grand = ev.heure_depart ? { t: ev.heure_depart, l: F("Départ") } : (hcL[0] || null);
+              var reste = hcL.filter(function (x) { return !grand || x.t !== grand.t || x.l !== grand.l; });
+              corps = h("div", { className: "ic-d" },
+                h("div", { className: "ic-sous" }, sousT), crayon ? h("div", { className: "ic-cr-c" }, crayon) : null, panMod,
+                h("div", { className: "ic-carte" },
+                  h("div", { className: "ic-ct" }, F("Le lieu")),
+                  h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null, liens),
+                h("div", { className: "ic-carte ic-prog" },
+                  h("div", { className: "ic-ct" }, F("Le programme")),
+                  hcL.length ? h("div", { className: "ic-pg" },
+                    grand ? h("div", { className: "ic-pg-g" }, h("small", null, grand.l), h("b", null, grand.t)) : null,
+                    h("div", { className: "ic-pg-l" }, reste.map(function (x, i) { return h("div", { key: i }, h("i", null, x.t), h("span", null, x.l)); }))) : horairesVides),
+                ronds, fin);
+            } else if (vIC === "e") {
+              /* E — Le faire-part : une seule carte encadrée, tout centré, comme une invitation */
+              var orn = h("div", { className: "ic-orn", "aria-hidden": "true" }, h("span"), h("i"), h("span"));
+              /* 13/11 16h44 (Blandine : « E mais on saurait plus compacter… plusieurs propositions ») : ice-1 (2 colonnes), ice-2 (lignes de 3), ice-3 (au fil du texte) */
+              var vE = ((document.documentElement.className || "").match(/\bice-([123])\b/) || [])[1] || "";
+              if (vE) {
+                var parL = vE === "1" ? 2 : 3, nbL = Math.ceil(hcL.length / parL), baseL = Math.floor(hcL.length / (nbL || 1)), plusL = hcL.length % (nbL || 1), rgE = [], kE = 0;
+                for (var rE = 0; rE < nbL; rE++) { var tE = vE === "1" ? 2 : baseL + (rE < plusL ? 1 : 0); rgE.push(hcL.slice(kE, kE + tE)); kE += tE; }
+                corps = h("div", { className: "ic-e ice ice-v" + vE },
+                  h("div", { className: "ic-fp" },
+                    crayon ? h("div", { className: "ic-cr-a" }, crayon) : null,
+                    h("div", { className: "ic-date" }, jourL || "–"),
+                    h("div", { className: "ic-lieu" }, lieuNom + (lieuAdr ? " · " + hsVille(ev.lieu) : "")),
+                    liens,
+                    orn,
+                    hcL.length ? (vE === "3"
+                      ? h("div", { className: "ic-fil" }, hcL.map(function (x, i) { return h("span", { key: i }, h("i", null, x.t), " " + x.l); }))
+                      : h("div", { className: "ic-rgs" }, rgE.map(function (rg, ri) { return h("div", { key: ri, className: "ic-rge" }, rg.map(function (x, i) { return h("div", { key: i }, h("i", null, x.t), h("span", null, x.l)); })); }))) : horairesVides),
+                  panMod,
+                  ronds, fin);
+                return h("div", { className: "hc-infos-w ic-w" }, h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))), corps);
+              }
+              corps = h("div", { className: "ic-e" },
+                crayon ? h("div", { className: "ic-cr-c" }, crayon) : null, panMod,
+                h("div", { className: "ic-fp" },
+                  h("div", { className: "ic-ct" }, F("Le concours")),
+                  h("div", { className: "ic-date" }, jourL || "–"),
+                  orn,
+                  h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null, liens,
+                  hcL.length ? h(React.Fragment, null, h("div", { className: "ic-ct ic-ct2" }, F("Le programme")),
+                    h("div", { className: "ic-fp-l" }, hcL.map(function (x, i) { return h("div", { key: i }, h("i", null, x.t), h("span", null, x.l)); }))) : horairesVides),
+                ronds, fin);
+            } else {
+              /* F — Comme les règles du paddock : icône dorée, titre, et une liste claire avec de petits pictos */
+              var pic = function (dP) { return h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: dP, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })); };
+              corps = h("div", { className: "ic-f" },
+                h("div", { className: "ic-sous" }, sousT), crayon ? h("div", { className: "ic-cr-c" }, crayon) : null, panMod,
+                h("div", { className: "ic-rg-c" },
+                  h("div", { className: "ic-rg-i" }, pic(P_LIEU), h("div", null, h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null, liens)),
+                  hcL.length ? hcL.map(function (x, i) { return h("div", { key: i, className: "ic-rg-i ic-rg-h" }, pic("M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17zM12 7.5V12l3 2"), h("div", null, h("b", null, x.t), h("span", null, x.l))); }) : horairesVides),
+                ronds, fin);
+            }
+          } else {
+            /* C — Le billet : souche avec la date, horaires en bandeau, puis une rangée de ronds */
+            corps = h("div", { className: "ic-c" },
+              h("div", { className: "ic-billet" },
+                h("div", { className: "ic-souche" }, h("small", null, mois), h("b", null, jour || "–")),
+                h("div", { className: "ic-bc" }, h("div", { className: "ic-tete" }, h("div", null, h("div", { className: "ic-lieu" }, lieuNom), lieuAdr ? h("div", { className: "ic-adr" }, lieuAdr) : null), crayon), liens)),
+              panMod,
+              /* 13/11 16h21 (Blandine : « les horaires, tu laisses rentrer par le coach… reco 8h, reco 9h… ajouter d'autres cases…
+                 s'il y en a 4, 2 et 2… rééquilibrer ») : seules les heures saisies par le coach, rangées en lignes équilibrées (3 au plus par ligne) */
+              (function () {
+                var hc = hsHorairesCoach(ev, parEpreuve.map(function (g) { return g.ep; }), F);
+                if (!hc.length) return horairesVides;
+                var n = hc.length, nl = Math.ceil(n / 3), base = Math.floor(n / nl), plus = n % nl, rangs = [], k = 0;
+                for (var r = 0; r < nl; r++) { var t = base + (r < plus ? 1 : 0); rangs.push(hc.slice(k, k + t)); k += t; }
+                return h("div", { className: "ic-band" }, rangs.map(function (rg, ri) { return h("div", { key: ri, className: "ic-rg" }, rg.map(function (x, i) { return h("div", { key: i }, h("b", null, x.t), h("small", null, x.l)); })); }));
+              })(),
+              h("div", { className: "ic-ronds" }, [actJ, actV, actE].map(function (a) { return h("button", { key: a.k, type: "button", className: a.on ? "on" : "", disabled: a.dis, onClick: a.f }, h("span", { className: "ic-rd" }, hcIcone(a.ic)), h("span", null, a.t)); })),
+              ordreEmbOuv ? panOrdreEmb() : null,
+              fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
+          }
+          return h("div", { className: "hc-infos-w ic-w" },
+            h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))),
+            corps);
+        }
+        return h("div", { className: "hc-infos-w" },
+          h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))),
+          h("div", { className: "hc-alerte al2 hc-infos" },
+            h("div", { className: "al-i" },
+              h("span", { className: "al-n" }, h("small", null, mois || ""), jour || "–"),
+              h("span", { className: "al-c" },
+                h("span", { className: "al-l1" }, h("b", null, ev.lieu || F("Lieu pas encore indiqué"))),
+                gen.length ? h("span", { className: "hc-inf-h" }, gen.map(function (x, i) { return h("span", { key: i }, h("small", null, x[0]), h("b", null, x[1])); })) : null,
+                parE.length ? h("span", { className: "hc-inf-ep" }, parE.map(function (x, i) { return h("span", { key: i }, h("i", null, x.ep), x.reco ? h("span", null, F("reco ") + x.reco) : null, x.debut ? h("span", null, F("1er passage ") + x.debut) : null); })) : null,
+                (!gen.length && !parE.length) ? h("span", { className: "al-l3" }, F("Les horaires ne sont pas encore indiqués.")) : null,
+                /* 13/11 14h59 (Blandine : « 4 boutons, 2 à côté et 2 en dessous, c'est n'importe quoi ») : 3 actions sur une ligne ;
+                   « Modifier » (coach) ouvre le choix adresse / horaires */
+                h("span", { className: "hc-inf-a" },
+                  gMaps ? h("a", { className: "hc-ia", href: gMaps, target: "_blank", rel: "noopener" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: "M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21zM12 12.2a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2z", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, F("Itinéraire"))) : null,
+                  !fini ? h("button", { type: "button", className: "hc-ia", onClick: ajouterAgenda }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, F("Agenda"))) : null,
+                  gestion ? h("button", { type: "button", className: "hc-ia" + (modInf ? " on" : ""), onClick: function () { setModInf(!modInf); } }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, F("Modifier"))) : null),
+                (gestion && modInf) ? h("span", { className: "hc-inf-mod" },
+                  h("button", { type: "button", onClick: function () { setModInf(false); modifierRdv(); } }, F("L’adresse") + " ›"),
+                  h("button", { type: "button", onClick: function () { setModInf(false); if (horForm) setHorForm(null); else ouvrirHoraires(); } }, F("Les horaires") + " ›")) : null,
+                horForm ? formHoraires() : null,
+                horMsg ? h("span", { className: "al-l3" }, horMsg) : null)),
+            /* 13/11 13h42 (Blandine : « insérer dans l'encart les boutons sombres Tu participes, Liste du van ») */
+            h("div", { className: "hc-actions hc-act-in" },
+              h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
+              h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van")),
+              /* 13/11 13h45 (Blandine : « rajoute le troisième bouton ordre d'embarquement ») : les chevaux dans l'ordre de leur 1er passage */
+              h("button", { type: "button", className: "hc-act" + (ordreEmbOuv ? " on" : ""), onClick: function () { setOrdreEmbOuv(!ordreEmbOuv); } }, hcIcone("heure"), F("Ordre d’embarquement"))),
+            ordreEmbOuv ? panOrdreEmb() : null,
             fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null));
       })(),
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
@@ -4218,6 +4502,11 @@ var HC_B2_CSS = ".hc .hps-f{filter:sepia(.13) saturate(1.02) contrast(1.03)}.hc 
   + ".hc .hps-v{background:radial-gradient(ellipse 80% 74% at 52% 42%,rgba(14,8,3,0) 52%,rgba(14,8,3,.36) 100%),linear-gradient(0deg,rgba(12,7,3,.26),rgba(12,7,3,0) 36%)}";
 /* 09/11 22h45 — page d'un cavalier / d'un cheval : complète HPV_CSS (haut de la page vidéo) */
 var HCP_CSS = [
+  /* 13/11 17h25 (Blandine : « 1 ») — la vidéo se lit dans la page du couple, en haut, à la place du grand cheval */
+  ".hcp .cv-f{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.hcp .cv-f img.hps-f{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hcp .cv-f .hps-l,.hcp .cv-f .hps-v{display:none}.hcp .cv-play{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(7,10,8,.55);border:1px solid rgba(243,238,228,.5);display:flex;align-items:center;justify-content:center}.hcp .cv-play b{width:0;height:0;border-left:16px solid #F3EEE4;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}.hcp .cv-f .vr-d{position:absolute;right:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(7,10,8,.7);font-style:normal;font-size:12px;color:#F3EEE4}",
+  ".hcp .cv-i{margin:12px 0 4px}.hcp .cv-m{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.hcp .cv-m b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#F3EEE4}.hcp .cv-m span{font-size:12.5px;color:rgba(243,238,228,.6)}.hcp .cv-x{margin-left:auto;width:32px;height:32px;border-radius:50%;border:0;background:#151b1b;color:#F3EEE4;font-size:18px;cursor:pointer}.hcp .cv-a{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.hcp .cv-a button{padding:9px 14px;border-radius:999px;border:0;background:#151b1b;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:12.5px;cursor:pointer}",
+  ".hcp .cv1-on .hpv-photo.fond{opacity:.08}.hcp .cv1{position:absolute;top:296px;left:16px;right:16px;z-index:3}.hcp .cv1-on ~ * .cv-i,.hcp .vr>.cv-i{margin-bottom:34px}.hcp .cv1 .cv-f{border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.6)}",
+  "@media (min-width:768px){.hcp .cv1{left:50%;right:auto;width:min(620px,70vw);transform:translateX(-50%)}}",
   "html body .hcp .hpv-scene .hcp-r{display:flex!important;flex-direction:column;align-items:center;gap:4px;width:auto!important;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;overflow:visible!important;padding:0}",
   ".hcp .hcp-r>img,.hcp .hcp-r>b{width:48px;height:48px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,166,107,.7);background:rgba(7,10,8,.6);object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#C9A66B}",
   ".hcp .hcp-r>i{font-style:normal;font-family:Montserrat,sans-serif;font-size:9.5px;color:#F3EEE4;text-shadow:0 1px 6px #000;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
@@ -4505,6 +4794,9 @@ var HC_CSS = [
   "html.btn-3 .hc .hc-btn-l{border-color:transparent !important;background:#151b1b !important;color:#F3EEE4 !important}html.btn-3 .hc .hc-btn-l svg path{stroke:#F3EEE4}html.btn-3 .e1 .rc-mod,html.btn-3 .hc .rc-mod{border-color:transparent !important;background:#151b1b !important}html.btn-3 .rc-mod path{stroke:rgba(243,238,228,.8)}html.btn-3 .hc .hc-outil{border-color:transparent;background:#121818;color:#F3EEE4}html.btn-3 .hc .hc-outil .hc-o-c{color:rgba(243,238,228,.5)}",
   /* 13/11 13h32 (Blandine : « descends un tout petit peu le titre de la courbe… réduis-le très légèrement ») : héros de la fiche concours */
   ".hc-hero .hs-titre{margin-top:10px !important}.hc-hero .hs-titre h1{font-size:clamp(38px,10.4vw,56px) !important}",
+  /* 13/11 15h01 (Blandine : « à déclarer au jury, tout en bas, perdu… deux petites vagues dorées au-dessus et en dessous ») */
+  ".hc .hc-jury-w{position:relative;margin:56px 0 0;padding:58px 0 0}.hc .hc-jury-w:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}.hc .hc-jury-w .hc-alerte.al2{margin-top:0}.hc .hc-jury-w .al-t>span{color:#C9A66B !important}",
+  ".rc-li .k{font-style:normal !important;font-size:24px !important;font-weight:500;color:#F3EEE4 !important}",   /* 13/11 16h29 (Blandine : « on a du mal à lire les numéros, rends-les plus visibles ») */   /* 13/11 16h24 (Blandine : « à déclarer au jury dans ta couleur dorée, ça va le faire sortir ») */
   ".hc .hc-g9-r .hc-av{flex:none}",
   /* 13/11 13h17 (Blandine : « dans les couleurs des changements à faire auprès du jury… plus dans le noir et très légèrement pétrole… trop de doré ») */
   "html[class*='grp-'] .hc .hc-grp{border-color:rgba(243,238,228,.12);background:#0e1212;border-radius:16px;padding:0;overflow:hidden}html[class*='grp-'] .hc .hc-grp-t{padding:12px 14px 0;margin-bottom:10px}html[class*='grp-'] .hc .hc-grp-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500}html[class*='grp-'] .hc .hc-g9{gap:0;grid-template-columns:92px 1fr}html[class*='grp-'] .hc .hc-g9-h{border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 6px;align-items:center;text-align:center}html[class*='grp-'] .hc .hc-g9-h strong{color:#F3EEE4}html[class*='grp-'] .hc .hc-g9-l{padding:4px 12px 8px}html[class*='grp-'] .hc .hc-g9-n{color:rgba(243,238,228,.75)}html[class*='grp-'] .hc .hc-grp.moi{border-color:rgba(243,238,228,.4)}html[class*='grp-'] .hc .hc-g9-r.moi b{color:#F3EEE4}html[class*='grp-'] .hc .hc-grp-vide{padding:0 14px 14px}",
