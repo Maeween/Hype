@@ -274,6 +274,7 @@ var HS_TR_BRUT = {
   " est aussi dans ": [" is also in ", " también está en ", " è anche in ", " は次にも入っています：", " ist auch in ", " موجود أيضًا في ", " 也在 ", " zit ook in ", " também está em ", " är också i ", " также в ", " jest też w ", " 은(는) 다음에도 있어요: "],
   "un autre groupe": ["another group", "otro grupo", "un altro gruppo", "別のグループ", "einer anderen Gruppe", "مجموعة أخرى", "另一个分组", "een andere groep", "outro grupo", "en annan grupp", "другой группе", "innej grupie", "다른 그룹"],
   " à ": [" at ", " a las ", " alle ", " ", " um ", " الساعة ", " ", " om ", " às ", " kl. ", " в ", " o ", " "],
+  "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up entrance. Remember to arrange for someone to hold your horse during the course walk.", "Por razones prácticas, agrupamos los recorridos. Los horarios en dorado son citas en la entrada de la pista de calentamiento. Prevé a alguien que sujete tu caballo durante el reconocimiento del recorrido.", "Per motivi pratici, raggruppiamo i passaggi. Gli orari in oro sono appuntamenti all’ingresso del campo prova. Ricordati di avere qualcuno che tenga il tuo cavallo durante la ricognizione del percorso.", "運営上の理由から、出番をグループにまとめています。金色の時刻は練習馬場入口での集合時刻です。コース下見の間、馬を持ってくれる人を手配しておいてください。", "Aus praktischen Gründen fassen wir die Starts in Gruppen zusammen. Die goldenen Uhrzeiten sind Treffpunkte am Eingang des Abreiteplatzes. Denk daran, jemanden zu organisieren, der dein Pferd während der Parcoursbesichtigung hält.", "لأسباب عملية، نجمع المرورات في مجموعات. الأوقات باللون الذهبي هي مواعيد عند مدخل ساحة التحمية. تذكّر أن تُرتّب شخصاً يمسك حصانك أثناء معاينة المسار.", "出于实际考虑，我们把出场分成几组。金色的时间是在热身场入口的集合时间。记得安排人在你看场地时帮你牵马。", "Om praktische redenen bundelen we de starts in groepen. De gouden tijden zijn afspraken bij de ingang van de losrijpiste. Zorg dat iemand je paard vasthoudt tijdens de parcoursverkenning.", "Por razões práticas, agrupamos as passagens. Os horários a dourado são encontros à entrada do picadeiro de aquecimento. Lembra-te de ter alguém para segurar o teu cavalo durante o reconhecimento do percurso.", "Av praktiska skäl samlar vi starterna i grupper. Tiderna i guld är samlingstider vid ingången till framridningen. Se till att någon kan hålla din häst under banvandringen.", "По практическим причинам мы объединяем выступления в группы. Время, выделенное золотым, — это встреча у входа на разминку. Позаботься, чтобы кто-то подержал твою лошадь во время просмотра маршрута.", "Ze względów praktycznych łączymy przejazdy w grupy. Godziny na złoto to zbiórki przy wejściu na rozprężalnię. Pamiętaj, aby ktoś potrzymał twojego konia podczas zapoznania z parkurem.", "편의상 출전을 그룹으로 묶었어요. 금색 시간은 워밍업장 입구 집합 시간이에요. 코스 답사 동안 말을 잡아 줄 사람을 꼭 준비하세요."],
   "à la place de ": ["instead of ", "en lugar de ", "al posto di ", "の代わり：", "statt ", "بدلاً من ", "代替 ", "in plaats van ", "em vez de ", "i stället för ", "вместо ", "zamiast ", "대신: "],
   "Changer": ["Change", "Cambiar", "Cambia", "変更", "Ändern", "تغيير", "更换", "Wijzigen", "Mudar", "Ändra", "Изменить", "Zmień", "변경"],
   "Valider": ["Confirm", "Confirmar", "Conferma", "確定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Подтвердить", "Zatwierdź", "확인"],
@@ -1764,9 +1765,19 @@ function EcranConcours() {
     var e = hsNomEpreuve(p.epreuve || ""); if (e && c.ep.indexOf(e) === -1) c.ep.push(e);
   });
   var mesLignes = mesEng.reduce(function (acc, e) {
-    (e.tours || hsToursDepuis(e, null)).forEach(function (t) { acc.push({ ep: t.epreuve, ch: t.cheval_nom, cid: t.cheval_id, nu: t.numero, hp: t.passage, pi: t.piste, maj: e.passage_maj_le }); });
+    (e.tours || hsToursDepuis(e, null)).forEach(function (t) {
+      if ((t.remplacant_id && !(moi && t.remplacant_id === moi.id)) || (!t.remplacant_id && t.remplacant_nom)) return;   /* 13/11 : passage donné à un autre cavalier */
+      acc.push({ ep: t.epreuve, ch: t.cheval_nom, cid: t.cheval_id, nu: t.numero, hp: t.passage, pi: t.piste, maj: e.passage_maj_le, ini: t.cheval_initial_nom || null });
+    });
     return acc;
-  }, []).sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
+  }, []);
+  /* 13/11 (Blandine : « on peut l'ajouter sur ses engagements ») : un passage où ce cavalier remplace quelqu'un apparaît dans ses engagements */
+  if (moi) (passagesEq || []).forEach(function (p) {
+    if (p.cavalier_id !== moi.id || !p.cavalier_initial || p.non_partant) return;
+    if (mesLignes.some(function (x) { return x.eid === p.engagement_id && x.nu === p.numero; })) return;
+    mesLignes.push({ ep: hsNomEpreuve(p.epreuve || ""), ch: p.cheval_brut || p.cheval_nom, cid: p.cheval_id, nu: p.numero, hp: p.passage, pi: p.piste, ini: p.cheval_initial_nom || null, pour: p.cavalier_initial, eid: p.engagement_id });
+  });
+  mesLignes.sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
@@ -2096,11 +2107,20 @@ function EcranConcours() {
     setGrpOcc(false);
   }
   function carteGroupe(g, gi) {
-    var aMoi = moi && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; });
+    var aMoi = moi && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; });
     var conf = gestion ? doublonsDe(g).concat(conflitsDe(g)) : [];
+    /* 13/11 (Blandine : proposition 9) : heure de rendez-vous en grand à gauche, couples dans l'ordre de passage à droite (N°, photo, nom, cheval · heure) */
+    var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || Object.assign({ pseudo: c.pseudo, cheval_nom: c.cheval_nom, cavalier_id: c.cavalier_id }, {}); })
+      .sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
     return h("div", { key: g.id || g.__nv || gi, className: "hc-grp" + (aMoi ? " moi" : "") },
-      h("div", { className: "hc-grp-t" }, h("b", null, g.nom || (F("Groupe ") + (gi + 1))), g.heure_rdv ? h("span", null, g.heure_rdv) : null, (gestion && !g.publie) ? h("i", null, F("brouillon")) : null),
-      (g.couples || []).length ? h("div", { className: "hc-gms" }, g.couples.map(membreCouple)) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
+      h("div", { className: "hc-grp-t" }, h("b", null, g.nom || (F("Groupe ") + (gi + 1))), (gestion && !g.publie) ? h("i", null, F("brouillon")) : null),
+      lignes.length ? h("div", { className: "hc-g9" },
+        h("div", { className: "hc-g9-h" }, h("small", null, F("Rendez-vous")), h("strong", null, g.heure_rdv || "–"), h("small", null, lignes.length + " " + (lignes.length > 1 ? F("couples") : F("couple")))),
+        h("div", { className: "hc-g9-l" }, lignes.map(function (p, i) {
+          return h("div", { key: i, className: "hc-g9-r" + (moi && p.cavalier_id === moi.id ? " moi" : "") + (p.non_partant ? " np" : "") },
+            h("span", { className: "hc-g9-n" }, p.ordre_passage || ""), avatarHc(p, 30),
+            h("div", { className: "hc-g9-q" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, p.non_partant ? F("non partant") : p.passage].filter(Boolean).join(" · "))));
+        }))) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
       conf.length ? h("div", { className: "hc-grp-conf" }, conf.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null);
   }
   function editeur() {
@@ -2147,8 +2167,11 @@ function EcranConcours() {
       h("div", { className: "hc-pad-tt" }, h("h2", null, F("Organisation du paddock")), h("span", null, F("Groupes de détente") + " · " + (epPaddock || ""))),
       (gestion && !grpEd) ? h("button", { type: "button", className: "hc-btn-l", onClick: ouvrirEditeur }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" })), F("Modifier les groupes")) : null),
     (!gestion && monGroupe) ? h("div", { className: "hc-pad-moi" }, F("Ton groupe : ") + (monGroupe.nom || "") + (monGroupe.heure_rdv ? F(" · rendez-vous au paddock à ") + monGroupe.heure_rdv : "")) : null,
+    (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours.")) : null,   /* 13/11 : message validé par Blandine */
     grpEd ? editeur() : (grpEp.length ? h("div", { className: "hc-grps" }, grpEp.filter(function (g) { return gestion || g.publie; }).map(carteGroupe)) : h("div", { className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Pas encore de groupe pour cette épreuve : touche « Modifier les groupes ».") : F("Les groupes de détente apparaîtront quand ta coach les aura publiés."))),
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
+  /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
+  var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
   var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
     h("div", { className: "hc-reg-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 34, height: 34 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinejoin: "round", strokeLinecap: "round" }, h("path", { d: "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z" }), h("path", { d: "M8.6 12.2l2.4 2.4 4.6-4.8" })))),
     h("h3", null, F("Règles du paddock")),
@@ -3378,6 +3401,7 @@ function EcranConcours() {
         h("div", { className: "hc-eng-txt" },
           x.ep ? h("span", { className: "hc-pill" }, x.ep) : null,
           h("b", { className: "hc-eng-ch" }, (ch && (ch.alias || ch.nom)) || x.ch || F("Cheval à préciser")),
+          (x.ini || x.pour) ? h("span", { className: "hc-eng-ini" }, "(" + F("à la place de ") + [x.pour, x.ini].filter(Boolean).join(" · ") + ")") : null,
           h("span", { className: "hc-eng-tour" }, [F("Tour ") + (x.nu || (i + 1)), x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
           x.hp ? h("span", { className: "hc-eng-h" }, horloge(), h("span", null, F("Passage : ") + x.hp)) : null));
     })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Tu n’es engagé sur aucune épreuve de ce concours.")),
@@ -3488,7 +3512,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocModifPassages, blocPaddock, liensPassages] : [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages]) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
+        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocModifPassages, blocPaddock, liensPassages] : (grpAuDessus ? [blocPratique, blocRegles, blocPaddock, blocPassages, outilsPassages, liensPassages] : [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages])) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, filOuv ? h("div", { key: "filw" }, blocFil, h("div", { style: { textAlign: "center", margin: "6px 0 18px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setFilOuv(false); setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 300); } }, F("Terminer")))) : null, medVue ? null : blocPartageConcours] : null)   /* 09/11 soir (maquette validée) : rien d'autre sous « Par cavalier / Par cheval » que le partage ; cartes Vidéothèque / Album retirées de cet onglet */   /* 09/11 16h31 (Blandine, capture barrée) : plus de filtres, de « Partager ce concours » ni de fil sous les médias */
         : null,
@@ -4003,6 +4027,22 @@ var HC_CSS = [
   ".hc .hc-ged-lk .hs-lien{font-size:12px;color:rgba(243,238,228,.62);background:none;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-family:inherit}",
   ".hc .hc-ged-c.np b,.hc .hc-ged-c.np .hc-pl-n,.hc .hc-ged-c.np .hc-ged-q>span:not(.hc-ged-lk){opacity:.4;text-decoration:line-through}",
   ".hc .hc-pl.np{opacity:.45}",
+  ".hc .hc-pad-msg{border:1px solid rgba(201,166,107,.28);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.85);margin-bottom:12px}",
+  ".hc .hc-g9{display:grid;grid-template-columns:86px 1fr;gap:12px}",
+  ".hc .hc-g9-h{border-inline-end:1px solid rgba(201,166,107,.28);display:flex;flex-direction:column;justify-content:center;gap:2px}",
+  ".hc .hc-g9-h small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.6)}",
+  ".hc .hc-g9-h strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:500;color:#C9A66B;line-height:1}",
+  ".hc .hc-g9-l{display:flex;flex-direction:column;gap:2px;min-width:0}",
+  ".hc .hc-g9-r{display:flex;align-items:center;gap:8px;padding:5px 0;min-width:0}",
+  ".hc .hc-g9-n{flex:0 0 26px;color:#C9A66B;font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums}",
+  ".hc .hc-g9-q{min-width:0}",
+  ".hc .hc-g9-q b{display:block;font-size:13px;font-weight:600}",
+  ".hc .hc-g9-q span{display:block;font-size:11.5px;color:rgba(243,238,228,.65);line-height:1.3}",
+  ".hc .hc-g9-r.moi b{color:#C9A66B}",
+  ".hc .hc-g9-r.np{opacity:.45}",
+  ".hc .hc-g9-r.np b{text-decoration:line-through}",
+  ".hc .hc-g9-r .hc-av{flex:none}",
+  ".hc .hc-eng-ini{display:block;font-size:12px;color:rgba(243,238,228,.62);margin-top:2px}",
   ".hc .hc-chg{display:flex;flex-direction:column;gap:10px;padding:12px;margin:2px 0 8px;border:1px solid rgba(201,166,107,.3);border-radius:12px}",
   ".hc .hc-chg-l{display:flex;flex-direction:column;gap:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,238,228,.62)}",
   ".hc .hc-chg-l select,.hc .hc-chg-l input{font:inherit;font-size:16px;letter-spacing:0;text-transform:none;color:#F3EEE4;background:#0d1012;border:1px solid rgba(243,238,228,.18);border-radius:10px;padding:10px 12px}",
@@ -4647,7 +4687,7 @@ function hsCorrigerEpreuve(t) {
    concours_engagements (hsMiroir). 08/11 : Jour J, la fiche du concours (Ma journée) et le dossier lisent les 5 tours ;
    la liste du van ne lit que le cheval du 1er tour (une liste par cheval) ; Ma saison ne lit pas les engagements. */
 function hsToursDepuis(l, liste) {
-  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, ordre_passage: t.ordre_passage || null, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
+  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, ordre_passage: t.ordre_passage || null, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : ""), cheval_initial_nom: t.cheval_initial_nom || null, remplacant_id: t.cavalier_remplacant_id || null, remplacant_nom: t.cavalier_remplacant_nom || null }; });
   var o = [];
   [1, 2].forEach(function (n) {
     var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
