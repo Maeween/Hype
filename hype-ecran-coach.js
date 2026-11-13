@@ -98,12 +98,8 @@
           h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV } }, "À savoir"),
           h("div", { "aria-hidden": "true", style: { alignSelf: "stretch", background: "rgba(201,166,107,0.5)" } }),
           h("div", { style: { fontSize: 12.5, color: IV2, lineHeight: 1.5 } }, "Les engagements, les déplacements et les retours sont centralisés dans le ", h("b", { style: { color: CH, fontWeight: 600 } }, "registre d'élevage"), " (transport, dates, concours)."))),
-      /* photo entière + courbe */
-      h("div", { style: { position: "relative", maxWidth: 900, margin: "22px auto 0" } },
-        h("img", { src: "images/team-competition-performances-hero.webp", alt: "", loading: "lazy", style: { display: "block", width: "100%", height: "auto" } }),
-        courbe(true)),
       /* frise : les moments de la journée, chacun mène à sa page */
-      h("div", { style: { maxWidth: 680, margin: "6px auto 0", padding: "0 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+      h("div", { style: { maxWidth: 680, margin: "26px auto 0", padding: "0 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
         FRISE.map(function (f, i) {
           var ici = !f.ecran;
           return h(React.Fragment, { key: f.id },

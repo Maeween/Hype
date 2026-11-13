@@ -32,6 +32,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > 🟨 PLUS TARD — MAIL EN PLUS DE LA NOTIFICATION à la publication des groupes (solution B, Brevo) pour les cavaliers sans notifications. Constat 13/11 19h30 : sur 7 cavaliers du CSO Versailles, seule Eva a les notifications activées.
 
 
+
+## 20261113-2142 — Guide coach, page Engagements : photo du bas retirée, la page finit sur la fin de page Hype
+Blandine 13/11 21h41 (« tu finis simplement avec notre bas de page, à la place de l'image »). hype-ecran-coach.js v=2 ; index.html : build 20261113-2142.
 ## 20261113-2141 — GUIDE COACH : page « Engagements » (première page, adresse 2hype.fr/#guide-coach)
 Blandine 13/11 21h13 (maquette ChatGPT « Guide coach · Engagements »), 21h16 « connecter les liens vers les pages nécessaires depuis les onglets », 21h22 « fais vraiment que la page engagement », 21h40 « reprends bien chacun des mots […] on reste dans notre visuel habituel », « Ok ».
 - Nouveau fichier hype-ecran-coach.js (v=1) : héros cheval noir entier + courbe dorée, « GUIDE COACH / Engagements / Préparer, valider et éditer mes engagements », 3 cartes (01 Saisir mes engagements, 02 Sortir ma fiche d'engagement, 03 Mise à jour automatique), encart « À savoir », photo entière, frise Engagements · Programme · Paddock · Jour J · Résultats. Textes = mots exacts de la maquette.
