@@ -1,3 +1,11 @@
+# 🗓️ 13/11 (4h) — PAGES DE VILLE EN « A » (style Vidéothèque), LES 39 VILLES — horselingo `d5002ec` [publier], « Ok »
+
+**Choix de Blandine** parmi 2 propositions de page de ville (A Vidéothèque / B carte postale) : « fais toutes les villes en A ». Leçon A/B et carnet/lexique : propositions montrées (leçon v3/v4 ; lexique x1/x2 ; carnet x3 album / x4 vitrine), **pas encore choisies**.
+**Fait (habillage seulement, écran #arrivee)** : courbe dorée en haut de la vidéo, bas de la vidéo découpé en courbe ; titre SOUS la vidéo, aligné à droite (pays en surtitre doré, ville en Cormorant, chapitre en italique) ; pastilles de langue, volets, souvenir et boutons à contour champagne fin (plus de turquoise ; « Découvrir l'abonnement » n'est plus doré plein) ; récit en Cormorant avec trait doré et lettrine dorée (pas de lettrine en arabe, persan, japonais, chinois) ; souvenir en médaillon doré, ombres asymétriques sur la carte postale et le souvenir ; tablette/ordinateur : vidéo montrée entière, en affiche au centre. Police Cormorant Garamond désormais chargée (avant : police de remplacement sur l'iPhone).
+**Gardé, rien retiré** : mêmes blocs, mêmes boutons, mêmes textes (rien de neuf à traduire), verrou Premium, sellerie modératrice, phrases.
+**Tests (Chromium)** : 390 / 820 / 1440 px ; français, allemand, persan ; ville offerte (Kildare), ville gagnée (La Baule), ville Premium non abonné (Connemara) : aucune erreur. Cache linguae-v17.
+**Remarque (non changée)** : le surtitre dit « À l'aube » pour toutes les villes (déjà le cas avant).
+
 # 🗓️ 13/11 (nuit) — NOUVEL ACCUEIL HORSE LINGO (page d'entrée #intro) — horselingo `1431472` [publier], « Ok, ça me va, mets en ligne »
 
 **Choix de Blandine** parmi 6 propositions (captures) : visuel de la « mosaïque » (encarts ombrés asymétriques) + titre du « magazine » (« Parler cheval, *partout* dans le monde ») + mot du jour **sous** le grand encart (Badminton) ; toutes les villes, **par lots de 5 qu'on fait glisser** (pas 39 photos à descendre) ; à la place du sommaire, un texte « Les capitales du cheval » (reprend ouvIntro + un paragraphe : chaque ville connue pour sa spécialité).
