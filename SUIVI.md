@@ -10,6 +10,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0345 — Performances du cavalier : finitions (titres C, tailles, un seul doré, sa photo)
+- Héros façon Vidéothèque : reprend SA photo (photoCh, comme l'ancien héros) ; prénom 50 -> 40.
+- « Niveau le plus haut couru » (titre raccourci) : encart 176 -> 140, chiffre 44 -> 36, année ajoutée.
+- Titres de chapitre : dessin C (« ✦ EN BREF ✦ » entre deux filets dorés, titre centré) ; la ligne de séparation au-dessus est retirée (pas de double ligne). Variantes gardées : window.__partVar (A à E).
+- « En bref » plus compact : anneau 128 -> 104, chiffres 32 -> 27 ; libellés en blanc 12,5 (plus lisibles), légende de l'anneau 12.
+- Un seul doré sur toute la page : #C9A66B (celui de la Vidéothèque et de la page compétition) au lieu du doré clair #E6CF9C.
+- « Ta meilleure saison » sans « surtout avec… ». perf v=37.
+- À venir : refaire l'écran de l'outil d'import (encore turquoise, bouton plein) au nouveau design ; adapter le design aux pages Cheval, Équipe, Écurie (prompt fourni pour une autre conversation).
+
 ## 20261113-0330 — Performances : bandeaux de saison un peu moins hauts
 - Blandine choisit la hauteur 2 sur 4 proposées : 128 -> 108 (bandeaux des saisons et « Par cheval »). Rien d'autre. perf v=36.
 
