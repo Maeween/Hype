@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0420 — Performances du cavalier : « Tes temps forts », boutons anthracite, trait au lieu de « Non classé »
+- « Tes derniers concours » -> « Tes temps forts » (page du cavalier) : les résultats choisis à la main (fort_force), classés ou non ; à défaut, les 3 derniers concours. Bouton « Choisir mes temps forts » sous les cartes ; la fenêtre affiche en tête les temps forts choisis avec ✕ pour les retirer. L'ancien bouton « Choisir ses moments forts » et la liste « Souvenirs » disparaissent de la page du cavalier (doublon). Page du cheval inchangée (Blandine : « la page cheval, pas besoin de la refaire »).
+- Boutons en gris anthracite (fond #14181A, contour ivoire fin, texte ivoire) via une feuille de style de la page ; « Par saison / Par cheval » idem ; liens en ivoire. Le doré reste aux titres.
+- « Non classé » remplacé par un trait « — » gris discret (cartes, listes, détail des chiffres). perf v=41.
+
 ## 20261113-0410 — Performances du cavalier : haut de page plus petit, titres dorés, En bref tassé
 - Héros : prénom 40 -> 34, écurie 19 -> 16, « PERFORMANCES » 9 px doré ; onglets Performances/Photos/Vidéos plus petits (11,5 px, 30 px de haut), onglet actif à contour ivoire.
 - « Niveau le plus haut couru » : 1,35 m en 30, « B1 Open · 2000 » doré, encart 132 de haut, plus dégagé (marges 26 / 10).
