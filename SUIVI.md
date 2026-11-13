@@ -31,6 +31,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > 🟧 À FAIRE (Blandine, 13/11 19h05) — IMAGE DE PARTAGE DU JOUR J : bouton « Partager cette page » de la fiche concours → image verticale Hype (concours, date, adresse, groupes du paddock avec heures de rdv, N°, cheval, heure de passage, remplacements, QR + lien), texte + lien. Deux maquettes faites avec les vraies données de Versailles (version noms complets + ronds / version prénoms seuls) ; elle les teste sur WhatsApp. À ajouter : ligne « Reco 7h30 » dans la carte du groupe concerné. Choix de version pas encore fait.
 > 🟨 PLUS TARD — MAIL EN PLUS DE LA NOTIFICATION à la publication des groupes (solution B, Brevo) pour les cavaliers sans notifications. Constat 13/11 19h30 : sur 7 cavaliers du CSO Versailles, seule Eva a les notifications activées.
 
+## 20261113-2055 — Concours : RELIRE un document déjà donné (sans le renvoyer)
+Blandine 13/11 20h48 (« une fois qu'on lui a donné, on a tendance à penser qu'il a les infos » — un quart d'heure perdu à retrouver un document déjà envoyé), « Ok » 20h49. hype-ecran-saison.js (v=168) ; index.html : build 20261113-2055 + v=168. Aucune modification de la base.
+- Jour J › Modifier les passages : sous « Photo, capture ou PDF du programme », lien « ↻ Relire le document déjà donné (Programme · 13 novembre) » = dernier programme / ordre de passage gardé du concours ; relance la lecture à partir de l'ORIGINAL gardé (hsFichierDocGarde), sans le ranger une 2e fois.
+- Dossier du concours › Documents du concours : bouton « Relire » sur chaque document → ordre de passage relu dans Engagements, programme relu dans Jour J.
+- Textes traduits dans les 15 langues.
+
 ## 20261113-2050 — Concours : le document lu est GARDÉ (programme, ordre de passage), remis au propre, rangé dans le Dossier du concours ; persan ajouté aux pages concours
 Blandine 13/11 20h34 → 20h48 (« Ok » pour la base 20h43, « Oui » 20h48). hype-ecran-saison.js (v=167) ; index.html : build 20261113-2050 + v=167.
 - RÉPARTITION (Blandine 20h37) : c'est cette conversation qui s'occupe de TOUT ce qui touche aux documents (outil unique, garder le document, papiers du cheval / SIRE, lien résultats / engagements). Les autres conversations n'y touchent plus.

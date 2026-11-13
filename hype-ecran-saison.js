@@ -20,6 +20,8 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];   /* 13/11 : persan ajouté (les textes sans persan restent en français) */
 var HS_TR_BRUT = {
+  "Relire": ["Read again", "Volver a leer", "Rileggi", "読み直す", "Erneut lesen", "إعادة القراءة", "重新读取", "Opnieuw lezen", "Ler de novo", "Läs igen", "Перечитать", "Odczytaj ponownie", "다시 읽기", "دوباره بخوان"],   /* 13/11 relire un document gardé */
+  "Relire le document déjà donné": ["Read the document already given again", "Volver a leer el documento ya enviado", "Rileggi il documento già dato", "渡した書類を読み直す", "Bereits gegebenes Dokument erneut lesen", "إعادة قراءة المستند المرسل", "重新读取已提供的文件", "Het al gegeven document opnieuw lezen", "Ler de novo o documento já dado", "Läs det redan lämnade dokumentet igen", "Перечитать уже переданный документ", "Odczytaj ponownie przekazany dokument", "이미 보낸 문서 다시 읽기", "سندی را که قبلاً دادی دوباره بخوان"],   /* 13/11 relire un document gardé */
   "Documents du concours": ["Competition documents", "Documentos del concurso", "Documenti del concorso", "大会の書類", "Turnierdokumente", "مستندات المسابقة", "比赛文件", "Wedstrijddocumenten", "Documentos do concurso", "Tävlingsdokument", "Документы соревнования", "Dokumenty zawodów", "대회 문서", "مدارک مسابقه"],   /* 13/11 documents du concours */
   "Programme": ["Schedule", "Programa", "Programma", "プログラム", "Programm", "البرنامج", "赛程", "Programma", "Programa", "Program", "Программа", "Program", "프로그램", "برنامه"],   /* 13/11 documents du concours */
   "Ordre de passage": ["Start order", "Orden de salida", "Ordine di partenza", "出場順", "Starterliste", "ترتيب الانطلاق", "出场顺序", "Startvolgorde", "Ordem de partida", "Startordning", "Порядок выступлений", "Kolejność startu", "출전 순서", "ترتیب اجرا"],   /* 13/11 documents du concours */
@@ -5645,9 +5647,9 @@ function EcranEngagements() {
   /* 09/11 : ordre de passage choisi depuis la carte Passages de la fiche concours → lu ici dès que les engagements sont chargés */
   React.useEffect(function () {
     if (!lignes || !lignes.length) return;
-    var f = null; try { f = window.__ordreFichier || null; window.__ordreFichier = null; } catch (e) { }
+    var f = null, rel = false; try { f = window.__ordreFichier || null; rel = !!window.__ordreRelire; window.__ordreFichier = null; window.__ordreRelire = false; } catch (e) { }
     if (!f) return;
-    lireOrdre({ target: { files: [f] } });
+    lireOrdre({ target: { files: [f] }, relire: rel });
     setTimeout(function () { try { var el = document.querySelector(".d3-ordre"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e2) { } }, 400);
   }, [lignes]);
   /* 10/11 20h50 (Blandine : « il tourne 2-3 minutes et s'arrête sans aucun mot ; je n'ai jamais retrouvé ce qu'il avait fait »)
@@ -6502,7 +6504,7 @@ function EcranEngagements() {
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.cheval_nom || t.epreuve) equipe.push({ cavalier: l.nom, cheval: t.cheval_nom || "", epreuve: t.epreuve || "" }); }); });
-      hsGarderDocConcours(idEv, f, imgs, "ordre_passage", F("Ordre de passage") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
+      if (!(e && e.relire)) hsGarderDocConcours(idEv, f, imgs, "ordre_passage", F("Ordre de passage") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
       var cleL = "hype_lecture_ordre_" + idEv;
       var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem(cleL, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
       try { localStorage.removeItem(cleL); } catch (eR) { }
@@ -7558,6 +7560,7 @@ function EcranJourJ(props) {
   var _dl = React.useState(null); var direct = _dl[0], setDirect = _dl[1];
   var _db = React.useState(""); var dirOcc = _db[0], setDirOcc = _db[1];
   var _pg = React.useState(null); var prog = _pg[0], setProg = _pg[1];          /* 07/11 : propositions lues sur la photo */
+  var _dg = React.useState(null); var docGarde = _dg[0], setDocGarde = _dg[1];   /* 13/11 : dernier programme / ordre gardé, pour « Relire » */
   var _pgl = React.useState(""); var progLect = _pgl[0], setProgLect = _pgl[1]; /* "" | "en_cours" | message */
   var _adl = React.useState(""); var adrLue = _adl[0], setAdrLue = _adl[1];   /* 11/11 : adresse du concours lue sur le programme */
 
@@ -7722,6 +7725,18 @@ function EcranJourJ(props) {
     setDirOcc("");
   }
   /* 07/11 : lire le programme / la liste de départ en photo et préparer les heures, pistes et heures de début d'épreuve */
+  React.useEffect(function () {
+    if (!idEv) return;
+    hsDernierDocGarde(idEv, ["programme", "ordre_passage"]).then(setDocGarde).catch(function () { });
+    var f = null; try { f = window.__progFichier || null; window.__progFichier = null; } catch (e) { }
+    if (f) setTimeout(function () { lireProgramme({ target: { files: [f] }, relire: true }); }, 300);
+  }, [idEv]);
+  async function relireDocGarde() {
+    if (!docGarde || progLect === "en_cours") return;
+    setProgLect("en_cours"); setMsg("");
+    try { var f = await hsFichierDocGarde(docGarde); lireProgramme({ target: { files: [f] }, relire: true }); }
+    catch (eR) { setProgLect(F("Lecture impossible : ") + String((eR && eR.message) || eR)); }
+  }
   async function lireProgramme(e) {
     var f = e && e.target && e.target.files && e.target.files[0];
     try { e.target.value = ""; } catch (eV) { }
@@ -7734,7 +7749,7 @@ function EcranJourJ(props) {
       var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
       /* 13/11 19h43 (Blandine : « si quelqu'un clique sur fermer, ça continue de charger quand même derrière ») : comme la lecture
          de l'ordre de passage, le n° de la lecture est gardé sur le téléphone ; en revenant sur la page, le résultat est repris */
-      hsGarderDocConcours(idEv, f, imgs, "programme", F("Programme") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
+      if (!(e && e.relire)) hsGarderDocConcours(idEv, f, imgs, "programme", F("Programme") + " — " + (f.name || ""));   /* 13/11 : le document est gardé (Dossier du concours) */
       var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem("hype_lecture_prog_" + idEv, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
       try { localStorage.removeItem("hype_lecture_prog_" + idEv); } catch (eR) { }
       traiterProg(lu);
@@ -7861,6 +7876,8 @@ function EcranJourJ(props) {
       h("label", { className: "hs-btn", style: { cursor: "pointer", opacity: progLect === "en_cours" ? 0.6 : 1 } },
         progLect === "en_cours" ? F("Lecture du programme… (1 à 2 min)") : F("Photo, capture ou PDF du programme"),
         h("input", { type: "file", accept: "image/*,application/pdf", disabled: progLect === "en_cours", onChange: lireProgramme, style: { display: "none" } })),
+      docGarde && progLect !== "en_cours" ? h("button", { type: "button", className: "hs-lien", style: { display: "block", margin: "10px auto 0", fontSize: 13 }, onClick: relireDocGarde },
+        "↻ " + F("Relire le document déjà donné") + " (" + (docGarde.type === "ordre_passage" ? F("Ordre de passage") : F("Programme")) + " · " + hsFmt(String(docGarde.created_at || "").slice(0, 10), { day: "numeric", month: "long" }) + ")") : null,
       /* 10/11 19h47 (Blandine) : le rythme qui sert à estimer l'heure d'entrée en piste — en cavaliers à l'heure, réglable */
       h("div", { className: "hs-carte", style: { marginTop: 12, padding: "12px 14px" } },
         h("div", { style: { fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, marginBottom: 8 } }, F("Rythme de l’épreuve")),
@@ -8074,6 +8091,21 @@ function hsPdfDeJpeg(pages) {
   ecrire("trailer\n<< /Size " + nb + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF");
   return new Blob(morceaux, { type: "application/pdf" });
 }
+/* 13/11 20h48 (Blandine : « une fois qu'on lui a donné, on a tendance à penser qu'il a les infos » — un quart d'heure à
+   retrouver un document déjà envoyé) : RELIRE un document gardé, sans le redonner. On reprend l'ORIGINAL (meilleure
+   lecture que la version recadrée) ; sinon la version propre. */
+async function hsFichierDocGarde(d) {
+  var dos = String(d.chemin || "").split("/")[0], chemin = d.chemin;
+  try { var l = await supa.storage.from("registre").list(dos); var o = ((l && l.data) || []).filter(function (x) { return /^original/.test(x.name); })[0]; if (o) chemin = dos + "/" + o.name; } catch (eL) { }
+  var r = await supa.storage.from("registre").download(chemin);
+  if (!r || r.error || !r.data) throw new Error((r && r.error && r.error.message) || "document introuvable");
+  var nom = String(chemin.split("/").pop() || "document"), type = r.data.type || (/\.pdf$/i.test(nom) ? "application/pdf" : "image/jpeg");
+  try { return new File([r.data], nom, { type: type }); } catch (eF) { r.data.name = nom; return r.data; }
+}
+async function hsDernierDocGarde(idEv, types) {
+  var r = await supa.from("registre_documents").select("*").eq("agenda_id", idEv).in("type", types).order("created_at", { ascending: false }).limit(1);
+  return (r && !r.error && r.data && r.data[0] && r.data[0].chemin) ? r.data[0] : null;
+}
 /* range le document d'un concours ; ne bloque jamais la lecture (erreurs seulement dans la console) */
 async function hsGarderDocConcours(idEv, fichier, imgs, type, titre) {
   try {
@@ -8138,6 +8170,15 @@ function EcranDossierConcours() {
       var o = ((l && l.data) || []).filter(function (x) { return /^original/.test(x.name); })[0];
       ouvrirChemin(o ? dos + "/" + o.name : d.chemin);
     } catch (eO2) { ouvrirChemin(d.chemin); }
+  }
+  /* 13/11 : relire un document gardé — l'ordre de passage dans Engagements, le programme dans Jour J (sans le redonner) */
+  async function relireDocC(d) {
+    try {
+      var f = await hsFichierDocGarde(d);
+      try { window.__concoursId = idEv; window.__engagementsId = idEv; } catch (eI) { }
+      if (d.type === "ordre_passage") { window.__ordreFichier = f; window.__ordreRelire = true; c.setEcran("engagements"); }
+      else { window.__progFichier = f; c.setEcran("jour-j"); }
+    } catch (eR) { setMsg(F("Impossible d’ouvrir : ") + String((eR && eR.message) || eR)); }
   }
   async function retirerDocC(d) {
     try {
@@ -8244,6 +8285,7 @@ function EcranDossierConcours() {
               h("div", { className: "g" }, h("b", null, d.titre || F("Document")), h("span", null, (d.type === "ordre_passage" ? F("Ordre de passage") : F("Programme")) + " · " + hsFmt(String(d.created_at || "").slice(0, 10), { day: "numeric", month: "long" }) + (propre ? " · " + F("remis au propre") : ""))),
               h("button", { type: "button", className: "hs-lien", onClick: function () { ouvrirChemin(d.chemin); } }, F("Ouvrir")),
               propre ? h("button", { type: "button", className: "hs-lien", style: { color: "rgba(243,238,228,.6)" }, onClick: function () { ouvrirOriginal(d); } }, F("Original")) : null,
+              h("button", { type: "button", className: "hs-lien", onClick: function () { relireDocC(d); } }, F("Relire")),
               h("button", { type: "button", className: "hs-lien", style: { color: "rgba(243,238,228,.45)" }, onClick: function () { retirerDocC(d); } }, "×"));
           }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Le programme et l’ordre de passage lus par Hype seront gardés ici."))))))
       : null,
