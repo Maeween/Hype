@@ -10,6 +10,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0205 — Import FFE : LA vraie cause des fiches jamais créées
+- L'écran d'import ne recevait pas la fonction de création de fiche (onCreerCheval n'était pas transmis par HypeImportEcran depuis le 07/10). Résultat : ni création automatique, ni bouton « Crée sa fiche ». Ajouté dans les options passées à HYPE_IMPORT.rendre.
+- Constaté sur sa capture de 01h18 : les 12 chevaux inconnus arrivaient bien à l'écran (« Il reste des chevaux à ranger »), mais « aucune fiche de ce nom chez toi » = création jamais tentée.
+
 ## 20261113-0200 — Performances : bandeaux de saison allégés
 - Blandine : « on laisse juste la saison, voir les résultats ; le reste s'affiche quand ça se déroule ». Bandeau fermé = « Saison » + année + « Voir les résultats » (plus de nombre d'épreuves, de victoires ni de nom de cheval). Hauteur d'origine gardée (128).
 - Déroulé : ligne dorée victoires · podiums · classements en tête (sans nombre d'épreuves) ; date, titre et petite ligne du dessous un peu plus gros et plus clairs. v=28.
