@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0200 — Performances : bandeaux de saison allégés
+- Blandine : « on laisse juste la saison, voir les résultats ; le reste s'affiche quand ça se déroule ». Bandeau fermé = « Saison » + année + « Voir les résultats » (plus de nombre d'épreuves, de victoires ni de nom de cheval). Hauteur d'origine gardée (128).
+- Déroulé : ligne dorée victoires · podiums · classements en tête (sans nombre d'épreuves) ; date, titre et petite ligne du dessous un peu plus gros et plus clairs. v=28.
+- Règle redite : ne pas changer ce qui n'est pas demandé (filtres, tailles).
+
 ## 20261113-0155 — Import FFE : les chevaux restés de côté sont enfin dits
 - L'écran « Cette saison était déjà là » taisait les chevaux inconnus : il les nomme maintenant, et dit si la création de leur fiche a échoué (avec la raison).
 - La création automatique repart à zéro à chaque nouveau fichier (avant, un deuxième fichier dans la même ouverture ne recréait rien).
