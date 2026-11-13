@@ -34,18 +34,19 @@
 
   /* Les pages du guide : textes = mots exacts des maquettes de Blandine (travaillées avec ChatGPT) */
   var PAGES = {
-    engagements: { titre: "Engagements", sous: "Préparer, valider et éditer mes engagements.", cartes: [
+    engagements: { titre: "Engagements", sous: "Préparer, valider et éditer mes engagements.", bas: "coach-eng-camion", hero: "coach-eng-hero", cartes: [
       { n: "01", ico: "agenda", img: "coach-eng-fond-01", capture: "coach-cap-eng-nouveau", titre: "Préparer mes engagements", ecran: "engagements",
-        paras: ["Choisis ton concours, les épreuves, les cavaliers et les chevaux.", "Renseigne les informations nécessaires :"],
-        liste: ["Numéro et date du concours.", "Épreuves.", "Couples cavalier-cheval.", "Numéros de licence et SIRE.", "Chef d'équipe.", "Tarifs des engagements et du transport."],
-        apres: ["Si tes cavaliers et tes chevaux ont déjà un profil sur Hype, tout se remplit automatiquement : numéros de licence, numéros SIRE… Pas de double saisie."] },
-      { n: "02", ico: "micro", img: "coach-eng-fond-02", capture: "coach-cap-eng-voix", titre: "Gère tes engagements,", accent: "même en vocal", ecran: "engagements",
-        paras: ["Tu peux dicter directement tes engagements à Hype, sans avoir à les saisir un par un.", "Par exemple :", "*« Engage Lauren avec Yellow en Club 3 et Emma avec Apache en Club 2. »*", "Hype récupère les informations, prépare les engagements et te les soumet pour validation.", "Tu peux également demander des modifications à la voix, à tout moment."] },
+        paras: ["Sélectionne tes cavaliers, leurs chevaux et leurs épreuves."],
+        liste: ["Sélectionne le cavalier, le cheval et l'épreuve.", "Appuie sur « Engager ».", "Renseigne le numéro du concours et le tarif.", "Indique le transport en camion et le chef d'équipe.", "Les licences se remplissent automatiquement depuis les profils."] },
+      { n: "02", ico: "micro", img: "coach-eng-fond-02", capture: "coach-cap-eng-voix", titre: "Gérer même en vocal", ecran: "engagements",
+        paras: ["Dicte tes informations à Hype et valide-les."],
+        liste: ["Ouvre « Ajouter un document » en bas de page.", "Sélectionne « Parler avec Hype ».", "Dicte les informations, notamment les horaires.", "Vérifie ce que Hype a compris.", "Valide pour enregistrer."] },
       { n: "03", ico: "pdf", img: "coach-eng-fond-03", capture: "coach-cap-eng-feuille", titre: "Sortir ma fiche d'engagement", ecran: "engagements",
-        paras: ["Vérifie tes engagements et génère automatiquement ta fiche récapitulative, prête à imprimer ou à transmettre."] },
-      { n: "04", ico: "maj", img: "coach-eng-fond-04", capture: "coach-cap-eng-registre", titre: "Mise à jour automatique", ecran: "registre-mouvements",
-        paras: ["Les déplacements des chevaux liés au concours sont automatiquement enregistrés dans le **registre d'élevage** de l'écurie.", "Pas besoin de saisir une seconde fois les informations."] }
-    ], bas: "coach-eng-camion", hero: "coach-eng-hero", savoir: "Tes engagements constituent le point de départ de toute l'organisation du concours. Hype réutilise ces informations pour préparer ta feuille de route, organiser le transport, calculer les passages et générer les groupes de détente lorsque les informations officielles sont disponibles." },
+        paras: ["Génère ta fiche, imprime-la ou enregistre-la en PDF."],
+        liste: ["Descends en bas de la page Engagements.", "Appuie sur « Feuille d'engagement ».", "Vérifie les informations de ta fiche.", "Enregistre-la en PDF ou imprime-la."] },
+      { n: "04", ico: "maj", img: "coach-eng-fond-04", titre: "Mise à jour automatique", ecran: "registre-mouvements",
+        paras: ["Bientôt : tes déplacements dans le registre d'élevage."] }
+    ], savoir: "Les informations enregistrées dans les profils de tes cavaliers t'évitent de ressaisir leurs numéros de licence." },
     feuille: { titre: "Feuille de route", sous: "Préparer mon équipe, mes chevaux et mon déplacement.", hero: "coach-fr-hero", bas: "coach-fr-camion", cartes: [
       { n: "01", ico: "lieu", img: "coach-fr-fond-01", capture: "coach-cap-fr-infos", titre: "Informations du concours", ecran: "concours",
         paras: ["Retrouve le lieu, les informations pratiques et l'itinéraire."],
@@ -68,13 +69,23 @@
     ], savoir: "Les copies numériques peuvent te dépanner, mais ne remplacent pas les documents originaux exigés lors d'un contrôle.",
       vocal: { titre: "Tu parles. Hype organise.", texte: "Dicte tes horaires, vérifie les informations et valide." },
       signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
-    paddock: { titre: "Paddock", sous: "Organiser mes groupes, mes départs et mes rappels", cartes: [
-      { n: "01", ico: "micro", titre: "Gère ton concours,", accent: "même en vocal", texte: "Dicte à Hype tes horaires, épreuves, consignes ou modifications, à tout moment de la journée.", ecran: "concours" },
-      { n: "02", ico: "groupe", titre: "Génère tes groupes automatiquement", texte: "Hype analyse le type d'épreuve, l'ordre des passages et les horaires pour créer les groupes de détente et calculer les heures de départ.", ecran: "concours" },
-      { n: "03", ico: "reglages", titre: "Personnalise ton organisation", texte: "Modifie les groupes, déplace des cavaliers, ajuste les rendez-vous et ajoute des consignes si besoin.", ecran: "concours" },
-      { n: "04", ico: "maj", titre: "Gère les imprévus en temps réel", texte: "Une épreuve prend du retard ? Dis-le à Hype (à la voix ou en un clic) : les horaires sont automatiquement décalés, les groupes recalculés et l'organisation mise à jour.", ecran: "concours" },
-      { n: "05", ico: "cloche", titre: "Envoie les rappels aux cavaliers", texte: "Les cavaliers reçoivent sur leur téléphone des notifications aux moments clés (ex. : 15 minutes avant la reconnaissance), automatiquement mises à jour en cas de changement.", ecran: "concours" }
-    ], savoir: "Tu peux dicter, modifier ou décaler une épreuve à tout moment. Hype recalcule les horaires, met à jour les groupes et renvoie les notifications aux cavaliers après ta validation." }
+    paddock: { titre: "Paddock", sous: "Organiser la détente de mes cavaliers.", cartes: [
+      { n: "01", ico: "groupe", capture: "coach-cap-pad-proposer", titre: "Organiser mes groupes", ecran: "concours",
+        paras: ["Hype rassemble tes cavaliers selon leurs heures de passage."],
+        liste: ["Retrouve les passages de ton équipe.", "Hype propose des groupes de détente.", "Chaque groupe réunit au maximum six couples sur 30 minutes.", "Consulte les groupes proposés."] },
+      { n: "02", ico: "horloge", capture: "coach-cap-pad-heure", titre: "Calculer les rendez-vous", ecran: "concours",
+        paras: ["Hype calcule l'heure de rendez-vous de chaque groupe."],
+        liste: ["Hype identifie le premier passage du groupe.", "Il fixe le rendez-vous 30 minutes avant ce passage.", "Chaque cavalier retrouve l'heure de rendez-vous de son groupe.", "Les heures individuelles de passage restent affichées."] },
+      { n: "03", ico: "fer", capture: "coach-cap-fr-van", titre: "Consignes par cheval", ecran: "liste-van",
+        paras: ["Retrouve le matériel et les consignes propres à chaque cheval."],
+        liste: ["Ouvre la fiche du cheval.", "Renseigne son matériel et ses enrênements.", "Complète les consignes de soins si nécessaire.", "Retrouve le matériel dans la Liste du van du cavalier."] },
+      { n: "04", ico: "reglages", capture: "coach-cap-pad-modifier", titre: "Modifier mes groupes", ecran: "concours",
+        paras: ["Adapte les groupes de détente à ton organisation."],
+        liste: ["Ouvre l'organisation du paddock.", "Appuie sur « Modifier les groupes ».", "Ajuste les groupes selon tes besoins.", "Vérifie les rendez-vous de tes cavaliers."] },
+      { n: "05", ico: "cloche", capture: "coach-cap-pad-reco", titre: "Rappels de reconnaissance", ecran: "concours",
+        paras: ["Tes cavaliers sont avertis 15 minutes avant la reconnaissance."],
+        liste: ["Renseigne les horaires des reconnaissances.", "Hype programme les rappels correspondants.", "Les cavaliers reçoivent une notification sur leur téléphone."] }
+    ], savoir: "Respecte l'heure de rendez-vous de ton groupe au paddock, même si ton passage est prévu plus tard." }
   };
   var FRISE = [   /* les 7 chapitres du guide (maquette « Navigation du guide ») */
     { id: "engagements", nom: "Engagements", ico: "agenda", ecran: "engagements" },
@@ -161,7 +172,7 @@
         ["02", "Feuille de route", "Préparer mon équipe, mes chevaux et mon déplacement.", function () { setVue("feuille"); }],
         ["03", "Programme", "", null],
         ["04", "Passages", "", null],
-        ["05", "Paddock", "Organiser mes groupes, mes départs et mes rappels", function () { setVue("paddock"); }],
+        ["05", "Paddock", "Organiser la détente de mes cavaliers.", function () { setVue("paddock"); }],
         ["06", "Jour J", "", null],
         ["07", "Résultats", "", null]
       ];

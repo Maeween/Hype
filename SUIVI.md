@@ -64,6 +64,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2241 — Guide du coach : textes courts Engagements et Paddock ; page du concours : encart « Ton rendez-vous au paddock »
+Blandine 13/11 22h38 (textes ChatGPT : Engagements, Paddock, « Ton rendez-vous au paddock »).
+- hype-ecran-coach.js : Engagements (Préparer mes engagements, Gérer même en vocal, Sortir ma fiche d'engagement, Mise à jour automatique « Bientôt », À savoir) ; Paddock « Organiser la détente de mes cavaliers. » (Organiser mes groupes, Calculer les rendez-vous, Consignes par cheval, Modifier mes groupes, Rappels de reconnaissance, À savoir) avec captures (images/guide-coach/coach-cap-pad-*.jpg).
+- « Parler avec Hype à la voix » écrit « Parler avec Hype » dans la carte 02 (nom actuel du bouton).
+- hype-ecran-saison.js : sous les groupes du paddock, le message devient « Ton rendez-vous au paddock » + « Lorsque les passages sont regroupés, respecte l'heure de rendez-vous de ton groupe… » (15 langues).
+- index.html : build 20261113-2241.
 ## 20261113-2229 — Guide du coach : harmonisation graphique et lisibilité (tous les chapitres), fonds pleine largeur, textes du chapitre Feuille de route
 Blandine 13/11 22h19 (cahier « Harmonisation graphique »), 22h21 (« pas besoin que ce soit rouge »), 22h22 (fonds de cartes pleine largeur + « Ok »), 22h25 (textes Feuille de route + 6 photos HD), 22h26 (cahier « lisibilité »).
 - Carte (composant commun) : fond photo sur toute la largeur, calé à droite, dégradé noir renforcé derrière le texte ; numéro champagne fin, filet, picto ivoire 24 px à gauche, titre 16 px semi-gras ivoire, phrase 14,5 px #DEDAD2, interligne 1,4 ; cartes qui grandissent selon le contenu.
