@@ -97,6 +97,21 @@
 "Créer sa fiche et l’inscrire": ["Create its profile and register it", "Crear su ficha e inscribirlo", "Crea la scheda e registralo", "プロフィールを作って登録", "Profil anlegen und eintragen", "إنشاء بطاقته وتسجيله", "创建资料并登记", "Profiel aanmaken en inschrijven", "Criar a ficha e inscrevê-lo", "Skapa profil och skriv in", "Создать карточку и внести", "Utwórz profil i wpisz", "프로필 만들고 기록하기", "کارتش را بساز و ثبتش کن"],
 "Inscrire au registre": ["Add to the register", "Inscribir en el registro", "Registra nel registro", "台帳に登録", "Ins Register eintragen", "تسجيل في السجل", "登记到登记簿", "Inschrijven in het register", "Inscrever no registo", "Skriv in i registret", "Внести в реестр", "Wpisz do rejestru", "등록부에 기록", "ثبت در دفتر"],
 "✓ déjà au registre": ["✓ already in the register", "✓ ya en el registro", "✓ già nel registro", "✓ すでに台帳にあり", "✓ schon im Register", "✓ موجود في السجل", "✓ 已在登记簿中", "✓ al in het register", "✓ já no registo", "✓ redan i registret", "✓ уже в реестре", "✓ już w rejestrze", "✓ 이미 등록부에 있음", "✓ از قبل در دفتر ثبت"],
+"l'arrivée ou le départ d'un cheval": ["a horse's arrival or departure", "la llegada o salida de un caballo", "l'arrivo o la partenza di un cavallo", "馬の到着または退厩", "die Ankunft oder der Abgang eines Pferdes", "وصول حصان أو مغادرته", "马匹的到达或离开", "de aankomst of het vertrek van een paard", "a chegada ou saída de um cavalo", "en hästs ankomst eller avresa", "прибытие или отъезд лошади", "przybycie lub wyjazd konia", "말의 도착 또는 퇴거", "ورود یا خروج یک اسب"],
+"des chevaux à ajouter dans Hype": ["horses to add to Hype", "caballos para añadir a Hype", "cavalli da aggiungere a Hype", "Hypeに追加する馬", "Pferde, die in Hype hinzugefügt werden sollen", "خيول لإضافتها إلى Hype", "要添加到 Hype 的马", "paarden om toe te voegen aan Hype", "cavalos a adicionar ao Hype", "hästar att lägga till i Hype", "лошади, которых нужно добавить в Hype", "konie do dodania w Hype", "Hype에 추가할 말들", "اسب‌هایی برای افزودن به Hype"],
+"ces chevaux ont déjà leur fiche": ["these horses already have a profile", "estos caballos ya tienen ficha", "questi cavalli hanno già una scheda", "これらの馬はすでにプロフィールがあります", "diese Pferde haben schon ein Profil", "هذه الخيول لديها بطاقات بالفعل", "这些马已经有资料了", "deze paarden hebben al een profiel", "estes cavalos já têm ficha", "dessa hästar har redan en profil", "у этих лошадей уже есть карточки", "te konie mają już profil", "이 말들은 이미 프로필이 있어", "این اسب‌ها از قبل کارت دارند"],
+"✓ Fiches créées : ": ["✓ Profiles created: ", "✓ Fichas creadas: ", "✓ Schede create: ", "✓ 作成したプロフィール：", "✓ Erstellte Profile: ", "✓ البطاقات المنشأة: ", "✓ 已创建资料：", "✓ Aangemaakte profielen: ", "✓ Fichas criadas: ", "✓ Skapade profiler: ", "✓ Создано карточек: ", "✓ Utworzone profile: ", "✓ 만든 프로필: ", "✓ کارت‌های ساخته‌شده: "],
+"Reliées aux engagements du concours : ": ["Linked to the show entries: ", "Vinculadas a las inscripciones del concurso: ", "Collegate alle iscrizioni del concorso: ", "競技会のエントリーと紐付け：", "Mit den Turniernennungen verknüpft: ", "مرتبطة بتسجيلات المسابقة: ", "已关联到比赛报名：", "Gekoppeld aan de inschrijvingen: ", "Ligadas às inscrições do concurso: ", "Kopplade till tävlingsanmälningarna: ", "Привязано к заявкам на соревнования: ", "Powiązane ze zgłoszeniami na zawody: ", "대회 참가 신청과 연결: ", "وصل‌شده به ثبت‌نام‌های مسابقه: "],
+"Tu les retrouves dans les chevaux de l’écurie, prêtes à compléter.": ["You'll find them among the yard's horses, ready to complete.", "Las encontrarás en los caballos de la cuadra, listas para completar.", "Le trovi tra i cavalli della scuderia, pronte da completare.", "厩舎の馬一覧にあり、すぐに追記できます。", "Du findest sie bei den Pferden des Stalls, bereit zum Ergänzen.", "تجدها ضمن خيول الإسطبل، جاهزة للإكمال.", "你可以在马场的马匹中找到它们，随时补充。", "Je vindt ze bij de paarden van de stal, klaar om aan te vullen.", "Encontras-as nos cavalos da coudelaria, prontas a completar.", "Du hittar dem bland stallets hästar, redo att fyllas i.", "Они в списке лошадей конюшни, их можно дополнить.", "Znajdziesz je wśród koni stajni, gotowe do uzupełnienia.", "마구간의 말 목록에서 바로 채울 수 있어.", "آن‌ها را در اسب‌های اصطبل پیدا می‌کنی، آمادهٔ تکمیل."],
+"Pas créées : ": ["Not created: ", "No creadas: ", "Non create: ", "作成できませんでした：", "Nicht erstellt: ", "لم تُنشأ: ", "未创建：", "Niet aangemaakt: ", "Não criadas: ", "Inte skapade: ", "Не созданы: ", "Nie utworzono: ", "만들지 못함: ", "ساخته نشد: "],
+"Chevaux sans fiche": ["Horses without a profile", "Caballos sin ficha", "Cavalli senza scheda", "プロフィールのない馬", "Pferde ohne Profil", "خيول بلا بطاقة", "没有资料的马", "Paarden zonder profiel", "Cavalos sem ficha", "Hästar utan profil", "Лошади без карточки", "Konie bez profilu", "프로필이 없는 말", "اسب‌های بدون کارت"],
+"de ces chevaux n’ont pas encore leur fiche dans Hype.": ["of these horses don't have a profile in Hype yet.", "de estos caballos aún no tienen ficha en Hype.", "di questi cavalli non hanno ancora una scheda in Hype.", "頭の馬がまだHypeにプロフィールがありません。", "dieser Pferde haben noch kein Profil in Hype.", "من هذه الخيول ليست لها بطاقة في Hype بعد.", "匹马在 Hype 中还没有资料。", "van deze paarden hebben nog geen profiel in Hype.", "destes cavalos ainda não têm ficha no Hype.", "av dessa hästar har ännu ingen profil i Hype.", "из этих лошадей ещё нет карточки в Hype.", "z tych koni nie ma jeszcze profilu w Hype.", "마리는 아직 Hype에 프로필이 없어.", "تا از این اسب‌ها هنوز در Hype کارت ندارند."],
+"Ce cheval n’a pas encore sa fiche dans Hype.": ["This horse doesn't have a profile in Hype yet.", "Este caballo aún no tiene ficha en Hype.", "Questo cavallo non ha ancora una scheda in Hype.", "この馬はまだHypeにプロフィールがありません。", "Dieses Pferd hat noch kein Profil in Hype.", "هذا الحصان ليست له بطاقة في Hype بعد.", "这匹马在 Hype 中还没有资料。", "Dit paard heeft nog geen profiel in Hype.", "Este cavalo ainda não tem ficha no Hype.", "Den här hästen har ännu ingen profil i Hype.", "У этой лошади ещё нет карточки в Hype.", "Ten koń nie ma jeszcze profilu w Hype.", "이 말은 아직 Hype에 프로필이 없어.", "این اسب هنوز در Hype کارت ندارد."],
+"Tu m’autorises à les créer ? Tu pourras ensuite y accéder et les modifier.": ["May I create them? You'll then be able to open and edit them.", "¿Me autorizas a crearlas? Luego podrás abrirlas y modificarlas.", "Mi autorizzi a crearle? Poi potrai aprirle e modificarle.", "作成してもいい？そのあと開いて編集できます。", "Darf ich sie anlegen? Danach kannst du sie öffnen und bearbeiten.", "هل تسمح لي بإنشائها؟ ستتمكن بعدها من فتحها وتعديلها.", "允许我创建吗？之后你就能打开并修改它们。", "Mag ik ze aanmaken? Daarna kun je ze openen en aanpassen.", "Autorizas-me a criá-las? Depois poderás abri-las e alterá-las.", "Får jag skapa dem? Sedan kan du öppna och ändra dem.", "Можно их создать? Потом ты сможешь открыть и изменить их.", "Mogę je utworzyć? Potem będziesz mógł je otworzyć i zmienić.", "만들어도 될까? 그다음 열어서 수정할 수 있어.", "اجازه می‌دهی بسازمشان؟ بعد می‌توانی بازشان کنی و تغییرشان دهی."],
+"Créer les ": ["Create the ", "Crear las ", "Crea le ", "", "Die ", "إنشاء ", "创建 ", "Maak de ", "Criar as ", "Skapa de ", "Создать ", "Utwórz ", "", "ساختن "],
+" fiches": [" profiles", " fichas", " schede", " 件のプロフィールを作成", " Profile anlegen", " بطاقات", " 份资料", " profielen aan", " fichas", " profilerna", " карточек", " profili", " 개 프로필 만들기", " کارت"],
+"Créer la fiche": ["Create the profile", "Crear la ficha", "Crea la scheda", "プロフィールを作成", "Profil anlegen", "إنشاء البطاقة", "创建资料", "Profiel aanmaken", "Criar a ficha", "Skapa profilen", "Создать карточку", "Utwórz profil", "프로필 만들기", "ساختن کارت"],
+"Tous ces chevaux ont déjà leur fiche dans Hype.": ["All these horses already have a profile in Hype.", "Todos estos caballos ya tienen ficha en Hype.", "Tutti questi cavalli hanno già una scheda in Hype.", "これらの馬はすべてHypeにプロフィールがあります。", "Alle diese Pferde haben schon ein Profil in Hype.", "كل هذه الخيول لديها بطاقات في Hype بالفعل.", "这些马在 Hype 中都已有资料。", "Al deze paarden hebben al een profiel in Hype.", "Todos estes cavalos já têm ficha no Hype.", "Alla dessa hästar har redan en profil i Hype.", "У всех этих лошадей уже есть карточки в Hype.", "Wszystkie te konie mają już profil w Hype.", "이 말들은 모두 이미 Hype에 프로필이 있어.", "همهٔ این اسب‌ها از قبل در Hype کارت دارند."],
 "vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
@@ -1399,7 +1414,7 @@
 
   var TYPES_SOIN_FR = [["ferrure", "Maréchal (ferrure)"], ["parage", "Maréchal (parage)"], ["vermifuge", "Vermifuge"], ["vaccin", "Vaccin"], ["dentiste", "Dentiste"], ["osteopathe", "Ostéopathe"], ["veterinaire", "Vétérinaire"], ["traitement", "Traitement"], ["autre", "Autre soin"]];
   var TYPES_SOIN = TYPES_SOIN_FR;   /* libellés traduits à l'affichage : T(t[1]) */
-  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", autre: "un document" };
+  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", liste_chevaux: "des chevaux à ajouter dans Hype", autre: "un document" };
 
   function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
   function mvDe(lu) {
@@ -1428,7 +1443,7 @@
     var sv = sess && sess.data && sess.data.session;
     if (!sv || !sv.access_token) throw new Error(T("connecte-toi d’abord"));
     var system = "Tu es l'outil de lecture de documents de Hype (application equestre). On te donne n'importe quel document : photo, capture d'ecran, PDF, parfois ecrit a la main, parfois tres brouillon. "
-      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), ordre_passage (liste de depart d'un concours), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
+      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), ordre_passage (liste de depart d'un concours), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), liste_chevaux (la personne demande d'ajouter des chevaux ou de leur creer une fiche, ex. « les engagements sont sortis, ajoute les nouveaux chevaux », ou une simple liste de chevaux), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
       + "2) Extrais ce qui sert. 3) Si tu as un VRAI doute (type, cheval, date, soin), pose UNE question courte et precise a la personne, en la tutoyant (ex. « Est-ce bien les dates de marechalerie de Cirrus, Ecolo et Elfe ? »). Tiens compte de ce que la personne a deja repondu. "
       + "Chevaux de la personne (pour reconnaitre les noms, meme mal ecrits) : " + JSON.stringify((contexte.chevaux || []).slice(0, 150).map(function (c) { return c.nom + (c.alias ? " (" + c.alias + ")" : ""); })) + ". "
       + (contexte.cheval ? "La personne est sur la page du cheval : " + contexte.cheval + ". " : "")
@@ -1440,8 +1455,9 @@
       + "\"cheval\":\"nom du cheval concerne si un seul, sinon vide\",\"soins\":[{\"cheval\":\"nom\",\"soin\":\"ferrure|parage|vermifuge|vaccin|dentiste|osteopathe|veterinaire|traitement|autre\",\"date\":\"AAAA-MM-JJ ou vide\",\"detail\":\"precision courte ou vide\"}],"
       + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
       + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"puce\":\"numero de transpondeur (15 chiffres) ou vide\",\"proprietaire\":\"nom du ou des proprietaires ou vide\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"},"
-      + "\"mouvement\":{\"sens\":\"entree|sortie|sortie_provisoire\",\"date\":\"AAAA-MM-JJ ou vide\",\"date_retour\":\"AAAA-MM-JJ ou vide (seulement sortie_provisoire)\",\"lieu\":\"d'ou il vient (entree) ou ou il va (sortie), adresse ou nom, ou vide\",\"motif\":\"achat, pret, pension, naissance... (entree) ; vente, pret, retour proprietaire, retraite, deces... (sortie) ; concours, stage, veterinaire, clinique, saillie... (sortie_provisoire) ; ou vide\"}}. "
-      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
+      + "\"mouvement\":{\"sens\":\"entree|sortie|sortie_provisoire\",\"date\":\"AAAA-MM-JJ ou vide\",\"date_retour\":\"AAAA-MM-JJ ou vide (seulement sortie_provisoire)\",\"lieu\":\"d'ou il vient (entree) ou ou il va (sortie), adresse ou nom, ou vide\",\"motif\":\"achat, pret, pension, naissance... (entree) ; vente, pret, retour proprietaire, retraite, deces... (sortie) ; concours, stage, veterinaire, clinique, saillie... (sortie_provisoire) ; ou vide\"},"
+      + "\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\"}]}. "
+      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
     var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
     var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
     if (contexte.note) txt += " La personne precise : « " + contexte.note + " ».";
@@ -1468,7 +1484,7 @@
     }
     var m = texte.match(/\{[\s\S]*\}/);
     var o = JSON.parse(m ? m[0] : texte) || {};
-    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {} };
+    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {}, chevaux_liste: Array.isArray(o.chevaux_liste) ? o.chevaux_liste : [] };
   }
 
 
@@ -1502,8 +1518,19 @@
     var chevaux = props.chevaux || [];
     /* écuries de la personne (profil : ecurie, ecurie2) — pour rattacher un cheval qui arrive et dont on crée la fiche */
     var _cl = React.useState([]), mesClubs = _cl[0], setMesClubs = _cl[1];
+    /* 13/11 22h29 (Blandine : « 36 de ces chevaux n'ont pas encore leur fiche, est-ce que tu m'autorises à les créer… même en vocal :
+       les engagements sont sortis, ajoute les nouveaux chevaux et crée-leur une fiche ») : création en série, avec accord */
+    var _nv = React.useState({ off: {}, club: "", busy: false, ok: "", err: "" }), nv = _nv[0], setNv = _nv[1];
+    var _es = React.useState([]), engSans = _es[0], setEngSans = _es[1];
     React.useEffect(function () {
-      if (!st.lu || st.lu.type !== "mouvement_cheval" || mesClubs.length) return;
+      if (!st.lu || !props.concoursId) return;
+      supa.from("concours_engagements").select("cheval1_id, cheval1_nom, cheval2_id, cheval2_nom").eq("agenda_id", props.concoursId).then(function (r) {
+        var l = []; ((r && !r.error && r.data) || []).forEach(function (e) { if (e.cheval1_nom && !e.cheval1_id) l.push(e.cheval1_nom); if (e.cheval2_nom && !e.cheval2_id) l.push(e.cheval2_nom); });
+        setEngSans(l);
+      });
+    }, [st.lu, props.concoursId]);
+    React.useEffect(function () {
+      if (!st.lu || mesClubs.length) return;
       try { (typeof monProfil === "function" ? monProfil() : Promise.resolve(null)).then(function (r) { var p = (r && r.data) || {}; var l = [p.ecurie, p.ecurie2].map(function (x) { return String(x || "").trim(); }).filter(function (x, i, a) { return x && x !== "__perso__" && a.indexOf(x) === i; }); setMesClubs(l); }); } catch (e) { }
     }, [st.lu]);
 
@@ -1747,6 +1774,70 @@
     /* 13/11 22h07 (Blandine : « quand un cheval entre ou quitte l'écurie… on est obligé de le signaler sur le registre d'élevage ») :
        arrivée → registre_chevaux (date_entree, provenance, motif dans provenance) ; départ définitif → registre_chevaux
        (date_sortie, motif_sortie, destination) ; sortie provisoire (concours, stage, véto…) → registre_mouvements, comme la page Registre. */
+    function manquants() {
+      var lu = st.lu || {}; var vus = {}, out = [];
+      var src = (lu.chevaux_liste || []).map(function (x) { return { nom: String((x && x.nom) || x || "").replace(/\s+/g, " ").trim(), sire: String((x && x.sire) || "").replace(/\s+/g, "").trim() }; });
+      if (["liste_chevaux", "ordre_passage", "programme", "resultats"].indexOf(lu.type) >= 0) engSans.forEach(function (n) { src.push({ nom: String(n).replace(/\s+/g, " ").trim(), sire: "" }); });
+      src.forEach(function (x) {
+        if (!x.nom || x.nom.length < 2) return; var k = norm(x.nom); if (vus[k]) return; vus[k] = 1;
+        if (trouverCheval(x.nom, chevaux, true)) return;
+        if (lu.type === "mouvement_cheval") return;   /* l'arrivée a son propre bloc (création d'une fiche) */
+        out.push(x);
+      });
+      return out;
+    }
+    async function creerEnSerie(liste) {
+      var choisis = liste.filter(function (x) { return !nv.off[norm(x.nom)]; }).slice(0, 80);
+      if (!choisis.length) return;
+      var club = nv.club || mesClubs[0] || "";
+      if (!club) { setNv(Object.assign({}, nv, { err: T("rattache-toi d’abord à une écurie depuis ton profil") })); return; }
+      setNv(Object.assign({}, nv, { busy: true, err: "", ok: "" }));
+      try {
+        var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+        if (!u || !u.id) throw new Error(T("connecte-toi d’abord"));
+        var ecu = (typeof monEcurieNom === "function") ? await monEcurieNom() : club;
+        /* même création que l'import de résultats (sans notifier l'écurie 36 fois) ; le SIRE lu va dans les origines, comme les papiers */
+        /* garde-fou : on relit tous les noms en base juste avant (un cheval peut exister sans être dans la liste chargée) */
+        try { var rx = await supa.from("chevaux").select("nom, alias").is("supprime_le", null).limit(5000); if (rx && !rx.error && rx.data) choisis = choisis.filter(function (x) { return !trouverCheval(x.nom, rx.data, true); }); } catch (eX) { }
+        if (!choisis.length) throw new Error(T("ces chevaux ont déjà leur fiche"));
+        var lignes = choisis.map(function (x) { var o = { user_id: u.id, ecurie: ecu, nom: x.nom.slice(0, 60), club: club }; if (x.sire) o.origines = { sire: x.sire }; return o; });
+        var r = await supa.from("chevaux").insert(lignes).select("id, nom");
+        if (!r || r.error || !r.data || !r.data.length) throw new Error(String((r && r.error && (r.error.message || r.error)) || T("la base a refusé (droits sur ce cheval ?)")));
+        var lies = 0;
+        if (props.concoursId) {
+          for (var i = 0; i < r.data.length; i++) {
+            var c = r.data[i];
+            try {
+              var a = await supa.from("concours_engagements").update({ cheval1_id: c.id }).eq("agenda_id", props.concoursId).is("cheval1_id", null).ilike("cheval1_nom", c.nom).select("id");
+              var b = await supa.from("concours_engagements").update({ cheval2_id: c.id }).eq("agenda_id", props.concoursId).is("cheval2_id", null).ilike("cheval2_nom", c.nom).select("id");
+              lies += ((a && a.data) || []).length + ((b && b.data) || []).length;
+            } catch (eL) { }
+          }
+        }
+        setNv(Object.assign({}, nv, { busy: false, fait: true, ok: T("✓ Fiches créées : ") + r.data.length + "." + (lies ? " " + T("Reliées aux engagements du concours : ") + lies + "." : "") + " " + T("Tu les retrouves dans les chevaux de l’écurie, prêtes à compléter.") }));
+      } catch (eC) { setNv(Object.assign({}, nv, { busy: false, err: T("Pas créées : ") + String((eC && eC.message) || eC) })); }
+    }
+    function blocNouveaux() {
+      if (nv.fait) return h("div", { className: "hod-bloc" }, h("div", { className: "hod-ok" }, nv.ok));
+      var liste = manquants(); if (!liste.length) return null;
+      var n = liste.filter(function (x) { return !nv.off[norm(x.nom)]; }).length;
+      var stS = { width: "100%", marginTop: 6, background: "rgba(255,255,255,.04)", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.16)", borderRadius: 12, padding: "9px 10px", font: "inherit", fontSize: 13 };
+      return h("div", { className: "hod-bloc" },
+        h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Chevaux sans fiche")),
+        h("div", { className: "hod-note" }, (liste.length > 1 ? liste.length + " " + T("de ces chevaux n’ont pas encore leur fiche dans Hype.") : T("Ce cheval n’a pas encore sa fiche dans Hype.")) + " " + T("Tu m’autorises à les créer ? Tu pourras ensuite y accéder et les modifier.")),
+        h("div", { style: { maxHeight: 260, overflowY: "auto", marginTop: 6 } }, liste.map(function (x) {
+          var k = norm(x.nom);
+          return h("label", { key: k, className: "hod-ligne", style: { cursor: "pointer" } },
+            h("input", { type: "checkbox", checked: !nv.off[k], onChange: function (e) { var o = Object.assign({}, nv.off); if (e.target.checked) delete o[k]; else o[k] = 1; setNv(Object.assign({}, nv, { off: o })); } }),
+            h("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13.5 } }, h("span", null, x.nom), x.sire ? h("span", { style: { color: "rgba(243,238,228,.5)", fontSize: 12 } }, "SIRE " + x.sire) : null));
+        })),
+        mesClubs.length > 1 ? h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.55)", marginTop: 10 } }, T("Écurie")) : null,
+        mesClubs.length > 1 ? h("select", { value: nv.club || mesClubs[0], onChange: function (e) { setNv(Object.assign({}, nv, { club: e.target.value })); }, style: stS }, mesClubs.map(function (c) { return h("option", { key: c, value: c }, c); })) : null,
+        nv.err ? h("div", { className: "hod-err" }, nv.err) : null,
+        h("div", { className: "hod-bas" },
+          st.lu && st.lu.type === "liste_chevaux" ? h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")) : null,
+          h("button", { type: "button", className: "hod-btn", disabled: nv.busy || !n, onClick: function () { creerEnSerie(liste); } }, nv.busy ? "…" : (n > 1 ? T("Créer les ") + n + T(" fiches") : T("Créer la fiche")))));
+    }
     async function enregistrerMouvement() {
       var mv = st.mv || {}; var chId = st.chevalId;
       var nouveau = !chId && mv.sens === "entree";
@@ -1892,6 +1983,9 @@
           lab(T("Motif")), h("input", { value: mv.motif || "", placeholder: mv.sens === "entree" ? T("Achat, prêt, pension, naissance…") : mv.sens === "sortie" ? T("Vente, prêt, retour propriétaire, retraite…") : T("Concours, stage, vétérinaire…"), onChange: function (e) { mm({ motif: e.target.value }); }, style: stIn }),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
             h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: enregistrerMouvement }, st.busy ? "…" : ((!st.chevalId && mv.sens === "entree") ? T("Créer sa fiche et l’inscrire") : T("Inscrire au registre")))));
+      } else if (type === "liste_chevaux") {
+        action = manquants().length || nv.fait ? null : h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Tous ces chevaux ont déjà leur fiche dans Hype.")),
+          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
       } else if (type === "resultats") {
         action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Les résultats se lisent encore depuis la carte « Résultats » de la fiche du concours : je les brancherai ici à la prochaine étape.")),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
@@ -1927,6 +2021,7 @@
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { reponse: (String(x.reponse || "").trim() ? x.reponse + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
           h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: function () { repondre(); } }, T("Envoyer"))),
         boutonVoix(),
+        blocNouveaux(),
         action,
         st.err ? h("div", { className: "hod-err" }, st.err) : null);
     }
@@ -1951,7 +2046,7 @@
       setFeuille(true);
       if (chevaux) return;
       try {
-        var r = await supa.from("chevaux").select("id, nom, alias").is("supprime_le", null).order("nom", { ascending: true }).limit(400);
+        var r = await supa.from("chevaux").select("id, nom, alias").is("supprime_le", null).order("nom", { ascending: true }).limit(2000);
         setChevaux((r && !r.error && r.data) || []);
       } catch (e) { setChevaux([]); }
     }

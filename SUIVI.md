@@ -34,6 +34,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 22:40 — build 20261113-2240 — Outil : création des chevaux en série (avec accord)
+- Dès qu'un document (engagements, ordre de passage, programme, résultats, liste) ou une phrase cite des chevaux sans fiche, l'outil propose : « N de ces chevaux n'ont pas encore leur fiche dans Hype. Tu m'autorises à les créer ? » — liste cochée, choix de l'écurie, « Créer les N fiches ».
+- Nouveau type « liste_chevaux » (« les engagements sont sortis, ajoute les nouveaux chevaux ») ; sur la page d'un concours, reprend les chevaux engagés sans fiche (concours_engagements cheval1/2_nom sans id) et RELIE les engagements aux fiches créées.
+- SIRE lu → origines.sire. Création groupée sans notification (comme l'import de résultats), 80 max, re-vérification de tous les noms en base juste avant (pas de doublon, pas de rapprochement sur le premier mot). Liste des chevaux de l'outil : 400 → 2000.
+- Traductions : 15 langues. Fichiers : hype-outil-doc.js (v=9), index.html (build), SUIVI.md.
+- À faire juste après (demandé 22h35-22h36) : mise à jour des fiches existantes au fil des documents (vrai nom, SIRE, père, mère…), avec confirmation (« tu m'autorises à changer X pour Y ? »).
+
 ## 2026-11-13 22:36 — build 20261113-2236 — Registre : arrivées / départs par l'outil, création de fiche, « Ce que dit la règle »
 - Outil « Ajouter un document » : nouveau type **arrivée / départ d'un cheval** (dit en vocal, écrit, ou contrat de vente/prêt/pension). Arrivée → registre_chevaux (date d'entrée, provenance) ; départ définitif → registre_chevaux (date de sortie, motif, destination) ; sortie provisoire (concours, stage, véto…) → registre_mouvements (source « outil »). Document éventuel rangé dans la page Santé du cheval. Message de fin : rappel de déclarer aussi sur l'espace IFCE si on l'utilise.
 - Cheval qui arrive et n'existe pas dans Hype : « ＋ Nouveau cheval : je crée sa fiche » (nom prérempli, choix de l'écurie si deux) → ajouterCheval (même création que « + Ajouter un cheval » : la personne qui crée devient propriétaire dans Hype).
