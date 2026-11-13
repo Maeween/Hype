@@ -968,6 +968,10 @@ Petite structure familiale, enseignante DE.
 ```
 
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
+### 13/11 — build 20261113-0910 — Page Aide : tuto n° 7 « Révise une reprise »
+- Sur le « Ok continue » de Blandine (08h49) : tuto n° 7 (hype-ecran-aide.js v9), 15 langues, image hero-reprises-or.webp entière — 1 onglet Galops → carte « Reprises de dressage » → « Découvrir les reprises » + lien « Ouvrir les reprises », 2 choisir sa reprise en haut, 3 « Vivre la reprise » → « Découvrir les modes » → « Voir la reprise » (et « Immersion »), 4 « M'entraîner à tracer » et « Challenge », 5 « Conseils du coach » + protocole officiel PDF (certaines reprises). Hey Baby (aide) connaît ce tuto (netlify/functions/assistant.js).
+- Prochain : n° 8 « Le Mag et la Vidéothèque ».
+
 ### 13/11 — build 20261113-0850 — Tuto Galops : gratuit / Premium corrigé
 - Blandine (08h24) : « il n'y a que le Galop 1 qui est gratuit, non ? ». Texte de l'étape 2 corrigé (15 langues) : « Le Galop 1 est entièrement gratuit. À partir du Galop 2, le début de chaque chapitre est offert ; la suite et les quiz sont dans Hype Premium. » (règle du 30/10). Même précision dans ce que sait Hey Baby aide. hype-ecran-aide.js v8.
 
