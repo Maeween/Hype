@@ -17,6 +17,36 @@
   var OR = "#C9A66B";
   var LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
   var TXT = {
+"Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me le dire en vocal. Je te poserai une question si j’ai un doute.": ["You can send me a photo, a screenshot or a PDF, or simply tell me by voice. I’ll ask you a question if I’m unsure.", "Puedes enviarme una foto, una captura o un PDF, o simplemente decírmelo por voz. Te haré una pregunta si tengo alguna duda.", "Puoi inviarmi una foto, uno screenshot o un PDF, oppure semplicemente dirmelo a voce. Ti farò una domanda se ho un dubbio.", "写真、スクリーンショット、PDFを送るか、音声でそのまま話してください。迷ったら質問します。", "Du kannst mir ein Foto, einen Screenshot oder ein PDF schicken oder es mir einfach per Sprache sagen. Bei Zweifeln stelle ich dir eine Frage.", "يمكنك أن ترسل لي صورة أو لقطة شاشة أو ملف PDF، أو أن تقوله لي ببساطة صوتيًا. سأطرح عليك سؤالًا إن كان لديّ شك.", "你可以发给我照片、截图或 PDF，或者直接用语音告诉我。如有疑问，我会问你。", "Je kunt me een foto, screenshot of pdf sturen, of het me gewoon inspreken. Bij twijfel stel ik je een vraag.", "Podes enviar-me uma foto, uma captura ou um PDF, ou simplesmente dizer-mo por voz. Farei uma pergunta se tiver dúvidas.", "Du kan skicka en bild, en skärmbild eller en pdf, eller bara säga det med rösten. Jag ställer en fråga om jag är osäker.", "Можешь отправить мне фото, скриншот или PDF или просто сказать голосом. Если засомневаюсь, задам вопрос.", "Możesz przesłać mi zdjęcie, zrzut ekranu lub PDF albo po prostu powiedzieć mi to głosowo. Jeśli będę mieć wątpliwość, zadam pytanie.", "사진, 스크린샷, PDF를 보내거나 그냥 음성으로 말해 주세요. 헷갈리면 질문할게요.", "می‌توانی یک عکس، اسکرین‌شات یا PDF بفرستی، یا فقط با صدا به من بگویی. اگر شک داشته باشم سؤالی می‌پرسم."],
+
+"Que souhaites-tu enregistrer ?": ["What would you like to save?", "¿Qué deseas guardar?", "Cosa desideri salvare?", "何を保存しますか？", "Was möchtest du speichern?", "ماذا تودّ أن تحفظ؟", "你想保存什么？", "Wat wil je graag opslaan?", "O que desejas guardar?", "Vad vill du spara?", "Что ты хочешь сохранить?", "Co chcesz zapisać?", "무엇을 저장하고 싶나요?", "چه چیزی را می‌خواهی ثبت کنی؟"],
+"Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me dire ce qu’il faut noter. Je te poserai une question si j’ai un doute.": ["You can send me a photo, a screenshot or a PDF, or simply tell me what to note. I’ll ask you a question if I’m unsure.", "Puedes enviarme una foto, una captura o un PDF, o simplemente decirme qué hay que anotar. Te haré una pregunta si tengo alguna duda.", "Puoi inviarmi una foto, uno screenshot o un PDF, oppure dirmi semplicemente cosa annotare. Ti farò una domanda se ho un dubbio.", "写真、スクリーンショット、PDFを送るか、記録することをそのまま話してください。迷ったら質問します。", "Du kannst mir ein Foto, einen Screenshot oder ein PDF schicken oder mir einfach sagen, was ich notieren soll. Bei Zweifeln stelle ich dir eine Frage.", "يمكنك أن ترسل لي صورة أو لقطة شاشة أو ملف PDF، أو أن تخبرني ببساطة بما يجب تسجيله. سأطرح عليك سؤالًا إن كان لديّ شك.", "你可以发给我照片、截图或 PDF，或者直接告诉我要记录什么。如有疑问，我会问你。", "Je kunt me een foto, screenshot of pdf sturen, of me gewoon zeggen wat ik moet noteren. Bij twijfel stel ik je een vraag.", "Podes enviar-me uma foto, uma captura ou um PDF, ou simplesmente dizer-me o que anotar. Farei uma pergunta se tiver dúvidas.", "Du kan skicka en bild, en skärmbild eller en pdf, eller bara säga vad jag ska anteckna. Jag ställer en fråga om jag är osäker.", "Можешь отправить мне фото, скриншот или PDF или просто сказать, что записать. Если засомневаюсь, задам вопрос.", "Możesz przesłać mi zdjęcie, zrzut ekranu lub PDF albo po prostu powiedzieć, co zanotować. Jeśli będę mieć wątpliwość, zadam pytanie.", "사진, 스크린샷, PDF를 보내거나 기록할 내용을 그냥 말해 주세요. 헷갈리면 질문할게요.", "می‌توانی یک عکس، اسکرین‌شات یا PDF بفرستی، یا فقط بگویی چه چیزی یادداشت شود. اگر شک داشته باشم سؤالی می‌پرسم."],
+
+"Un document, une info ?": ["A document, some info?", "¿Un documento, un dato?", "Un documento, un’informazione?", "書類や情報がある？", "Ein Dokument, eine Info?", "مستند أو معلومة؟", "有文件或信息吗？", "Een document, een info?", "Um documento, uma informação?", "Ett dokument, en uppgift?", "Документ или информация?", "Dokument albo informacja?", "문서나 정보가 있나요?", "سند یا اطلاعاتی داری؟"],
+"Que veux-tu enregistrer ?": ["What would you like to save?", "¿Qué quieres guardar?", "Cosa vuoi salvare?", "何を保存する？", "Was möchtest du speichern?", "ماذا تريد أن تحفظ؟", "你想保存什么？", "Wat wil je opslaan?", "O que queres guardar?", "Vad vill du spara?", "Что ты хочешь сохранить?", "Co chcesz zapisać?", "무엇을 저장할까요?", "چه چیزی را می‌خواهی ثبت کنی؟"],
+"Donne-moi une photo, une capture ou un PDF, même écrit à la main, ou dis-moi simplement ce qu’il faut noter. Je te pose une question si j’ai un doute.": ["Give me a photo, a screenshot or a PDF, even handwritten, or just tell me what to note. I’ll ask you if I’m unsure.", "Dame una foto, una captura o un PDF, aunque sea a mano, o simplemente dime qué hay que anotar. Te preguntaré si tengo dudas.", "Dammi una foto, uno screenshot o un PDF, anche scritto a mano, oppure dimmi semplicemente cosa annotare. Ti chiedo se ho un dubbio.", "写真、スクリーンショット、PDF（手書きでもOK）を渡すか、記録することを話してね。迷ったら質問します。", "Gib mir ein Foto, einen Screenshot oder ein PDF, auch handschriftlich, oder sag mir einfach, was ich notieren soll. Bei Zweifeln frage ich nach.", "أعطني صورة أو لقطة شاشة أو PDF، حتى لو كانت بخط اليد، أو قل لي ببساطة ما يجب تسجيله. سأسألك إن شككت.", "给我一张照片、截图或 PDF（手写也可以），或者直接告诉我要记录什么。有疑问时我会问你。", "Geef me een foto, screenshot of pdf, ook handgeschreven, of zeg gewoon wat ik moet noteren. Bij twijfel vraag ik het je.", "Dá-me uma foto, uma captura ou um PDF, mesmo escrito à mão, ou diz-me simplesmente o que anotar. Pergunto-te se tiver dúvidas.", "Ge mig en bild, skärmbild eller pdf, även handskriven, eller säg bara vad jag ska anteckna. Jag frågar om jag är osäker.", "Дай мне фото, скриншот или PDF, даже рукописный, или просто скажи, что записать. Если засомневаюсь — спрошу.", "Daj mi zdjęcie, zrzut ekranu lub PDF, nawet pisany ręcznie, albo po prostu powiedz, co zanotować. Zapytam, jeśli będę mieć wątpliwości.", "사진, 스크린샷, PDF(손글씨도 OK)를 주거나 기록할 내용을 그냥 말해 줘요. 헷갈리면 물어볼게요.", "یک عکس، اسکرین‌شات یا PDF بده، حتی دست‌نویس، یا فقط بگو چه چیزی یادداشت شود. اگر شک داشته باشم می‌پرسم."],
+"Par exemple : « Enregistre les horaires : départ 6 h 30, embarquement 7 h, reco à 8 h pour la Club 3 »": ["For example: “Save the times: departure 6:30, loading 7:00, course walk at 8:00 for the Club 3”", "Por ejemplo: «Guarda los horarios: salida 6:30, embarque 7:00, reconocimiento a las 8:00 para la Club 3»", "Per esempio: «Salva gli orari: partenza 6:30, imbarco 7:00, ricognizione alle 8:00 per la Club 3»", "例：「時間を保存して：出発6時30分、積み込み7時、Club 3の下見8時」", "Zum Beispiel: „Speichere die Zeiten: Abfahrt 6:30, Verladen 7:00, Parcoursbesichtigung 8:00 für die Club 3“", "مثلًا: «احفظ المواعيد: المغادرة 6:30، التحميل 7:00، المعاينة 8:00 لفئة Club 3»", "例如：“保存时间：6:30 出发，7:00 装车，Club 3 8:00 看场”", "Bijvoorbeeld: ‘Sla de tijden op: vertrek 6.30, inladen 7.00, verkenning 8.00 voor de Club 3’", "Por exemplo: «Guarda os horários: partida 6h30, embarque 7h, reconhecimento às 8h para a Club 3»", "Till exempel: ”Spara tiderna: avfärd 6.30, lastning 7.00, banvandring 8.00 för Club 3”", "Например: «Сохрани время: отъезд 6:30, погрузка 7:00, просмотр в 8:00 для Club 3»", "Na przykład: „Zapisz godziny: wyjazd 6:30, załadunek 7:00, zapoznanie o 8:00 dla Club 3”", "예: “시간 저장해 줘: 출발 6시 30분, 상차 7시, Club 3 코스 답사 8시”", "مثلاً: «ساعت‌ها را ثبت کن: حرکت ۶:۳۰، بارگیری ۷:۰۰، بازدید مسیر ۸:۰۰ برای Club 3»"],
+"Envoyer sans document": ["Send without a document", "Enviar sin documento", "Invia senza documento", "書類なしで送る", "Ohne Dokument senden", "إرسال بدون مستند", "不带文件发送", "Versturen zonder document", "Enviar sem documento", "Skicka utan dokument", "Отправить без документа", "Wyślij bez dokumentu", "문서 없이 보내기", "ارسال بدون سند"],
+"Réponds-lui, corrige-le ou pose-lui une question": ["Answer it, correct it or ask it a question", "Respóndele, corrígelo o hazle una pregunta", "Rispondigli, correggilo o fagli una domanda", "答える、訂正する、質問する", "Antworte, korrigiere oder stell eine Frage", "أجبه أو صحّحه أو اطرح عليه سؤالًا", "回答、纠正或向它提问", "Antwoord, verbeter of stel een vraag", "Responde-lhe, corrige-o ou faz-lhe uma pergunta", "Svara, rätta eller ställ en fråga", "Ответь, поправь или задай вопрос", "Odpowiedz, popraw albo zadaj pytanie", "답하거나 고치거나 질문해요", "جواب بده، اصلاحش کن یا سؤالی بپرس"],
+"Envoyer": ["Send", "Enviar", "Invia", "送信", "Senden", "إرسال", "发送", "Versturen", "Enviar", "Skicka", "Отправить", "Wyślij", "보내기", "ارسال"],
+"Document": ["Document", "Documento", "Documento", "書類", "Dokument", "مستند", "文件", "Document", "Documento", "Dokument", "Документ", "Dokument", "문서", "سند"],
+
+"Touche le micro du clavier pour parler.": ["Tap the keyboard mic to speak.", "Toca el micrófono del teclado para hablar.", "Tocca il microfono della tastiera per parlare.", "キーボードのマイクをタップして話してね。", "Tippe auf das Mikrofon der Tastatur, um zu sprechen.", "المس ميكروفون لوحة المفاتيح للتحدث.", "点按键盘上的麦克风说话。", "Tik op de microfoon van het toetsenbord om te praten.", "Toca no microfone do teclado para falar.", "Tryck på tangentbordets mikrofon för att prata.", "Нажми на микрофон клавиатуры, чтобы говорить.", "Dotknij mikrofonu klawiatury, aby mówić.", "키보드 마이크를 눌러 말해요.", "برای صحبت، میکروفون صفحه‌کلید را لمس کن."],
+"Parler": ["Speak", "Hablar", "Parla", "話す", "Sprechen", "تحدّث", "说话", "Praten", "Falar", "Prata", "Говорить", "Mów", "말하기", "صحبت کن"],
+"J’écoute…": ["Listening…", "Te escucho…", "Ti ascolto…", "聞いています…", "Ich höre zu…", "أستمع…", "正在听……", "Ik luister…", "Estou a ouvir…", "Jag lyssnar…", "Слушаю…", "Słucham…", "듣고 있어요…", "گوش می‌دهم…"],
+"Sans document : enregistre ça": ["No document: save this", "Sin documento: guarda esto", "Senza documento: salva questo", "書類なし：これを保存", "Ohne Dokument: speichere das", "بدون مستند: احفظ هذا", "无文件：保存这个", "Zonder document: sla dit op", "Sem documento: guarda isto", "Utan dokument: spara det här", "Без документа: сохрани это", "Bez dokumentu: zapisz to", "문서 없이: 이걸 저장해", "بدون سند: این را ثبت کن"],
+"dis-moi ce que tu veux enregistrer, ou donne un document": ["tell me what you want to save, or give a document", "dime qué quieres guardar o dame un documento", "dimmi cosa vuoi salvare o dammi un documento", "保存したいことを話すか、書類を渡してね", "sag mir, was du speichern willst, oder gib ein Dokument", "قل لي ما تريد حفظه أو أعطني مستندًا", "告诉我你想保存什么，或者给我一份文件", "zeg wat je wilt opslaan of geef een document", "diz-me o que queres guardar ou dá-me um documento", "säg vad du vill spara eller ge ett dokument", "скажи, что сохранить, или дай документ", "powiedz, co zapisać, albo daj dokument", "저장할 내용을 말하거나 문서를 줘요", "بگو چه چیزی ثبت شود یا یک سند بده"],
+"Les horaires à enregistrer": ["Times to save", "Horarios que guardar", "Orari da salvare", "保存する時間", "Zu speichernde Zeiten", "المواعيد المطلوب حفظها", "要保存的时间", "Te bewaren tijden", "Horários a guardar", "Tider att spara", "Время для сохранения", "Godziny do zapisania", "저장할 시간", "ساعت‌هایی که ثبت می‌شوند"],
+"Départ": ["Departure", "Salida", "Partenza", "出発", "Abfahrt", "المغادرة", "出发", "Vertrek", "Partida", "Avfärd", "Отъезд", "Wyjazd", "출발", "حرکت"],
+"Embarquement": ["Loading", "Embarque", "Imbarco", "積み込み", "Verladen", "التحميل", "装车", "Inladen", "Embarque", "Lastning", "Погрузка", "Załadunek", "상차", "بارگیری"],
+"Reco": ["Course walk", "Reconocimiento", "Ricognizione", "下見", "Parcoursbesichtigung", "المعاينة", "看场", "Verkenning", "Reconhecimento", "Banvandring", "Просмотр", "Zapoznanie", "코스 답사", "بازدید مسیر"],
+"Début": ["Start", "Inicio", "Inizio", "開始", "Beginn", "البداية", "开始", "Start", "Início", "Start", "Начало", "Start", "시작", "شروع"],
+"Autre": ["Other", "Otro", "Altro", "その他", "Andere", "أخرى", "其他", "Andere", "Outro", "Annat", "Другое", "Inne", "기타", "دیگر"],
+"Enregistrer les horaires": ["Save the times", "Guardar los horarios", "Salva gli orari", "時間を保存", "Zeiten speichern", "حفظ المواعيد", "保存时间", "Tijden opslaan", "Guardar os horários", "Spara tiderna", "Сохранить время", "Zapisz godziny", "시간 저장", "ثبت ساعت‌ها"],
+"✓ Horaires enregistrés dans la fiche du concours.": ["✓ Times saved on the show page.", "✓ Horarios guardados en la ficha del concurso.", "✓ Orari salvati nella scheda del concorso.", "✓ 大会ページに時間を保存しました。", "✓ Zeiten auf der Turnierseite gespeichert.", "✓ حُفظت المواعيد في صفحة المسابقة.", "✓ 时间已保存到比赛页面。", "✓ Tijden opgeslagen op de wedstrijdpagina.", "✓ Horários guardados na ficha do concurso.", "✓ Tiderna sparade på tävlingssidan.", "✓ Время сохранено на странице соревнования.", "✓ Godziny zapisano na stronie zawodów.", "✓ 대회 페이지에 시간을 저장했어요.", "✓ ساعت‌ها در صفحه مسابقه ثبت شد."],
+"Pas enregistré : ": ["Not saved: ", "No guardado: ", "Non salvato: ", "保存できませんでした：", "Nicht gespeichert: ", "لم يُحفظ: ", "未保存：", "Niet opgeslagen: ", "Não guardado: ", "Inte sparat: ", "Не сохранено: ", "Nie zapisano: ", "저장하지 못했어요: ", "ثبت نشد: "],
+"les horaires d'un concours": ["show times", "los horarios de un concurso", "gli orari di un concorso", "大会の時間", "Turnierzeiten", "مواعيد مسابقة", "比赛时间", "wedstrijdtijden", "os horários de um concurso", "tävlingstider", "время соревнования", "godziny zawodów", "대회 시간", "ساعت‌های یک مسابقه"],
+
 "✓ Fiche du cheval complétée : ": ["✓ Horse profile completed: ", "✓ Ficha del caballo completada: ", "✓ Scheda del cavallo completata: ", "✓ 馬のプロフィールを補完：", "✓ Pferdeprofil ergänzt: ", "✓ اكتملت بطاقة الحصان: ", "✓ 马匹资料已补全：", "✓ Paardenprofiel aangevuld: ", "✓ Ficha do cavalo completada: ", "✓ Hästens profil kompletterad: ", "✓ Карточка лошади дополнена: ", "✓ Profil konia uzupełniony: ", "✓ 말 프로필 보완: ", "✓ کارت اسب کامل شد: "],
 "Compléter la fiche du cheval": ["Complete the horse profile", "Completar la ficha del caballo", "Completa la scheda del cavallo", "馬のプロフィールを補完", "Pferdeprofil ergänzen", "إكمال بطاقة الحصان", "补全马匹资料", "Paardenprofiel aanvullen", "Completar a ficha do cavalo", "Komplettera hästens profil", "Дополнить карточку лошади", "Uzupełnij profil konia", "말 프로필 채우기", "کامل کردن کارت اسب"],
 "Choisis d’abord le cheval ci-dessous.": ["First choose the horse below.", "Primero elige el caballo abajo.", "Prima scegli il cavallo qui sotto.", "まず下で馬を選んでね。", "Wähle zuerst unten das Pferd.", "اختر الحصان أدناه أولًا.", "请先在下方选择马匹。", "Kies eerst hieronder het paard.", "Escolhe primeiro o cavalo abaixo.", "Välj först hästen nedan.", "Сначала выбери лошадь ниже.", "Najpierw wybierz konia poniżej.", "먼저 아래에서 말을 골라 줘요.", "اول اسب را در پایین انتخاب کن."],
@@ -1312,6 +1342,10 @@
       ".hod-ligne input[type=checkbox]{accent-color:#C9A66B;width:18px;height:18px;margin-top:2px}",
       ".hod-bas{display:flex;gap:10px;margin-top:16px}",
       ".hod-bas .hod-btn{flex:1}",
+      ".hod-fil{display:flex;flex-direction:column;gap:8px;margin:6px 0 4px}",
+      ".hod-bulle{max-width:86%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.5}",
+      ".hod-bulle.hype{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(201,166,107,.28);border-bottom-left-radius:6px;color:#F3EEE4}",
+      ".hod-bulle.moi{align-self:flex-end;background:rgba(201,166,107,.12);border:1px solid rgba(201,166,107,.35);border-bottom-right-radius:6px;color:#E8D3A8}",
       ".hod-err{margin-top:10px;font-size:12.5px;color:#E8A0A0}",
       ".hod-ok{margin-top:10px;font-size:13px;color:#96CDAA}"
     ].join("\n");
@@ -1320,7 +1354,7 @@
 
   var TYPES_SOIN_FR = [["ferrure", "Maréchal (ferrure)"], ["parage", "Maréchal (parage)"], ["vermifuge", "Vermifuge"], ["vaccin", "Vaccin"], ["dentiste", "Dentiste"], ["osteopathe", "Ostéopathe"], ["veterinaire", "Vétérinaire"], ["traitement", "Traitement"], ["autre", "Autre soin"]];
   var TYPES_SOIN = TYPES_SOIN_FR;   /* libellés traduits à l'affichage : T(t[1]) */
-  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", resultats: "des résultats de concours", autre: "un document" };
+  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", autre: "un document" };
 
   function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
   function trouverCheval(nom, chevaux) {
@@ -1345,21 +1379,23 @@
     var sv = sess && sess.data && sess.data.session;
     if (!sv || !sv.access_token) throw new Error(T("connecte-toi d’abord"));
     var system = "Tu es l'outil de lecture de documents de Hype (application equestre). On te donne n'importe quel document : photo, capture d'ecran, PDF, parfois ecrit a la main, parfois tres brouillon. "
-      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), ordre_passage (liste de depart d'un concours), resultats (resultats d'un concours), autre. "
+      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), ordre_passage (liste de depart d'un concours), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
       + "2) Extrais ce qui sert. 3) Si tu as un VRAI doute (type, cheval, date, soin), pose UNE question courte et precise a la personne, en la tutoyant (ex. « Est-ce bien les dates de marechalerie de Cirrus, Ecolo et Elfe ? »). Tiens compte de ce que la personne a deja repondu. "
       + "Chevaux de la personne (pour reconnaitre les noms, meme mal ecrits) : " + JSON.stringify((contexte.chevaux || []).slice(0, 150).map(function (c) { return c.nom + (c.alias ? " (" + c.alias + ")" : ""); })) + ". "
       + (contexte.cheval ? "La personne est sur la page du cheval : " + contexte.cheval + ". " : "")
       + (contexte.concours ? "La personne est sur la page d'un concours. " : "")
       + "Ecris resume et question dans cette langue (code) : " + langue() + ". "
       + "Date du jour : " + new Date().toISOString().slice(0, 10) + ". Si l'annee n'est pas ecrite, prends la plus logique (jamais dans le futur pour un soin deja fait). "
-      + "Reponds UNIQUEMENT en JSON : {\"type\":\"...\",\"resume\":\"une phrase simple qui dit ce que tu as compris\",\"question\":\"ta question s'il y a un doute, sinon vide\","
+      + "Tu parles avec la personne comme un assistant attentionne et precis : phrases naturelles et correctes, tutoiement, ni familier ni enfantin. Si elle te pose une question ou te corrige, reponds-lui vraiment. "
+      + "Reponds UNIQUEMENT en JSON : {\"message\":\"ta reponse a la personne, 1 a 3 phrases : ce que tu as compris et ce que tu vas faire ; si tu as un doute, termine par ta question\",\"type\":\"...\",\"resume\":\"une phrase simple qui dit ce que tu as compris\",\"question\":\"ta question s'il y a un doute, sinon vide\","
       + "\"cheval\":\"nom du cheval concerne si un seul, sinon vide\",\"soins\":[{\"cheval\":\"nom\",\"soin\":\"ferrure|parage|vermifuge|vaccin|dentiste|osteopathe|veterinaire|traitement|autre\",\"date\":\"AAAA-MM-JJ ou vide\",\"detail\":\"precision courte ou vide\"}],"
+      + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
       + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"}}. "
-      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. N'invente RIEN : ce qui est illisible reste vide.";
-    var blocs = images.map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
-    var txt = images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
+      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
+    var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
+    var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
     if (contexte.note) txt += " La personne precise : « " + contexte.note + " ».";
-    (echanges || []).forEach(function (e) { txt += " Tu avais demande : « " + e.q + " ». La personne a repondu : « " + e.r + " »."; });
+    if ((echanges || []).length) { txt += " Votre conversation jusqu'ici :"; echanges.forEach(function (e) { txt += " Toi : « " + e.q + " ». La personne : « " + e.r + " »."; }); txt += " Tiens compte de tout, et reponds a son dernier message."; }
     blocs.push({ type: "text", text: txt });
     var corps = { mode: "perception", stream: false, differe: true, system: system, messages: [{ role: "user", content: blocs }] };
     var rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify(corps) });
@@ -1382,21 +1418,45 @@
     }
     var m = texte.match(/\{[\s\S]*\}/);
     var o = JSON.parse(m ? m[0] : texte) || {};
-    return { type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {} };
+    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {} };
+  }
+
+
+  /* 13/11 21h21 (Blandine : « donner la parole à l'outil unique, qu'on puisse communiquer en vocal avec ») : bouton micro.
+     Reconnaissance vocale du navigateur quand elle existe (Safari / Chrome) ; sinon on invite à utiliser le micro du clavier. */
+  function Micro(props) {
+    var _a = React.useState(false); var actif = _a[0], setActif = _a[1];
+    var refR = React.useRef(null);
+    var SR = (typeof window !== "undefined") && (window.SpeechRecognition || window.webkitSpeechRecognition);
+    function basculer() {
+      if (!SR) { props.aide && props.aide(T("Touche le micro du clavier pour parler.")); return; }
+      if (actif && refR.current) { try { refR.current.stop(); } catch (e) { } return; }
+      try {
+        var r = new SR(); refR.current = r;
+        var lg = langue(); r.lang = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" })[lg] || "fr-FR";
+        r.interimResults = false; r.continuous = false;
+        r.onresult = function (ev) { var t = ""; for (var i = 0; i < ev.results.length; i++) t += ev.results[i][0].transcript; if (t) props.texte(t); };
+        r.onend = function () { setActif(false); }; r.onerror = function () { setActif(false); };
+        r.start(); setActif(true);
+      } catch (eS) { setActif(false); props.aide && props.aide(T("Touche le micro du clavier pour parler.")); }
+    }
+    return h("button", { type: "button", className: "hod-btn" + (actif ? "" : " sec"), onClick: basculer, "aria-label": T("Parler"), style: { flex: "0 0 auto", padding: "10px 14px" } }, actif ? "● " + T("J’écoute…") : "🎙 " + T("Parler"));
   }
 
   function Feuille(props) {
     var app = (typeof useApp === "function") ? useApp() : {};
-    var _e = React.useState({ etape: "choix", note: "", fichier: null, images: null, lu: null, echanges: [], reponse: "", lignes: [], chevalId: "", err: "", ok: "", busy: false });
+    var _e = React.useState({ etape: "choix", note: "", fichier: null, images: null, lu: null, echanges: [], fil: [], reponse: "", lignes: [], chevalId: "", err: "", ok: "", busy: false });
     var st = _e[0], setSt = _e[1];
     function maj(o) { setSt(function (x) { return Object.assign({}, x, o); }); }
     var refFic = React.useRef(null);
     var chevaux = props.chevaux || [];
 
     async function lire(f, echanges) {
-      maj({ etape: "lecture", err: "", ok: "" });
+      setSt(function (x) { return Object.assign({}, x, { etape: (x.etape === "compris") ? "compris" : "lecture", reflechit: true, err: "", ok: "" }); });
       try {
-        var imgs = st.images && !f ? st.images : await imagesDe(f || st.fichier);
+        var src = f || st.fichier;
+        var imgs = st.images && !f ? st.images : (src ? await imagesDe(src) : []);
+        if (!imgs.length && !String(st.note || "").trim()) throw new Error(T("dis-moi ce que tu veux enregistrer, ou donne un document"));
         var lu = await lireDocument(imgs, { chevaux: chevaux, cheval: props.chevalNom, concours: !!props.concoursId, note: st.note }, echanges || st.echanges);
         var lignes = (lu.soins || []).map(function (s, i) {
           var c = trouverCheval(s.cheval, chevaux);
@@ -1404,20 +1464,21 @@
           return { k: "l" + i, nomLu: String(s.cheval || ""), chevalId: c ? c.id : "", soin: soin, date: /^\d{4}-\d{2}-\d{2}$/.test(String(s.date || "")) ? s.date : "", detail: String(s.detail || ""), coche: !!c && /^\d{4}-\d{2}-\d{2}$/.test(String(s.date || "")) };
         });
         var c1 = trouverCheval(lu.cheval, chevaux);
-        maj({ etape: "compris", images: imgs, lu: lu, lignes: lignes, chevalId: (c1 && c1.id) || props.chevalId || "", reponse: "" });
-      } catch (eL) { maj({ etape: "choix", err: T("Lecture impossible : ") + String((eL && eL.message) || eL) }); }
+        var dit = lu.message || [lu.resume, lu.question].filter(Boolean).join(" ");
+        setSt(function (x) { return Object.assign({}, x, { etape: "compris", images: imgs, lu: lu, lignes: lignes, chevalId: (c1 && c1.id) || x.chevalId || props.chevalId || "", reponse: "", reflechit: false, fil: x.fil.concat(dit ? [{ qui: "hype", t: dit }] : []) }); });
+      } catch (eL) { setSt(function (x) { return Object.assign({}, x, { etape: x.etape === "compris" ? "compris" : "choix", reflechit: false, err: T("Lecture impossible : ") + String((eL && eL.message) || eL) }); }); }
     }
     function choisir(e) {
       var f = e && e.target && e.target.files && e.target.files[0];
       try { e.target.value = ""; } catch (eV) { }
       if (!f) return;
-      maj({ fichier: f, images: null, echanges: [] });
+      setSt(function (x) { return Object.assign({}, x, { fichier: f, images: null, echanges: [], fil: [{ qui: "moi", t: "📎 " + (f.name || T("Document")) + (String(x.note || "").trim() ? " — " + x.note : "") }] }); });
       setTimeout(function () { lire(f, []); }, 0);
     }
     function repondre() {
       var r = String(st.reponse || "").trim(); if (!r) return;
-      var ech = st.echanges.concat([{ q: (st.lu && st.lu.question) || "C'est bien ça ?", r: r }]);
-      maj({ echanges: ech });
+      var ech = st.echanges.concat([{ q: (st.lu && (st.lu.message || st.lu.question)) || "", r: r }]);
+      setSt(function (x) { return Object.assign({}, x, { echanges: ech, fil: x.fil.concat([{ qui: "moi", t: r }]) }); });
       lire(null, ech);
     }
 
@@ -1504,6 +1565,35 @@
         maj({ busy: false, etape: "fini", ok: (typeof nbFiche === "number" && nbFiche > 0 ? T("✓ Fiche du cheval complétée : ") + nbFiche + ". " : "") + T("✓ Document rangé dans la page Santé de ") + ((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || T("ce cheval")) + "." });
       } catch (eD) { maj({ busy: false, err: T("Pas rangé : ") + String((eD && eD.message) || eD) }); }
     }
+    /* horaires dictés ou lus → club_agenda (même forme que le formulaire « Modifier les horaires » de la fiche concours :
+       horaires [{type, ep, lib, heure}], recos recopiées pour les rappels, heure_epreuve = 1er début ; départ / embarquement).
+       Une ligne déjà présente pour le même type + même épreuve est REMPLACÉE ; les autres sont gardées. */
+    function hMin(t) { var m = String(t || "").toLowerCase().match(/(\d{1,2})\s*[h:]\s*(\d{0,2})/); return m ? Number(m[1]) * 60 + Number(m[2] || 0) : null; }
+    function hFmt(t) { var n = hMin(t); if (n == null) return ""; return Math.floor(n / 60) + "h" + String(n % 60).padStart(2, "0"); }
+    async function enregistrerHoraires() {
+      var hz = (st.lu && st.lu.horaires) || {}; if (!props.concoursId) return;
+      maj({ busy: true, err: "" });
+      try {
+        var ra = await supa.from("club_agenda").select("id, horaires, heure_depart, heure_embarquement").eq("id", props.concoursId).maybeSingle();
+        if (!ra || ra.error || !ra.data) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
+        var anc = Array.isArray(ra.data.horaires) ? ra.data.horaires.slice() : [];
+        (Array.isArray(hz.lignes) ? hz.lignes : []).forEach(function (x) {
+          var heure = hFmt(x.heure); if (!heure) return;
+          var type = ["reco", "debut", "autre"].indexOf(x.type) >= 0 ? x.type : "autre", ep = String(x.epreuve || "").trim() || null;
+          var lig = { type: type, ep: ep, lib: type === "autre" ? (String(x.lib || "").trim() || null) : null, heure: heure };
+          var i = anc.findIndex(function (a) { return a && a.type === type && norm(a.ep || "") === norm(ep || "") && (type !== "autre" || norm(a.lib || "") === norm(lig.lib || "")); });
+          if (i >= 0) anc[i] = lig; else anc.push(lig);
+        });
+        var recos = anc.filter(function (x) { return x.type === "reco"; }).map(function (x) { return { ep: x.ep || "", heure: x.heure }; });
+        var deb = anc.filter(function (x) { return x.type === "debut"; }).map(function (x) { return x.heure; }).sort(function (a, b) { return hMin(a) - hMin(b); })[0] || null;
+        var upd = { horaires: anc.length ? anc : null, recos: recos.length ? recos : null, heure_reco: null, heure_epreuve: deb };
+        if (hFmt(hz.depart)) upd.heure_depart = hFmt(hz.depart);
+        if (hFmt(hz.embarquement)) upd.heure_embarquement = hFmt(hz.embarquement);
+        var r = await supa.from("club_agenda").update(upd).eq("id", props.concoursId).select("id");
+        if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
+        maj({ busy: false, etape: "fini", ok: T("✓ Horaires enregistrés dans la fiche du concours.") });
+      } catch (eH) { maj({ busy: false, err: T("Pas enregistré : ") + String((eH && eH.message) || eH) }); }
+    }
     function allerCarnet() {
       var c = chevaux.filter(function (x) { return x.id === st.chevalId; })[0];
       if (!c) { maj({ err: T("Choisis le cheval concerné.") }); return; }
@@ -1528,10 +1618,13 @@
     var corps;
     if (st.etape === "choix") {
       corps = h("div", null,
-        h("div", { className: "hod-k" }, T("Un document ?")),
-        h("div", { className: "hod-titre" }, T("Donne-le moi.")),
-        h("div", { className: "hod-note" }, T("Photo, capture d’écran ou PDF — même écrit à la main. Tu peux me dire en deux mots ce que c’est (avec le micro du clavier si tu préfères parler).")),
-        h("textarea", { className: "hod-ta", value: st.note, placeholder: T("Facultatif : « Cirrus, Ecolo et Elfe ont vu le maréchal ce matin »"), onChange: function (e) { maj({ note: e.target.value }); } }),
+        h("div", { className: "hod-k" }, T("Un document, une info ?")),
+        h("div", { className: "hod-titre" }, T("Que souhaites-tu enregistrer ?")),
+        h("div", { className: "hod-note" }, T("Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me le dire en vocal. Je te poserai une question si j’ai un doute.")),
+        h("textarea", { className: "hod-ta", value: st.note, placeholder: T("Par exemple : « Enregistre les horaires : départ 6 h 30, embarquement 7 h, reco à 8 h pour la Club 3 »"), onChange: function (e) { maj({ note: e.target.value }); } }),
+        h("div", { style: { display: "flex", gap: 8, marginTop: 8, alignItems: "center" } },
+          h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { note: (String(x.note || "").trim() ? x.note + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
+          h("button", { type: "button", className: "hod-btn sec", style: { flex: 1 }, disabled: !String(st.note || "").trim(), onClick: function () { setSt(function (x) { return Object.assign({}, x, { fichier: null, images: [], echanges: [], fil: [{ qui: "moi", t: x.note }] }); }); setTimeout(function () { lire(null, []); }, 0); } }, T("Envoyer sans document"))),
         h("input", { ref: refFic, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: choisir }),
         h("div", { className: "hod-bas" },
           h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
@@ -1572,6 +1665,17 @@
       } else if (type === "programme" || type === "ordre_passage") {
         action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, type === "programme" ? T("Je le lis dans le Jour J du concours (horaires, recos, pistes) et je le garde dans le Dossier du concours.") : T("Je le lis dans les Engagements du concours (numéros et heures de passage) et je le garde dans le Dossier du concours.")),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", onClick: function () { allerConcours(type); } }, T("Continuer"))));
+      } else if (type === "horaires_concours") {
+        var hz = lu.horaires || {}, lignesH = Array.isArray(hz.lignes) ? hz.lignes.filter(function (x) { return x && x.heure; }) : [];
+        var libT = { reco: T("Reco"), debut: T("Début"), autre: T("Autre") };
+        action = h("div", { className: "hod-bloc" },
+          h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Les horaires à enregistrer")),
+          hz.depart ? h("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, T("Départ")), h("b", { style: { fontWeight: 500 } }, hz.depart)) : null,
+          hz.embarquement ? h("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, T("Embarquement")), h("b", { style: { fontWeight: 500 } }, hz.embarquement)) : null,
+          lignesH.map(function (x, i) { return h("div", { key: "h" + i, style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, (x.type === "autre" ? (x.lib || libT.autre) : (libT[x.type] || libT.autre)) + (x.epreuve ? " · " + x.epreuve : "")), h("b", { style: { fontWeight: 500 } }, x.heure)); }),
+          !props.concoursId ? h("div", { className: "hod-note", style: { marginTop: 8 } }, T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.")) : null,
+          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
+            h("button", { type: "button", className: "hod-btn", disabled: st.busy || !props.concoursId, onClick: enregistrerHoraires }, st.busy ? "…" : T("Enregistrer les horaires"))));
       } else if (type === "resultats") {
         action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Les résultats se lisent encore depuis la carte « Résultats » de la fiche du concours : je les brancherai ici à la prochaine étape.")),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
@@ -1598,12 +1702,14 @@
       }
       corps = h("div", null,
         h("div", { className: "hod-k" }, T("Ce que j’ai compris")),
-        h("div", { className: "hod-titre" }, T("C’est ") + T(NOMS_TYPE[type] || NOMS_TYPE.autre) + "."),
-        lu.resume ? h("div", { className: "hod-note" }, lu.resume) : null,
-        h("div", { className: "hod-q" },
-          lu.question || T("Si je me suis trompé, dis-le-moi : je relis avec ta réponse."),
-          h("textarea", { className: "hod-ta", value: st.reponse, placeholder: T("Ta réponse (tu peux dicter avec le micro du clavier)"), onChange: function (e) { maj({ reponse: e.target.value }); } }),
-          h("div", { style: { textAlign: "end", marginTop: 8 } }, h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim(), onClick: repondre }, T("Répondre et relire")))),
+        h("div", { className: "hod-titre" }, (function () { var x = T(NOMS_TYPE[type] || NOMS_TYPE.autre); return x.charAt(0).toUpperCase() + x.slice(1) + "."; })()),
+        h("div", { className: "hod-fil" },
+          st.fil.map(function (m, i) { return h("div", { key: "m" + i, className: "hod-bulle " + (m.qui === "moi" ? "moi" : "hype") }, m.t); }),
+          st.reflechit ? h("div", { className: "hod-bulle hype" }, "…") : null),
+        h("textarea", { className: "hod-ta", value: st.reponse, placeholder: T("Réponds-lui, corrige-le ou pose-lui une question"), onChange: function (e) { maj({ reponse: e.target.value }); } }),
+        h("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 } },
+          h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { reponse: (String(x.reponse || "").trim() ? x.reponse + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
+          h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: repondre }, T("Envoyer"))),
         action,
         st.err ? h("div", { className: "hod-err" }, st.err) : null);
     }
@@ -1639,7 +1745,7 @@
       h("div", { className: "hod-carte" },
         h("div", { className: "hod-ph" }, h("img", { src: "images/sante-fond-defaut.webp", alt: "", loading: "lazy" })),
         h("div", { className: "hod-tx" },
-          h("div", { className: "hod-k" }, T("Un document ?")),
+          h("div", { className: "hod-k" }, T("Un document, une info ?")),
           h("h3", null, T("Hype s’occupe du reste.")),
           h("p", null, T("Photo ou PDF : il le lit, le range et remplit les bonnes pages.")),
           h("button", { type: "button", className: "hod-btn", onClick: ouvrir }, T("＋ Ajouter un document")),
