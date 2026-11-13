@@ -17,6 +17,11 @@
   var OR = "#C9A66B";
   var LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
   var TXT = {
+"Je t’écoute.": ["I’m listening.", "Te escucho.", "Ti ascolto.", "聞いています。", "Ich höre dir zu.", "أنا أستمع إليك.", "我在听。", "Ik luister.", "Estou a ouvir-te.", "Jag lyssnar.", "Я слушаю.", "Słucham cię.", "듣고 있어요.", "گوش می‌دهم."],
+"Je t’écoute…": ["Listening…", "Te escucho…", "Ti ascolto…", "聞いています…", "Ich höre zu…", "أستمع…", "正在听……", "Ik luister…", "Estou a ouvir…", "Jag lyssnar…", "Слушаю…", "Słucham…", "듣고 있어요…", "گوش می‌دهم…"],
+"Conversation à la voix : activée": ["Voice conversation: on", "Conversación por voz: activada", "Conversazione a voce: attiva", "音声会話：オン", "Sprachgespräch: aktiv", "المحادثة الصوتية: مفعّلة", "语音对话：已开启", "Spraakgesprek: aan", "Conversa por voz: ativada", "Röstsamtal: på", "Голосовой разговор: включён", "Rozmowa głosowa: włączona", "음성 대화: 켜짐", "گفتگوی صوتی: فعال"],
+"Parler avec Hype à la voix": ["Talk with Hype by voice", "Hablar con Hype por voz", "Parla con Hype a voce", "Hypeと音声で話す", "Mit Hype sprechen", "تحدّث مع Hype صوتيًا", "用语音和 Hype 对话", "Praat met Hype", "Falar com o Hype por voz", "Prata med Hype", "Говорить с Hype голосом", "Rozmawiaj z Hype głosem", "Hype와 음성으로 대화", "با Hype صوتی حرف بزن"],
+
 "Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me le dire en vocal. Je te poserai une question si j’ai un doute.": ["You can send me a photo, a screenshot or a PDF, or simply tell me by voice. I’ll ask you a question if I’m unsure.", "Puedes enviarme una foto, una captura o un PDF, o simplemente decírmelo por voz. Te haré una pregunta si tengo alguna duda.", "Puoi inviarmi una foto, uno screenshot o un PDF, oppure semplicemente dirmelo a voce. Ti farò una domanda se ho un dubbio.", "写真、スクリーンショット、PDFを送るか、音声でそのまま話してください。迷ったら質問します。", "Du kannst mir ein Foto, einen Screenshot oder ein PDF schicken oder es mir einfach per Sprache sagen. Bei Zweifeln stelle ich dir eine Frage.", "يمكنك أن ترسل لي صورة أو لقطة شاشة أو ملف PDF، أو أن تقوله لي ببساطة صوتيًا. سأطرح عليك سؤالًا إن كان لديّ شك.", "你可以发给我照片、截图或 PDF，或者直接用语音告诉我。如有疑问，我会问你。", "Je kunt me een foto, screenshot of pdf sturen, of het me gewoon inspreken. Bij twijfel stel ik je een vraag.", "Podes enviar-me uma foto, uma captura ou um PDF, ou simplesmente dizer-mo por voz. Farei uma pergunta se tiver dúvidas.", "Du kan skicka en bild, en skärmbild eller en pdf, eller bara säga det med rösten. Jag ställer en fråga om jag är osäker.", "Можешь отправить мне фото, скриншот или PDF или просто сказать голосом. Если засомневаюсь, задам вопрос.", "Możesz przesłać mi zdjęcie, zrzut ekranu lub PDF albo po prostu powiedzieć mi to głosowo. Jeśli będę mieć wątpliwość, zadam pytanie.", "사진, 스크린샷, PDF를 보내거나 그냥 음성으로 말해 주세요. 헷갈리면 질문할게요.", "می‌توانی یک عکس، اسکرین‌شات یا PDF بفرستی، یا فقط با صدا به من بگویی. اگر شک داشته باشم سؤالی می‌پرسم."],
 
 "Que souhaites-tu enregistrer ?": ["What would you like to save?", "¿Qué deseas guardar?", "Cosa desideri salvare?", "何を保存しますか？", "Was möchtest du speichern?", "ماذا تودّ أن تحفظ؟", "你想保存什么？", "Wat wil je graag opslaan?", "O que desejas guardar?", "Vad vill du spara?", "Что ты хочешь сохранить?", "Co chcesz zapisać?", "무엇을 저장하고 싶나요?", "چه چیزی را می‌خواهی ثبت کنی؟"],
@@ -1451,13 +1456,14 @@
     var refFic = React.useRef(null);
     var chevaux = props.chevaux || [];
 
-    async function lire(f, echanges) {
+    async function lire(f, echanges, noteForce) {
+      var noteL = (noteForce != null) ? noteForce : st.note;
       setSt(function (x) { return Object.assign({}, x, { etape: (x.etape === "compris") ? "compris" : "lecture", reflechit: true, err: "", ok: "" }); });
       try {
         var src = f || st.fichier;
         var imgs = st.images && !f ? st.images : (src ? await imagesDe(src) : []);
-        if (!imgs.length && !String(st.note || "").trim()) throw new Error(T("dis-moi ce que tu veux enregistrer, ou donne un document"));
-        var lu = await lireDocument(imgs, { chevaux: chevaux, cheval: props.chevalNom, concours: !!props.concoursId, note: st.note }, echanges || st.echanges);
+        if (!imgs.length && !String(noteL || "").trim()) throw new Error(T("dis-moi ce que tu veux enregistrer, ou donne un document"));
+        var lu = await lireDocument(imgs, { chevaux: chevaux, cheval: props.chevalNom, concours: !!props.concoursId, note: noteL }, echanges || st.echanges);
         var lignes = (lu.soins || []).map(function (s, i) {
           var c = trouverCheval(s.cheval, chevaux);
           var soin = TYPES_SOIN.some(function (t) { return t[0] === s.soin; }) ? s.soin : "autre";
@@ -1475,11 +1481,68 @@
       setSt(function (x) { return Object.assign({}, x, { fichier: f, images: null, echanges: [], fil: [{ qui: "moi", t: "📎 " + (f.name || T("Document")) + (String(x.note || "").trim() ? " — " + x.note : "") }] }); });
       setTimeout(function () { lire(f, []); }, 0);
     }
-    function repondre() {
-      var r = String(st.reponse || "").trim(); if (!r) return;
+    function repondre(texte) {
+      var r = String((typeof texte === "string" ? texte : st.reponse) || "").trim(); if (!r) return;
       var ech = st.echanges.concat([{ q: (st.lu && (st.lu.message || st.lu.question)) || "", r: r }]);
       setSt(function (x) { return Object.assign({}, x, { echanges: ech, fil: x.fil.concat([{ qui: "moi", t: r }]) }); });
       lire(null, ech);
+    }
+
+    /* 13/11 21h38 (Blandine : « qu'il soit capable de parler… comme quand j'appelle Claude ou ChatGPT », niveau 1 choisi) :
+       🎧 MODE CONVERSATION À LA VOIX — Hype LIT ses réponses (voix du téléphone, langue de la personne) puis, quand il a fini,
+       se REMET À ÉCOUTER tout seul ; ce qu'on dit part directement (pas besoin de toucher « Envoyer »). Si l'écoute automatique
+       n'est pas permise (iPhone, appli installée), il parle quand même et on touche 🎙 pour répondre. */
+    var _vx = React.useState(false); var voix = _vx[0], setVoix = _vx[1];
+    var refVoix = React.useRef(false); refVoix.current = voix;
+    var _ec = React.useState(false); var ecoute = _ec[0], setEcoute = _ec[1];
+    var refDit = React.useRef(0);
+    var CODES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-SA", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" };
+    function dire(t, puis) {
+      try {
+        var ss = window.speechSynthesis; if (!ss || !t) { if (puis) puis(); return; }
+        ss.cancel();
+        var u = new SpeechSynthesisUtterance(String(t).replace(/[«»“”]/g, ""));
+        var code = CODES[langue()] || "fr-FR"; u.lang = code; u.rate = 1.02;
+        try { var vs = ss.getVoices() || []; var v = vs.filter(function (x) { return String(x.lang || "").toLowerCase().indexOf(code.slice(0, 2).toLowerCase()) === 0; }); var bonne = v.filter(function (x) { return /premium|enhanced|amélioré|siri/i.test(x.name || ""); })[0] || v[0]; if (bonne) u.voice = bonne; } catch (eV) { }
+        u.onend = function () { if (puis) puis(); }; u.onerror = function () { if (puis) puis(); };
+        ss.speak(u);
+      } catch (eS) { if (puis) puis(); }
+    }
+    function ecouter() {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR || !refVoix.current) return;
+      try {
+        var r = new SR(); r.lang = CODES[langue()] || "fr-FR"; r.interimResults = false; r.continuous = false;
+        r.onresult = function (ev) { var t = ""; for (var i = 0; i < ev.results.length; i++) t += ev.results[i][0].transcript; t = String(t || "").trim(); if (t) envoyerVoix(t); };
+        r.onend = function () { setEcoute(false); }; r.onerror = function () { setEcoute(false); };
+        r.start(); setEcoute(true);
+      } catch (eE) { setEcoute(false); }
+    }
+    function envoyerVoix(t) {
+      setSt(function (x) {
+        if (x.etape === "compris") { setTimeout(function () { repondre(t); }, 0); return x; }
+        if (x.etape === "choix") { setTimeout(function () { lire(null, [], t); }, 0); return Object.assign({}, x, { note: t, fichier: null, images: [], echanges: [], fil: [{ qui: "moi", t: t }] }); }
+        return x;
+      });
+    }
+    function basculerVoix() {
+      var v = !voix; setVoix(v); refVoix.current = v;
+      try { if (window.speechSynthesis) { if (v) { var u0 = new SpeechSynthesisUtterance(" "); window.speechSynthesis.speak(u0); } else window.speechSynthesis.cancel(); } } catch (e0) { }
+      if (v) {
+        var dernier = (st.fil || []).filter(function (m) { return m.qui === "hype"; }).slice(-1)[0];
+        if (st.etape === "compris" && dernier) dire(dernier.t, ecouter);
+        else if (st.etape === "choix") dire(T("Je t’écoute."), ecouter);
+      }
+    }
+    React.useEffect(function () {
+      var n = (st.fil || []).length; if (!n || n === refDit.current) return; refDit.current = n;
+      var m = st.fil[n - 1];
+      if (m && m.qui === "hype" && refVoix.current) dire(m.t, ecouter);
+    }, [st.fil]);
+    React.useEffect(function () { return function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) { } }; }, []);
+    function boutonVoix() {
+      return h("button", { type: "button", className: "hod-btn" + (voix ? "" : " sec"), onClick: basculerVoix, style: { width: "100%", marginTop: 10 } },
+        voix ? (ecoute ? "● " + T("Je t’écoute…") : "🎧 " + T("Conversation à la voix : activée")) : "🎧 " + T("Parler avec Hype à la voix"));
     }
 
     async function enregistrerSoins() {
@@ -1625,6 +1688,7 @@
         h("div", { style: { display: "flex", gap: 8, marginTop: 8, alignItems: "center" } },
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { note: (String(x.note || "").trim() ? x.note + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
           h("button", { type: "button", className: "hod-btn sec", style: { flex: 1 }, disabled: !String(st.note || "").trim(), onClick: function () { setSt(function (x) { return Object.assign({}, x, { fichier: null, images: [], echanges: [], fil: [{ qui: "moi", t: x.note }] }); }); setTimeout(function () { lire(null, []); }, 0); } }, T("Envoyer sans document"))),
+        boutonVoix(),
         h("input", { ref: refFic, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: choisir }),
         h("div", { className: "hod-bas" },
           h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
@@ -1709,7 +1773,8 @@
         h("textarea", { className: "hod-ta", value: st.reponse, placeholder: T("Réponds-lui, corrige-le ou pose-lui une question"), onChange: function (e) { maj({ reponse: e.target.value }); } }),
         h("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 } },
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { reponse: (String(x.reponse || "").trim() ? x.reponse + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
-          h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: repondre }, T("Envoyer"))),
+          h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: function () { repondre(); } }, T("Envoyer"))),
+        boutonVoix(),
         action,
         st.err ? h("div", { className: "hod-err" }, st.err) : null);
     }

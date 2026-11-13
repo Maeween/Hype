@@ -33,6 +33,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 20261113-2150 — Outil unique : la voix, niveau 1 (Hype lit ses réponses, conversation 🎧 qui réécoute toute seule)
+Blandine 13/11 21h38 (« fil numéro 1 »), 21h43 « Oui, vas-y ». hype-outil-doc.js (v=5) ; index.html : build 20261113-2150. Aucune modification de la base.
+- Bouton 🎧 « Parler avec Hype à la voix » (ouverture + conversation). Activé : chaque réponse de Hype est lue (speechSynthesis, langue de la personne, voix la plus naturelle du téléphone), puis il réécoute tout seul (SpeechRecognition) et ce qui est dit part directement (première phrase = « Envoyer sans document », ensuite = réponse). Sans écoute automatique permise (iPhone, appli installée) : il parle, on touche 🎙.
+- Niveau 2 (voix naturelle type ChatGPT, service OpenAI payant à la minute) : plus tard.
+- Textes dans les 15 langues. Non testé sur un vrai téléphone (pas de son dans l'espace de travail).
+
+> 🟧 ENSUITE (Blandine 21h43) : l'outil doit aussi REMPLIR LA TABLE DU REGISTRE (registre_chevaux, page « Registre des chevaux »).
+
 ## 20261113-2142 — Guide coach, page Engagements : photo du bas retirée, la page finit sur la fin de page Hype
 Blandine 13/11 21h41 (« tu finis simplement avec notre bas de page, à la place de l'image »). hype-ecran-coach.js v=2 ; index.html : build 20261113-2142.
 ## 20261113-2141 — GUIDE COACH : page « Engagements » (première page, adresse 2hype.fr/#guide-coach)
