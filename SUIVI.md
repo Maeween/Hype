@@ -13,6 +13,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0500 — Taille de la photo du haut : page cavalier 290 px, Performances et sous-pages 340 px
+- Blandine (03h25) : « passe ma page performance à 340 […] ma page cavalier, tu peux la passer en taille B » (B = 290 px de photo).
+- hypeHeroSousPageCavalier (index.html) : hauteur photo iPhone 380 -> 340 (Performances, Photos, Vidéos, Actualité… ; iPad 430 et ordinateur 460 inchangés).
+- cavV2Hero (hype-ecran-cavalier.js v=27) : hauteur du héros iPhone 410 -> 440, soit une photo de ~220 -> 290 px (iPad 450 et ordinateur 470 inchangés).
+- Mes chevaux reste à 340 px. Blandine : « 340 c'est pas mal, mais il faut pas plus ».
+
 ## 20261113-0450 — Mes chevaux : héros façon Vidéothèque, cartes des chevaux plus petites
 - Blandine (03h23 : « ta page mes chevaux, c'est bien, tu peux la mettre en ligne »). EcranMesChevaux (index.html) : courbe dorée en haut à droite, photo du cheval au couchant ENTIÈRE (340 px sur iPhone = taille « C »), courbe dorée dessous, « CHEVAUX / Mes chevaux » à droite. Ancien héros derrière window.__heroAncien.
 - Cartes des chevaux réduites (hauteur 76 / 88 / 104, nom 22 / 25 / 24, info 11).
