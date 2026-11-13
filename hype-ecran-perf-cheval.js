@@ -1279,8 +1279,57 @@ function estClasseQ(f) {
 
     /* 4 · Souvenirs */
     var fs3 = forts.filter(function (f) { return !(modeCav && f && f.plusHaute); }).slice(0, 8);   /* 13/11 01h27 : la plus haute épreuve a son encart en haut de la page */   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
+    /* 13/11 01h32 (Blandine : « les meilleurs moments, on peut les limiter à quelques trucs… des petits trucs marrants plutôt que
+       de cumuler ») : page du cavalier = quelques RECORDS, pas une liste. 1) la victoire la plus disputée ; 2) le concours le plus
+       réussi (le plus de classements sur un même concours) ; 3) le cheval avec qui il y a eu le plus de classements ; 4) le meilleur
+       classement au plus haut niveau. Ni préparatoires ni indices 4 (tous les sans-faute y sont 1ers). Les moments choisis à la main
+       restent, après. Le plus haut niveau couru a déjà son encart en haut : pas de doublon. */
+    var recs = null;
+    if (modeCav) {
+      recs = [];
+      var bR = base.filter(function (f) { return f && (typeof visL !== "function" || visL(f)); });
+      var faux1er = function (f) { var t = String(f && f.ep || "").toLowerCase(); if (typeof hypePerfEstPrepa === "function" ? hypePerfEstPrepa(f.ep) : /pr[ée]pa/.test(t)) return true; if (/(?:^|[^a-z])[bcd]4(?![0-9])/.test(t)) return true; if (/poney\s*4\b/.test(t) && String(f.d || "") >= "2024-09-01") return true; return false; };
+      var propreR = function (n) { n = String(n || ""); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
+      var phDe = function (nm) { var cx = nm ? parCheval(nm) : null; if (cx && cx.c && cx.c.photo_url) return cx.c.photo_url; try { return (typeof chevalDefaut === "function") ? chevalDefaut((cx && cx.c) || { nom: nm || "" }) : null; } catch (eCd) { return null; } };
+      var hTx = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };
+      var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, t); };
+      var gros = function (t) { return h("span", { style: { color: CHAMP } }, t); };
+      /* 1 */
+      var gV = null; bR.forEach(function (f) { if (f.pl !== 1 || !f.part || faux1er(f)) return; if (!gV || f.part > gV.part) gV = f; });
+      if (gV) recs.push({ k: "rv", l1: h(React.Fragment, null, kick(MOI ? T("Ta victoire la plus disputée", "Your most contested win") : T("Sa victoire la plus disputée", "Most contested win")), gros(rangTxt(1)), " " + SUR() + " " + gV.part),
+        l2: h(React.Fragment, null, [gV.ep, hTx(gV)].filter(Boolean).join(" · "), h("br"), [propreR(gV.nom), String(gV.d || "").slice(0, 4), gV.cav ? nomCourt(gV.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(gV.cav), f: gV });
+      /* 2 : même concours = même nom, à 4 jours près */
+      var grp = []; bR.filter(estClasseQ).slice().sort(function (a, b) { return String(a.d || "").localeCompare(String(b.d || "")); }).forEach(function (f) {
+        var nm = String(f.nom || "").toLowerCase().trim(); if (!nm || !f.d) return;
+        var gx = grp.filter(function (x) { return x.nm === nm && (new Date(f.d) - new Date(x.fin)) / 864e5 <= 4; })[0];
+        if (gx) { gx.n++; gx.fin = f.d; gx.ls.push(f); } else grp.push({ nm: nm, deb: f.d, fin: f.d, n: 1, ls: [f] });
+      });
+      var gC = null; grp.forEach(function (x) { if (x.n >= 2 && (!gC || x.n > gC.n)) gC = x; });
+      if (gC) { var f0 = gC.ls[0], chs = {}; gC.ls.forEach(function (f) { if (f.cav) chs[nomCourt(f.cav)] = 1; });
+        recs.push({ k: "rc", l1: h(React.Fragment, null, kick(MOI ? T("Ton concours le plus réussi", "Your best show") : T("Son concours le plus réussi", "Best show")), gros(String(gC.n)), " " + T("classements", "placings")),
+          l2: h(React.Fragment, null, propreR(f0.nom), h("br"), [dateLisible(gC.deb), Object.keys(chs).join(", ")].filter(Boolean).join(" · ")), ph: phDe(f0.cav), f: f0 }); }
+      /* 3 */
+      var parC = {}; bR.filter(estClasseQ).forEach(function (f) { if (f.cav) parC[f.cav] = (parC[f.cav] || 0) + 1; });
+      var cC = Object.keys(parC).sort(function (a, b) { return parC[b] - parC[a]; })[0];
+      if (cC) { var vC = bR.filter(function (f) { return f.cav === cC && f.pl === 1 && !faux1er(f); }).length;
+        recs.push({ k: "rh", l1: h(React.Fragment, null, kick(MOI ? T("Ton cheval de cœur en concours", "Your top show horse") : T("Son cheval de cœur en concours", "Top show horse")), gros(nomCourt(cC))),
+          l2: h(React.Fragment, null, parC[cC] + " " + T("classements ensemble", "placings together") + (vC ? " · " + vC + " " + (vC > 1 ? T("victoires", "wins") : T("victoire", "win")) : "")), ph: phDe(cC), cheval: cC }); }
+      /* 4 */
+      var cl4 = bR.filter(function (f) { return f.pl != null && !faux1er(f) && hauteurEp(f.ep) != null; });
+      var hM = 0; cl4.forEach(function (f) { var hh = hauteurEp(f.ep); if (hh > hM) hM = hh; });
+      var bH = null; cl4.forEach(function (f) { if (f === gV || hauteurEp(f.ep) < hM - 0.101) return; if (!bH || f.pl < bH.pl || (f.pl === bH.pl && (f.part || 0) > (bH.part || 0))) bH = f; });
+      if (bH) recs.push({ k: "rm", l1: h(React.Fragment, null, kick(MOI ? T("Ton meilleur classement au plus haut niveau", "Your best placing at top level") : T("Son meilleur classement au plus haut niveau", "Best placing at top level")), gros(rangTxt(bH.pl)), bH.part ? " " + SUR() + " " + bH.part : ""),
+        l2: h(React.Fragment, null, [bH.ep, hTx(bH)].filter(Boolean).join(" · "), h("br"), [propreR(bH.nom), String(bH.d || "").slice(0, 4), bH.cav ? nomCourt(bH.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(bH.cav), f: bH });
+      fs3 = forts.filter(function (f) { return f && f.ff && !f.fx; });   /* seuls les moments choisis à la main restent en plus des records */
+    }
+    if (recs && recs.length) {
+      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories"), MOI ? T("Tes records", "Your records") : T("Ses records", "Records")));
+      g.push(h("div", { key: "p4r", style: { padding: "16px 22px 0" } }, recs.map(function (r) {
+        return carteBasse(r.k, ETOI(), r.l1, r.l2, r.ph, function () { if (r.f) allerAuFort(r.f); else if (r.cheval) { var cx = parCheval(r.cheval); if (cx) ouvrirFiche(cx.id); } });
+      })));
+    }
     if (fs3.length) {
-      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), (MOI ? T("Tes plus beaux moments", "Your finest moments") : T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش"))));
+      if (!(recs && recs.length)) g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), (MOI ? T("Tes plus beaux moments", "Your finest moments") : T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش"))));
       g.push(h("div", { key: "p4c", style: { padding: "16px 22px 0" } }, fs3.map(function (f, i) {
         var pf = photosForts[i], chP = parCheval(f.cav);
         var ph = (pf && !pf.video && pf.url) || (chP && chP.c && chP.c.photo_url) || null;
@@ -1404,7 +1453,8 @@ function estClasseQ(f) {
         ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block", mixBlendMode: "lighten", WebkitMaskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)", maskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)" } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
       if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
-        S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
+        var PH_DEF = function (nm) { var cx = nm ? parCheval(nm) : null; try { if (typeof chevalDefaut === "function") return chevalDefaut((cx && cx.c) || { nom: nm || "" }); } catch (eCd) { } return "images/portrait-defaut-bai.webp"; };   /* 13/11 01h35 (Blandine) : cheval sans photo = un des portraits par défaut choisis pour les chevaux (selon sa robe), comme partout dans Hype */
+        S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x); if (!P.ph) P = { nom: P.nom, ph: PH_DEF(x.cheval ? x.lib : P.nom) }; var st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
           if (i) out.push(courbe("ci" + i, i % 2 === 0));
           out.push(h("div", { key: "I" + x.cle },
             h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer", background: "#000" } },   /* 13/11 01h14 (Blandine : « on laisse juste la saison, voir les résultats ») ; hauteur d origine gardee (01h17) */

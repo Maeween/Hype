@@ -1609,7 +1609,7 @@
       var aCreer = (E.peutCreer && E.inconnus && !E.autoCree) ? Object.keys(E.inconnus).filter(function (k) { return k && k !== "?"; }) : [];
       if (aCreer.length) {
         E.autoCree = true; E.creees = []; E.occupe = true; E.creation = "auto"; refaire();
-        var joliN = function (k) { return String(k).toLowerCase().replace(/(^|[\s\-'])([a-z\u00e0-\u00ff])/g, function (m0, a0, b0) { return a0 + b0.toUpperCase(); }); };
+        var joliN = function (k) { return String(k).toLowerCase().replace(/(^|[\s\-'])([a-z\u00e0-\u00ff])/g, function (m0, a0, b0) { return a0 + b0.toUpperCase(); }).replace(/\b(Ii|Iii|Iv|Vi|Vii|Viii|Ix|Xi|Xii)\b/g, function (m) { return m.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur|Sous) /g, function (m) { return m.toLowerCase(); }); };   /* 13/11 : « Bruant II », « Lina du Val » (et non « Bruant Ii », « Lina Du Val ») */
         aCreer.reduce(function (ch, k) { return ch.then(function () { return Promise.resolve(options.onCreerCheval(joliN(k))).then(function (rC) { if (rC && !rC.error) E.creees.push(joliN(k)); else E.erreurCreation = String((rC && rC.error) || "sans réponse"); }).catch(function () { }); }); }, Promise.resolve())
           .then(function () {
             E.creation = null; E.occupe = false;

@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0240 — Performances du cavalier : « Tes records », portraits par défaut ; noms des fiches créées
+- Import du 13/11 01h23 RÉUSSI : 12 fiches créées automatiquement (Peper, Insbruck, Mab Danhouet, Kignonette du Chêne, Farouk du Tertre, Cabri Eole, Lina du Val, Bruant II, Giron des Bruyères, Gamine des Bois, Ischia II, Caramel du Vexin), 57 lignes écrites.
+- Souvenirs (page du cavalier) = « Tes records » : victoire la plus disputée, concours le plus réussi (le plus de classements, même nom à 4 jours près), cheval de cœur en concours (le plus de classements), meilleur classement au plus haut niveau. Ni préparatoires ni indices 4. Les moments choisis à la main restent après.
+- Bandeaux des archives et cartes : un cheval sans photo prend son portrait par défaut (chevalDefaut, selon la robe), au lieu d'un grand noir.
+- Import : les fiches créées gardent les chiffres romains (II) et les particules en minuscule (du, des). hype-import-ffe.js v=40 ; perf v=31.
+- En attente : renommer les 12 fiches déjà créées (« Bruant Ii » -> « Bruant II »…) — accord de Blandine à demander ; largeur des photos des bandeaux.
+
 ## 20261113-0235 — Performances du cavalier : plus haut niveau en tête, beaux moments sans indices 4 ni préparatoires
 - Encart « Ton / Son plus haut niveau couru » juste sous le héros : hauteur en grand + nom de l'épreuve, rien d'autre (Blandine : juste le niveau). Un toucher ouvre le résultat. Retiré des Souvenirs (pas de doublon).
 - Beaux moments : ni indices 4 (B4, C4, D4 ; Poney 4 depuis la saison 2024-25), ni préparatoires — tous les sans-faute y sont 1ers ex aequo. En tête : « Ta victoire la plus disputée » (victoire au plus grand nombre de partants).
