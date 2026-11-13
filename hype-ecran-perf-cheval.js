@@ -1121,10 +1121,10 @@ function estClasseQ(f) {
     var L_P = function (n) { return n > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podiów", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대", "سکو"); };
     var L_Q = function (n) { return n > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "次获得名次", "klasseringen", "classificações", "placeringar", "призовых мест", "klasyfikacji", "입상", "رتبه") : T("classement", "placing", "clasificación", "piazzamento", "入賞", "Platzierung", "تصنيف", "次获得名次", "klassering", "classificação", "placering", "призовое место", "klasyfikacja", "입상", "رتبه"); };
     var chiffreS = function (k, v, lib, or, taille) { return h("div", { key: k, style: { textAlign: "center", minWidth: 0 } },
-      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: or ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
       h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib)); };   /* chiffres des blocs chevaux : pas de dépliage */
     var chiffre = function (k, v, lib, or, taille) { var act = detOuv === k; return h("div", { key: k, role: "button", tabIndex: 0, "aria-expanded": act, onClick: function () { setDetOuv(act ? null : k); }, style: { textAlign: "center", minWidth: 0, cursor: "pointer", padding: "6px 2px", borderRadius: 12, border: "1px solid " + (act ? "rgba(201,166,107,0.55)" : "transparent"), background: act ? "rgba(201,166,107,0.06)" : "transparent" } },
-      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: or ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
       h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12.5, fontWeight: 500, color: "#F3EEE4" } }, lib, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, act ? "˄" : "˅"))); };   /* 13/11 02h31 (Blandine : « épreuves, victoires… on a du mal à les lire ») : un peu plus gros et plus clair */
     var parCheval = function (nm) { var r = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === nm)) r = { id: k, c: c }; }); } catch (eP) { } return r; };
     var ouvrirFiche = function (id) { try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); };
@@ -1262,7 +1262,7 @@ function estClasseQ(f) {
       var phDe = function (nm) { var cx = nm ? parCheval(nm) : null; if (cx && cx.c && cx.c.photo_url) return cx.c.photo_url; try { return (typeof chevalDefaut === "function") ? chevalDefaut((cx && cx.c) || { nom: nm || "" }) : null; } catch (eCd) { return null; } };
       var hTx = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };
       var kick = function (t) { return h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, t); };
-      var gros = function (t) { return h("span", { style: { color: CHAMP } }, t); };
+      var gros = function (t) { return h("span", { style: { color: IVOIRE } }, t); };   /* 13/11 02h43 (Blandine : « trop de doré ») : valeurs en ivoire, le doré reste aux petits titres */
       /* 1 */
       var gV = null; bR.forEach(function (f) { if (f.pl !== 1 || !f.part || faux1er(f)) return; if (!gV || f.part > gV.part) gV = f; });
       if (gV) recs.push({ k: "rv", l1: h(React.Fragment, null, kick(MOI ? T("Ta victoire la plus disputée", "Your most contested win") : T("Sa victoire la plus disputée", "Most contested win")), gros(rangTxt(1)), " " + SUR() + " " + gV.part),
@@ -1294,7 +1294,7 @@ function estClasseQ(f) {
       var parC = {}; bR.filter(estClasseQ).forEach(function (f) { if (f.cav) parC[f.cav] = (parC[f.cav] || 0) + 1; });
       var cC = Object.keys(parC).sort(function (a, b) { return parC[b] - parC[a]; })[0];
       if (cC) { var vC = bR.filter(function (f) { return f.cav === cC && f.pl === 1 && !faux1er(f); }).length;
-        recs.push({ k: "rh", l1: h(React.Fragment, null, kick(MOI ? T("Ton cheval de cœur en concours", "Your top show horse") : T("Son cheval de cœur en concours", "Top show horse")), gros(nomCourt(cC))),
+        recs.push({ k: "rh", l1: h(React.Fragment, null, kick(MOI ? T("Ton cheval le plus performant", "Your best-performing horse") : T("Son cheval le plus performant", "Best-performing horse"))   /* 13/11 02h44 (Blandine) : pas « de cœur » */, gros(nomCourt(cC))),
           l2: h(React.Fragment, null, parC[cC] + " " + T("classements ensemble", "placings together") + (vC ? " · " + vC + " " + (vC > 1 ? T("victoires", "wins") : T("victoire", "win")) : "")), ph: phDe(cC), cheval: cC }); }
       /* 4 */
       var cl4 = bR.filter(function (f) { return f.pl != null && !faux1er(f) && hauteurEp(f.ep) != null; });
@@ -1448,7 +1448,7 @@ function estClasseQ(f) {
       var TT = ["images/portrait-defaut-bai.webp", "images/portrait-defaut-gris.webp", "images/portrait-defaut-alezan.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp", "images/portrait-defaut-blanc.webp"];
       var hTr = function (f) { var hh = hauteurEp(f.ep); return (hh != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(hh.toFixed(2)).replace(".", ",") + " m" : ""; };   /* pas de doublon si la hauteur est déjà écrite */
       var epC = function (f) { return String(f.ep || "").replace(/^\$\s*/, ""); };
-      var placeEl = function (f, taille) { return h("span", { style: { fontFamily: SERIF, fontSize: taille, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, h("span", { style: { color: f.pl != null && f.pl <= 3 ? CHAMP : IVOIRE } }, resTxt(f)), f.pl != null && f.part ? h("span", { style: { fontSize: Math.round(taille * 0.62), color: "rgba(243,238,228,0.75)" } }, " / " + f.part) : null); };
+      var placeEl = function (f, taille) { return h("span", { style: { fontFamily: SERIF, fontSize: taille, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, h("span", { style: { color: IVOIRE } }, resTxt(f)), f.pl != null && f.part ? h("span", { style: { fontSize: Math.round(taille * 0.62), color: "rgba(243,238,228,0.75)" } }, " / " + f.part) : null); };
       dest.push(sepA2("s3")); dest.push(partie("p3", T("Récent", "Recent", "Reciente", "Recenti", "最近", "Zuletzt", "الأحدث", "最近", "Recent", "Recente", "Senaste", "Недавно", "Ostatnio", "최근", "اخیر"), MOI ? T("Tes derniers concours", "Your latest shows") : T("Ses derniers concours", "Latest shows")));
       if (RV === "B") {
         var elB = [];
@@ -1630,9 +1630,9 @@ function estClasseQ(f) {
         var nEx = nbEpDe(x.ls), nQx = x.ls.filter(estClasseQ).length, pcx = nEx ? Math.round(nQx / nEx * 100) : null;
         return h("div", { style: { padding: "8px 22px 10px" } },
           pcx != null ? h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, padding: "4px 0 2px" } },
-            h("span", { style: { fontFamily: SERIF, fontSize: 34, lineHeight: 1, color: "#C9A66B", direction: "ltr" } }, pcx + " %"),
+            h("span", { style: { fontFamily: SERIF, fontSize: 34, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, pcx + " %"),
             h("span", { style: { fontFamily: SANS, fontSize: 11.5, color: "rgba(243,238,228,0.8)" } }, T("de classements", "placed") + " · " + nQx + " " + T("sur", "of") + " " + nEx + " " + (nEx > 1 ? T("parcours", "rounds") : T("parcours", "round")))) : null,
-          t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "4px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
+          t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: "rgba(243,238,228,0.85)", padding: "4px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
       var photoBloc = function (ph, hauteur, cote, miroir) {   /* 13/11 01h37 (Blandine : « la photo d'Elfe est bien plus large que ce que tu montres ») : la photo prend toute la hauteur du bandeau et SA largeur naturelle, collée au bord, jamais coupée (contain) ; fondu sur son seul bord intérieur. Plus d img en flex (Safari la rétrécissait). */
         var dirM = cote === "right" ? "90deg" : "270deg", msq = "linear-gradient(" + dirM + ", transparent 0%, #000 18%)"; var msqM = "linear-gradient(" + (cote === "right" ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée : le masque se retourne avec elle */
         return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "70%", pointerEvents: "none", overflow: "hidden" } },

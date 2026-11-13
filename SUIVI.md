@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0350 — Moins de doré, « cheval le plus performant », outil d'import au nouveau design
+- Performances du cavalier : les grandes valeurs passent en ivoire (records, chiffres d'En bref, places des cartes, % d'une saison ouverte). Le doré reste aux petits titres en capitales, filets, anneau et hauteurs.
+- Record « Ton cheval de cœur en concours » -> « Ton cheval le plus performant ».
+- Outil d'import (hype-import-ffe.js v=42) : habillage au nouveau design par surcharges .hi.hi en fin de feuille (fond #0A0D0C, un seul doré #C9A66B, titres Cormorant, boutons à contour fin — plus de bouton plein turquoise —, textes ivoire plus lisibles) sur tous ses écrans. Titre « Tes résultats FFE » ; aide réécrite : la capture d'écran en premier (3 étapes), PDF/.xls ensuite.
+- perf v=38.
+
 ## 20261113-0345 — Performances du cavalier : finitions (titres C, tailles, un seul doré, sa photo)
 - Héros façon Vidéothèque : reprend SA photo (photoCh, comme l'ancien héros) ; prénom 50 -> 40.
 - « Niveau le plus haut couru » (titre raccourci) : encart 176 -> 140, chiffre 44 -> 36, année ajoutée.

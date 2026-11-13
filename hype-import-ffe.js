@@ -915,7 +915,52 @@
 '  background:rgba(var(--t),.05);border:1px solid rgba(var(--t),.26)}',
 '.hi-fin .ic{font-size:30px}',
 '.hi-fin b{display:block;font-family:Cinzel,Georgia,serif;font-size:17px;margin-top:12px}',
-'.hi-fin span{display:block;font-size:11.5px;color:#8A929C;margin-top:9px;line-height:1.6}'
+'.hi-fin span{display:block;font-size:11.5px;color:#8A929C;margin-top:9px;line-height:1.6}',
+/* 13/11 02h42 (Blandine : « l'outil a le design de l'ancien design sur toute la longueur… le bouton, tout ce qu'il propose ») :
+   même design que la page Performances — fond noir, un seul doré (#C9A66B), titres en Cormorant, boutons à contour fin,
+   textes ivoire lisibles. Surcharges en fin de feuille (.hi.hi) : rien d'autre ne bouge. */
+'.hi.hi{--t:201,166,107;--or:201,166,107;--tx:243,238,228;background:#0A0D0C}',
+'.hi.hi .hi-h{padding-bottom:10px}',
+'.hi.hi .hi-k{font-size:9.5px;font-weight:600;letter-spacing:.3em;color:#C9A66B}',
+'.hi.hi .hi-h h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:30px;line-height:1.1;margin-top:8px}',
+'.hi.hi .hi-h p{font-size:12.5px;color:rgba(243,238,228,.78)}',
+'.hi.hi .hi-h::after{content:"";display:block;height:1px;margin:18px auto 0;width:70%;background:linear-gradient(90deg,rgba(201,166,107,0),#C9A66B 50%,rgba(201,166,107,0))}',
+'.hi.hi .hi-etapes i{background:rgba(243,238,228,.1)}',
+'.hi.hi .hi-etapes i.on{background:#C9A66B}',
+'.hi.hi .hi-zone{display:block;border:1px dashed rgba(201,166,107,.5);background:rgba(201,166,107,.04);border-radius:18px}',
+'.hi.hi .hi-zone .ic{color:#C9A66B}',
+'.hi.hi .hi-zone b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:21px;color:#F3EEE4}',
+'.hi.hi .hi-zone span{font-size:12px;color:rgba(243,238,228,.75)}',
+'.hi.hi .hi-aide{font-size:12px;color:rgba(243,238,228,.75);background:rgba(201,166,107,.03);border-color:rgba(201,166,107,.2);border-radius:16px}',
+'.hi.hi .hi-aide b{color:#F3EEE4}',
+'.hi.hi .hi-film-t i{background:rgba(201,166,107,.35)}',
+'.hi.hi .hi-film-t b{color:#C9A66B}',
+'.hi.hi .hi-film{border-color:rgba(201,166,107,.3)}',
+'.hi.hi .hi-att{border-color:rgba(201,166,107,.25);background:rgba(201,166,107,.04)}',
+'.hi.hi .hi-att b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:20px}',
+'.hi.hi .hi-att span,.hi.hi .hi-fin span,.hi.hi .hi-co .li,.hi.hi .hi-n .co span{color:rgba(243,238,228,.75)}',
+'.hi.hi .hi-co .qd,.hi.hi .hi-hors{color:rgba(243,238,228,.55)}',
+'.hi.hi .hi-bi{border-color:rgba(201,166,107,.22);background:rgba(201,166,107,.03)}',
+'.hi.hi .hi-bi b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:28px}',
+'.hi.hi .hi-bi span{color:rgba(243,238,228,.7)}',
+'.hi.hi .hi-st{color:#C9A66B;font-weight:600;letter-spacing:.28em}',
+'.hi.hi .hi-st em{color:rgba(243,238,228,.6)}',
+'.hi.hi .hi-cav{border-radius:999px}',
+'.hi.hi .hi-cav.on{border-color:#C9A66B;color:#F3EEE4}',
+'.hi.hi .hi-liste{background:none}',
+'.hi.hi .hi-l{background:#0B1114;border:1px solid rgba(201,166,107,.18);border-radius:14px}',
+'.hi.hi .hi-l:not(.off) .hi-case{background:#C9A66B;border-color:#C9A66B;color:#0A0D0C}',
+'.hi.hi .hi-rg{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px}',
+'.hi.hi .hi-rg.v{color:#C9A66B}',
+'.hi.hi .hi-n{border-radius:14px}',
+'.hi.hi .hi-n.on{border-color:#C9A66B;background:rgba(201,166,107,.06)}',
+'.hi.hi .hi-n .nb{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px}',
+'.hi.hi .hi-n.on .nb{color:#C9A66B}',
+'.hi.hi .hi-bt{border-radius:999px;background:transparent;color:#C9A66B;border:1px solid #C9A66B;font-weight:600;letter-spacing:.02em}',
+'.hi.hi .hi-bt2{border-radius:999px;color:rgba(243,238,228,.85);border-color:rgba(243,238,228,.22)}',
+'.hi.hi .hi-fin{background:rgba(201,166,107,.04);border-color:rgba(201,166,107,.35);border-radius:18px}',
+'.hi.hi .hi-fin .ic{color:#C9A66B}',
+'.hi.hi .hi-fin b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:26px;letter-spacing:0}'
   ].join("");
 
   function poserStyle() {
@@ -946,7 +991,7 @@
   /* ==== 1 · CHOISIR LE FICHIER ========================================= */
   function vueChoix() {
     var h = '<div class="hi-h"><div class="hi-k">Importer mes résultats</div>' +
-      '<h2>Ton telemat FFE</h2>' +
+      '<h2>Tes résultats FFE</h2>' +
       '<p>Une saison par fichier. L\'app lit, tu relis, et rien ne s\'enregistre sans toi.</p>' +
       (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Rattach\u00e9 \u00e0 : <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
@@ -957,13 +1002,12 @@
     h += '<div class="hi-zone" style="margin-top:10px;cursor:default"><b>Ou colle ta page FFE Compet</b>' +
       '<span>Plus besoin de chercher le fichier : sur FFE Compet, page « Engagements et performances », sélectionne tout et copie. Puis appuie longuement sur le cadre ci-dessous et choisis « Coller ».</span>' +
       '<div contenteditable="true" data-hi="coller" inputmode="none" style="margin-top:10px;min-height:46px;padding:12px;border:1px dashed rgba(201,166,107,.6);border-radius:12px;font-size:13px;color:rgba(243,238,228,.7);text-align:center;-webkit-user-select:text;user-select:text">Appuie longuement ici, puis « Coller »</div></div>';
-    h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
-      '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
-      '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
-      '<li>Choisis l\'onglet <b>« Page entière »</b></li>' +
-      '<li><b>Enregistrer le PDF dans Fichiers</b></li></ol>' +
-      '⚠️ Il faut bien un <b>PDF</b> : une capture en image ne se lit pas.' +
-      '<br><br><b>Nouveau :</b> tu peux aussi donner la page <b>« R\u00e9sultats d\u00e9taill\u00e9s »</b> d\u2019une \u00e9preuve (site FFE), enregistr\u00e9e en PDF de la m\u00eame fa\u00e7on : les r\u00e9sultats de ton club iront chacun sur la fiche de son cheval.</div>';
+    h += '<div class="hi-aide"><b>Le plus simple : une capture d\'écran</b>' +   /* 13/11 02h42 : la capture se lit maintenant, elle passe en premier */
+      '<ol><li>Ouvre ta page <b>« Engagements et performances »</b> sur FFE Compet (ou ton telemat)</li>' +
+      '<li>Fais une <b>capture d\'écran</b> (une longue capture « Page entière » marche aussi)</li>' +
+      '<li>Touche <b>« Choisir un fichier »</b> plus haut, puis choisis-la dans tes photos</li></ol>' +
+      '<b>Tu as un PDF ou le fichier .xls ?</b> Ils marchent aussi, choisis-les de la même façon.' +
+      '<br><br>Tu peux aussi donner la page <b>« R\u00e9sultats d\u00e9taill\u00e9s »</b> d\u2019une \u00e9preuve (site FFE) : les r\u00e9sultats de ton club iront chacun sur la fiche de son cheval.</div>';
     /* 🟥 23/08 session 158 — LA VIDÉO D AIDE, TOUT EN BAS.
        Maquette validee par Blandine : centree, 280 px, couverture E (le poney
        et la coupe), muette et en boucle. Muette EXPRES : avec du son, iOS et
