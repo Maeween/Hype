@@ -258,6 +258,8 @@ var HS_TR_BRUT = {
   "Règles du paddock": ["Warm-up arena rules", "Normas del paddock", "Regole del campo prova", "準備馬場のルール", "Regeln am Abreiteplatz", "قواعد ميدان الإحماء", "热身场规则", "Regels losrijring", "Regras do paddock", "Regler vid framridningen", "Правила разминки", "Zasady rozprężalni", "준비 마장 규칙"],
   "Ne rentre jamais seul au paddock : attends l’accord de ta coach.": ["Never enter the warm-up arena alone: wait for your coach's go-ahead.", "Nunca entres solo al paddock: espera el permiso de tu entrenadora.", "Non entrare mai da solo nel campo prova: aspetta il via della tua coach.", "一人で準備馬場に入らないこと。コーチの許可を待ちましょう。", "Geh nie allein auf den Abreiteplatz: warte auf das Okay deiner Trainerin.", "لا تدخل ميدان الإحماء وحدك أبدًا: انتظر موافقة مدربتك.", "切勿独自进入热身场：等待教练同意。", "Ga nooit alleen de losrijring op: wacht op het akkoord van je coach.", "Nunca entre sozinho no paddock: espere o sinal da sua treinadora.", "Gå aldrig in på framridningen ensam: vänta på din tränares klartecken.", "Никогда не заходи на разминку один: дождись разрешения тренера.", "Nigdy nie wchodź sam na rozprężalnię: poczekaj na zgodę trenerki.", "혼자 준비 마장에 들어가지 마세요. 코치의 허락을 기다려요."],
   "Dès ton arrivée, signale à ta coach que tu es sur le paddock.": ["As soon as you arrive, tell your coach you're in the warm-up arena.", "En cuanto llegues, avisa a tu entrenadora de que estás en el paddock.", "Appena arrivi, avvisa la tua coach che sei al campo prova.", "到着したら、準備馬場にいることをすぐコーチに伝えましょう。", "Sag deiner Trainerin gleich bei der Ankunft, dass du am Abreiteplatz bist.", "فور وصولك، أخبر مدربتك أنك في ميدان الإحماء.", "一到场就告诉教练你已在热身场。", "Laat je coach meteen weten dat je op de losrijring bent.", "Assim que chegar, avise sua treinadora que está no paddock.", "Säg till din tränare så fort du är på framridningen.", "Как только придёшь, сообщи тренеру, что ты на разминке.", "Zaraz po przyjściu daj znać trenerce, że jesteś na rozprężalni.", "도착하면 바로 코치에게 준비 마장에 왔다고 알려요."],
+  "Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.": ["Be right on time at the warm-up arena entrance: one late rider makes the whole team late."],
+  "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance. Remember to bring someone to hold your horse during the course walk, and something to replace your airbag vest cartridge or a back protector, just in case."],
   "Ne quitte jamais le paddock sans l’accord de ta coach.": ["Never leave the warm-up arena without your coach's go-ahead.", "Nunca salgas del paddock sin el permiso de tu entrenadora.", "Non lasciare mai il campo prova senza il via della tua coach.", "コーチの許可なしに準備馬場を離れないこと。", "Verlass den Abreiteplatz nie ohne das Okay deiner Trainerin.", "لا تغادر ميدان الإحماء أبدًا دون موافقة مدربتك.", "未经教练同意切勿离开热身场。", "Verlaat de losrijring nooit zonder akkoord van je coach.", "Nunca saia do paddock sem o sinal da sua treinadora.", "Lämna aldrig framridningen utan din tränares klartecken.", "Никогда не уходи с разминки без разрешения тренера.", "Nigdy nie opuszczaj rozprężalni bez zgody trenerki.", "코치의 허락 없이 준비 마장을 떠나지 마세요."],
   "Proposer des groupes": ["Suggest groups", "Proponer grupos", "Proponi gruppi", "グループを提案", "Gruppen vorschlagen", "اقتراح مجموعات", "建议分组", "Groepen voorstellen", "Sugerir grupos", "Föreslå grupper", "Предложить группы", "Zaproponuj grupy", "그룹 제안"],
   "+ Nouveau groupe": ["+ New group", "+ Nuevo grupo", "+ Nuovo gruppo", "+ 新しいグループ", "+ Neue Gruppe", "+ مجموعة جديدة", "+ 新分组", "+ Nieuwe groep", "+ Novo grupo", "+ Ny grupp", "+ Новая группа", "+ Nowa grupa", "+ 새 그룹"],
@@ -1313,7 +1315,7 @@ var HS_IMG_LOTS_CH = ["images/concours-carte-medias.webp", "images/galop1-hero-b
 /* 13/11 12h16 (Blandine : « Mets D que je vois si ça passe ») : listes des passages en visuel D (petite vignette photo à côté du nom).
    Les autres visuels restent essayables : classe rcv-a, -b, -c, -e … -i sur <html>. */
 try { var _rcR = document.documentElement; if (!/\brcv-/.test(_rcR.className)) _rcR.classList.add("rcv-n");   /* 13/11 12h50 : choix N de Blandine */ if (!/\brcp-/.test(_rcR.className)) _rcR.classList.add("rcp-1");   /* 13/11 13h05 : par cavalier / par cheval, nom à gauche et petit rond à droite */
-  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-5");   /* 13/11 13h09 : encadré du jury en « tickets » (choix de Blandine) */ } catch (eRcv) { }
+  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-5");   /* 13/11 13h09 : encadré du jury en « tickets » (choix de Blandine) */ if (!/\bbtn-/.test(_rcR.className)) _rcR.classList.add("btn-3");   /* 13/11 13h26 : boutons de la coach sur fond sombre, sans cadre (choix 3) */ } catch (eRcv) { }
 /* 13/11 12h55 (Blandine : « j'ai mis Dakota à la place de Dakota ca… tu décomptes comme deux chevaux ») : un nom tapé est ramené
    au cheval connu (même nom sans tenir compte des majuscules, ou début de nom qui ne correspond qu'à un seul cheval) */
 function hsChevalConnu(nom, liste) {
@@ -2317,13 +2319,15 @@ function EcranConcours() {
         h("div", { className: "hc-g9-l" }, lignes.map(function (p, i) {
           return h("div", { key: i, className: "hc-g9-r" + (moi && p.cavalier_id === moi.id ? " moi" : "") + (p.non_partant ? " np" : "") },
             h("span", { className: "hc-g9-n" }, p.ordre_passage || ""), avatarHc(p, 30),
-            h("div", { className: "hc-g9-q" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, p.non_partant ? F("non partant") : p.passage].filter(Boolean).join(" · "))));
+            h("div", { className: "hc-g9-q" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, (p.epreuve && hsNomEpreuve(p.epreuve) !== hsNomEpreuve(g.epreuve || "")) ? hsNomEpreuve(p.epreuve) : "", p.non_partant ? F("non partant") : p.passage].filter(Boolean).join(" · "))));
         }))) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
       conf.length ? h("div", { className: "hc-grp-conf" }, conf.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null);
   }
   function editeur() {
     if (!gEp) return h("div", { className: "hs-note" }, F("Aucun couple dans cette épreuve."));
     var grs = grpEd.filter(function (g) { return !g.__suppr && hsNomEpreuve(g.epreuve) === epPaddock; });
+    var tousP = (passagesEq || []).filter(function (p) { return !p.non_partant || hsNomEpreuve(p.epreuve || "") === epPaddock; });
+    function placeAilleurs(p) { var cl = cleCouple(p); return grpEd.some(function (g) { return !g.__suppr && hsNomEpreuve(g.epreuve) !== epPaddock && (g.couples || []).some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; }); }); }
     function dansQuel(p) { var cl = cleCouple(p), d = null; grs.forEach(function (g) { if (g.couples.some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; })) d = g; }); return d; }
     function parOrdre(a, b) { return ((a.ordre_passage || 999) - (b.ordre_passage || 999)) || (hsMinutes(a.passage) - hsMinutes(b.passage)); }
     function court(g, gi) { return String(g.nom || "").replace(/^Groupe\s*/i, "G") || ("G" + (gi + 1)); }
@@ -2331,7 +2335,7 @@ function EcranConcours() {
       var cl = cleCouple(p);
       var autres = grs.filter(function (g) { return !dans || cleG(g) !== cleG(dans); });
       return h(React.Fragment, { key: k }, h("div", { className: "hc-ged-c" + (p.non_partant ? " np" : "") },
-        h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || "")), h("span", { className: "hc-ged-lk" },
+        h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || "") + (hsNomEpreuve(p.epreuve || "") !== epPaddock ? " · " + hsNomEpreuve(p.epreuve || "") + (p.passage ? " " + p.passage : "") : "")), h("span", { className: "hc-ged-lk" },
           dans && !p.non_partant ? h("button", { type: "button", className: "hs-lien", onClick: function () { affecter(p, null); } }, F("Retirer")) : null,
           !p.non_partant ? h("button", { type: "button", className: "hs-lien", onClick: function () { setChg(chg && chg.cle === cl ? null : { cle: cl, ch: "", chNom: "", cav: "", cavNom: "" }); } }, F("Changer")) : null,
           h("button", { type: "button", className: "hs-lien", onClick: function () { basculerNonPartant(p); } }, p.non_partant ? F("Partant") : F("Non partant")))),
@@ -2356,18 +2360,24 @@ function EcranConcours() {
               h("button", { type: "button", className: "hc-btn-l", onClick: function () { setGrpSupp(null); } }, F("Garder")),
               h("button", { type: "button", className: "hc-btn-l", onClick: function () { setGrpSupp(null); majBrouillon(function (n) { for (var i = n.length - 1; i >= 0; i--) { var x = n[i]; if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) { if (x.id) x.__suppr = true; else n.splice(i, 1); } } }); } }, F("Supprimer")))) : null,
           alertes.length ? h("div", { className: "hc-grp-conf" }, alertes.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null,
-          (function () { var dans = gEp.l.filter(function (p) { var q = dansQuel(p); return q && cleG(q) === cleG(g); }).sort(parOrdre);
+          (function () { var dans = tousP.filter(function (p) { var q = dansQuel(p); return q && cleG(q) === cleG(g); }).sort(parOrdre);
             return dans.length ? h("div", { className: "hc-ged-gl" }, dans.map(function (p, i) { return ligneCouple(p, g, i); })) : h("div", { className: "hc-grp-vide" }, F("Aucun couple : ajoute-les depuis « Pas encore dans un groupe »."));
           })());
       }),
       /* 13/11 12h57 (Blandine : « tu mélanges tous les cavaliers du groupe 1 et du groupe 2… le groupe 1 s'ouvre avec ses cavaliers à lui ») :
          chaque groupe montre SES couples juste dessous ; puis les couples pas encore placés ; puis les non partants */
       (function () {
-        var libres = gEp.l.filter(function (p) { return !p.non_partant && !dansQuel(p); }).sort(parOrdre);
-        var nps = gEp.l.filter(function (p) { return p.non_partant; }).sort(parOrdre);
+        var libres = gEp.l.filter(function (p) { return !p.non_partant && !dansQuel(p) && !placeAilleurs(p); }).sort(parOrdre);
+        var nps = gEp.l.filter(function (p) { return p.non_partant && !dansQuel(p); }).sort(parOrdre);
+        /* 13/11 13h19 (Blandine : « proposer quand même les cavaliers de l'épreuve suivante… les épreuves s'enchaînent… Maëlys n'a pas de
+           rendez-vous paddock ») : les couples des autres épreuves, pas encore dans un groupe, peuvent rejoindre un groupe de celle-ci */
+        var autresEp = []; parEpreuve.forEach(function (x) { if (x.ep === epPaddock) return; var ll = x.l.filter(function (p) { return !p.non_partant && !dansQuel(p) && !placeAilleurs(p); }).sort(parOrdre); if (ll.length) autresEp.push({ ep: x.ep, l: ll }); });
         return [
           libres.length ? h("div", { key: "lib", className: "hc-ged-k" }, F("Pas encore dans un groupe") + " · " + libres.length) : null,
           libres.map(function (p, i) { return ligneCouple(p, null, "l" + i); }),
+          autresEp.map(function (x, j) { return h(React.Fragment, { key: "ae" + j },
+            h("div", { className: "hc-ged-k" }, F("Autre épreuve · ") + x.ep + " · " + x.l.length),
+            x.l.map(function (p, i) { return ligneCouple(p, null, "a" + j + "-" + i); })); }),
           nps.length ? h("div", { key: "np", className: "hc-ged-k" }, F("Non partants") + " · " + nps.length) : null,
           nps.map(function (p, i) { return ligneCouple(p, null, "n" + i); })];
       })(),
@@ -2382,7 +2392,7 @@ function EcranConcours() {
       h("div", { className: "hc-pad-tt" }, h("h2", null, F("Organisation du paddock")), h("span", null, F("Groupes de détente") + " · " + (epPaddock || ""))),
       (gestion && !grpEd) ? h("button", { type: "button", className: "hc-btn-l", onClick: ouvrirEditeur }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" })), F("Modifier les groupes")) : null),
     (!gestion && monGroupe) ? h("div", { className: "hc-pad-moi" }, F("Ton groupe : ") + (monGroupe.nom || "") + (monGroupe.heure_rdv ? F(" · rendez-vous au paddock à ") + monGroupe.heure_rdv : "")) : null,
-    (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours.")) : null,   /* 13/11 : message validé par Blandine */
+    (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.")   /* 13/11 13h22 (Blandine : « prévoir de quoi changer la cartouche d'airbag ou une protection dorsale au cas où ») */) : null,   /* 13/11 : message validé par Blandine */
     grpEd ? editeur() : (grpEp.length ? h("div", { className: "hc-grps" }, grpEp.filter(function (g) { return gestion || g.publie; }).map(carteGroupe)) : h("div", { className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Pas encore de groupe pour cette épreuve : touche « Modifier les groupes ».") : F("Les groupes de détente apparaîtront quand ta coach les aura publiés."))),
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
@@ -2390,7 +2400,7 @@ function EcranConcours() {
   var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
     h("div", { className: "hc-reg-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 34, height: 34 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinejoin: "round", strokeLinecap: "round" }, h("path", { d: "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z" }), h("path", { d: "M8.6 12.2l2.4 2.4 4.6-4.8" })))),
     h("h3", null, F("Règles du paddock")),
-    h("ul", null, [F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
+    h("ul", null, [F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach."), F("Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
 
   /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
   var gens = [];
@@ -3647,7 +3657,7 @@ function EcranConcours() {
   /* 09/11 15h (Blandine : « Jour J et Passages doivent être une même et seule page ») : un seul outil, en bas de Passages */
   function ouvrirModifPassages() { try { window.__concoursId = idEv; } catch (e) { } setDecEp(null); setOngletC("passages"); setJjOuv(true); setTimeout(function () { try { var el = document.querySelector(".hc-jj"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }, 150); }
   function fermerModifPassages() { setJjOuv(false); try { supa.rpc("hype_passages_concours", { p_agenda: idEv }).then(function (rq) { if (rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); }); } catch (eQ) { } try { chargerAgendaEvenement(idEv).then(function (r) { if (r && r.data) setEv(r.data); }); } catch (eE) { } }
-  var outilsPassages = (gestion && !jjOuv) ? h("div", { key: "op", className: "hc-outils" },
+  var outilsPassages = (gestion && !jjOuv) ? h("div", { key: "op", className: "hc-outils hc-apres-pas" },   /* 13/11 13h24 : la courbe aussi sous la dernière épreuve */
     outil("modp", F("Modifier les passages"), F("Heures et pistes, ordre de passage ou programme (photo, capture ou PDF), direct du chronométreur."), ouvrirModifPassages)) : null;
   var blocModifPassages = (gestion && jjOuv && typeof EcranJourJ === "function") ? h("div", { key: "jj", className: "hc-jj" },
     h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Modifier les passages")),
@@ -4330,7 +4340,7 @@ var HC_CSS = [
   ".hc .hc-bb{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;justify-content:center}",
   "@media (min-width:768px){.hc .hc-rl{grid-template-columns:64px 40px 1fr 90px 90px 30px}}",
   /* 09/11 — Organisation du paddock + règles */
-  ".hc .hc-pad{margin-top:34px;padding-top:26px;border-top:1px solid rgba(201,166,107,.22)}",
+  ".hc .hc-pad{margin-top:0;padding-top:0;border-top:0}",   /* 13/11 13h20 : remplacé par la courbe de chapitre */
   ".hc .hc-pad-tete{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:16px}",
   ".hc .hc-pad-tt h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(21px,6vw,26px);line-height:1.1;color:#F3EEE4}",
   ".hc .hc-pad-tt span{display:block;font-size:12px;color:rgba(243,238,228,.7);margin-top:3px}",
@@ -4388,7 +4398,25 @@ var HC_CSS = [
   ".hc .hc-g9-r.moi b{color:#C9A66B}",
   ".hc .hc-g9-r.np{opacity:.45}",
   ".hc .hc-g9-r.np b{text-decoration:line-through}",
+  /* 13/11 13h20 (Blandine : « entre les grands chapitres, la petite courbe très légèrement dorée, bien aérée au-dessus, en dessous, un chapitre propre centré ») */
+  ".hc .hc-ong-c .hc-pas-tete,.hc div.hc-pas-tete,.hc div.hc-pad-tete{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;margin:64px 0 26px;padding-top:54px}",
+  ".hc div.hc-pas-tete:before,.hc div.hc-pad-tete:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
+  ".hc .hc-pas-tete .hc-pas-titre{border:0 !important;padding:0 !important;white-space:normal;font-size:clamp(26px,7.4vw,32px)}",
+  ".hc .hc-pad-tete .hc-pad-ic{display:none}",
+  ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(26px,7.4vw,32px)}",
+  ".hc .hc-pad-tete .hc-pad-tt span{display:block;margin-top:6px}",
+  ".hc .hc-apres-pas{position:relative;margin-top:44px;padding-top:56px}",
+  ".hc .hc-apres-pas:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
+  /* 13/11 13h24 (Blandine : « pas mal de boutons dorés… modifier les passages, etc… éviter de nous cramer les yeux ») : 3 propositions */
+  "html.btn-1 .hc .hc-btn-l,html.btn-1 .e1 .rc-mod,html.btn-1 .hc .rc-mod{border-color:rgba(243,238,228,.22) !important;color:#F3EEE4 !important}html.btn-1 .hc .hc-btn-l svg path,html.btn-1 .rc-mod path{stroke:#F3EEE4}html.btn-1 .hc .hc-outil{border-color:rgba(243,238,228,.16);color:#F3EEE4;background:#0e1212}html.btn-1 .hc .hc-outil .hc-o-c{color:rgba(243,238,228,.5)}",
+  "html.btn-2 .hc .hc-btn-l,html.btn-2 .e1 .rc-mod,html.btn-2 .hc .rc-mod{border-color:rgba(95,163,174,.5) !important;color:#9CC7CF !important}html.btn-2 .hc .hc-btn-l svg path,html.btn-2 .rc-mod path{stroke:#9CC7CF}html.btn-2 .hc .hc-outil{border-color:rgba(95,163,174,.4);color:#9CC7CF;background:rgba(47,111,122,.10)}",
+  "html.btn-3 .hc .hc-btn-l{border-color:transparent !important;background:#151b1b !important;color:#F3EEE4 !important}html.btn-3 .hc .hc-btn-l svg path{stroke:#F3EEE4}html.btn-3 .e1 .rc-mod,html.btn-3 .hc .rc-mod{border-color:transparent !important;background:#151b1b !important}html.btn-3 .rc-mod path{stroke:rgba(243,238,228,.8)}html.btn-3 .hc .hc-outil{border-color:transparent;background:#121818;color:#F3EEE4}html.btn-3 .hc .hc-outil .hc-o-c{color:rgba(243,238,228,.5)}",
   ".hc .hc-g9-r .hc-av{flex:none}",
+  /* 13/11 13h17 (Blandine : « dans les couleurs des changements à faire auprès du jury… plus dans le noir et très légèrement pétrole… trop de doré ») */
+  "html[class*='grp-'] .hc .hc-grp{border-color:rgba(243,238,228,.12);background:#0e1212;border-radius:16px;padding:0;overflow:hidden}html[class*='grp-'] .hc .hc-grp-t{padding:12px 14px 0;margin-bottom:10px}html[class*='grp-'] .hc .hc-grp-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500}html[class*='grp-'] .hc .hc-g9{gap:0;grid-template-columns:92px 1fr}html[class*='grp-'] .hc .hc-g9-h{border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 6px;align-items:center;text-align:center}html[class*='grp-'] .hc .hc-g9-h strong{color:#F3EEE4}html[class*='grp-'] .hc .hc-g9-l{padding:4px 12px 8px}html[class*='grp-'] .hc .hc-g9-n{color:rgba(243,238,228,.75)}html[class*='grp-'] .hc .hc-grp.moi{border-color:rgba(243,238,228,.4)}html[class*='grp-'] .hc .hc-g9-r.moi b{color:#F3EEE4}html[class*='grp-'] .hc .hc-grp-vide{padding:0 14px 14px}",
+  "html.grp-1 .hc .hc-grp-t{border-bottom:1px solid rgba(243,238,228,.07);padding-bottom:10px;margin-bottom:0}html.grp-1 .hc .hc-g9-r{border-bottom:1px solid rgba(243,238,228,.06)}html.grp-1 .hc .hc-g9-r:last-child{border-bottom:0}",
+  "html.grp-2 .hc .hc-grp{border-color:rgba(95,163,174,.3)}html.grp-2 .hc .hc-g9-h{background:linear-gradient(180deg,rgba(47,111,122,.28),rgba(47,111,122,.12))}html.grp-2 .hc .hc-g9-h small{color:#9CC7CF}html.grp-2 .hc .hc-g9-n{color:#9CC7CF}",
+  "html.grp-3 .hc .hc-grp{background:#070a08;border-color:rgba(95,163,174,.22)}html.grp-3 .hc .hc-grp-t{border-bottom:1px solid rgba(95,163,174,.2);padding-bottom:10px;margin-bottom:0}html.grp-3 .hc .hc-g9-h{background:none;border-inline-end:1px solid rgba(95,163,174,.25)}html.grp-3 .hc .hc-g9-h strong{font-size:40px}html.grp-3 .hc .hc-grp-t i{color:#9CC7CF}",
   ".hc .hc-eng-ini{display:block;font-size:12px;color:rgba(243,238,228,.62);margin-top:2px}",
   ".hc .hc-chg{display:flex;flex-direction:column;gap:10px;padding:12px;margin:2px 0 8px;border:1px solid rgba(201,166,107,.3);border-radius:12px}",
   ".hc .hc-chg-l{display:flex;flex-direction:column;gap:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,238,228,.62)}",

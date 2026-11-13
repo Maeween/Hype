@@ -22,6 +22,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1335 — Fiche concours : courbes entre les chapitres, boutons de la coach sans doré, règle « à l'heure », airbag, autres épreuves dans les groupes
+Blandine 13/11 13h19 → 13h26 (choix « 3 » pour les boutons ; groupes : on garde l'actuel). hype-ecran-saison.js v=157.
+- Chapitres « Organisation du paddock » et « Passages de l'équipe » : petite courbe très légèrement dorée, bien aérée, titre centré en grand (trait doré à gauche et icône retirés) ; la même courbe sous la dernière épreuve, avant « Modifier les passages ».
+- Boutons de la coach (Décaler l'épreuve, crayons, Modifier les groupes, Annuler / Enregistrer / Publier, carte Modifier les passages) : fond sombre sans cadre, texte ivoire (classe btn-3 ; btn-1 ivoire discret, btn-2 pétrole léger en réserve). Je participe / Liste du van inchangés.
+- Règles du paddock : 4e règle « Sois bien à l'heure au rendez-vous à l'entrée du paddock : un retard met toute l'équipe en retard. » (FR + EN).
+- Message des groupes : « …et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où. » (FR + EN).
+- Modifier les groupes : « Autre épreuve · Club 2 Grand Prix » — les couples des épreuves suivantes pas encore placés peuvent rejoindre un groupe (+ G1…) ; leur épreuve s'affiche dans le groupe. Non partants déjà dans un groupe plus listés deux fois.
+- Proposé, pas retenu : groupes en « ticket » (classes grp-0 … grp-3 prêtes).
+
 ## 20261113-1330 — Groupes du paddock : plus de messages dorés sous les groupes
 Blandine 13/11 13h16 (« les infos en doré en dessous, elles sont de trop… l'heure de passage on la voit bien »). hype-ecran-saison.js v=156.
 - Retirés sous chaque groupe ET dans l'éditeur : « X est aussi dans Groupe N », « passe N min après le premier passage », conflits d'horaires (fonctions doublonsDe / attenteDe / conflitsDe gardées, plus affichées).
