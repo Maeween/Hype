@@ -42,7 +42,37 @@
     var _c = React.useState(null); var compteur = _c[0], setCompteur = _c[1];
     var origineRef = React.useRef((function () { try { var o = window.__aideOrigine || ""; window.__aideOrigine = ""; return o; } catch (e) { return ""; } })());
     var _q = React.useState(function () { try { var v = window.__aideQuestion || ""; window.__aideQuestion = ""; return v; } catch (e) { return ""; } }); var q = _q[0], setQ = _q[1];   /* 13/11 : question tapée dans l'encart Hey Baby du guide coach */
-    var _m = React.useState([]); var msgs = _m[0], setMsgs = _m[1];
+    /* 14/11 (Blandine : « qu'il se rappelle… comme si on lui écrivait ») : la conversation d'aide se retrouve en revenant
+       (12 derniers messages, 7 jours, sur ce téléphone) ; « Nouvelle conversation » repart de zéro. */
+    var _m = React.useState(function () { try { var o = JSON.parse(localStorage.getItem("hype_aide_fil") || "null"); if (o && o.ts && Date.now() - o.ts < 7 * 86400000 && Array.isArray(o.msgs)) return o.msgs.slice(-12); } catch (e) { } return []; }); var msgs = _m[0], setMsgs = _m[1];
+    React.useEffect(function () { try { if (msgs.length) localStorage.setItem("hype_aide_fil", JSON.stringify({ ts: Date.now(), msgs: msgs.slice(-12) })); else localStorage.removeItem("hype_aide_fil"); } catch (e) { } }, [msgs]);
+    /* 14/11 : même mémoire que la page Hey Baby (fiche du cavalier + fiches des chevaux, propres à la personne) ;
+       elle est envoyée avec chaque question d'aide et enrichie quand on quitte la page après au moins 2 questions. */
+    var fichesRef = React.useRef(null), msgsRef = React.useRef(msgs); msgsRef.current = msgs;
+    var pageRef = React.useRef(origineRef.current || "");
+    React.useEffect(function () {
+      if (!connecte) return;
+      (async function () { try { if (typeof chargerFichesEcurie === "function") fichesRef.current = await chargerFichesEcurie(); } catch (e) { } })();
+      return function () {
+        try {
+          var m = (msgsRef.current || []).filter(function (x) { return x && (x.role === "user" ? x.content : x.reponse); });
+          var nQ = m.filter(function (x) { return x.role === "user"; }).length; if (nQ < 2) return;
+          var sig = nQ + "|" + String(m.filter(function (x) { return x.role === "user"; }).slice(-1)[0].content || "").slice(0, 80);
+          if (localStorage.getItem("hype_aide_memo_sig") === sig) return; localStorage.setItem("hype_aide_memo_sig", sig);
+          var f = fichesRef.current || { cavalier: "", chevaux: {} };
+          var noms = Object.keys(f.chevaux || {}).map(function (k) { return f.chevaux[k].nom || k; }).slice(0, 8);
+          var conv = m.slice(-16).map(function (x) { return { role: x.role === "user" ? "user" : "assistant", texte: String(x.role === "user" ? x.content : x.reponse).slice(0, 600) }; });
+          hypeAppelIA({ operation: "memoire", langue: lg, memoire: { ficheCavalier: f.cavalier || "", chevaux: noms, conversation: conv } })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              var txt = ""; try { txt = (d && d.content) ? d.content.map(function (b) { return b.type === "text" ? b.text : ""; }).join("\n") : (d && d.text) || ""; } catch (e) { }
+              var o = null; try { var c = String(txt).replace(/```json/gi, "").replace(/```/g, "").trim(); var a = c.indexOf("{"), b = c.lastIndexOf("}"); o = JSON.parse(a >= 0 && b > a ? c.slice(a, b + 1) : c); } catch (e) { }
+              if (o && o.cavalier && String(o.cavalier).trim() && typeof enregistrerFicheCavalier === "function") enregistrerFicheCavalier(String(o.cavalier).trim());
+              if (o && Array.isArray(o.chevaux) && typeof enregistrerFicheCheval === "function") o.chevaux.forEach(function (c) { if (c && c.nom && c.fiche && String(c.fiche).trim()) { var k = Object.keys(f.chevaux || {}).filter(function (kk) { return String((f.chevaux[kk] || {}).nom || kk).toLowerCase() === String(c.nom).toLowerCase(); })[0]; enregistrerFicheCheval(k || c.nom, c.nom, String(c.fiche).trim()); } });
+            }).catch(function () { });
+        } catch (e) { }
+      };
+    }, [connecte]);
     var _e = React.useState(false); var enCours = _e[0], setEnCours = _e[1];
     var _er = React.useState(""); var err = _er[0], setErr = _er[1];
     /* 14/11 (audit de Blandine) : en revenant d'une page ouverte depuis un tuto, on retrouve CE tuto, à l'endroit où on lisait ;
@@ -100,7 +130,7 @@
         var envoi = hist.map(function (x) { return { role: x.role, content: x.role === "assistant" ? (x.reponse || "") : x.content }; }).slice(-6);
         /* 14/11 : question venue de l'encart Hey Baby d'une autre page → Hey Baby sait d'où elle est posée (non affiché) */
         try { if (origineRef.current && envoi.length) { envoi[envoi.length - 1] = { role: "user", content: "(Question posée depuis l'écran Hype « " + origineRef.current + " ».) " + envoi[envoi.length - 1].content }; origineRef.current = ""; } } catch (eO) { }
-        var r = await hypeAppelIA({ operation: "aide", langue: lg, messages: envoi });
+        var r = await hypeAppelIA({ operation: "aide", langue: lg, messages: envoi, contexte: { fiches: fichesRef.current || null, page: pageRef.current || "" } });   /* 14/11 : mémoire + page d'origine */
         var d = null; try { d = await r.json(); } catch (eJ) { }
         if (!r.ok) {
           var code = d && (d.code || (d.error && d.error.code));
@@ -190,6 +220,7 @@
             h("img", { src: "images/IMG_HEYBABY_BANNIERE.jpg", alt: "", style: { width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(243,238,228,.25)" } }),
             h("div", null, h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600 } }, t("askT")), h("div", { style: { fontSize: 11, color: IV3 } }, t("askS")))),
           msgs.map(function (m, i) { return m.role === "user" ? bulleQ(m, i) : bulleR(m, i); }),
+          (msgs.length && !enCours) ? h("div", { style: { textAlign: "end", marginTop: 8 } }, h("button", { type: "button", "data-aide-nouvelle": "1", onClick: function () { setMsgs([]); setErr(""); }, style: { minHeight: 36, border: "none", background: "transparent", color: IV3, fontFamily: M, fontSize: 12.5, textDecoration: "underline", textUnderlineOffset: 4, cursor: "pointer", padding: "4px 0" } }, "Nouvelle conversation")) : null,   /* 14/11 */
           enCours ? h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", marginTop: 10 } }, t("attente")) : null,
           err ? h("div", { style: { fontSize: 12.5, lineHeight: 1.5, color: "#E8C78F", marginTop: 10 } }, err,
             connecte === false ? h("div", { style: { marginTop: 8 } }, bouton(t("seConnecter"), function () { setEcran("connexion"); })) : null) : null,

@@ -384,6 +384,21 @@ function EcranMonCompte() {
       mcCourbe("c5", 1),
       React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14 } },
         React.createElement("button", { type: "button", onClick: sortir, disabled: busy, style: { minHeight: 46, padding: "0 28px", borderRadius: 999, border: "1px solid rgba(243,238,228,.28)", background: "transparent", color: mcIV, fontFamily: mcM, fontSize: 13.5, fontWeight: 600, cursor: "pointer" } }, busy ? T.patiente : T.deconnexion),
+        /* 14/11 (Blandine : mémoire de Hey Baby ; la loi demande de pouvoir effacer ce qu'une appli a retenu) : efface la fiche
+           que Hey Baby s'est faite de la personne et de ses chevaux (pas les notes du carnet), et la conversation d'aide gardée
+           sur ce téléphone. Deux touchers (sans fenêtre de confirmation). */
+        React.createElement("button", { type: "button", "data-effacer-memoire-hb": "1", onClick: async function (ev) {
+            var b = ev.currentTarget;
+            if (b.dataset.etat === "fait") return;
+            if (b.dataset.etat !== "confirmer") { b.dataset.etat = "confirmer"; b.textContent = mcT({ fr: "Touche encore pour effacer", en: "Tap again to erase" }); return; }
+            b.textContent = "…";
+            try {
+              var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+              if (u && u.id) { var r = await supa.from("memoire_chevaux").delete().eq("user_id", u.id).in("type", ["fiche_cavalier", "fiche_cheval"]); if (r && r.error) throw r.error; }
+              try { localStorage.removeItem("hype_aide_fil"); localStorage.removeItem("hype_aide_memo_sig"); sessionStorage.removeItem("hype_hb_synthese_sig"); } catch (e2) { }
+              b.dataset.etat = "fait"; b.textContent = mcT({ fr: "✓ Hey Baby a tout oublié", en: "✓ Hey Baby has forgotten everything" });
+            } catch (e) { b.dataset.etat = ""; b.textContent = mcT({ fr: "Échec — réessaie", en: "Failed — try again" }); }
+          }, style: { background: "none", border: "none", color: mcMU2, fontFamily: mcM, fontSize: 11.5, textDecoration: "underline", cursor: "pointer", minHeight: 36 } }, mcT({ fr: "Effacer ce que Hey Baby a retenu", en: "Erase what Hey Baby remembers" })),
         React.createElement("button", { type: "button", onClick: function () { setVoirSuppr(true); }, style: { background: "none", border: "none", color: mcMU2, fontFamily: mcM, fontSize: 11.5, textDecoration: "underline", cursor: "pointer" } }, mcT({ fr: "Supprimer mon compte", en: "Delete my account", es: "Eliminar mi cuenta", it: "Elimina il mio account", ja: "アカウントを削除", de: "Mein Konto löschen", ar: "حذف حسابي", zh: "删除我的账户", nl: "Mijn account verwijderen", pt: "Eliminar a minha conta", sv: "Radera mitt konto", ru: "Удалить аккаунт", pl: "Usuń konto", ko: "계정 삭제", fa: "حذف حسابم" })),
         React.createElement(LienQuoiDeNeuf, { compte: true })),
       blocHandle);

@@ -571,6 +571,18 @@ export default async (req, context) => {
                 systeme += "\n\nCORRECTIONS DE L'ADMINISTRATRICE (prioritaires sur tout le reste ; ce sont des connaissances à reformuler avec tes mots, jamais à recopier, et à ne jamais mentionner) :\n" + txtA;
             }
         } catch (eCA) { }
+        /* 14/11 (Blandine : « un seul Hey Baby partout… qu'il se rappelle qui on est ») : le mode Aide reçoit la MÊME
+           mémoire que la page Hey Baby (fiche du cavalier + fiches des chevaux, propres à la personne, lues par l'appli
+           avec ses droits) et la page d'où la question est posée. Contexte seulement : il ne change pas le rôle d'aide. */
+        try {
+            const cs = contexteSur(corps.contexte);
+            const memA = [];
+            if (cs.fiches && cs.fiches.cavalier) memA.push("Ce que tu sais déjà de cette personne :\n" + cs.fiches.cavalier);
+            if (cs.fiches && cs.fiches.chevaux) { const ks = Object.keys(cs.fiches.chevaux); if (ks.length) memA.push("Ses chevaux :\n" + ks.slice(0, 8).map((k) => "• " + (cs.fiches.chevaux[k].nom || k) + " : " + String(cs.fiches.chevaux[k].texte || "").replace(/\s+/g, " ")).join("\n")); }
+            const pageA = (corps.contexte && typeof corps.contexte.page === "string") ? corps.contexte.page.replace(/[^a-z0-9-]/gi, "").slice(0, 40) : "";
+            if (pageA) memA.push("Page de Hype d'où la question est posée : « " + pageA + " ».");
+            if (memA.length) systeme += "\n\nMÉMOIRE (fournie par l'appli, invisible pour la personne ; sers-t'en seulement si c'est utile, ne la récite jamais, ne dis jamais que tu as une fiche) :\n" + memA.join("\n\n");
+        } catch (eMA) { }
         messagesApp = Array.isArray(corps.messages) ? corps.messages.slice(-6) : [];
         try { const derniere = messagesApp.length ? messagesApp[messagesApp.length - 1] : null; const txtQ = derniere && typeof derniere.content === "string" ? derniere.content : ""; if (txtQ) await rpc(service, "hype_aide_noter", { p_uid: uid, p_question: txtQ.slice(0, 1000), p_langue: langue }); } catch (eNote) { }
     } else if (operation === "memoire") {
