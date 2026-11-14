@@ -34,6 +34,16 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 11:30 — build 20261114-1130 — Le règlement + mémo du jury ; dressage : départage et erreurs ; CORRECTIF outils Résultats
+- Blandine (09h49) : « mettre le règlement en ligne… accessible d'un clic quand ils sont sur la page ». Encart « Le règlement » (repliable) sur les écrans Juger une reprise et Jury de CSO, et outil « Le règlement » dans l'onglet Résultats de chaque concours (pour tout le monde) → page Règlement (CSO / Dressage / Complet).
+  - Liens officiels FFE saison 2026-2027 (applicables au 01/09/2026) : règlement général, CSO (la FFE demande de se connecter), Dressage, CCE. La FFE fait UN règlement par discipline pour toutes les divisions.
+  - « Mémo du jury » CSO et Dressage rédigé par Hype à partir des règlements, chaque règle avec son article. Pas de mémo officiel FFE pour les jurys trouvé.
+  - À RELIRE ET METTRE À JOUR À CHAQUE SAISON (nouveaux liens au 1er septembre). Articles du mémo CSO tirés de la version 2025-2026 (la 2026-2027 est derrière la connexion FFE) ; pénalités identiques.
+- Juger une reprise (règlement Dressage 2026-27) : compteurs « Erreurs de tracé » (−1 % chacune, la 3e élimine, art. 7.8 A) et « Erreurs d'exécution » (−2 points, art. 7.8 B) ; départage des 3 premières places à pourcentage égal par les notes d'ensemble, ensuite ex æquo (art. 9.1 C) ; éliminés affichés et publiés « El. ». Sur la feuille du cavalier : ligne « Erreurs ».
+- CORRECTIF : les outils de l'onglet Résultats (« Juger une reprise à la voix », « Dicter les résultats de CSO », lien du direct) n'étaient affichés NULLE PART depuis leur ajout (variable jamais utilisée). Ils apparaissent maintenant en bas de l'onglet Résultats. À noter : « outilsMedias » (Ajouter une vidéo) est dans le même cas, non touché.
+- Traductions : après validation du français.
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 11:15 — build 20261114-1115 — Aide et guide du coach : corrections de l'audit
 Audit complet du 14/11 (navigateur format iPhone, vraie police, vraies photos, compte d'essai vide) : les 19 boutons des 14 tutos et les 48 flèches des 9 chapitres du guide mènent tous à la bonne page. Corrigé :
 - hype-ecran-aide.js (v=22) : en revenant d'une page ouverte depuis un tuto, on retrouve CE tuto à l'endroit où on lisait (sessionStorage hype_aide_etat, valable 1 h) ; « ‹ Retour » d'un tuto ramène à la carte touchée dans la liste (plus en haut de page) ; le balayage / retour du téléphone sur un tuto ferme le tuto (data-noswipe + data-retour-geste) au lieu de renvoyer à l'Accueil ; héros de la page Aide façon Vidéothèque : photo entière, sans filtre assombrissant, courbe champagne, titre SOUS la photo.

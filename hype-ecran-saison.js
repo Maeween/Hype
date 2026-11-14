@@ -3035,7 +3035,7 @@ function EcranConcours() {
       (resLect && resLect !== "en_cours") ? h("div", { className: "hs-note", style: { marginTop: 8 } }, resLect)
         : h("div", { className: "hs-note", style: { marginTop: 8 } }, F("Le PDF des résultats, une capture du site FFE ou du chronométreur : les résultats de tes couples se remplissent tout seuls."))) : null,
     listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
-    blocPodiums, boutonsBas, liensResultats, lienResBas,
+    blocPodiums, boutonsBas, liensResultats, outilsResultatsF(), lienResBas,
     storyRes ? h(HsStoryResultats, { key: "story", F: F, photos: storyRes.photos, secours: heroPh && heroPh.img, donnees: storyRes.donnees, onFermer: function () { setStoryRes(null); }, onPartager: envoyerStoryRes }) : null);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
@@ -3914,11 +3914,14 @@ function EcranConcours() {
     try { window.__juger = { mode: mode === "cso" ? "cso" : "", agenda_id: idEv, concours: ev.titre || null, date: ev.date_jour || null, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
     setEcran("juger");
   }
-  var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
+  /* 14/11 : n'était affiché nulle part (variable jamais utilisée) → fonction appelée dans blocResultats */
+  function outilsResultatsF() { return h("div", { key: "or", className: "hc-outils" },
     ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
-      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages),
+      : gestion ? outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages) : null,
     gestion ? outil("juge", F("Juger une reprise à la voix"), F("Le juge dicte la note et le commentaire, Hype calcule tout."), ouvrirJuge) : null,
-    gestion ? outil("jury", F("Dicter les résultats de CSO"), F("Le jury dit « sans faute, 32 secondes 45 » : Hype compte et classe."), function () { ouvrirJuge("cso"); }) : null) : null;
+    gestion ? outil("jury", F("Dicter les résultats de CSO"), F("Le jury dit « sans faute, 32 secondes 45 » : Hype compte et classe."), function () { ouvrirJuge("cso"); }) : null,
+    /* 14/11 (Blandine : « mettre le règlement… accessible d'un clic ») : pour tout le monde */
+    outil("regl", F("Le règlement"), F("Liens officiels FFE et mémo du jury"), function () { var t = String(ev.titre || "") + " " + String(ev.lieu || ""); try { window.__juger = { mode: "regl", agenda_id: idEv, disc: /dressage/i.test(t) ? "dressage" : /complet|cce/i.test(t) ? "cce" : "cso" }; } catch (eR) { } setEcran("juger"); })); }
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
     outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
 
