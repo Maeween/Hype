@@ -2020,7 +2020,7 @@ function EcranConcours() {
       var r = await hypePushActiver();
       setPushEtat(await hypePushEtat());
       if (r && r.error) { setPushMsg(r.error === "refuse" ? F("Les notifications ont été refusées. Tu peux les réautoriser dans Réglages → Notifications → Hype.") : (r.error === "connexion" ? F("Connecte-toi d’abord.") : String(r.error))); return; }
-      setPushMsg(F("C’est activé. Tu seras prévenue avant le départ et avant la reconnaissance."));
+      setPushMsg(F("C’est activé. Tu seras prévenu avant le départ, avant la reconnaissance et si ton heure de passage change."));
     } catch (eP) { setPushMsg(String(eP)); }
   }
 
@@ -4258,9 +4258,24 @@ function EcranConcours() {
               h("button", { type: "button", onClick: function () { setModInf(false); if (horForm) setHorForm(null); else ouvrirHoraires(); } }, F("Les horaires") + " ›")) : null,
             horForm ? h("div", { className: "hc-alerte al2 ic-form" }, formHoraires2()) : null,
             horMsg ? h("div", { className: "ic-msg" }, horMsg) : null);
+          /* 14/11 13h23 (Blandine) : partager seulement cette partie (date, lieu, horaires) avec un petit message et le lien du concours */
+          var partagerInfos = function () {
+            var lignesH = tl.map(function (x) { return String(x.t || "").replace(/^0(\d)/, "$1") + " " + x.l + (x.s ? " (" + x.s + ")" : ""); });
+            var txt = [(ev.titre || F("Concours")) + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim()].filter(Boolean).join("\n")
+              + (lignesH.length ? "\n\n" + lignesH.join("\n") : "")
+              + "\n\n" + F("Les horaires peuvent changer pendant la journée selon l’avancée du concours. Si tu as activé les notifications de Hype, tu seras prévenu automatiquement ; dans tous les cas, un message sera envoyé sur le groupe.")
+              + "\n" + F("Pas encore activé les notifications ? Ouvre le lien : Hype te le propose en un toucher.");
+            var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
+            try { if (navigator.share) { navigator.share({ title: ev.titre || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
+            var tout = txt + "\n" + url;
+            try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setHorMsg(F("Message copié : colle-le dans ton groupe.")); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
+            try { window.prompt("", tout); } catch (eP2) { }
+          };
+          var P_PART = "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7";
           var liens = h("div", { className: "ic-liens" },
             gMaps ? h("a", { href: gMaps, target: "_blank", rel: "noopener" }, svgI(P_LIEU), h("span", null, F("Itinéraire"))) : null,
             !fini ? h("button", { type: "button", onClick: ajouterAgenda }, svgI(P_AG), h("span", null, F("Ajouter à l’agenda"))) : null);
+          var lienPartageInfos = !fini ? h("div", { className: "ic-liens", style: { marginTop: 16 } }, h("button", { type: "button", onClick: partagerInfos }, svgI(P_PART), h("span", null, F("Partager ces infos avec le groupe")))) : null;
           var actJ = { k: "j", ic: "ok", t: jeViens ? F("Tu participes") : F("Je participe"), on: jeViens, dis: occupe || fini, f: fini ? undefined : basculerJeViens };
           var actV = { k: "v", ic: "van", t: F("Liste du van"), f: function () { prep("liste-van"); } };
           var actE = { k: "e", ic: "heure", t: F("Ordre d’embarquement"), on: ordreEmbOuv, f: function () { setOrdreEmbOuv(!ordreEmbOuv); } };
@@ -4321,9 +4336,17 @@ function EcranConcours() {
                     hcL.length ? (vE === "3"
                       ? h("div", { className: "ic-fil" }, hcL.map(function (x, i) { return h("span", { key: i }, h("i", null, x.t), " " + x.l); }))
                       : h("div", { className: "ic-rgs" }, rgE.map(function (rg, ri) { return h("div", { key: ri, className: "ic-rge" }, rg.map(function (x, i) { return h("div", { key: i }, h("i", null, x.t), h("span", null, x.l)); })); }))) : horairesVides),
+                    lienPartageInfos,
                   panMod,
                   ronds, fin);
-                return h("div", { className: "hc-infos-w ic-w" }, h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))), corps);
+                /* 14/11 13h24 (Blandine : « le fait d'activer les notifications, propose-le direct ») : sous les infos, tant que ce téléphone n'est pas abonné */
+                var banNotif = (!fini && pushEtat && pushEtat !== "actif") ? h("div", { style: { marginTop: 14, padding: "14px 16px", border: "1px solid rgba(243,238,228,.14)", borderRadius: 14, textAlign: "center" } },
+                  h("p", { style: { margin: 0, fontFamily: "Montserrat,sans-serif", fontSize: 13.5, lineHeight: 1.5, color: "#F3EEE4" } }, pushEtat === "refuse"
+                    ? F("Les notifications de Hype sont bloquées sur ce téléphone : réautorise-les dans Réglages → Notifications → Hype pour être prévenu si les horaires changent.")
+                    : F("Active les notifications : si les horaires changent pendant le concours, tu es prévenu tout de suite sur ton téléphone.")),
+                  pushEtat !== "refuse" ? h("button", { type: "button", onClick: basculerPush, style: { marginTop: 12, height: 42, padding: "0 20px", borderRadius: 21, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: "#C9A66B", fontFamily: "Montserrat,sans-serif", fontSize: 14, cursor: "pointer" } }, F("Activer les notifications")) : null,
+                  pushMsg ? h("p", { style: { margin: "10px 0 0", fontSize: 12.5, color: "rgba(243,238,228,.75)" } }, pushMsg) : null) : null;
+                return h("div", { className: "hc-infos-w ic-w" }, h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Informations du concours"))), corps, banNotif);
               }
               corps = h("div", { className: "ic-e" },
                 crayon ? h("div", { className: "ic-cr-c" }, crayon) : null, panMod,
@@ -8597,10 +8620,16 @@ function hsGarde(Comp, parLien) {
     var app = (typeof useApp === "function") ? useApp() : {};
     var _ok = React.useState(HS_OUVERT_A_TOUS ? true : null); var ok = _ok[0], setOk = _ok[1];
     React.useEffect(function () {
-      if (HS_OUVERT_A_TOUS || lienOk) return;
       var vif = true;
+      /* 14/11 13h25 (Blandine) : arrivée par un lien partagé SANS compte → écran « compte express » (juste l'e-mail), puis retour ici */
+      (async function () {
+        var u0 = null; try { u0 = await utilisateurActuel(); } catch (e0) { }
+        if (!u0 && vif) { try { AUTH_MODE_SPECTRAL = "express"; } catch (eA) { } try { (app.setEcran || function () { })("connexion"); } catch (eS) { } }
+      })();
+      if (HS_OUVERT_A_TOUS || lienOk) return function () { vif = false; };
       (async function () {
         var u = null; try { u = await utilisateurActuel(); } catch (e) { }
+        if (!u) return;
         var m = false; try { m = (typeof estModerateurHype === "function") && estModerateurHype(u); } catch (e2) { }
         if (!m && u) { try { var r = await supa.rpc("hype_est_moderatrice"); m = r && r.data === true; } catch (e3) { } }
         if (!m && u && typeof hypeAccesCentre === "function") { try { m = await hypeAccesCentre(u); } catch (e6) { } }   /* 08/11 choix B : membres des groupes de Blandine */
@@ -8617,5 +8646,5 @@ function hsGarde(Comp, parLien) {
         h("div", { className: "hs-titre", style: { textAlign: "start", marginTop: 40 } }, h("h1", { style: { fontSize: 40 } }, "Bientôt disponible"), h("p", null, "Le Centre de compétition arrive très vite."))));
   };
 }
-window.HypeSaison = { Saison: hsGarde(EcranMaSaison), Concours: hsGarde(EcranConcours, true), Engagements: hsGarde(EcranEngagements), ListeVan: hsGarde(EcranListeVan), JourJ: hsGarde(EcranJourJ), Dossier: hsGarde(EcranDossierConcours), VideoParcours: hsGarde(EcranVideoParcours) };
+window.HypeSaison = { Saison: hsGarde(EcranMaSaison), Concours: hsGarde(EcranConcours, true), Engagements: hsGarde(EcranEngagements), ListeVan: hsGarde(EcranListeVan, true),   /* 14/11 : ouverte par un lien partagé (#lv=) pour tout compte */ JourJ: hsGarde(EcranJourJ), Dossier: hsGarde(EcranDossierConcours), VideoParcours: hsGarde(EcranVideoParcours) };
 })();
