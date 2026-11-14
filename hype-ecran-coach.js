@@ -179,22 +179,21 @@
   /* 13/11 23h10 (Blandine) : « Cycle de progression Hype » — cercle SVG, HYPE au centre, 6 étapes, fines flèches champagne */
   function Cycle(h, sansSignature) {
     var E = ["Préparer", "Concourir", "Prendre soin", "Observer", "Analyser", "Enseigner", "Progresser"]; var N = E.length, PAS = 360 / N;
-    var cx = 180, cy = 180, R = 118, kids = [];
-    kids.push(h("circle", { key: "c", cx: cx, cy: cy, r: R, fill: "none", stroke: "rgba(201,166,107,0.18)", strokeWidth: 1 }));
+    var cx = 180, cy = 180, R = 112, kids = [], LI = "rgba(243,238,228,0.72)";
     for (var i = 0; i < N; i++) {
       var a0 = (-90 + i * PAS + 11) * Math.PI / 180, a1 = (-90 + (i + 1) * PAS - 11) * Math.PI / 180;
       var x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0), x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
-      kids.push(h("path", { key: "a" + i, d: "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + R + " " + R + " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1), fill: "none", stroke: CH, strokeWidth: 1.2, markerEnd: "url(#hcFl)" }));
+      kids.push(h("path", { key: "a" + i, d: "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + R + " " + R + " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1), fill: "none", stroke: LI, strokeWidth: 1, markerEnd: "url(#hcFl)" }));
       var a = (-90 + i * PAS) * Math.PI / 180, nx = cx + R * Math.cos(a), ny = cy + R * Math.sin(a);
-      kids.push(h("circle", { key: "p" + i, cx: nx, cy: ny, r: 5, fill: BG, stroke: CH, strokeWidth: 1.2 }));
-      var lx = cx + (R + 34) * Math.cos(a), ly = cy + (R + 34) * Math.sin(a) + 5;
-      kids.push(h("text", { key: "t" + i, x: lx, y: ly, textAnchor: Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end"), fill: IV, style: { fontFamily: M, fontSize: 14, fontWeight: 600, letterSpacing: 0.3 } }, E[i]));
+      kids.push(h("circle", { key: "p" + i, cx: nx, cy: ny, r: 4, fill: BG, stroke: IV, strokeWidth: 1 }));
+      var lx = cx + (R + 16) * Math.cos(a), ly = cy + (R + 16) * Math.sin(a) + 5 + (Math.sin(a) < -0.9 ? -6 : (Math.sin(a) > 0.5 ? 10 : 0));
+      kids.push(h("text", { key: "t" + i, x: lx, y: ly, textAnchor: Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end"), fill: IV, style: { fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.2 } }, E[i]));
     }
     kids.push(h("text", { key: "h", x: cx, y: cy + 4, textAnchor: "middle", fill: IV, style: { fontFamily: SERIF, fontSize: 40, fontWeight: 500, letterSpacing: 6 } }, "HYPE"));
-    kids.push(h("text", { key: "s", x: cx, y: cy + 28, textAnchor: "middle", fill: CH, style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.6 } }, "CYCLE DE PROGRESSION"));
+    kids.push(h("text", { key: "s", x: cx, y: cy + 28, textAnchor: "middle", fill: IV, opacity: 0.8, style: { fontFamily: M, fontSize: 10, letterSpacing: 2.4 } }, "CYCLE DE PROGRESSION"));
     return h("div", { style: { padding: "18px 0 6px", textAlign: "center" } },
-      h("svg", { viewBox: "-80 0 520 360", role: "img", "aria-label": "Cycle de progression Hype : préparer, concourir, prendre soin, observer, analyser, enseigner, progresser", style: { display: "block", width: "100%", maxWidth: 440, height: "auto", margin: "0 auto" } },
-        h("defs", null, h("marker", { id: "hcFl", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, h("path", { d: "M1 1L9 5L1 9", fill: "none", stroke: CH, strokeWidth: 1.4 }))),
+      h("svg", { viewBox: "-70 14 500 336", role: "img", "aria-label": "Cycle de progression Hype : préparer, concourir, prendre soin, observer, analyser, enseigner, progresser", style: { display: "block", width: "100%", maxWidth: 440, height: "auto", margin: "0 auto" } },
+        h("defs", null, h("marker", { id: "hcFl", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, h("path", { d: "M1 1L9 5L1 9", fill: "none", stroke: "rgba(243,238,228,0.72)", strokeWidth: 1.3 }))),
         kids),
       sansSignature ? null : h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, marginTop: 6 } }, "Chaque concours prépare le suivant."));
   }
@@ -230,7 +229,7 @@
     React.useEffect(function () {   /* la frise montre le chapitre ouvert, même s'il est hors de l'écran */
       try { setTimeout(function () { var b = document.querySelector("[data-coach-frise] [aria-current=page]"); var c = b && b.parentElement; if (b && c) c.scrollLeft = Math.max(0, b.offsetLeft - (c.clientWidth - b.offsetWidth) / 2); }, 60); } catch (e) { }
     }, [vue]);
-    function retour() { if (PAGES[vue] || vue === "journee") setVue("accueil"); else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
+    function retour() { if (PAGES[vue]) setVue("sommaire"); else if (vue === "sommaire" || vue === "journee") setVue("accueil"); else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
     /* le concours ouvert en dernier, s'il n'est pas passé : les liens y mènent directement */
     React.useEffect(function () {
       (async function () {
@@ -281,78 +280,191 @@
           h("div", { style: { fontSize: 14, color: IV2, marginTop: 4, lineHeight: 1.45 } }, texte)),
         ouvrir ? h("div", { "aria-hidden": "true", style: { color: CH, fontSize: 18 } }, "›") : h("span", { style: { fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: IV3, border: "1px solid rgba(243,238,228,0.25)", borderRadius: 999, padding: "2px 8px" } }, "Bientôt"));
     }
-    /* 13/11 23h21 (Blandine : « les deux pages d'introduction ne sont pas validées ») — accueil refait :
-       héros façon Vidéothèque (photo en haut, courbe, titre SOUS la photo, à droite : jamais sur la tête du cheval),
-       intro, cycle, les trois temps du concours avec leur photo et leurs chapitres, signature, encart Hey Baby.
-       Plus de page intermédiaire « Journée de compétition » (l'ancienne vue « journee » renvoie ici). */
+    /* 14/11 01h (Blandine, « Refonte de la page d'accueil du Guide Coach » + maquette ChatGPT) — page de présentation :
+       héros Vidéothèque (titre SOUS la photo), 3 pictos, « Découvrir les 9 tutoriels », AVANT / PENDANT / APRÈS en
+       compositions variées (photo à côté du texte sur tablette et ordinateur, empilé sur iPhone), exemple vocal, exemple
+       « Retard de 20 minutes », partage individuel / collectif côte à côte, cycle, encart Hey Baby. Le sommaire des 9
+       chapitres est une vue à part (« sommaire »), ouverte par le bouton et les liens « Voir les tutoriels ». */
+    function ligneChap(c) {   /* chapitre : numéro, titre, phrase, flèche — une ligne éditoriale */
+      function ouvrirC() { setVue(c[1]); try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }
+      return h("div", { key: c[0], role: "button", tabIndex: 0, onClick: ouvrirC, onKeyDown: function (ev) { if (ev.key === "Enter") ouvrirC(); }, "data-coach-chap": c[1],
+        style: { display: "grid", gridTemplateColumns: "40px minmax(0,1fr) 20px", alignItems: "center", columnGap: 14, padding: "16px 2px", borderTop: "1px solid rgba(243,238,228,0.10)", cursor: "pointer", minHeight: 64 } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 30, color: CH, lineHeight: 1 } }, c[0]),
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontSize: 16.5, fontWeight: 600, color: IV, lineHeight: 1.25 } }, c[2]),
+          h("div", { style: { fontSize: 14.5, color: "#DEDAD2", marginTop: 4, lineHeight: 1.4 } }, c[3])),
+        h("div", { "aria-hidden": "true", style: { color: CH, fontSize: 22, lineHeight: 1, textAlign: "end" } }, rtlG ? "‹" : "›"));
+    }
+    var CHAPS = [
+      ["AVANT LE CONCOURS", [["01", "engagements", "Engagements", "Préparer, valider et éditer mes engagements."], ["02", "feuille", "Feuille de route", "Préparer mon équipe, mes chevaux et mon déplacement."], ["03", "programme", "Programme", "De la liste de départ à l'organisation de mon équipe."]]],
+      ["PENDANT LE CONCOURS", [["04", "passages", "Passages", "Gérer mes couples et suivre le déroulement des épreuves."], ["05", "paddock", "Paddock", "Organiser la détente de mes cavaliers."], ["06", "jourj", "Jour J", "Piloter mon concours et accompagner mon équipe."]]],
+      ["APRÈS LE CONCOURS", [["07", "retour", "Retour & récupération", "Le concours se termine. L’attention portée au cheval continue."], ["08", "resultats", "Résultats", "Retrouver les performances de mon équipe."], ["09", "analyse", "Analyse & progression", "Observer, analyser, enseigner, progresser."]]]
+    ];
+    function haut0() { try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }
+    function heroVid(img, pos, kicker, titre, sous, intro) {   /* héros de la Vidéothèque : photo, courbe, textes dessous à droite */
+      return h("div", { style: { position: "relative", maxWidth: 1100, margin: "0 auto" } },
+        h("div", { style: { position: "relative", height: "min(max(300px, 82vw), max(300px, 52vw), 620px)", overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg, #000 62%, transparent 98%)", maskImage: "linear-gradient(180deg, #000 62%, transparent 98%)" } },
+          h("img", { src: "images/guide-coach/" + img + ".webp", alt: "", decoding: "async", style: { display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, transform: rtlG ? "scaleX(-1)" : "none" } })),
+        h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 56, marginTop: -56, position: "relative", transform: rtlG ? "scaleX(-1)" : "none" } },
+          h("path", { d: "M0 54 C 140 50, 260 34, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })),
+        h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtlG ? "›" : "‹"),
+        h("div", { style: { textAlign: "end", padding: "4px 20px 0", maxWidth: 1100, margin: "0 auto" } },
+          h("div", { style: { fontSize: 10.5, letterSpacing: "0.36em", color: CH, fontWeight: 500, marginBottom: 10 } }, kicker),
+          h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 70px)", lineHeight: 1, margin: 0, color: IV } }, titre),
+          h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(20px, 5.4vw, 26px)", margin: "10px 0 0", color: IV } }, sous)),
+        intro ? h("p", { style: { maxWidth: 680, margin: "22px auto 0", padding: "0 22px", fontSize: 15.5, lineHeight: 1.55, color: "#DEDAD2" } }, intro) : null);
+    }
+    function lienTutos(lab) {
+      return h("button", { type: "button", onClick: function () { setVue("sommaire"); haut0(); }, "data-coach-tutos": "1",
+        style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 6, border: "none", background: "transparent", color: CH, fontFamily: M, fontSize: 14, fontWeight: 500, letterSpacing: "0.02em", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→"));
+    }
+
+    if (vue === "sommaire") {
+      return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
+        heroVid("coach-acc-entete_cheval", "76% 40%", "GUIDE COACH", "Les 9 tutoriels", "Avant, pendant et après le concours.", null),
+        CHAPS.map(function (g) {
+          return h("section", { key: g[0], style: { maxWidth: 680, margin: "30px auto 0", padding: "0 22px" } },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 8 } },
+              h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: CH, fontWeight: 500 } }, g[0]),
+              h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.55), rgba(201,166,107,0))" } })),
+            h("div", { style: { borderBottom: "1px solid rgba(243,238,228,0.10)" } }, g[1].map(ligneChap)));
+        }));
+    }
+
     if (vue === "accueil" || vue === "journee") {
-      var PHASES = [
-        { k: "avant", lab: "AVANT LE CONCOURS", titre: "Préparer et organiser.", img: "coach-acc-materiel", pos: "82% 50%",
-          puces: ["Gérer les engagements.", "Préparer les chevaux, les cavaliers et le déplacement.", "Organiser le matériel et les documents.", "Importer les horaires et les listes de départ.", "Anticiper les passages."],
-          ch: [["01", "engagements", "Engagements", "Préparer, valider et éditer mes engagements."], ["02", "feuille", "Feuille de route", "Préparer mon équipe, mes chevaux et mon déplacement."], ["03", "programme", "Programme", "De la liste de départ à l'organisation de mon équipe."]] },
-        { k: "pendant", lab: "PENDANT LE CONCOURS", titre: "Coordonner et accompagner.", img: "coach-acc-cso", pos: "84% 40%",
-          puces: ["Suivre les passages.", "Gérer les changements et les imprévus.", "Organiser les groupes au paddock.", "Informer les cavaliers en temps réel.", "Suivre le direct du concours."],
-          ch: [["04", "passages", "Passages", "Gérer mes couples et suivre le déroulement des épreuves."], ["05", "paddock", "Paddock", "Organiser la détente de mes cavaliers."], ["06", "jourj", "Jour J", "Piloter mon concours et accompagner mon équipe."]] },
-        { k: "apres", lab: "APRÈS LE CONCOURS", titre: "Prendre soin, analyser et progresser.", img: "coach-acc-camion_soir", pos: "80% 50%",
-          puces: ["Organiser le retour des chevaux.", "Accompagner leur récupération et leurs soins.", "Retrouver les résultats et les statistiques.", "Analyser les vidéos par cavalier, cheval et couple.", "Partager des conseils individuels avec Hey Baby.", "Créer des contenus pédagogiques pour toute l’équipe.", "Préparer les prochaines séances."],
-          ch: [["07", "retour", "Retour & récupération", "Le concours se termine. L’attention portée au cheval continue."], ["08", "resultats", "Résultats", "Retrouver les performances de mon équipe."], ["09", "analyse", "Analyse & progression", "Observer, analyser, enseigner, progresser."]] }
-      ];
-      function photoPhase(img, pos, haut) {   /* photo pleine largeur, fondu vers le noir en haut et en bas, sans texte dessus */
-        return h("div", { "aria-hidden": "true", style: { position: "relative", height: haut, overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 16%, #000 70%, transparent 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 16%, #000 70%, transparent 100%)" } },
-          h("img", { src: "images/guide-coach/" + img + ".webp", alt: "", decoding: "async", loading: "lazy", style: { display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, transform: rtlG ? "scaleX(-1)" : "none" } }));
+      var CSS = ".hcA-bloc{display:grid;grid-template-columns:1fr;max-width:1100px;margin:0 auto}" +
+        ".hcA-photo{position:relative;height:clamp(210px,58vw,380px);overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 72%,transparent 100%)}" +
+        ".hcA-photo img{display:block;width:100%;height:100%;object-fit:cover}" +
+        ".hcA-txt{padding:0 22px;max-width:680px;width:100%;box-sizing:border-box;margin:0 auto}" +
+        ".hcA-duo{display:grid;grid-template-columns:1fr;gap:14px}" +
+        ".hcA-fin{display:grid;grid-template-columns:1fr;gap:34px;max-width:1100px;margin:0 auto;padding:0 18px;box-sizing:border-box;align-items:center}" +
+        ".hcA-pictos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:680px;margin:0 auto}" +
+        "@media (min-width:760px){.hcA-bloc.hcA-cote{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:center;gap:8px}" +
+        ".hcA-bloc.hcA-cote.hcA-inv>.hcA-photo{order:2}" +
+        ".hcA-bloc.hcA-cote>.hcA-photo{height:100%;min-height:340px;-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent 100%);mask-image:linear-gradient(90deg,#000 62%,transparent 100%)}" +
+        ".hcA-bloc.hcA-cote.hcA-inv>.hcA-photo{-webkit-mask-image:linear-gradient(270deg,#000 62%,transparent 100%);mask-image:linear-gradient(270deg,#000 62%,transparent 100%)}" +
+        ".hcA-duo{grid-template-columns:1fr 1fr}.hcA-fin{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}}";
+      function photo(img, pos) {
+        return h("div", { className: "hcA-photo", "aria-hidden": "true" },
+          h("img", { src: img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp", alt: "", decoding: "async", loading: "lazy", style: { objectPosition: pos, transform: rtlG ? "scaleX(-1)" : "none" } }));
       }
-      function ligneChap(c) {   /* chapitre : numéro, titre, phrase, flèche — une ligne éditoriale, pas un bouton gris */
-        function ouvrirC() { setVue(c[1]); try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }
-        return h("div", { key: c[0], role: "button", tabIndex: 0, onClick: ouvrirC, onKeyDown: function (ev) { if (ev.key === "Enter") ouvrirC(); }, "data-coach-chap": c[1],
-          style: { display: "grid", gridTemplateColumns: "40px minmax(0,1fr) 20px", alignItems: "center", columnGap: 14, padding: "16px 2px", borderTop: "1px solid rgba(243,238,228,0.10)", cursor: "pointer", minHeight: 64 } },
-          h("div", { style: { fontFamily: SERIF, fontSize: 30, color: CH, lineHeight: 1 } }, c[0]),
-          h("div", { style: { minWidth: 0 } },
-            h("div", { style: { fontSize: 16.5, fontWeight: 600, color: IV, lineHeight: 1.25 } }, c[2]),
-            h("div", { style: { fontSize: 14.5, color: "#DEDAD2", marginTop: 4, lineHeight: 1.4 } }, c[3])),
-          h("div", { "aria-hidden": "true", style: { color: CH, fontSize: 22, lineHeight: 1, textAlign: "end" } }, rtlG ? "‹" : "›"));
+      function etiquette(lab, picto) {
+        return h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
+          h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: CH, fontWeight: 500, whiteSpace: "nowrap" } }, lab),
+          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.55), rgba(201,166,107,0))" } }),
+          picto ? h("span", { "aria-hidden": "true", style: { color: IV, opacity: 0.85, display: "inline-flex" } }, ico(h, picto, 24)) : null);
       }
+      function titre2(t) { return h("h2", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(30px, 8vw, 40px)", lineHeight: 1.08, margin: "10px 0 16px", color: IV } }, t); }
+      function sousTitre(t) { return h("h3", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 25, lineHeight: 1.15, margin: "6px 0 10px", color: IV } }, t); }
+      function coches(l) {
+        return h("ul", { style: { listStyle: "none", margin: "0 0 10px", padding: 0 } },
+          l.map(function (t, i) {
+            var bientot = typeof t !== "string"; var tx = bientot ? t[0] : t;
+            return h("li", { key: i, style: { display: "grid", gridTemplateColumns: "20px minmax(0,1fr)", columnGap: 10, fontSize: 15, lineHeight: 1.45, color: "#DEDAD2", padding: "5px 0" } },
+              h("span", { "aria-hidden": "true", style: { color: IV, marginTop: 2, display: "inline-flex", opacity: bientot ? 0.45 : 0.9 } }, chk(17)),
+              h("span", { style: { opacity: bientot ? 0.6 : 1 } }, tx, bientot ? h("span", { style: { marginInlineStart: 8, fontSize: 10.5, letterSpacing: "0.14em", color: CH, border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "1px 8px", whiteSpace: "nowrap" } }, "BIENTÔT") : null));
+          }));
+      }
+      function chk(t) { return h("svg", { width: t, height: t, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 12.5l5 5L20 6.5" })); }
+      function encart(enfants, k) { return h("div", { key: k, style: { border: "1px solid rgba(243,238,228,0.12)", borderRadius: 18, background: "#0B0E0C", padding: "18px 18px 16px" } }, enfants); }
       var _qHB = qHB;
       function envoyerHB() { try { window.__aideQuestion = String(_qHB || "").trim(); } catch (e) { } setEcran("aide"); }
+
       return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
-        /* héros façon Vidéothèque */
-        h("div", { style: { position: "relative", maxWidth: 900, margin: "0 auto" } },
-          h("div", { style: { position: "relative", height: "clamp(300px, 82vw, 520px)", overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg, #000 60%, transparent 98%)", maskImage: "linear-gradient(180deg, #000 60%, transparent 98%)" } },
-            h("img", { src: "images/guide-coach/coach-acc-entete_cheval.webp", alt: "", decoding: "async", style: { display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "76% 40%", transform: rtlG ? "scaleX(-1)" : "none" } })),
-          h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 56, marginTop: -56, position: "relative", transform: rtlG ? "scaleX(-1)" : "none" } },
-            h("path", { d: "M0 54 C 140 50, 260 34, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })),
-          h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtlG ? "›" : "‹"),
-          h("div", { style: { textAlign: "end", padding: "4px 20px 0" } },
-            h("div", { style: { fontSize: 10.5, letterSpacing: "0.36em", color: CH, fontWeight: 500, marginBottom: 10 } }, "GUIDE COACH"),
-            h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 66px)", lineHeight: 1, margin: 0, color: IV } }, "Le guide du coach"),
-            h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(18px, 4.8vw, 22px)", margin: "10px 0 0", color: IV, opacity: 0.9 } }, "Avant, pendant et après le concours."))),
-        h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "26px 22px 0" } },
-          h("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: "#DEDAD2", margin: 0 } }, "Tout ce que Hype t’apporte pour accompagner ton équipe en compétition. Chaque chapitre te montre où cliquer, étape par étape."),
-          Cycle(h, true)),
-        PHASES.map(function (P) {
-          return h("section", { key: P.k, style: { maxWidth: 900, margin: "34px auto 0" } },
-            photoPhase(P.img, P.pos, "clamp(210px, 58vw, 380px)"),
-            h("div", { style: { maxWidth: 680, margin: "-6px auto 0", padding: "0 22px" } },
+        h("style", null, CSS),
+        heroVid("coach-acc-entete_cheval", "76% 40%", "GUIDE COACH", "Le guide du coach", "Pilote tes compétitions avec Hype.",
+          "De la préparation du concours à l’analyse des performances, Hype t’accompagne pour organiser ton équipe, prendre soin de tes chevaux et faire progresser tes cavaliers."),
+        /* trois pictos fins */
+        h("div", { className: "hcA-pictos", style: { marginTop: 28, padding: "0 10px", boxSizing: "border-box" } },
+          [["agenda", "Gagner du temps"], ["groupe", "Coordonner mon équipe"], ["graph", "Analyser et progresser"]].map(function (p, i) {
+            return h("div", { key: i, style: { textAlign: "center", padding: "4px 6px", borderInlineStart: i ? "1px solid rgba(243,238,228,0.12)" : "none" } },
+              h("div", { "aria-hidden": "true", style: { color: IV, display: "flex", justifyContent: "center", opacity: 0.9 } }, ico(h, p[0], 28)),
+              h("div", { style: { fontSize: 13, lineHeight: 1.35, color: IV, marginTop: 8 } }, p[1]));
+          })),
+        h("div", { style: { textAlign: "center", marginTop: 26, padding: "0 22px" } },
+          h("button", { type: "button", onClick: function () { setVue("sommaire"); haut0(); }, "data-coach-tutos": "haut",
+            style: { minHeight: 48, padding: "12px 26px", borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: "0.02em", cursor: "pointer" } },
+            "Découvrir les 9 tutoriels ", h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→"))),
+
+        /* AVANT — photo et texte côte à côte (empilés sur iPhone) + encart vocal */
+        h("section", { className: "hcA-bloc hcA-cote", style: { marginTop: 40 } },
+          photo("coach-acc-camion_soir", "80% 50%"),
+          h("div", { className: "hcA-txt" },
+            etiquette("AVANT LE CONCOURS", "agenda"),
+            titre2("Préparer sans complication."),
+            coches(["Prépare tes engagements et retrouve automatiquement les licences de tes cavaliers.", "Édite et imprime tes feuilles d’engagement.", "Importe les listes de départ à partir d’une simple capture d’écran.", "Retrouve automatiquement tes cavaliers et leurs chevaux.", "Dicte tes horaires à Hype.", "Obtiens les heures de passage estimées et l’ordre d’embarquement.", "Prépare tes listes interactives de matériel, adaptées à chaque cheval.", "Retrouve tes documents dans ton coffre-fort."]),
+            h("div", { style: { margin: "16px 0 4px" } }, encart([
+              h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 12 } },
+                h("span", { "aria-hidden": "true", style: { flex: "0 0 40px", height: 40, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.55)", color: IV, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, ico(h, "micro", 20)),
+                h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 21, lineHeight: 1.25, color: IV } }, "« La reconnaissance de la Club 3 est à 7h30. »")),
+              h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 12 } }, "Échange avec Hype, précise tes demandes et valide les informations.")], "voc")),
+            lienTutos("Voir les tutoriels Avant le concours"))),
+
+        /* PENDANT — grande photo panoramique, texte, exemple concret d'interface */
+        h("section", { className: "hcA-bloc", style: { marginTop: 44 } },
+          photo("coach-acc-cso", "84% 40%"),
+          h("div", { className: "hcA-txt" },
+            etiquette("PENDANT LE CONCOURS", "drapeau"),
+            titre2("Coordonner en temps réel."),
+            coches(["Suivi des passages par épreuve, cavalier ou cheval.", "Calcul automatique des groupes au paddock et des heures de rendez-vous.", "Publication des groupes aux cavaliers.", "Rappels de reconnaissance.", "Gestion des changements et des non-partants.", "Liste des modifications à déclarer au jury.", "Décalage des passages et des rendez-vous en cas de retard.", "Notifications aux cavaliers.", "Accès au direct du concours lorsqu’il est disponible."]),
+            /* exemple inspiré de « Décaler l'épreuve » */
+            h("div", { style: { margin: "16px 0 4px" } }, encart([
+              h("div", { key: "t", style: { display: "flex", alignItems: "center", gap: 10, fontSize: 15.5, fontWeight: 600, color: IV } },
+                h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV, opacity: 0.85 } }, ico(h, "horloge", 20)), "Club 2 — Retard de 20 minutes"),
+              h("div", { key: "l", style: { marginTop: 10 } },
+                [["Passages", "+20 min"], ["Rendez-vous paddock", "+20 min"]].map(function (r, i) {
+                  return h("div", { key: i, style: { display: "flex", justifyContent: "space-between", gap: 12, padding: "9px 0", borderTop: "1px solid rgba(243,238,228,0.08)", fontSize: 14.5, color: "#DEDAD2" } }, h("span", null, r[0]), h("span", { style: { color: IV, fontWeight: 600 } }, r[1]));
+                }),
+                h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "9px 0 2px", borderTop: "1px solid rgba(243,238,228,0.08)", fontSize: 14.5, color: "#DEDAD2" } },
+                  h("span", null, "Prévenir les cavaliers"),
+                  h("span", { "aria-hidden": "true", style: { width: 22, height: 22, borderRadius: 6, border: "1px solid " + CH, color: CH, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, chk(15))))], "ret")),
+            lienTutos("Voir les tutoriels Pendant le concours"),
+            h("div", { style: { textAlign: "center", margin: "30px 0 0" } },
+              h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 24, lineHeight: 1.25, color: IV } }, "Concentre-toi sur la performance.", h("br"), "Hype gère la logistique.")))),
+
+        /* APRÈS */
+        h("section", { style: { marginTop: 50 } },
+          h("div", { className: "hcA-txt" }, etiquette("APRÈS LE CONCOURS", "video"), titre2("Prendre soin, analyser et progresser.")),
+          h("div", { className: "hcA-bloc hcA-cote" },
+            photo("coach-hd-selle", "70% 50%"),
+            h("div", { className: "hcA-txt" }, sousTitre("Prendre soin de tes chevaux"),
+              coches(["Réutilise tes listes de matériel pour ne rien oublier.", "Retrouve les documents nécessaires.", "Partage tes consignes spécifiques de récupération et de soins.", "Consulte les articles Santé."]))),
+          h("div", { className: "hcA-bloc", style: { marginTop: 26 } },
+            photo("images/team-competition-performances-hero.webp", "78% 50%"),
+            h("div", { className: "hcA-txt" }, sousTitre("Retrouver les performances"),
+              coches(["Importe et consulte les résultats.", "Suis les statistiques et les sans-faute.", "Compare les performances par cavalier, cheval et couple.", "Retrouve l’évolution de chaque couple au fil des concours."]))),
+          h("div", { className: "hcA-bloc hcA-cote hcA-inv", style: { marginTop: 26 } },
+            photo("coach-hd-coach", "78% 30%"),
+            h("div", { className: "hcA-txt" }, sousTitre("Transformer chaque parcours en une leçon"),
+              coches(["Retrouve les vidéos déposées par tes cavaliers.", "Consulte les vidéos par concours, cavalier, cheval ou couple.", "Compare les parcours au fil de la saison.", "Commente les vidéos.", ["Sélectionne un extrait et analyse-le avec Hey Baby."]]))),
+          h("div", { className: "hcA-txt", style: { marginTop: 26 } },
+            sousTitre("Partager et transmettre"),
+            h("div", { className: "hcA-duo", style: { marginTop: 8 } },
+              encart([h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 10 } }, h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV } }, ico(h, "bulle", 20)), h("span", { style: { fontSize: 16, fontWeight: 600, color: IV } }, "Un conseil individuel")),
+                h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Épingle un retour personnalisé, visible uniquement par le coach et le cavalier concerné.")], "ind"),
+              encart([h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 10 } }, h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV } }, ico(h, "groupe", 20)), h("span", { style: { fontSize: 16, fontWeight: 600, color: IV } }, "Un enseignement collectif")),
+                h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Transforme une difficulté observée en contenu pédagogique destiné à toute l’équipe, sans identifier le cavalier.")], "col")),
+            h("p", { style: { fontSize: 15, lineHeight: 1.5, color: "#DEDAD2", margin: "16px 0 0" } }, "Tu gardes toujours la maîtrise des conseils : tu peux les modifier, les compléter, les valider ou choisir de ne pas les partager."),
+            h("p", { style: { fontSize: 15, lineHeight: 1.5, color: IV, margin: "10px 0 0" } }, "L’ensemble permet de préparer les prochaines séances et les prochains concours."),
+            lienTutos("Voir les tutoriels Après le concours"))),
+
+        /* cycle + Hey Baby (côte à côte sur grand écran) */
+        h("div", { className: "hcA-fin", style: { marginTop: 50, borderTop: "1px solid rgba(243,238,228,0.10)", paddingTop: 26 } },
+          h("div", null, Cycle(h, true)),
+          h("section", { style: { maxWidth: 560, width: "100%", margin: "0 auto", boxSizing: "border-box" } },
+            h("div", { style: { borderRadius: 20, border: "1px solid rgba(243,238,228,0.16)", background: "#0B0E0C", padding: "20px 18px 18px" } },
               h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-                h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: CH, fontWeight: 500 } }, P.lab),
-                h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.55), rgba(201,166,107,0))" } })),
-              h("h2", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(30px, 8vw, 40px)", lineHeight: 1.08, margin: "10px 0 14px", color: IV } }, P.titre),
-              h("ul", { style: { listStyle: "none", margin: "0 0 20px", padding: 0 } },
-                P.puces.map(function (t, i) { return h("li", { key: i, style: { display: "flex", gap: 12, fontSize: 15, lineHeight: 1.45, color: "#DEDAD2", padding: "4px 0" } },
-                  h("span", { "aria-hidden": "true", style: { flex: "0 0 5px", height: 5, borderRadius: "50%", background: CH, marginTop: 9, opacity: 0.8 } }), t); })),
-              h("div", { style: { borderBottom: "1px solid rgba(243,238,228,0.10)" } }, P.ch.map(ligneChap))));
-        }),
-        h("div", { style: { maxWidth: 680, margin: "44px auto 0", padding: "0 22px", textAlign: "center" } },
-          h("div", { "aria-hidden": "true", style: { width: 44, height: 1, background: CH, margin: "0 auto 18px", opacity: 0.7 } }),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 26, color: IV, lineHeight: 1.2 } }, "Chaque concours prépare le suivant.")),
-        /* encart Hey Baby : aide à la navigation (remplace « Une question sur Hype ? » sur cette page) */
-        h("section", { style: { maxWidth: 560, margin: "48px auto 0", padding: "0 18px", boxSizing: "border-box" } },
-          h("div", { style: { borderRadius: 20, border: "1px solid rgba(201,166,107,0.30)", background: "#0B0E0C", padding: "20px 18px 18px" } },
-            h("div", { style: { fontFamily: SERIF, fontSize: 25, fontWeight: 500, color: IV, lineHeight: 1.15 } }, "Besoin d’un coup de main ?"),
-            h("div", { style: { fontSize: 14.5, color: "#DEDAD2", marginTop: 8, lineHeight: 1.45 } }, "Tu ne trouves pas une page ? Tu ne sais pas où cliquer ?"),
-            h("div", { style: { fontSize: 14.5, color: IV, marginTop: 4, lineHeight: 1.45, fontWeight: 600 } }, "Hey Baby te guide dans Hype."),
-            h("form", { onSubmit: function (ev) { ev.preventDefault(); envoyerHB(); }, style: { display: "flex", alignItems: "center", gap: 10, marginTop: 16, minHeight: 48, padding: "0 6px 0 16px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)" } },
-              h("input", { value: qHB, onChange: function (ev) { setQHB(ev.target.value); }, placeholder: "Comment puis-je t’aider ?", maxLength: 500, "aria-label": "Comment puis-je t’aider ?", style: { flex: 1, minWidth: 0, border: "none", outline: "none", background: "transparent", color: IV, fontFamily: M, fontSize: 16 } }),
-              h("button", { type: "submit", "aria-label": "Demander à Hey Baby", style: { width: 36, height: 36, flex: "0 0 auto", borderRadius: "50%", border: "1px solid " + CH, background: "transparent", color: CH, fontSize: 16, lineHeight: 1, cursor: "pointer" } }, rtlG ? "←" : "→")))));
+                h("img", { src: "images/IMG_HEYBABY_BANNIERE.jpg", alt: "", style: { width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(243,238,228,0.25)", flex: "0 0 auto" } }),
+                h("div", { style: { fontFamily: SERIF, fontSize: 23, fontWeight: 500, color: IV, lineHeight: 1.15 } }, "Besoin d’un coup de main ?")),
+              h("div", { style: { fontSize: 14.5, color: "#DEDAD2", marginTop: 10, lineHeight: 1.45 } }, "Tu ne trouves pas une page ? Tu ne sais pas où cliquer ?"),
+              h("div", { style: { fontSize: 14.5, color: IV, marginTop: 4, lineHeight: 1.45, fontWeight: 600 } }, "Hey Baby te guide dans Hype."),
+              h("form", { onSubmit: function (ev) { ev.preventDefault(); envoyerHB(); }, style: { display: "flex", alignItems: "center", gap: 10, marginTop: 16, minHeight: 48, padding: "0 6px 0 16px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)" } },
+                h("input", { value: qHB, onChange: function (ev) { setQHB(ev.target.value); }, placeholder: "Comment puis-je t’aider ?", maxLength: 500, "aria-label": "Comment puis-je t’aider ?", style: { flex: 1, minWidth: 0, border: "none", outline: "none", background: "transparent", color: IV, fontFamily: M, fontSize: 16 } }),
+                h("button", { type: "submit", "aria-label": "Demander à Hey Baby", style: { width: 36, height: 36, flex: "0 0 auto", borderRadius: "50%", border: "1px solid rgba(243,238,228,0.4)", background: "transparent", color: IV, fontSize: 16, lineHeight: 1, cursor: "pointer" } }, rtlG ? "‹" : "›"))))),
+        h("div", { style: { maxWidth: 680, margin: "34px auto 0", padding: "0 22px", display: "flex", alignItems: "center", gap: 16 } },
+          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } }),
+          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 24, color: IV, lineHeight: 1.2, textAlign: "center" } }, "Chaque concours prépare le suivant."),
+          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } })));
     }
     var PG = PAGES[vue] || PAGES.engagements;
     return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
