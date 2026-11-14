@@ -1,3 +1,11 @@
+# 🗓️ 14/11 (12h40) — PRÉPARATION DE L'AUDIT CHATGPT AVANT PUBLICATION DANS LES MAGASINS — aucune modification de Horse Lingo
+
+**Demande de Blandine** : faire réaliser par ChatGPT un audit indépendant et complet (graphique, fonctionnel, linguistique, technique) de Horse Lingo avant l'App Store et Google Play ; lui fournir toutes les informations, sans clé ni mot de passe, « pour l'instant ne modifie rien ».
+**Fait** : dossier d'audit rédigé (architecture, arborescence, pages et jeux, charte, langues, audio, progression, compte et abonnement, bugs connus, état magasins, tests). Vérifié en base (lecture) : RLS active sur hype_lingua_progression, abonnements_lingo, abonnements_premium, hype_ambassadeurs.
+**Seule écriture en base (Blandine : « fais ce que tu as à faire »)** : le compte de test existant **chatgpt@gg.com** (créé le 21/10) ajouté à `hype_ambassadeurs` → Premium offert dans Horse Lingo (et dans Hype, la table est commune) pour que ChatGPT teste les villes payantes sans payer. POUR ANNULER : supprimer la ligne chatgpt@gg.com de hype_ambassadeurs. Mot de passe : jamais écrit ici, Blandine le donne elle-même à ChatGPT.
+**Repéré pour l'audit (rien corrigé)** : aucune politique de confidentialité ni CGU dans Horse Lingo ; abonnement uniquement Stripe (pas d'achat intégré Apple / Google) ; pas encore de coque native pour Horse Lingo (Hype en a une : .github/workflows/build-android.yml, Capacitor) ; suppression de compte via 2hype.fr ; XP envoyée seulement à Hype (rien en version autonome) ; verrou Premium décidé côté téléphone ; lexiques jamais chargés (materiel, pansage-reserve) ; fichiers en double (icônes -2, arrivee-clonbinane-SANS-ROGNAGE.mp4, arrivee-wellington.webm).
+**Reste** : réponse de l'audit ChatGPT, puis corrections une par une avec Blandine.
+
 # 🗓️ 13/11 (17h30) — CARTE DU TOUR DU MONDE : ENTOURAGE EN BLEU NUIT (proposition A) — horselingo `060106b` [publier], « Ok 1 »
 
 **Choix de Blandine** : « le globe, faut qu'on le laisse comme il est… il est joli » — on ne touche ni au globe ni à son image de cavaliers ; on aménage seulement ce qui est autour. Parmi 3 propositions (A liste encadrée, B courbe + texte centré, C courbe + chiffres romains), elle a choisi **A**.
