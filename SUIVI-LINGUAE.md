@@ -1,3 +1,9 @@
+# 🗓️ 14/11 (18h05) — ✅ CORRECTIONS V1 EN LIGNE sur horselingo.fr — horselingo `649face` [publier] (Blandine : « Ok »)
+
+Branche `corrections-v1` poussée sur `main` (avance rapide, personne n'avait publié entre-temps). En ligne : récit et lettre dans la langue de lecture ; fond et carte postale de Flyinge ; plus de boutons pleins (contour bleu glacier) ; carte postale si la vidéo d'arrivée ne charge pas ; compte et dialogue en 17 langues ; adresses des 3 ambassadeurs retirées du code. **VER ?v=105**, **cache linguae-v23** (les téléphones reprennent les fichiers). Déploiement Netlify « ready » à 18h05 (6 fichiers changés, aucune erreur, analyse de secrets : rien).
+**À tester sur iPhone par Blandine** : une page de ville en persan ou en allemand (récit traduit), l'écran Compte dans une autre langue, une mise en situation (interface traduite), la fenêtre Premium (bouton à contour).
+**Toujours en attente** : dépôt public (a ou b), coque (A ou B) et identifiant, XP en version autonome, protection du Premium, audit visuel de ChatGPT.
+
 # 🗓️ 14/11 (16h25) — DIALOGUE TRADUIT DANS LES 17 LANGUES + CAPTURES POUR L'AUDIT VISUEL CHATGPT — horselingo `06696d6` (branche `corrections-v1`, SANS [publier])
 
 **Blandine : « Ok, vas-y »** pour la traduction du dialogue ; demande à ChatGPT de poursuivre l'audit, surtout VISUEL (« plein de choses qui vont pas très bien ensemble »).
