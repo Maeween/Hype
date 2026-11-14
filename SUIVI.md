@@ -34,6 +34,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 12:15 — build 20261114-1215 — Jurys, règlement, feuille du cavalier : traduits dans les 14 langues
+- Tous les textes ajoutés aujourd'hui sur Juger une reprise, Jury de CSO, La feuille de notes, Le règlement (dont le mémo du jury CSO et Dressage) et les outils de l'onglet Résultats (Voir la feuille du juge, Dicter les résultats de CSO, Le règlement) : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa.
+- Places : « 1er / 2e » en français ; chiffres seuls dans les autres langues. Le texte enregistré dans les résultats reste au format FFE (« 1er / 5 »).
+- RESTE (outils) : prévenir aussi l'équipe de l'écurie (pas seulement le propriétaire) quand quelqu'un demande une correction de fiche — demande une petite fonction en base, à valider ; barrages et deux phases en CSO ; classement CSO en direct sur les autres téléphones (table en base, à valider) ; « outilsMedias » (Ajouter une vidéo, onglet Médias du concours) jamais affiché, à confirmer avec Blandine.
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 11:50 — build 20261114-1150 — Écrans de jury et Règlement : en-tête Vidéothèque
 - Blandine (10h01) : « garder vraiment le design comme on a sur la page Vidéothèque ». Même en-tête que la Vidéothèque sur Juger une reprise, Jury de CSO, La feuille de notes et Le règlement : courbe champagne en haut à droite, grande photo de cheval noir fondue dans le noir (entière), courbe du bas, titre en grand Cormorant aligné à droite sous la photo, sous-titre en italique. Fond #070A08, cartes noir graphite en dégradé avec ombre comme les cartes de la Vidéothèque, titres de partie en Cormorant.
 - Fichiers : hype-ecran-juge.js, index.html (build), SUIVI.md.
