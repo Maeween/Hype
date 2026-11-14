@@ -316,7 +316,7 @@
     }
     function lienTutos(lab) {
       return h("button", { type: "button", onClick: function () { setVue("sommaire"); haut0(); }, "data-coach-tutos": "1",
-        style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 6, border: "none", background: "transparent", color: CH, fontFamily: M, fontSize: 14, fontWeight: 500, letterSpacing: "0.02em", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→"));
+        style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 6, border: "none", background: "transparent", color: IV, opacity: 0.85, textDecoration: "underline", textUnderlineOffset: 5, textDecorationColor: "rgba(243,238,228,0.3)", fontFamily: M, fontSize: 14, fontWeight: 500, letterSpacing: "0.02em", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→"));
     }
 
     if (vue === "sommaire") {
@@ -325,8 +325,8 @@
         CHAPS.map(function (g) {
           return h("section", { key: g[0], style: { maxWidth: 680, margin: "30px auto 0", padding: "0 22px" } },
             h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 8 } },
-              h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: CH, fontWeight: 500 } }, g[0]),
-              h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.55), rgba(201,166,107,0))" } })),
+              h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: "rgba(243,238,228,0.72)", fontWeight: 500 } }, g[0]),
+              h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(243,238,228,0.28), rgba(243,238,228,0))" } })),
             h("div", { style: { borderBottom: "1px solid rgba(243,238,228,0.10)" } }, g[1].map(ligneChap)));
         }));
     }
@@ -350,8 +350,8 @@
       }
       function etiquette(lab, picto) {
         return h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-          h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: CH, fontWeight: 500, whiteSpace: "nowrap" } }, lab),
-          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.55), rgba(201,166,107,0))" } }),
+          h("span", { style: { fontSize: 11, letterSpacing: "0.32em", color: "rgba(243,238,228,0.72)", fontWeight: 500, whiteSpace: "nowrap" } }, lab),
+          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(243,238,228,0.28), rgba(243,238,228,0))" } }),
           picto ? h("span", { "aria-hidden": "true", style: { color: IV, opacity: 0.85, display: "inline-flex" } }, ico(h, picto, 24)) : null);
       }
       function titre2(t) { return h("h2", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(30px, 8vw, 40px)", lineHeight: 1.08, margin: "10px 0 16px", color: IV } }, t); }
@@ -395,7 +395,7 @@
             coches(["Prépare tes engagements et retrouve automatiquement les licences de tes cavaliers.", "Édite et imprime tes feuilles d’engagement.", "Importe les listes de départ à partir d’une simple capture d’écran.", "Retrouve automatiquement tes cavaliers et leurs chevaux.", "Dicte tes horaires à Hype.", "Obtiens les heures de passage estimées et l’ordre d’embarquement.", "Prépare tes listes interactives de matériel, adaptées à chaque cheval.", "Retrouve tes documents dans ton coffre-fort."]),
             h("div", { style: { margin: "16px 0 4px" } }, encart([
               h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 12 } },
-                h("span", { "aria-hidden": "true", style: { flex: "0 0 40px", height: 40, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.55)", color: IV, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, ico(h, "micro", 20)),
+                h("span", { "aria-hidden": "true", style: { flex: "0 0 40px", height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.3)", color: IV, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, ico(h, "micro", 20)),
                 h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 21, lineHeight: 1.25, color: IV } }, "« La reconnaissance de la Club 3 est à 7h30. »")),
               h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 12 } }, "Échange avec Hype, précise tes demandes et valide les informations.")], "voc")),
             lienTutos("Voir les tutoriels Avant le concours"))),
@@ -417,7 +417,7 @@
                 }),
                 h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "9px 0 2px", borderTop: "1px solid rgba(243,238,228,0.08)", fontSize: 14.5, color: "#DEDAD2" } },
                   h("span", null, "Prévenir les cavaliers"),
-                  h("span", { "aria-hidden": "true", style: { width: 22, height: 22, borderRadius: 6, border: "1px solid " + CH, color: CH, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, chk(15))))], "ret")),
+                  h("span", { "aria-hidden": "true", style: { width: 22, height: 22, borderRadius: 6, border: "1px solid rgba(243,238,228,0.5)", color: IV, display: "inline-flex", alignItems: "center", justifyContent: "center" } }, chk(15))))], "ret")),
             lienTutos("Voir les tutoriels Pendant le concours"),
             h("div", { style: { textAlign: "center", margin: "30px 0 0" } },
               h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 24, lineHeight: 1.25, color: IV } }, "Concentre-toi sur la performance.", h("br"), "Hype gère la logistique.")))),
@@ -432,11 +432,11 @@
           h("div", { className: "hcA-bloc", style: { marginTop: 26 } },
             photo("images/team-competition-performances-hero.webp", "78% 50%"),
             h("div", { className: "hcA-txt" }, sousTitre("Retrouver les performances"),
-              coches(["Importe et consulte les résultats.", "Suis les statistiques et les sans-faute.", "Compare les performances par cavalier, cheval et couple.", "Retrouve l’évolution de chaque couple au fil des concours."]))),
+              coches(["Importe et consulte les résultats.", "Suis les statistiques et les sans-faute.", "Retrouve l’évolution de chaque couple au fil des concours."]))),
           h("div", { className: "hcA-bloc hcA-cote hcA-inv", style: { marginTop: 26 } },
             photo("coach-hd-coach", "78% 30%"),
             h("div", { className: "hcA-txt" }, sousTitre("Transformer chaque parcours en une leçon"),
-              coches(["Retrouve les vidéos déposées par tes cavaliers.", "Consulte les vidéos par concours, cavalier, cheval ou couple.", "Compare les parcours au fil de la saison.", "Commente les vidéos.", ["Sélectionne un extrait et analyse-le avec Hey Baby."]]))),
+              coches(["Retrouve les vidéos déposées par tes cavaliers.", "Consulte les vidéos par concours, cavalier, cheval ou couple.", "Compare les parcours au fil de la saison.", "Commente les vidéos.", "Sélectionne un extrait et analyse-le avec Hey Baby."]))),
           h("div", { className: "hcA-txt", style: { marginTop: 26 } },
             sousTitre("Partager et transmettre"),
             h("div", { className: "hcA-duo", style: { marginTop: 8 } },
