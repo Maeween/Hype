@@ -209,6 +209,73 @@
       sansSignature ? null : h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, marginTop: 6 } }, "Chaque concours prépare le suivant."));
   }
 
+  /* 14/11 12h20 — CYCLE DE PROGRESSION VIVANT (maquette validée de Blandine : étapes en italique ivoire au-dessus de points
+     champagne, arcs champagne fins, HYPE au centre, « Cycle de progression », signature entre deux courbes).
+     Un petit point champagne parcourt lentement le cercle (sens des aiguilles d'une montre) et met l'étape qu'il passe
+     légèrement en valeur ; rien ne tourne, aucun effet lumineux ; immobile si le téléphone demande moins d'animations.
+     Chaque étape est un lien direct (props.aller(i)) ; HYPE mène au sommaire des 9 chapitres (props.centre()). */
+  var CYC_E = [["Préparer"], ["Concourir"], ["Prendre", "soin"], ["Observer"], ["Analyser"], ["Enseigner"], ["Progresser"]];
+  function CycleVivant(props) {
+    var h = React.createElement;
+    var N = CYC_E.length, PAS = 360 / N, W = 560, cx = 280, cy = 250, R = 178, CHA = "#D9B47E";
+    var refPt = React.useRef(null);
+    var _a = React.useState(-1); var actif = _a[0], setActif = _a[1];
+    var calme = false; try { calme = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) { }
+    React.useEffect(function () {
+      if (calme) return undefined;
+      var raf = 0, t0 = performance.now(), dernier = -2, TOUR = 24000;
+      function pas(t) {
+        var deg = -90 + ((t - t0) % TOUR) / TOUR * 360, a = deg * Math.PI / 180;
+        var el = refPt.current; if (el) { el.setAttribute("cx", (cx + R * Math.cos(a)).toFixed(1)); el.setAttribute("cy", (cy + R * Math.sin(a)).toFixed(1)); }
+        var rel = ((deg + 90) % 360 + 360) % 360, k = -1;
+        for (var i = 0; i < N; i++) { var d = Math.abs(rel - i * PAS); d = Math.min(d, 360 - d); if (d < 9) { k = i; break; } }
+        if (k !== dernier) { dernier = k; setActif(k); }
+        raf = requestAnimationFrame(pas);
+      }
+      raf = requestAnimationFrame(pas);
+      return function () { cancelAnimationFrame(raf); };
+    }, []);
+    var kids = [];
+    for (var i = 0; i < N; i++) {
+      var a0 = (-90 + i * PAS + 9) * Math.PI / 180, a1 = (-90 + (i + 1) * PAS - 9) * Math.PI / 180;
+      kids.push(h("path", { key: "a" + i, d: "M" + (cx + R * Math.cos(a0)).toFixed(1) + " " + (cy + R * Math.sin(a0)).toFixed(1) + " A" + R + " " + R + " 0 0 1 " + (cx + R * Math.cos(a1)).toFixed(1) + " " + (cy + R * Math.sin(a1)).toFixed(1), fill: "none", stroke: "url(#hcvGr" + i + ")", strokeWidth: 1.6, strokeLinecap: "round" }));
+    }
+    var defs = [];
+    for (var g = 0; g < N; g++) {
+      var b0 = (-90 + g * PAS + 9) * Math.PI / 180, b1 = (-90 + (g + 1) * PAS - 9) * Math.PI / 180;
+      defs.push(h("linearGradient", { key: "g" + g, id: "hcvGr" + g, gradientUnits: "userSpaceOnUse", x1: (cx + R * Math.cos(b0)).toFixed(1), y1: (cy + R * Math.sin(b0)).toFixed(1), x2: (cx + R * Math.cos(b1)).toFixed(1), y2: (cy + R * Math.sin(b1)).toFixed(1) },
+        h("stop", { offset: "0", stopColor: CHA, stopOpacity: 0.15 }), h("stop", { offset: "0.5", stopColor: CHA, stopOpacity: 0.85 }), h("stop", { offset: "1", stopColor: CHA, stopOpacity: 0.15 })));
+    }
+    var etapes = CYC_E.map(function (lig, i) {
+      var a = (-90 + i * PAS) * Math.PI / 180, nx = cx + R * Math.cos(a), ny = cy + R * Math.sin(a);
+      var on = actif === i, FS = 34, ly = ny - 18 - (lig.length - 1) * FS * 0.95;
+      var lx = Math.max(10 + lig[0].length * 7.2, Math.min(W - 10 - lig[0].length * 7.2, nx));
+      function aller() { if (props.aller) props.aller(i); }
+      return h("g", { key: "e" + i, role: "link", tabIndex: 0, "aria-label": lig.join(" "), "data-cycle-etape": i, onClick: aller, onKeyDown: function (ev) { if (ev.key === "Enter") aller(); }, style: { cursor: "pointer", outline: "none" } },
+        h("circle", { cx: nx, cy: ny - 22 - (lig.length - 1) * 14, r: 46, fill: "transparent" }),
+        h("text", { x: lx, y: ly, textAnchor: "middle", fill: "#F3EEE4", opacity: (actif < 0 || on) ? 1 : 0.84, style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: FS, transition: "opacity .6s ease" } },
+          lig.map(function (l, k) { return h("tspan", { key: k, x: lx, dy: k ? FS * 0.95 : 0 }, l); })),
+        h("circle", { cx: nx, cy: ny, r: on ? 6 : 4.6, fill: CHA, style: { transition: "r .6s ease" } }));
+    });
+    function centre() { if (props.centre) props.centre(); }
+    var svg = h("svg", { viewBox: "0 22 560 428", role: "group", "aria-label": "Cycle de progression Hype : préparer, concourir, prendre soin, observer, analyser, enseigner, progresser, puis de nouveau préparer", style: { display: "block", width: "100%", maxWidth: 520, height: "auto", margin: "0 auto", overflow: "visible" } },
+      h("defs", null, defs), kids,
+      calme ? null : h("circle", { ref: refPt, cx: cx, cy: cy - R, r: 3.2, fill: CHA, opacity: 0.95 }),
+      etapes,
+      h("g", { role: "link", tabIndex: 0, "aria-label": "Sommaire du guide", "data-cycle-centre": "1", onClick: centre, onKeyDown: function (ev) { if (ev.key === "Enter") centre(); }, style: { cursor: "pointer", outline: "none" } },
+        h("rect", { x: cx - 95, y: cy - 70, width: 190, height: 140, fill: "transparent" }),
+        h("text", { x: cx, y: cy - 8, textAnchor: "middle", fill: "#F3EEE4", style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 700, fontSize: 80, letterSpacing: 1 } }, "HYPE"),
+        h("line", { x1: cx - 38, y1: cy + 14, x2: cx + 38, y2: cy + 14, stroke: CHA, strokeWidth: 1.2, opacity: 0.85 }),
+        h("text", { x: cx, y: cy + 48, textAnchor: "middle", fill: "#F3EEE4", style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: 31 } },
+          h("tspan", { x: cx, dy: 0 }, "Cycle de"), h("tspan", { x: cx, dy: 30 }, "progression"))));
+    var courbe = function (haut) { return h("svg", { "aria-hidden": "true", viewBox: "0 0 300 12", preserveAspectRatio: "none", style: { display: "block", width: "78%", height: 10, margin: "0 auto" } }, h("path", { d: haut ? "M2 10 C 90 2, 210 2, 298 8" : "M2 2 C 90 10, 210 10, 298 4", stroke: CHA, strokeOpacity: 0.55, strokeWidth: 1, fill: "none" })); };
+    return h("div", { id: props.id || undefined, style: { padding: "8px 0 6px", textAlign: "center", scrollMarginTop: 24 } },
+      svg,
+      props.sansSignature ? null : h("div", { style: { marginTop: 26 } }, courbe(true),
+        h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: 24, color: "#F3EEE4", lineHeight: 1.25, padding: "12px 10px" } }, "Chaque concours prépare le suivant."),
+        courbe(false)));
+  }
+
   function EcranGuideCoach() {
     var h = React.createElement;
     var app = ((typeof useApp === "function") ? useApp() : null) || {};
@@ -242,7 +309,20 @@
     }, [vue]);
     var PHASE_DE = { engagements: "u1", feuille: "u1", programme: "u1", passages: "u2", paddock: "u2", jourj: "u2", retour: "u3", resultats: "u4", analyse: "u4" };   /* 14/11 10h35 : 4 univers */
     function versPhase(ph) { setTimeout(function () { try { var el = document.getElementById("hc-" + ph); if (el) el.scrollIntoView({ block: "start" }); } catch (e) { } }, 80); }
-    function retour() { if (PAGES[vue]) { var ph = PHASE_DE[vue]; setVue("accueil"); if (ph) versPhase(ph); }   /* 14/11 : plus de page intermédiaire, retour au bon temps de l'accueil */ else if (vue === "sommaire" || vue === "journee") setVue("accueil"); else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
+    /* 14/11 12h20 : liens directs du cycle. Préparer et Concourir → leur temps sur l'accueil (les 3 chapitres y sont) ;
+       les autres → le chapitre, carte concernée ouverte. Le retour d'un chapitre ouvert depuis le cycle revient sur le cycle. */
+    var CYC_DEST = [["u1"], ["u2"], ["retour"], ["analyse", "01"], ["resultats"], ["analyse", "06"], ["analyse", "08"]];
+    function allerCycle(i) {
+      var d = CYC_DEST[i]; if (!d) return;
+      if (/^u\d$/.test(d[0])) { try { sessionStorage.removeItem("hype_coach_cycle"); } catch (e) { } if (vue !== "accueil") setVue("accueil"); versPhase(d[0]); return; }
+      try { if (vue === "accueil") { var zc = document.getElementById("hype-defile"); sessionStorage.setItem("hype_coach_cycle", String(zc ? zc.scrollTop : 1)); } } catch (e) { }
+      if (d[1]) { var o = Object.assign({}, deplie); o[d[0] + d[1]] = true; setDeplie(o); }
+      setVue(d[0]); haut0();
+      if (d[1]) setTimeout(function () { try { var el = document.querySelector('[data-coach-carte="' + d[0] + d[1] + '"]'); if (el) el.scrollIntoView({ block: "start" }); } catch (e) { } }, 160);
+    }
+    function retourCycle() { var c = null; try { c = sessionStorage.getItem("hype_coach_cycle"); sessionStorage.removeItem("hype_coach_cycle"); } catch (e) { } return c != null && c !== "" ? Number(c) : null; }
+    function versY(y) { [80, 360].forEach(function (t) { setTimeout(function () { try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, y); else window.scrollTo(0, y); } catch (e) { } }, t); }); }
+    function retour() { if (PAGES[vue]) { var yc = retourCycle(); var ph = PHASE_DE[vue]; setVue("accueil"); if (yc != null) versY(yc); else if (ph) versPhase(ph); }   /* 14/11 : plus de page intermédiaire, retour au bon temps de l'accueil */ else if (vue === "sommaire" || vue === "journee") { var rc = retourCycle(); setVue("accueil"); if (rc != null) versY(rc); } else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
     /* le concours ouvert en dernier, s'il n'est pas passé : les liens y mènent directement */
     React.useEffect(function () {
       (async function () {
@@ -515,12 +595,9 @@
             p("Tu gardes toujours la maîtrise pédagogique et décides de ce qui est partagé.", 1),
             cartes(["resultats", "analyse"]))),
 
-        /* conclusion : cycle de progression */
-        h("div", { style: { maxWidth: 680, margin: "52px auto 0", padding: "26px 22px 0", borderTop: "1px solid rgba(243,238,228,0.10)" } }, Cycle(h, true, (typeof window !== "undefined" && window.__cyclePhrases === true))),
-        h("div", { style: { maxWidth: 680, margin: "24px auto 0", padding: "0 22px", display: "flex", alignItems: "center", gap: 16 } },
-          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } }),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 24, color: IV, lineHeight: 1.2, textAlign: "center" } }, "Chaque concours prépare le suivant."),
-          h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } })));
+        /* conclusion : cycle de progression vivant (14/11 12h20) — chaque étape mène directement à sa partie du guide */
+        h("div", { style: { maxWidth: 680, margin: "52px auto 0", padding: "26px 22px 0", borderTop: "1px solid rgba(243,238,228,0.10)" } },
+          h(CycleVivant, { id: "hc-cycle", aller: allerCycle, centre: function () { try { var zc = document.getElementById("hype-defile"); sessionStorage.setItem("hype_coach_cycle", String(zc ? zc.scrollTop : 1)); } catch (e) { } setVue("sommaire"); haut0(); } })));
     }
     var PG = PAGES[vue] || PAGES.engagements;
     return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
@@ -535,7 +612,7 @@
           /* carte façon maquette : numéro | filet | picto | titre + texte, photo à droite qui s'efface vers la gauche ; le détail se déplie dessous */
           var premier = String(tous[0] || "").replace(/^\*|\*$/g, "");
           var resteP = tous.slice(1);
-          return h("div", { key: c.n, role: "button", tabIndex: 0, "aria-expanded": ouv, onClick: basculer, onKeyDown: function (ev) { if (ev.key === "Enter") basculer(); },
+          return h("div", { key: c.n, "data-coach-carte": vue + c.n, role: "button", tabIndex: 0, "aria-expanded": ouv, onClick: basculer, onKeyDown: function (ev) { if (ev.key === "Enter") basculer(); },
             style: { position: "relative", overflow: "hidden", borderRadius: 16, border: "1px solid " + (ouv ? "rgba(201,166,107,0.45)" : "rgba(243,238,228,0.14)"), background: "#0B0E0C", cursor: "pointer" } },
             /* 13/11 22h19 (cahier « Harmonisation graphique ») — en-tête de carte en couches :
                1 fond noir · 2 photo calée à droite · 3 dégradé noir sans démarcation · 4 numéro, filet, picto, titre, phrase (pleine largeur) */
@@ -571,7 +648,7 @@
           ico(h, "micro"),
           h("div", null, h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.15 } }, PG.vocal.titre), (PG.vocal.exemples || []).map(function (x, k) { return h("div", { key: k, style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: CH, lineHeight: 1.35, marginTop: k ? 4 : 8 } }, x); }), h("div", { style: { fontSize: 14, color: IV2, lineHeight: 1.45, marginTop: 6 } }, gras(PG.vocal.texte)))) : null,
         PG.signature ? h("div", { style: { textAlign: "center", fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.3, margin: "14px 0 4px" } }, PG.signature[0], h("br"), h("span", { style: { color: CH } }, PG.signature[1])) : null),
-      PG.cycle ? h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "0 18px" } }, Cycle(h)) : null,
+      PG.cycle ? h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "0 18px" } }, h(CycleVivant, { aller: allerCycle, centre: function () { setVue("sommaire"); haut0(); } })) : null,
       (PG.bas || "coach-fr-camion") ? h("div", { style: { position: "relative", maxWidth: 900, margin: "22px auto 0" } },
         h("img", { src: "images/guide-coach/" + (PG.bas || "coach-fr-camion") + ".webp", alt: "", loading: "lazy", style: { display: "block", width: "100%", height: "auto" } }),
         courbe(true)) : null,
