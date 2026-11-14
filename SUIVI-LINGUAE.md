@@ -1,3 +1,21 @@
+# 🗓️ 14/11 (21h20) — LEXIQUE V2 : RETOUCHES APRÈS CONTRE-VÉRIFICATION CHATGPT — horselingo `6ff8310` (branche `lexique-v2`, SANS [publier])
+
+**Avis ChatGPT sur `d5aad99`** : très favorable, structure à garder, pas de nouvelle refonte ; 9 retouches demandées.
+**Fait** :
+1. Le bandeau de l'abécédaire s'efface sur son bord de fin (on devine qu'il continue).
+2. La lettre où l'on se trouve est marquée et reste visible dans le bandeau.
+3. Les noms de villes passent à 11 px, en gris clair.
+4. Les en-têtes chiffrés (« 1 ») sont en Montserrat.
+5. En persan et en arabe : la loupe passe à droite, le chevron pointe vers la gauche, le sens langue lue → langue cherchée n'est pas inversé.
+6. Aucun doublon persan : vérifié sur les 31 en-têtes ; c'étaient س et ش, deux lettres différentes.
+7. Tablette : colonne de 720 px.
+8. Ordinateur : les 31 lettres persanes tiennent dans la colonne.
+9. La recherche reste visible pendant tout le défilement.
+Tests : 7 cas, 864 mots partout, aucune erreur. Archive HorseLingo-6-lexique-retouches.zip.
+**Idées pour plus tard (ChatGPT, à ne pas faire maintenant)** : vraie fiche individuelle d'un mot ; mémoriser la position dans le lexique ; filtre « Mots accessibles » pour les comptes gratuits.
+**Prochaine intervention recommandée par ChatGPT** : le carnet de voyage.
+**Mise en ligne** : seulement après le « ok » de Blandine.
+
 # 🗓️ 14/11 (20h20) — LEXIQUE V2 PROPOSÉ (branche `lexique-v2`, commit `d5aad99`, SANS [publier])
 
 Selon la passation ChatGPT (direction « dictionnaire éditorial ») ; seul le lexique est touché.
