@@ -34,6 +34,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 09:40 — build 20261114-0940 — « Juger une reprise » : couleurs lisibles
+- Blandine (09h35) : « au niveau couleurs ce n'est pas lisible les textes ». Tous les textes secondaires passent en ivoire plein (#ECE6DA) au lieu d'un ivoire transparent, le doré des textes est éclairci (#E8CB94 ; le doré des contours ne change pas), plus aucun italique fin (commentaires, phrase dictée en Montserrat 17 px), lettres de la carrière plus claires, lignes déjà passées à 80 %.
+- RÈGLE : sur fond noir, texte jamais transparent ; doré réservé aux petits titres et contours.
+- Fichiers : hype-ecran-juge.js (v=4), index.html (build), SUIVI.md.
+
 ## 2026-11-14 01:50 — build 20261114-0150 — « Juger une reprise » : lisibilité
 - Blandine (01h15) : « fais en sorte que ce soit bien lisible ». Textes agrandis et plus contrastés partout (sous-titre 15 px, figure 27 px, feuille 15 px, commentaires 14 px à 78 % d'opacité au lieu de 60 %, petits titres 12 px au lieu de 9,5-10,5 px avec moins d'espacement), lettres de la carrière 11 / 15 px, boutons de note 16 px sur une grille équilibrée (7 par ligne sur 10, 6 par ligne sur 5), boutons 16 px.
 - RÈGLE à garder pour les prochains écrans : rien de lisible sous 14 px, gris secondaires à au moins 75 % d'opacité.
