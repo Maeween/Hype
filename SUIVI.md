@@ -70,6 +70,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h33 — ERREUR CORRIGÉE : les builds 1815, 1830 et 1840 n'étaient pas partis en ligne
+- Cause : leurs messages d'envoi ne commençaient pas par « [publier] » → Netlify ne déploie pas (le site était resté sur le mail de bienvenue, 13h57). Blandine voyait toujours l'ancien texte de la liste du van.
+- Correction : nouvel envoi marqué [publier] (même contenu : compte express style Vidéothèque + notifications, aperçu image des partages, texte de la liste du van). RÈGLE : chaque publication doit avoir « [publier] » dans le message.
+
 ## 2026-11-14 14h25 — PUBLIÉ (build 20261114-1840, index.html seul) : nouveau message de partage de la liste du van
 - Blandine (14h22 « ça fait un peu pédant ») : « Vous pouvez retrouver sur Hype la liste du matériel à emporter pour le concours, et la cocher au fur et à mesure en préparant vos affaires et le van. N'oubliez pas le matériel spécifique à chaque cheval si vous en montez plusieurs. » — « vous » gardé : message envoyé aux groupes de cavaliers (exception au tutoiement).
 - PROPOSÉ, en attente de son choix : bandeau « Prochain concours » pour arriver directement sur la page du concours (Blandine : « 50 sous-clics… une fois sur deux c'est même pas la bonne ») — A en haut de l'accueil, B sur la page Écurie, ou les deux.
