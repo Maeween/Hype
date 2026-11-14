@@ -63,6 +63,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h15 — PUBLIÉ build 20261114-1700 (Blandine « Oui », 13h44) — fichiers : index.html, hype-ecran-saison.js v=188, SUIVI.md : règles et organisation du paddock rapprochées
+- Blandine (13h43) : rapprocher « un tout petit peu » l'encadré « Règles du paddock » et « Organisation du paddock », pour faire une capture propre avec toutes les consignes du paddock.
+- hype-ecran-saison.js v=188 : quand les deux se suivent, l'espace au-dessus de « Organisation du paddock » passe d'environ 136 px à 80 px (courbe de chapitre gardée).
+
 ## 2026-11-14 14h10 — PUBLIÉ build 20261114-1650 (Blandine « Oui ok », 13h42) — fichiers : index.html, hype-ecran-saison.js v=187, SUIVI.md : partager chaque partie de la page concours + liste de départ du van mise à jour
 - Blandine (13h32) : « qu'on puisse partager chaque partie indépendamment… l'ordre de passage, les infos du concours, la liste du van, l'ordre d'embarquement, les groupes à l'entrée du paddock… juste un clic et un petit message… qu'on puisse modifier ».
 - **hype-ecran-saison.js v=187** : lien « Partager … avec le groupe » sous l'ordre de passage, sous les groupes du paddock (groupes publiés) et dans l'ordre d'embarquement ; message prêt = titre et date du concours, phrase d'accompagnement, la liste elle-même, lien du concours (#r=) ; modifiable dans l'appli de messagerie ; sinon copié (« Message copié : colle-le dans ton groupe »). Infos du concours et liste du van : déjà en ligne.

@@ -5021,6 +5021,7 @@ var HC_CSS = [
   ".hc .hc-pad-tete .hc-pad-ic{display:none}",
   ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(24px,6.6vw,29px)}",
   ".hc .hc-pad-tete .hc-pad-tt span{display:block;margin-top:6px}",
+  ".hc .hc-regles+.hc-pad div.hc-pad-tete{margin-top:22px;padding-top:58px}",   /* 14/11 13h43 (Blandine) : règles et organisation du paddock un peu plus rapprochées, pour tenir sur une capture */
   ".hc .hc-apres-pas{position:relative;margin-top:44px;padding-top:56px}",
   ".hc .hc-apres-pas:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
   /* 13/11 13h24 (Blandine : « pas mal de boutons dorés… modifier les passages, etc… éviter de nous cramer les yeux ») : 3 propositions */
