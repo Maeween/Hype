@@ -66,7 +66,7 @@ function EcranAssistantIA() {
        l'outil documents est chargé sur la page Hey Baby ; une consigne (horaires, engager, retirer, soins, registre…) y part
        directement (récap → Valider), seules les questions vont à Hey Baby. */
     const [outilPretHB, setOutilPretHB] = useState(() => { try { return !!(window.HypeOutilDoc && window.HypeOutilDoc.Hote); } catch (e) { return false; } });
-    useEffect(() => { if (outilPretHB) return undefined; let vif = true; try { if (typeof hypeChargerDiffere === "function") hypeChargerDiffere("hype-outil-doc.js?v=19", "HypeOutilDoc").then((ok) => { if (vif && ok) setOutilPretHB(true); }); } catch (e) { } return () => { vif = false; }; }, []);
+    useEffect(() => { if (outilPretHB) return undefined; let vif = true; try { if (typeof hypeChargerDiffere === "function") hypeChargerDiffere("hype-outil-doc.js?v=20", "HypeOutilDoc").then((ok) => { if (vif && ok) setOutilPretHB(true); }); } catch (e) { } return () => { vif = false; }; }, []);
     useEffect(function () { try { if (typeof window !== "undefined" && window.__hbPrefill != null) { var pf = String(window.__hbPrefill); if (window.__hbAutoEnvoi === true && pf.trim()) { autoEnvoiRef.current = pf.trim(); } else { setSaisie(pf); } window.__hbPrefill = null; window.__hbAutoEnvoi = null; } } catch (e) { } }, []);
     const [enCours, setEnCours] = useState(false);
     const [questionsPosees, setQuestionsPosees] = useState(() => {
@@ -515,7 +515,7 @@ function EcranAssistantIA() {
     // Historique : recharge la conversation depuis Supabase \u00e0 l'ouverture
     useEffect(() => {
         let actif = true;
-        const suite = () => { if (!actif) return; try { reprendreJobHB(); } catch (eS) { } try { setTimeout(renvoyerAttenteHB, 800); } catch (eRa) { } try { if (autoEnvoiRef.current) { const qA = autoEnvoiRef.current; autoEnvoiRef.current = null; setTimeout(() => { try { if (envoyerRef.current) envoyerRef.current(qA); } catch (eA2) { } }, 250); } } catch (eA) { } }; /* 26/09 (401) ; 21/10 : + question en attente d envoi */
+        const suite = () => { if (!actif) return; try { reprendreJobHB(); } catch (eS) { } try { setTimeout(renvoyerAttenteHB, 800); } catch (eRa) { } try { if (autoEnvoiRef.current) { const qA = autoEnvoiRef.current; autoEnvoiRef.current = null; setTimeout(() => { try { if (envoyerRef.current) envoyerRef.current(qA, { question: true }); }   /* 14/11 : déjà trié par l'encart → c'est une question */ catch (eA2) { } }, 250); } } catch (eA) { } }; /* 26/09 (401) ; 21/10 : + question en attente d envoi */
         if (coursCtx && !hbChoixRef.current) { suite(); return () => { actif = false; }; } // arrivée depuis un cours : accueil + suggestions du chapitre restent visibles
         try {
             chargerConversationHB(30, conversationId).then((r) => {
@@ -656,6 +656,7 @@ function EcranAssistantIA() {
             }
         } catch (e) { setEpingleCible(null); }
     };
+    const [douteHB, setDouteHB] = useState(null);   /* 14/11 : « Tu veux que je l'enregistre ou c'est une question ? » */
     const envoyer = async (texte, opts) => {
         var _a;
         /* 26/09 (401) : `reprise` = job differe note sur le telephone (jobId, question, t0). La question a deja
@@ -672,7 +673,15 @@ function EcranAssistantIA() {
             return;
         if (!reprise && !renvoi && !imageJointe && question) {
             try {
-                if (typeof hypeEstConsigne === "function" && hypeEstConsigne(question) && window.HypeOutilDoc && typeof window.HypeOutilDoc.traiterTexte === "function") {
+                /* 14/11 12h44 : on ne part à l'outil que si c'est clairement une info ; en cas de doute, on demande */
+                /* contexte : si Hey Baby vient de poser une question, la réponse reste dans la conversation (sauf « note », « enregistre »…) */
+                const dernierHB = messages.length ? messages[messages.length - 1] : null;
+                const enConv = !!(dernierHB && dernierHB.role === "assistant" && /\?\s*$/.test(String(dernierHB.contenu || "").trim()));
+                const partsHB = {};
+                const genreHB = (opts && opts.question) ? "question" : (typeof hypeGenreMessage === "function" ? hypeGenreMessage(question, { enConversation: enConv, parts: partsHB }) : (typeof hypeEstConsigne === "function" && hypeEstConsigne(question) ? "info" : "question"));
+                if (genreHB === "mixte" && window.HypeOutilDoc) { setDouteHB({ texte: question, voix: !!(opts && opts.voix), info: partsHB.info }); return; }
+                if (genreHB === "doute" && typeof hypeEstConsigne === "function" && hypeEstConsigne(question) && window.HypeOutilDoc) { setDouteHB({ texte: question, voix: !!(opts && opts.voix) }); return; }
+                if (genreHB === "info" && window.HypeOutilDoc && typeof window.HypeOutilDoc.traiterTexte === "function") {
                     const okO = window.HypeOutilDoc.traiterTexte(question, { ecran: "assistant", origine: "heybaby", voix: !!(opts && opts.voix) });
                     if (okO !== false) { setSaisie(""); return; }
                 }
@@ -1700,6 +1709,18 @@ function EcranAssistantIA() {
                     framesVideo ? React.createElement("span", { style: { position: "absolute", right: -5, bottom: -5, fontSize: 12, lineHeight: 1, background: "rgba(6,7,9,0.88)", borderRadius: 8, padding: "3px 4px", border: "1px solid rgba(243,238,228,0.22)" } }, "🎬") : null),
                 React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: HB_C.doux } }, framesVideo ? TXT("Vid\u00e9o jointe \u00b7 " + framesVideo.length + " images cl\u00e9s", "Video attached \u00b7 " + framesVideo.length + " key frames", "V\u00eddeo adjunto \u00b7 " + framesVideo.length + " fotogramas", "Video allegato \u00b7 " + framesVideo.length + " fotogrammi", "\u52d5\u753b\u3092\u6dfb\u4ed8 \u00b7 \u30ad\u30fc\u30d5\u30ec\u30fc\u30e0" + framesVideo.length + "\u679a", "Video angehängt \u00b7 " + framesVideo.length + " Keyframes", "تم إرفاق فيديو · " + framesVideo.length + " إطارات رئيسية", "已附视频 · " + framesVideo.length + " 张关键帧", "Video bijgevoegd · " + framesVideo.length + " sleutelbeelden", "Vídeo anexado · " + framesVideo.length + " quadros-chave", ("Video bifogad · " + framesVideo.length + " nyckelbilder"), ("Видео прикреплено · ключевых кадров: " + framesVideo.length), ("Dołączono wideo · " + framesVideo.length + " " + (framesVideo.length === 1 ? "kluczowa klatka" : (framesVideo.length % 10 >= 2 && framesVideo.length % 10 <= 4 && (framesVideo.length % 100 < 10 || framesVideo.length % 100 >= 20)) ? "kluczowe klatki" : "kluczowych klatek")), ("동영상 첨부 · 핵심 프레임 " + framesVideo.length + "개")) : t("photo_jointe")),
                 React.createElement("button", { type: "button", onClick: () => { setImageJointe(null); setFramesVideo(null); }, "aria-label": HBR("supprimer"), style: { width: 44, height: 44, borderRadius: "50%", background: "rgba(243,238,228,0.08)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, fontSize: 14, flexShrink: 0, cursor: "pointer" } }, "✕")) : null,
+            douteHB ? (() => { const XD = (typeof HYPE_ENCART_TR !== "undefined" && (HYPE_ENCART_TR[langue] || HYPE_ENCART_TR.fr)) || []; const XM = (typeof HYPE_ENCART_MIXTE !== "undefined" && (HYPE_ENCART_MIXTE[langue] || HYPE_ENCART_MIXTE.fr)) || []; const bt = { flex: 1, minHeight: 44, borderRadius: 22, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: HB_C.ivoire, fontFamily: HB_SANS, fontSize: 14.5, cursor: "pointer" };
+                const d = douteHB; const sauver = (txt) => { try { if (window.HypeOutilDoc && window.HypeOutilDoc.traiterTexte(txt, { ecran: "assistant", origine: "heybaby", voix: d.voix }) !== false) setSaisie(""); } catch (eD) { } };
+                return React.createElement("div", { role: "dialog", style: { margin: "0 0 10px", padding: "12px 14px", borderRadius: 16, border: "1px solid rgba(243,238,228,0.16)", background: "rgba(16,29,34,0.7)" } },
+                    React.createElement("div", { style: { fontFamily: HB_SANS, fontSize: 14.5, color: HB_C.ivoire, marginBottom: 10 } }, d.info ? (XM[0] || "Il y a une info à enregistrer et une question. Je fais les deux ?") : (XD[13] || "Tu veux que je l’enregistre ou c’est une question ?")),
+                    d.info
+                        ? React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } },
+                            React.createElement("button", { type: "button", style: bt, onClick: () => { setDouteHB(null); envoyer(d.texte, { question: true, voix: d.voix }); sauver(d.info); } }, XM[1] || "Oui, les deux"),
+                            React.createElement("button", { type: "button", style: bt, onClick: () => { setDouteHB(null); envoyer(d.texte, { question: true, voix: d.voix }); } }, XM[2] || "Juste la question"),
+                            React.createElement("button", { type: "button", style: bt, onClick: () => { setDouteHB(null); sauver(d.info); } }, XM[3] || "Juste l’enregistrer"))
+                        : React.createElement("div", { style: { display: "flex", gap: 8 } },
+                            React.createElement("button", { type: "button", style: bt, onClick: () => { setDouteHB(null); sauver(d.texte); } }, XD[14] || "L’enregistrer"),
+                            React.createElement("button", { type: "button", style: bt, onClick: () => { setDouteHB(null); envoyer(d.texte, { question: true, voix: d.voix }); } }, XD[15] || "C’est une question"))); })() : null,
             React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "center" } },
                 HEYBABY_ANALYSE_VISUELLE ? React.createElement("button", { type: "button", onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || extractionVideo, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(7,10,8,0.6)", border: "1px solid " + HB_C.filet, color: HB_C.champ, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: extractionVideo ? 0.5 : 1, cursor: "pointer" } },
                     React.createElement("svg", { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, React.createElement("path", { d: "M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z" }), React.createElement("circle", { cx: 12, cy: 13, r: 3.5 }))) : null,
