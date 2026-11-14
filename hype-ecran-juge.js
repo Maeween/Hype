@@ -265,6 +265,11 @@
       ".hj-pod b{display:block;font-weight:500;font-size:14px;line-height:1.25}.hj-pod span{display:block;font-size:13px;color:" + IV2 + ";margin-top:3px}",
       ".hj-pod em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:26px;margin-top:6px}",
       ".hj-sep{display:block;width:100%;height:20px;margin:18px 0 0}",
+      /* 14/11 10h26 (Blandine : « ton protocole, il est toujours illisible ») : tous les chiffres (notes, totaux, places,
+         numéros de figure) en Montserrat droit à chasse fixe — les chiffres Cormorant / Cinzel (le 1 ressemble à un I) gênaient */
+      ".hj-note,.hj-li .v,.hj-total b,.hj-pod em,.hj-cpt-b b,.hj-li .n,.hj-rang{font-family:Montserrat,system-ui,sans-serif!important;font-variant-numeric:tabular-nums lining-nums;letter-spacing:0}",
+      ".hj-note{font-weight:500;font-size:38px}.hj-li .v{font-weight:600;font-size:19px}.hj-total b{font-weight:500;font-size:30px}.hj-pod em{font-weight:600;font-size:20px!important}.hj-cpt-b b{font-weight:500;font-size:26px}",
+      ".hj-li .n{font-weight:500;font-size:14px;color:#ECE6DA}.hj-rang{font-weight:600;font-size:15px}",
       /* en-tête façon Vidéothèque */
       ".hj-hv{position:relative;padding-top:calc(env(safe-area-inset-top) + 54px);max-width:1240px;margin:0 auto}",
       ".hj-hv .hj-ret{top:calc(env(safe-area-inset-top) + 12px)}",
