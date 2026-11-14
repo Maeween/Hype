@@ -254,18 +254,11 @@
         h("path", { d: "M0,40 L0,30 Q200,8 400,2 L400,40 Z", fill: BG }),
         h("path", { d: "M0,30 Q200,8 400,2", fill: "none", stroke: CH, strokeWidth: 1.2, opacity: 0.85 }));
     }
-    function hero(titre, sous, img) {   /* héros : cheval noir entier, titre, courbe dorée */
-      return h("div", { style: { position: "relative", maxWidth: 900, margin: "0 auto" } },
-        h("img", { src: img ? (img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp") : "images/portrait-defaut-noir.webp", alt: "", style: { display: "block", width: "100%", height: "clamp(270px, 66vw, 480px)", objectFit: "cover", objectPosition: img ? "right center" : "72% 30%" } }),   /* en-têtes harmonisés : même hauteur pour tous les chapitres */
-        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.72) 38%, rgba(7,10,8,0.25) 62%, rgba(7,10,8,0) 80%), linear-gradient(0deg, rgba(7,10,8,0.55) 0%, rgba(7,10,8,0) 45%)" } }),
-        h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", left: 14, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.45)", background: "rgba(9,13,17,0.35)", color: IV, fontSize: 18, cursor: "pointer" } }, "‹"),
-        h("div", { style: { position: "absolute", left: 22, right: "30%", bottom: "20%" } },
-          h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-            h("span", { style: { fontSize: 10.5, letterSpacing: "0.36em", color: CH, fontWeight: 500 } }, "GUIDE COACH"),
-            h("span", { "aria-hidden": "true", style: { width: 44, height: 1, background: CH } })),
-          h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: titre.length > 14 ? "clamp(32px, 8.4vw, 60px)" : "clamp(40px, 11vw, 72px)", lineHeight: 1, marginTop: 8 } }, titre),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(17px, 4.6vw, 26px)", color: IV, marginTop: 8, lineHeight: 1.2, textShadow: "0 1px 10px rgba(0,0,0,.9)" } }, sous)),
-        courbe(true));
+    /* 14/11 (audit de Blandine : « aucun titre sur aucune image ») : les 9 chapitres prennent le héros de la Vidéothèque,
+       comme l'accueil et le sommaire — photo, courbe champagne, titre et sous-titre SOUS la photo. */
+    function hero(titre, sous, img) {
+      var src = img ? (img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp") : "images/portrait-defaut-noir.webp";
+      return heroVid(src, "entiere", "GUIDE COACH", titre, sous, null, titre.length > 14 ? "clamp(36px, 9.6vw, 60px)" : null);   /* photo entière, jamais recadrée */
     }
     function gras(t) {   /* **mot** -> doré gras */
       return String(t).replace(/ ([:;!?»])/g, "\u202f$1").replace(/« /g, "«\u202f").split("**").map(function (x, i) { return i % 2 ? h("b", { key: i, style: { color: CH, fontWeight: 600 } }, x) : x; });
@@ -301,16 +294,16 @@
       ["APRÈS LE CONCOURS", [["07", "retour", "Retour & récupération", "Le concours se termine. L’attention portée au cheval continue."], ["08", "resultats", "Résultats", "Retrouver les performances de mon équipe."], ["09", "analyse", "Analyse & progression", "Observer, analyser, enseigner, progresser."]]]
     ];
     function haut0() { try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }
-    function heroVid(img, pos, kicker, titre, sous, intro) {   /* héros de la Vidéothèque : photo, courbe, textes dessous à droite */
+    function heroVid(img, pos, kicker, titre, sous, intro, taille) {   /* héros de la Vidéothèque : photo, courbe, textes dessous à droite */
       return h("div", { style: { position: "relative", maxWidth: 1100, margin: "0 auto" } },
-        h("div", { style: { position: "relative", height: "min(max(300px, 82vw), max(300px, 52vw), 620px)", overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg, #000 62%, transparent 98%)", maskImage: "linear-gradient(180deg, #000 62%, transparent 98%)" } },
-          h("img", { src: "images/guide-coach/" + img + ".webp", alt: "", decoding: "async", style: { display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, transform: rtlG ? "scaleX(-1)" : "none" } })),
+        h("div", { style: { position: "relative", height: pos === "entiere" ? "auto" : "min(max(300px, 82vw), max(300px, 52vw), 620px)", overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg, #000 62%, transparent 98%)", maskImage: "linear-gradient(180deg, #000 62%, transparent 98%)" } },
+          h("img", { src: (img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp"), alt: "", decoding: "async", style: { display: "block", width: "100%", height: pos === "entiere" ? "auto" : "100%", objectFit: "cover", objectPosition: pos === "entiere" ? "center" : pos, transform: rtlG ? "scaleX(-1)" : "none" } })),
         h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 56, marginTop: -56, position: "relative", transform: rtlG ? "scaleX(-1)" : "none" } },
           h("path", { d: "M0 54 C 140 50, 260 34, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })),
-        h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtlG ? "›" : "‹"),
+        h("button", { type: "button", onClick: retour, "aria-label": "Retour", "data-retour-geste": "1", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtlG ? "›" : "‹"),
         h("div", { style: { textAlign: "end", padding: "4px 20px 0", maxWidth: 1100, margin: "0 auto" } },
           h("div", { style: { fontSize: 10.5, letterSpacing: "0.36em", color: CH, fontWeight: 500, marginBottom: 10 } }, kicker),
-          h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 70px)", lineHeight: 1, margin: 0, color: IV } }, titre),
+          h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: taille || "clamp(44px, 12vw, 70px)", lineHeight: 1, margin: 0, color: IV } }, titre),
           h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(20px, 5.4vw, 26px)", margin: "10px 0 0", color: IV } }, sous)),
         intro ? h("p", { style: { maxWidth: 680, margin: "22px auto 0", padding: "0 22px", fontSize: 15.5, lineHeight: 1.55, color: "#DEDAD2" } }, intro) : null);
     }
@@ -320,7 +313,7 @@
     }
 
     if (vue === "sommaire") {
-      return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
+      return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
         heroVid("coach-acc-entete_cheval", "76% 40%", "GUIDE COACH", "Les 9 tutoriels", "Avant, pendant et après le concours.", null),
         CHAPS.map(function (g) {
           return h("section", { key: g[0], style: { maxWidth: 680, margin: "30px auto 0", padding: "0 22px" } },
@@ -370,7 +363,7 @@
       var _qHB = qHB;
       function envoyerHB() { try { window.__aideQuestion = String(_qHB || "").trim(); } catch (e) { } setEcran("aide"); }
 
-      return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
+      return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
         h("style", null, CSS),
         heroVid("coach-acc-entete_cheval", "76% 40%", "GUIDE COACH", "Le guide du coach", "Pilote tes compétitions avec Hype.",
           "De la préparation du concours à l’analyse des performances, Hype t’accompagne pour organiser ton équipe, prendre soin de tes chevaux et faire progresser tes cavaliers."),
@@ -467,7 +460,7 @@
           h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } })));
     }
     var PG = PAGES[vue] || PAGES.engagements;
-    return h("div", { style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
+    return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },
       hero(PG.titre, PG.sous, PG.hero),
       h("div", { style: { maxWidth: 680, margin: "0 auto", padding: "10px 18px 0", display: "flex", flexDirection: "column", gap: 12 } },
         conc ? h("div", { style: { fontSize: 12, color: IV3 } }, "Concours : " + [conc.titre || conc.lieu || "", conc.date_jour ? new Date(conc.date_jour + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : ""].filter(Boolean).join(" · ")) : null,

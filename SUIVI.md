@@ -34,6 +34,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 11:15 — build 20261114-1115 — Aide et guide du coach : corrections de l'audit
+Audit complet du 14/11 (navigateur format iPhone, vraie police, vraies photos, compte d'essai vide) : les 19 boutons des 14 tutos et les 48 flèches des 9 chapitres du guide mènent tous à la bonne page. Corrigé :
+- hype-ecran-aide.js (v=22) : en revenant d'une page ouverte depuis un tuto, on retrouve CE tuto à l'endroit où on lisait (sessionStorage hype_aide_etat, valable 1 h) ; « ‹ Retour » d'un tuto ramène à la carte touchée dans la liste (plus en haut de page) ; le balayage / retour du téléphone sur un tuto ferme le tuto (data-noswipe + data-retour-geste) au lieu de renvoyer à l'Accueil ; héros de la page Aide façon Vidéothèque : photo entière, sans filtre assombrissant, courbe champagne, titre SOUS la photo.
+- hype-ecran-coach.js (v=16) : les 9 chapitres prennent le héros de la Vidéothèque (photo entière, titre et sous-titre sous la photo, plus jamais sur la tête du cheval) ; le balayage / retour remonte d'un cran dans le guide (chapitre → sommaire → accueil → Aide).
+- Vérifié : la fin de page Hype est bien présente sur Aide, tutos et guide (l'audit l'avait crue absente : elle était cachée par la barre d'onglets sur les captures).
+- EN ATTENTE de Blandine : cartes du guide (titre + phrase posés sur une photo de fond, parfois mélangés au texte de l'image « Parle à Hype », « FICHE D'ENGAGEMENT ») — garder ou mettre la photo à côté du texte. Non testé ici : arrivée sur un vrai concours (compte d'essai sans concours), réponses de Hey Baby.
 ## 2026-11-14 10:55 — build 20261114-1055 — Juger une reprise / Jury CSO : retour au design Hype, moins de doré
 - Blandine (09h49) : « attention à bien garder le design… on s'en éloigne complètement. Et pas trop de doré ». Héros : grands chevaux noirs sur fond noir (dressage : theme-position-cavalier-noir ; CSO : portrait-defaut-noir), photo entière, titre dessous.
 - Doré gardé seulement pour : petit titre en capitales, courbes, bouton principal (contour fin). Tout le reste passe en ivoire : cadres, micro, étiquettes, numéros, sélection (contour ivoire), progression, podium, carrière dessinée.

@@ -38,7 +38,16 @@
     var _m = React.useState([]); var msgs = _m[0], setMsgs = _m[1];
     var _e = React.useState(false); var enCours = _e[0], setEnCours = _e[1];
     var _er = React.useState(""); var err = _er[0], setErr = _er[1];
-    var _tu = React.useState(function () { try { var v = window.__aideTuto || null; window.__aideTuto = null; return v; } catch (e) { return null; } }); var tutoOuvert = _tu[0], setTutoOuvert = _tu[1];
+    /* 14/11 (audit de Blandine) : en revenant d'une page ouverte depuis un tuto, on retrouve CE tuto, à l'endroit où on lisait ;
+       en fermant un tuto, on retrouve la liste à la carte qu'on avait touchée. Mémoire de la session (hype_aide_etat). */
+    var memoAide = React.useRef((function () { try { var o = JSON.parse(sessionStorage.getItem("hype_aide_etat") || "null"); sessionStorage.removeItem("hype_aide_etat"); return (o && o.ts && Date.now() - o.ts < 3600000) ? o : null; } catch (e) { return null; } })());
+    var _tu = React.useState(function () { try { var v = window.__aideTuto || null; window.__aideTuto = null; if (!v && memoAide.current && memoAide.current.tuto) v = memoAide.current.tuto; return v; } catch (e) { return null; } }); var tutoOuvert = _tu[0], setTutoOuvert = _tu[1];
+    var yListe = React.useRef(memoAide.current ? (memoAide.current.yListe || 0) : 0);
+    function zoneDefile() { try { return document.getElementById("hype-defile"); } catch (e) { return null; } }
+    function lireY() { var z = zoneDefile(); return z ? z.scrollTop : (window.scrollY || 0); }
+    function poserY(y) { try { var z = zoneDefile(); window.scrollTo(0, y); if (z) { z.scrollTo(0, y); if (y) setTimeout(function () { try { z.scrollTo(0, y); window.scrollTo(0, y); } catch (e2) { } }, 300); } } catch (e) { } }
+    function ouvrirTuto(id) { yListe.current = lireY(); setTutoOuvert(id); }
+    function fermerTuto() { setTutoOuvert(null); }
     var _rc = React.useState(""); var rech = _rc[0], setRech = _rc[1];
     /* 13/11 20h36 (Blandine : « j'ai même pas de bouton correction pour rectifier ») : bouton « Corriger » sous chaque réponse,
        réservé aux modératrices ; la correction (domaine « aide ») est lue par Hey Baby en mode Aide pour tout le monde. */
@@ -60,7 +69,12 @@
     React.useEffect(function () {
       (async function () { try { var u = await utilisateurActuel(); setConnecte(!!(u && u.id)); if (u && u.id) majCompteur(); } catch (e) { setConnecte(false); } })();
     }, []);
-    React.useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, [tutoOuvert]);
+    var premierAide = React.useRef(true);
+    React.useEffect(function () {
+      var m = premierAide.current ? memoAide.current : null; premierAide.current = false;
+      if (tutoOuvert) poserY(m && m.tuto === tutoOuvert ? (m.yTuto || 0) : 0);
+      else poserY(yListe.current || 0);
+    }, [tutoOuvert]);
 
     async function demander(texte) {
       var question = String(texte || q || "").trim(); if (!question || enCours) return;
@@ -88,16 +102,20 @@
     }
 
     var bouton = function (txt, onClick, k) { return h("button", { key: k, type: "button", onClick: onClick, style: { border: "1px solid " + CH, background: "transparent", color: CH, borderRadius: 999, padding: "8px 14px", fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer", minHeight: 36 } }, txt); };
-    function allerEcran(ec) { try { window.__cavalierOuvert = null; } catch (e) { } setEcran(ec); }
+    function allerEcran(ec) {
+      try { window.__cavalierOuvert = null; } catch (e) { }
+      try { if (tutoOuvert) sessionStorage.setItem("hype_aide_etat", JSON.stringify({ tuto: tutoOuvert, yTuto: lireY(), yListe: yListe.current || 0, ts: Date.now() })); } catch (e2) { }
+      setEcran(ec);
+    }
 
     /* ---------- page d'un tuto ---------- */
     if (tutoOuvert) {
       var tu = TUTOS.filter(function (x) { return x.id === tutoOuvert; })[0] || TUTOS[0];
-      return h("div", { dir: rtl ? "rtl" : "ltr", style: { minHeight: "100vh", background: "#070A08", color: IV, fontFamily: M, paddingBottom: 30 } },
+      return h("div", { dir: rtl ? "rtl" : "ltr", "data-noswipe": "1", style: { minHeight: "100vh", background: "#070A08", color: IV, fontFamily: M, paddingBottom: 30 } },   /* 14/11 : le geste retour ferme le tuto (bouton data-retour-geste) au lieu de quitter l'Aide */
         h("div", { style: { position: "relative" } },
           h("img", { src: tu.image, alt: "", style: { display: "block", width: "100%", height: "auto" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(7,10,8,.35),rgba(7,10,8,0) 30%,rgba(7,10,8,.2) 60%,#070A08)" } }),
-          h("button", { type: "button", onClick: function () { setTutoOuvert(null); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", left: 14, border: "1px solid rgba(255,255,255,0.25)", background: "rgba(9,13,17,0.55)", color: IV, borderRadius: 999, padding: "8px 14px", fontFamily: M, fontSize: 12, cursor: "pointer" } }, "‹ " + t("retour"))),
+          h("button", { type: "button", "data-retour-geste": "1", onClick: fermerTuto, style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", left: 14, border: "1px solid rgba(255,255,255,0.25)", background: "rgba(9,13,17,0.55)", color: IV, borderRadius: 999, padding: "8px 14px", fontFamily: M, fontSize: 12, cursor: "pointer" } }, "‹ " + t("retour"))),
         h("div", { style: { padding: "0 20px", maxWidth: 640, margin: "0 auto" } },
           h("div", { style: { fontSize: 10, letterSpacing: "0.32em", color: CH, fontWeight: 500, marginTop: 6 } }, t("tuto") + " " + (TUTOS.indexOf(tu) + 1)),
           h("div", { style: { fontFamily: SERIF, fontWeight: 600, fontSize: 31, lineHeight: 1.08, marginTop: 8 } }, t(tu.titre)),
@@ -124,7 +142,7 @@
         m.reponse,
         (m.boutons && m.boutons.length) || m.tuto ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, whiteSpace: "normal" } },
           (m.boutons || []).map(function (b, j) { return bouton(String(b.libelle).slice(0, 40) + " ›", function () { allerEcran(b.ecran); }, "b" + j); }),
-          m.tuto ? bouton(t("voirTuto") + " ›", function () { setTutoOuvert(m.tuto); }, "tu") : null) : null,
+          m.tuto ? bouton(t("voirTuto") + " ›", function () { ouvrirTuto(m.tuto); }, "tu") : null) : null,
         estModo ? (corr && corr.i === i && !corr.fait ? h("div", { style: { marginTop: 12, whiteSpace: "normal" } },
             h("textarea", { value: corr.texte || "", onChange: function (e) { setCorr(Object.assign({}, corr, { texte: e.target.value })); }, rows: 4, placeholder: "Ce qu’il aurait fallu répondre (ex. « pour modifier les groupes : Jour J → Organisation du paddock → Modifier les groupes »)", style: { width: "100%", boxSizing: "border-box", border: "1px solid rgba(201,166,107,.45)", background: "transparent", color: IV, borderRadius: 12, padding: "10px 12px", fontFamily: M, fontSize: 16, lineHeight: 1.5 } }),
             h("div", { style: { display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 } },
@@ -136,10 +154,12 @@
               h("button", { type: "button", onClick: function () { setCorr({ i: i, texte: "" }); }, style: { border: "none", background: "none", color: IV3, fontFamily: M, fontSize: 11.5, textDecoration: "underline", cursor: "pointer", padding: 0 } }, "Corriger"))) : null);
     };
     return h("div", { dir: rtl ? "rtl" : "ltr", style: { minHeight: "100vh", background: "#070A08", color: IV, fontFamily: M } },
-      h("div", { style: { position: "relative", minHeight: 280, overflow: "hidden" } },
-        h("img", { src: "images/IMG_CONNEXION_HERO.jpg", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.55)" } }),
-        h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.1) 45%,#070A08 100%)" } }),
-        h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top, 0px) + 120px) 22px 24px", maxWidth: 680, margin: "0 auto" } },
+      /* 14/11 (audit) : héros façon Vidéothèque — photo entière, sans filtre, courbe champagne, titre SOUS la photo */
+      h("div", { style: { position: "relative", maxWidth: 680, margin: "0 auto" } },
+        h("img", { src: "images/IMG_CONNEXION_HERO.jpg", alt: "", decoding: "async", style: { display: "block", width: "100%", height: "auto", WebkitMaskImage: "linear-gradient(180deg, #000 70%, transparent 100%)", maskImage: "linear-gradient(180deg, #000 70%, transparent 100%)" } }),
+        h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 56, marginTop: -56, position: "relative", transform: rtl ? "scaleX(-1)" : "none" } },
+          h("path", { d: "M0 54 C 140 50, 260 34, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })),
+        h("div", { style: { position: "relative", padding: "6px 22px 24px" } },
           h("div", { style: { fontSize: 10, letterSpacing: "0.32em", color: CH, fontWeight: 500 } }, t("lab")),
           h("h1", { style: { fontFamily: SERIF, fontWeight: 600, fontSize: 40, lineHeight: 1.02, margin: "8px 0 0" } }, t("titre")),
           h("svg", { width: 160, height: 12, viewBox: "0 0 160 12", style: { display: "block", marginTop: 10 } }, h("path", { d: "M1 10 C 45 1, 110 1, 159 8", stroke: CH, strokeWidth: 1.2, fill: "none" })),
@@ -171,7 +191,7 @@
           h("img", { src: "images/portrait-defaut-noir.webp", alt: "", loading: "lazy", style: { display: "block", width: "38%", height: "auto", flexShrink: 0 } })),
         h("div", { style: { fontSize: 10, letterSpacing: "0.3em", color: IV3, marginBottom: 10 } }, t("secDebut")),
         tutosVus.length ? tutosVus.map(function (x, i) {
-          return h("div", { key: x.id, role: "button", tabIndex: 0, onClick: function () { setTutoOuvert(x.id); }, style: { borderRadius: 14, overflow: "hidden", background: "#0E1517", border: "1px solid rgba(243,238,228,.08)", cursor: "pointer", marginBottom: 10 } },
+          return h("div", { key: x.id, role: "button", tabIndex: 0, onClick: function () { ouvrirTuto(x.id); }, style: { borderRadius: 14, overflow: "hidden", background: "#0E1517", border: "1px solid rgba(243,238,228,.08)", cursor: "pointer", marginBottom: 10 } },
             h("img", { src: x.image, alt: "", style: { display: "block", width: "100%", height: "auto" } }),
             h("div", { style: { padding: "10px 12px 13px" } },
               h("div", { style: { fontSize: 9, letterSpacing: "0.25em", color: CH } }, t("tuto") + " " + (TUTOS.indexOf(x) + 1)),
