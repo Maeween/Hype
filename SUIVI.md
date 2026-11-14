@@ -70,6 +70,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h25 — PUBLIÉ (build 20261114-1840, index.html seul) : nouveau message de partage de la liste du van
+- Blandine (14h22 « ça fait un peu pédant ») : « Vous pouvez retrouver sur Hype la liste du matériel à emporter pour le concours, et la cocher au fur et à mesure en préparant vos affaires et le van. N'oubliez pas le matériel spécifique à chaque cheval si vous en montez plusieurs. » — « vous » gardé : message envoyé aux groupes de cavaliers (exception au tutoiement).
+- PROPOSÉ, en attente de son choix : bandeau « Prochain concours » pour arriver directement sur la page du concours (Blandine : « 50 sous-clics… une fois sur deux c'est même pas la bonne ») — A en haut de l'accueil, B sur la page Écurie, ou les deux.
+
 ## 2026-11-14 14h20 — PUBLIÉ (build 20261114-1830, index.html seul) : compte express dans le style de la Vidéothèque
 - ERREUR signalée à Blandine : son « Ok » de 14h13 (donné « parce que j'en avais marre ») a fait publier la version « œil de cheval noir » (build 1815) ; à 14h14 elle demande le style de la page Vidéothèque.
 - vueExpress() refaite comme la Vidéothèque : photo du cheval bai entière (galops-carte-cours-bai.webp) avec les deux courbes dorées, titre « Bienvenue sur Hype » sous la photo aligné à droite + phrase en italique, filet doré, champs et cartes noires à bord fin, âge en pastilles, encart « Être prévenu en direct » (cloche, interrupteur doré ou 2 étapes iPhone), bouton à contour champagne, fin de page Hype. Validé (« Ah ok, ça c'est bien. Ok, vas-y », 14h19).
