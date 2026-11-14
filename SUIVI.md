@@ -34,6 +34,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 01:50 — build 20261114-0150 — « Juger une reprise » : lisibilité
+- Blandine (01h15) : « fais en sorte que ce soit bien lisible ». Textes agrandis et plus contrastés partout (sous-titre 15 px, figure 27 px, feuille 15 px, commentaires 14 px à 78 % d'opacité au lieu de 60 %, petits titres 12 px au lieu de 9,5-10,5 px avec moins d'espacement), lettres de la carrière 11 / 15 px, boutons de note 16 px sur une grille équilibrée (7 par ligne sur 10, 6 par ligne sur 5), boutons 16 px.
+- RÈGLE à garder pour les prochains écrans : rien de lisible sous 14 px, gris secondaires à au moins 75 % d'opacité.
+- Fichiers : hype-ecran-juge.js (v=3), index.html (build), SUIVI.md.
+
 ## 2026-11-14 01:40 — build 20261114-0140 — « Juger une reprise » : design moins tristounet
 - Blandine (01h12) : « garde bien le design, c'est un peu tristounet ». Ajouts : carrière de dressage dessinée à côté de chaque figure (20 × 40, ou 20 × 60 si la figure cite V S R P), lettres de la figure en or reliées par le tracé ; couples engagés en cartes photo (photo du cheval entière, règle d'équilibre : un nombre impair → le dernier en pleine largeur) dans un encart à cadre fin ; fines courbes dorées entre les parties ; podium des 3 premiers (ronds dorés 1-2-3) au-dessus du classement.
 - Fichiers : hype-ecran-juge.js (v=2), index.html (build), SUIVI.md.
