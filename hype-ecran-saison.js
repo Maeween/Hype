@@ -2264,31 +2264,33 @@ function EcranConcours() {
      modifiable dans l'appli de messagerie avant l'envoi. Sans partage du téléphone : copié. */
   /* 14/11 13h45 (Blandine : « à chaque fois, il faut un aperçu en image… un screen du haut de la page avec les infos ») */
   async function partagerPartie(intro, lignes, fin, apercu) {
-    var tete = [ev && ev.titre, ev ? hsPlage(ev) : ""].filter(Boolean).join(" — ");
+    /* 14/11 14h39 (Blandine : « ça me met tout entassé… plus lisible, plus espacé, une petite flèche à la ligne ») :
+       WhatsApp écrase les retours à la ligne quand le texte accompagne une image → on passe par « Prévenir le groupe »
+       (texte seul, bien aéré, titre en gras) ; l'image reste possible avec « Avec l'image ». */
+    var tete = "*" + ((ev && ev.titre) || F("Concours")) + "*" + (ev ? " — " + hsPlage(ev) : "");
     var txt = [tete, intro, (lignes || []).join("\n"), fin || ""].filter(Boolean).join("\n\n");
     var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
+    var fI = null;
     try {
-      if (apercu && navigator.share && navigator.canShare && typeof hsImageListeVan === "function") {
+      if (apercu && navigator.canShare && typeof hsImageListeVan === "function") {
         var ph = hsPhotoDe(idEv);
         var bI = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: apercu.libelle, titre: (ev && ev.titre) || F("Concours"), sous: ev ? hsPlage(ev) : "", lignes: apercu.lignes, rond: false, appel: F("Ouvre la page sur Hype") + " →" });
-        var fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
-        if (fI && navigator.canShare({ files: [fI] })) { await navigator.share({ files: [fI], title: (ev && ev.titre) || "Hype", text: txt + "\n" + url }); return; }
+        fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
+        if (fI && !navigator.canShare({ files: [fI] })) fI = null;
       }
-    } catch (eAp) { if (eAp && eAp.name === "AbortError") return; }
-    try { if (navigator.share) { navigator.share({ title: (ev && ev.titre) || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
-    var tout = txt + "\n" + url;
-    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setPartMsg(F("Message copié : colle-le dans ton groupe.")); setTimeout(function () { setPartMsg(""); }, 3000); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
-    try { window.prompt("", tout); } catch (eP2) { }
+    } catch (eAp) { fI = null; }
+    hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + url, fichier: fI });
   }
+
   var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
   function lienPartage(cle, label, f) { return h("div", { key: cle, style: { textAlign: "center", margin: "14px 0 4px" } }, (partMsg && partCle.current === cle) ? h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,.75)", marginBottom: 4 } }, partMsg) : null, h("button", { type: "button", onClick: function () { partCle.current = cle; f(); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } }, ICO_PART, h("span", { style: { borderBottom: "1px solid rgba(243,238,228,.3)", paddingBottom: 1 } }, label))); }
   function partagerPassages() {
     var L = [];
     parEpreuve.forEach(function (g) {
-      L.push((L.length ? "\n" : "") + hsNomEpreuve(g.ep));
+      L.push((L.length ? "\n" : "") + "*" + hsNomEpreuve(g.ep) + "*");
       g.l.slice().sort(function (a, b) { return (!!a.non_partant - !!b.non_partant) || (hsMinutes(a.passage) - hsMinutes(b.passage)); }).forEach(function (p) {
         var num = p.ordre_passage || p.ordre || "";
-        L.push([p.non_partant ? F("non partant") : (p.passage || "–"), num ? F("N° ") + num : "", nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "")].filter(Boolean).join("  "));
+        L.push("▸ " + [p.non_partant ? F("non partant") : (p.passage || "–"), num ? F("N° ") + num : "", nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " — " + (p.cheval_brut || p.cheval_nom) : "")].filter(Boolean).join(" · "));
       });
     });
     var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { AP.push({ h: p.passage || "–", t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
@@ -2738,11 +2740,11 @@ function EcranConcours() {
       var L = [];
       grpEp.filter(function (g) { return g.publie; }).forEach(function (g, gi) {
         var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, cheval_nom: c.cheval_nom }; }).sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
-        L.push((L.length ? "\n" : "") + (g.nom || (F("Groupe ") + (gi + 1))) + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv : ""));
-        lignes.forEach(function (p) { L.push([p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " · " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage || "")].filter(Boolean).join("  ")); });
+        L.push((L.length ? "\n" : "") + "*" + (g.nom || (F("Groupe ") + (gi + 1))) + "*" + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv : ""));
+        lignes.forEach(function (p) { L.push("▸ " + [p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " — " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage ? F("passage ") + p.passage : "")].filter(Boolean).join(" · ")); });
       });
       var AG = grpEp.filter(function (g) { return g.publie; }).map(function (g, gi) { return { h: g.heure_rdv || "–", t: (g.nom || (F("Groupe ") + (gi + 1))) + " · " + (g.couples || []).length + " " + ((g.couples || []).length > 1 ? F("couples") : F("couple")) }; });
-      partagerPartie(F("Les groupes du paddock sont en ligne") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Merci d’être à l’heure au rendez-vous à l’entrée du paddock : un retard décale tout le monde. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
+      partagerPartie(F("Les groupes du paddock sont en ligne") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle : tous les cavaliers du groupe doivent être présents à l’heure indiquée, à l’entrée du paddock. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
     }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
@@ -2753,7 +2755,7 @@ function EcranConcours() {
   /* 14/11 14h35 (Blandine : « partager les règles du paddock avant qu'on envoie les numéros… petit rappel pour l'organisation au paddock ») */
   var blocRegles = blocRegles0 ? [blocRegles0, lienPartage("rsh", F("Partager les règles du paddock avec le groupe"), function () {
     partagerPartie(F("Petit rappel pour l’organisation au paddock :"),
-      [F("• Soyez bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard."), F("• Ne rentrez jamais seuls au paddock : attendez l’accord de votre coach."), F("• Dès votre arrivée, signalez à votre coach que vous êtes sur le paddock."), F("• Ne quittez jamais le paddock sans l’accord de votre coach."), F("• Prévoyez si besoin quelqu’un pour marcher votre cheval pendant la reconnaissance, et de quoi changer la cartouche de votre gilet airbag.")],
+      [F("▸ Soyez bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard."), F("▸ Ne rentrez jamais seuls au paddock : attendez l’accord de votre coach."), F("▸ Dès votre arrivée, signalez à votre coach que vous êtes sur le paddock."), F("▸ Ne quittez jamais le paddock sans l’accord de votre coach."), F("▸ Prévoyez si besoin quelqu’un pour marcher votre cheval pendant la reconnaissance, et de quoi changer la cartouche de votre gilet airbag."), "", F("*Votre rendez-vous au paddock*"), F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle. Tous les cavaliers du groupe doivent être présents à l’heure indiquée.")],
       F("Les groupes et les heures de rendez-vous au paddock arriveront sur la page du concours."),
       { libelle: F("Règles du paddock"), lignes: [{ h: "✓", t: F("À l’heure au rendez-vous") }, { h: "✓", t: F("Jamais seul au paddock") }, { h: "✓", t: F("Se signaler en arrivant") }, { h: "✓", t: F("Ne pas partir sans accord") }, { h: "✓", t: F("Marcheur et cartouche airbag") }] });
   })] : null;
@@ -4355,7 +4357,7 @@ function EcranConcours() {
                 h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")),
                 h("div", { className: "al-l3", style: { padding: "2px 0 4px" } }, F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque.")),   /* 14/11 13h39 (Blandine) */
                 l.length ? lienPartage("esh", F("Partager l’ordre d’embarquement avec le groupe"), function () {
-                  partagerPartie(F("L’ordre d’embarquement est en ligne") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Merci d’être prêts avec votre cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."), { libelle: F("Ordre d’embarquement"), lignes: l.map(function (x, i) { return { h: String(i + 1), t: x.ch + (x.qui ? " · " + x.qui : "") }; }) });
+                  partagerPartie(F("L’ordre d’embarquement est en ligne") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Merci d’être prêts avec votre cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return "▸ " + (i + 1) + ". " + x.ch + (x.qui ? " — " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."), { libelle: F("Ordre d’embarquement"), lignes: l.map(function (x, i) { return { h: String(i + 1), t: x.ch + (x.qui ? " · " + x.qui : "") }; }) });
                 }) : null);
             })(); };
         /* 13/11 16h14 (Blandine : « la présentation du concours, tu peux faire mieux que ça ») : propositions A / B / C */
@@ -4380,30 +4382,23 @@ function EcranConcours() {
             horMsg ? h("div", { className: "ic-msg" }, horMsg) : null);
           /* 14/11 13h23 (Blandine) : partager seulement cette partie (date, lieu, horaires) avec un petit message et le lien du concours */
           var partagerInfos = function () {
-            var lignesH = tl.map(function (x) { return String(x.t || "").replace(/^0(\d)/, "$1") + " " + x.l + (x.s ? " (" + x.s + ")" : ""); });
-            var txt = [(ev.titre || F("Concours")) + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim()].filter(Boolean).join("\n")
+            var lignesH = tl.map(function (x) { return "▸ " + String(x.t || "").replace(/^0(\d)/, "$1") + " · " + x.l + (x.s ? " (" + x.s + ")" : ""); });
+            var txt = ["*" + (ev.titre || F("Concours")) + "*" + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim() ? "📍 " + String(ev.lieu || "").trim() : ""].filter(Boolean).join("\n")
               + (lignesH.length ? "\n\n" + lignesH.join("\n") : "")
-              + "\n\n" + F("Les informations du concours sont en ligne sur Hype. Les horaires peuvent être amenés à évoluer selon l’avancée des épreuves sur place : les cavaliers ayant activé leurs notifications seront prévenus en direct (le lien propose de les activer). Nous vous tiendrons également au courant sur le groupe.")
-              ;
+              + "\n\n" + F("Les informations du concours sont en ligne sur Hype. Les horaires peuvent être amenés à évoluer selon l’avancée des épreuves sur place : les cavaliers ayant activé leurs notifications seront prévenus en direct (le lien propose de les activer). Nous vous tiendrons également au courant sur le groupe.");
             var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
             (async function () {
+              var fI = null;
               try {
-                if (navigator.share && navigator.canShare && typeof hsImageListeVan === "function") {
+                if (navigator.canShare && typeof hsImageListeVan === "function") {
                   var ph = hsPhotoDe(idEv);
                   var bI = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: F("Informations du concours"), titre: ev.titre || F("Concours"), sous: [jourL, lieuNom].filter(Boolean).join(" · "), lignes: tl.map(function (x) { return { h: String(x.t || "").replace(/^0(\d)/, "$1"), t: x.l }; }), rond: false, appel: F("Ouvre la page sur Hype") + " →" });
-                  var fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
-                  if (fI && navigator.canShare({ files: [fI] })) { await navigator.share({ files: [fI], title: ev.titre || "Hype", text: txt + "\n" + url }); return; }
+                  fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
+                  if (fI && !navigator.canShare({ files: [fI] })) fI = null;
                 }
-              } catch (eAp) { if (eAp && eAp.name === "AbortError") return; }
-              try { if (navigator.share) { navigator.share({ title: ev.titre || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
-              var tout = txt + "\n" + url;
-              try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setHorMsg(F("Message copié : colle-le dans ton groupe.")); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
-              try { window.prompt("", tout); } catch (eP2) { }
+              } catch (eAp) { fI = null; }
+              hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + url, fichier: fI });
             })();
-            return;
-            var tout = txt + "\n" + url;
-            try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setHorMsg(F("Message copié : colle-le dans ton groupe.")); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
-            try { window.prompt("", tout); } catch (eP2) { }
           };
           var P_PART = "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7";
           var liens = h("div", { className: "ic-liens" },
@@ -5087,7 +5082,7 @@ var HC_CSS = [
   ".hc .hc-ged-lk .hs-lien{font-size:12px;color:rgba(243,238,228,.62);background:none;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-family:inherit}",
   ".hc .hc-ged-c.np b,.hc .hc-ged-c.np .hc-pl-n,.hc .hc-ged-c.np .hc-ged-q>span:not(.hc-ged-lk){opacity:.4;text-decoration:line-through}",
   ".hc .hc-pl.np{opacity:.45}",
-  ".hc .hc-pad-msg{border:1px solid rgba(201,166,107,.28);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.85);margin-bottom:12px}",
+  ".hc .hc-pad-msg{border:1px solid rgba(201,166,107,.28);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.85);margin-bottom:34px}",   /* 14/11 14h37 (Blandine) : plus d’espace avant les groupes, pour des parties bien séparées */
   ".hc .hc-g9{display:grid;grid-template-columns:86px 1fr;gap:12px}",
   ".hc .hc-g9-h{border-inline-end:1px solid rgba(201,166,107,.28);display:flex;flex-direction:column;justify-content:center;gap:2px}",
   ".hc .hc-g9-h small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.6)}",
@@ -7615,6 +7610,7 @@ function hsPrevenirGroupe(o) {
     var t = document.createElement("div"); t.textContent = o.titre || "Prévenir le groupe";
     t.setAttribute("style", "font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1");
     var st = document.createElement("div"); st.textContent = o.sous || "Le message est prêt, tu peux le modifier. WhatsApp s’ouvre : tu choisis le groupe et tu envoies.";
+    if (o.fichier) st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
     st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.62);margin-top:6px");
     var ta = document.createElement("textarea"); ta.value = tx; ta.rows = 7;
     ta.setAttribute("style", "display:block;width:100%;box-sizing:border-box;margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(243,238,228,.14);background:#111315;color:#F3EEE4;font:400 15px/1.45 Montserrat,Arial,sans-serif;resize:vertical;outline:none");
@@ -7622,11 +7618,12 @@ function hsPrevenirGroupe(o) {
     bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#F3EEE4;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
     var lig = document.createElement("div"); lig.setAttribute("style", "display:flex;justify-content:center;gap:26px;margin-top:14px");
     function lien(txt) { var b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("style", "background:none;border:0;border-bottom:1px solid rgba(243,238,228,.3);padding:0 0 2px;color:rgba(243,238,228,.8);font:500 13px Montserrat,Arial,sans-serif;cursor:pointer"); return b; }
-    var bA = lien("Autre appli"), bP = lien("Plus tard");
+    var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = o.fichier ? lien("Avec l’image") : null;
     function fermer() { try { fond.remove(); } catch (e) { } }
     bW.onclick = function () { var u = "https://wa.me/?text=" + encodeURIComponent(ta.value); try { window.open(u, "_blank"); } catch (e) { location.href = u; } fermer(); };
     bA.onclick = function () { var v = ta.value; if (navigator.share) { navigator.share({ text: v }).then(fermer, function () { }); return; } try { navigator.clipboard.writeText(v); bA.textContent = "Copié ✓"; } catch (e) { } };
     bP.onclick = fermer; fond.onclick = function (e) { if (e.target === fond) fermer(); };
+    if (bI) { bI.onclick = function () { var v = ta.value; try { navigator.share({ files: [o.fichier], text: v }).then(fermer, function () { }); } catch (eI) { } }; lig.appendChild(bI); }
     lig.appendChild(bA); lig.appendChild(bP);
     f.appendChild(t); f.appendChild(st); f.appendChild(ta); f.appendChild(bW); f.appendChild(lig); fond.appendChild(f);
     document.body.appendChild(fond);

@@ -70,6 +70,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h42 — PUBLIÉ (build 20261114-1900, index.html + hype-ecran-saison.js v=191) : partages du concours lisibles dans WhatsApp
+- Constat (capture de Blandine 14h39) : quand le texte accompagne une image, WhatsApp met tout sur une seule ligne → « tout entassé ».
+- Tous les partages du concours (infos, règles du paddock, groupes, ordre de passage, embarquement) ouvrent maintenant la fenêtre « Partager avec le groupe » : texte aéré (titre du concours en gras, une ligne « ▸ » par élément, lignes vides entre les parties), modifiable, « Envoyer sur WhatsApp » (mise en page gardée) ; « Avec l'image » reste possible (WhatsApp écrase alors les retours à la ligne, c'est dit dans la fenêtre).
+- Règles du paddock : le partage reprend aussi « Votre rendez-vous au paddock » (Blandine 14h40 : « ça fait partie de ce qu'on veut partager ») ; le partage des groupes reprend la même consigne.
+- Plus d'espace entre l'encart « Ton rendez-vous au paddock » et le premier groupe (Blandine 14h37).
+
 ## 2026-11-14 14h37 — PUBLIÉ (build 20261114-1850, index.html + hype-ecran-saison.js v=190) : partages du concours au ton coach, « Prévenir le groupe » WhatsApp, partage des règles du paddock
 - RÈGLE (Blandine 14h36) : dans les messages de partage, ne pas répéter « Hype » à chaque fois → « sur la page du concours » ; ne pas parler du « van » (certains ont un camion).
 - Liste du van (texte de Blandine) : « Vous pouvez retrouver sur la page du concours la liste du matériel à emporter, et la cocher au fur et à mesure en préparant vos affaires. N'oubliez pas le matériel spécifique à chaque cheval si vous en montez plusieurs. »
