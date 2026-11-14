@@ -3910,14 +3910,15 @@ function EcranConcours() {
       h("button", { type: "button", onClick: fermerModifPassages, "aria-label": F("Fermer"), style: { flex: "0 0 auto", minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,.22)", background: "none", color: "#F3EEE4", fontSize: 12.5, cursor: "pointer" } }, "✕ " + F("Fermer"))),
     h(EcranJourJ, { integre: true, onFermer: fermerModifPassages })) : null;   /* « Terminer » du bas remplacé par « Fermer » dans la barre qui reste visible */
   /* 14/11 (Blandine : « que les juges n'aient qu'à dicter… plus besoin de lapins ») : juger une reprise à la voix, pour l'équipe qui gère */
-  function ouvrirJuge() {
-    try { window.__juger = { agenda_id: idEv, concours: ev.titre || null, date: ev.date_jour || null, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
+  function ouvrirJuge(mode) {
+    try { window.__juger = { mode: mode === "cso" ? "cso" : "", agenda_id: idEv, concours: ev.titre || null, date: ev.date_jour || null, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
     setEcran("juger");
   }
   var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
     ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
       : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages),
-    gestion ? outil("juge", F("Juger une reprise à la voix"), F("Le juge dicte la note et le commentaire, Hype calcule tout."), ouvrirJuge) : null) : null;
+    gestion ? outil("juge", F("Juger une reprise à la voix"), F("Le juge dicte la note et le commentaire, Hype calcule tout."), ouvrirJuge) : null,
+    gestion ? outil("jury", F("Dicter les résultats de CSO"), F("Le jury dit « sans faute, 32 secondes 45 » : Hype compte et classe."), function () { ouvrirJuge("cso"); }) : null) : null;
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
     outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
 

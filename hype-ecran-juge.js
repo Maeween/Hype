@@ -134,7 +134,11 @@
       ".hj-rang{width:34px;height:34px;margin:0 auto 6px;border-radius:50%;border:1px solid " + OR + ";display:flex;align-items:center;justify-content:center;font-family:'Cinzel',Georgia,serif;font-size:14px;color:" + ORT + "}",
       ".hj-pod b{display:block;font-weight:500;font-size:14px;line-height:1.25}.hj-pod span{display:block;font-size:13px;color:" + IV2 + ";margin-top:3px}",
       ".hj-pod em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:26px;margin-top:6px}",
-      ".hj-sep{display:block;width:100%;height:20px;margin:18px 0 0}"
+      ".hj-sep{display:block;width:100%;height:20px;margin:18px 0 0}",
+      /* jury CSO : compteurs barres / désobéissances */
+      ".hj-cpts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}",
+      ".hj-cpt{border:1px solid rgba(243,238,228,.12);border-radius:16px;padding:10px 12px;background:#000}",
+      ".hj-cpt-b{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.hj-cpt-b b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:30px}.hj-cpt-b .hj-pill{width:44px;padding:0;font-size:20px}"
     ].join("\n");
     document.head.appendChild(s);
   }
@@ -438,5 +442,246 @@
         h("div", { className: "hj-astuce" }, T("Dis la note puis ton commentaire, comme à un secrétaire : Hype écrit tout et passe à la figure suivante. Touche une ligne pour la corriger. Les coefficients se règlent en touchant « coefficient ». La feuille est gardée sur ton téléphone à chaque note."))));
   }
 
-  window.HypeJuge = { Juge: EcranJuge, lireNote: lireNote };
+
+  /* ═══ 14/11 10h — JURY CSO À LA VOIX ═══
+     Blandine (14/11 00h45) : « on pourrait faire la même chose en concours… le jury dicte : sans faute, 30 secondes 20…
+     et ça fait le classement ». Règles : règlement FFE CSO 2026 (dispositions spécifiques, applicable au 01/09/2025), art. 8.2 :
+     - Barème A : barre / faute à la rivière = 4 pts ; 1re et 2e désobéissance = 4 pts ; 3e désobéissance = élimination ;
+       chute = élimination ; dépassement du temps accordé (parcours initial) = 1 pt par tranche de 4 secondes entamée ;
+       temps limite (= double du temps accordé) dépassé = élimination. Classement : points, puis temps si « au chrono » ;
+       « sans chrono » : ex æquo à points égaux.
+     - Barème C : temps + 4 s par barre ; désobéissances sans pénalité (3e = élimination) ; ex æquo à temps égal.
+     - Barrages, deux phases, désobéissance avec destruction (+6 s) : pas encore (à saisir à la main dans le temps).
+     Le classement est gardé sur le téléphone du jury ; « Publier le classement » l'envoie dans les résultats du concours. */
+  var MOTS_N = { "zero": 0, "un": 1, "une": 1, "deux": 2, "trois": 3, "quatre": 4, "cinq": 5, "six": 6, "sept": 7, "huit": 8, "neuf": 9, "dix": 10, "onze": 11, "douze": 12, "seize": 16, "vingt": 20 };
+  function lireCSO(phrase) {
+    var p = String(phrase || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/-/g, " ");
+    var o = { etat: "", barres: null, refus: null, temps: null };
+    if (/elimin/.test(p)) o.etat = "El.";
+    else if (/abandon/.test(p)) o.etat = "Ab.";
+    else if (/non partant|forfait/.test(p)) o.etat = "NP";
+    if (/sans faute|zero faute|clean/.test(p)) { o.barres = 0; o.refus = 0; }
+    var N = "(\\d+|un|une|deux|trois|quatre|cinq|six)";
+    var mb = p.match(new RegExp(N + "\\s*(barres?|fautes?|perches?|tombees?)")); if (mb) o.barres = MOTS_N[mb[1]] != null ? MOTS_N[mb[1]] : Number(mb[1]);
+    var mr = p.match(new RegExp(N + "\\s*(refus|desobeissances?|derobes?|derobades?)")); if (mr) o.refus = MOTS_N[mr[1]] != null ? MOTS_N[mr[1]] : Number(mr[1]);
+    else if (/\b(refus|desobeissance|derobe)\b/.test(p)) o.refus = 1;
+    var mp = p.match(/(\d+)\s*points?/); if (mp && o.barres == null) { o.barres = Math.floor(Number(mp[1]) / 4); if (o.refus == null) o.refus = 0; }
+    var sansPts = p.replace(/(\d+)\s*(points?|barres?|fautes?|perches?|refus|desobeissances?)/g, " ");
+    var mt = sansPts.match(/(\d+)\s*(?:secondes?|sec|s)\b\s*(?:et\s*)?(\d{1,2})?/) || sansPts.match(/(\d+)\s*(?:[,.]|virgule)\s*(\d{1,2})/) || sansPts.match(/\ben\s+(\d+)\s+(\d{1,2})\b/);
+    if (mt) { var c = mt[2] || ""; o.temps = Number(mt[1]) + (c ? Number(c) / (c.length === 1 ? 10 : 100) : 0); }
+    if (o.barres != null && o.refus == null) o.refus = 0;
+    return o;
+  }
+  function calculCSO(pa, cfg) {   /* → { pts, penT, total, etat } */
+    var etat = pa.etat || "", b = Number(pa.barres) || 0, r = Number(pa.refus) || 0, t = pa.temps != null && pa.temps !== "" ? Number(pa.temps) : null, ta = Number(cfg.ta) || 0;
+    if (!etat && r >= 3) etat = "El.";
+    if (!etat && t != null && ta && t > 2 * ta) etat = "El.";
+    if (cfg.bareme === "C") return { etat: etat, pts: 0, penT: 0, total: t != null ? Math.round((t + 4 * b) * 100) / 100 : null };
+    var penT = (t != null && ta && t > ta) ? Math.ceil((t - ta) / 4 - 1e-9) : 0;
+    return { etat: etat, pts: 4 * b + 4 * r + penT, penT: penT, total: null };
+  }
+  function classerCSO(passages, cfg) {
+    var L = passages.map(function (p) { return Object.assign({}, p, { c: calculCSO(p, cfg) }); });
+    var ok = L.filter(function (x) { return !x.c.etat && (cfg.bareme === "C" ? x.c.total != null : true); }), ko = L.filter(function (x) { return ok.indexOf(x) < 0; });
+    function cle(x) { return cfg.bareme === "C" ? [x.c.total] : cfg.bareme === "A0" ? [x.c.pts] : [x.c.pts, x.temps == null || x.temps === "" ? 9999 : Number(x.temps)]; }
+    ok.sort(function (a, b) { var A = cle(a), B = cle(b); for (var i = 0; i < A.length; i++) if (A[i] !== B[i]) return A[i] - B[i]; return 0; });
+    var prec = null, place = 0; ok.forEach(function (x, i) { var k = JSON.stringify(cle(x)); if (k !== prec) { place = i + 1; prec = k; } x.place = place; });
+    return ok.concat(ko);
+  }
+  function fmtT(t) { return t == null || t === "" ? "—" : (Math.round(Number(t) * 100) / 100).toFixed(2).replace(".", ",") + " s"; }
+
+  function JuryCSO() {
+    css();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    var ctx = (function () { try { return window.__juger || {}; } catch (e) { return {}; } })();
+    var cle = "hype_cso_" + (ctx.agenda_id || "libre");
+    var _s = React.useState(function () { try { return JSON.parse(localStorage.getItem(cle) || "null"); } catch (e) { return null; } }), st = _s[0], setSt0 = _s[1];
+    function setSt(n) { setSt0(n); try { localStorage.setItem(cle, JSON.stringify(n)); } catch (e) { } }
+    var eps = []; (ctx.couples || []).forEach(function (c) { if (c.epreuve && eps.indexOf(c.epreuve) < 0) eps.push(c.epreuve); });
+    var _c = React.useState({ epreuve: eps[0] || "", bareme: "A", ta: "" }), cfg0 = _c[0], setCfg0 = _c[1];
+    var _e = React.useState({ ecoute: false, dit: "", msg: "", err: "", busy: false, ok: false }), e = _e[0], setE = _e[1];
+    var _m = React.useState({ cavalier: "", cheval: "" }), man = _m[0], setMan = _m[1];
+    var recRef = React.useRef(null);
+    var _ph = React.useState({}), photos = _ph[0], setPhotos = _ph[1];
+    React.useEffect(function () {
+      try { window.scrollTo(0, 0); } catch (x) { }
+      var ids = (ctx.couples || []).map(function (c) { return c.cheval_id; }).filter(Boolean);
+      if (ids.length) try { supa.from("chevaux").select("id, photo_url").in("id", ids.slice(0, 100)).then(function (r) { var o = {}; ((r && !r.error && r.data) || []).forEach(function (c) { o[c.id] = c.photo_url || ""; }); setPhotos(o); }, function () { }); } catch (x) { }
+      return function () { try { recRef.current && recRef.current.abort(); } catch (x) { } };
+    }, []);
+    function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } setEcran(ctx.agenda_id ? "concours" : "accueil"); }
+    function hero(titre, sous) {
+      return h("div", null,
+        h("div", { className: "hj-hero" },
+          h("img", { src: "images/concours-hero-cso.webp", alt: "" }),
+          h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
+          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
+        h("div", { className: "hj-in", style: { paddingTop: 16 } }, h("div", { className: "hj-k" }, T("Jury de CSO")), h("div", { className: "hj-h1" }, titre), sous));
+    }
+    var NOMS_B = { A: T("Barème A au chrono"), A0: T("Barème A sans chrono"), C: T("Barème C") };
+
+    /* ── 1. réglages de l'épreuve ── */
+    if (!st) {
+      return h("div", { className: "hj" },
+        hero(T("Dicter les résultats"), h("div", { className: "hj-sous" }, T("Le jury dit le résultat de chaque couple : Hype compte les points, le temps et fait le classement."))),
+        h("div", { className: "hj-in" },
+          h("div", { className: "hj-l", style: { marginTop: 18 } }, T("Épreuve")),
+          eps.length > 1 ? h("div", { className: "hj-pills" }, eps.map(function (x) { return h("button", { key: x, type: "button", className: "hj-pill" + (cfg0.epreuve === x ? " on" : ""), onClick: function () { setCfg0(Object.assign({}, cfg0, { epreuve: x })); } }, x); })) : null,
+          h("input", { className: "hj-sel", value: cfg0.epreuve, placeholder: T("ex. Club 2 Grand Prix"), onChange: function (ev) { setCfg0(Object.assign({}, cfg0, { epreuve: ev.target.value })); } }),
+          h("div", { className: "hj-l", style: { marginTop: 16 } }, T("Barème")),
+          h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "1fr" } }, ["A", "A0", "C"].map(function (b) { return h("button", { key: b, type: "button", className: "hj-pill" + (cfg0.bareme === b ? " on" : ""), onClick: function () { setCfg0(Object.assign({}, cfg0, { bareme: b })); } }, NOMS_B[b]); })),
+          cfg0.bareme !== "C" ? [h("div", { key: "l", className: "hj-l", style: { marginTop: 16 } }, T("Temps accordé (secondes)")),
+            h("input", { key: "i", className: "hj-sel", inputMode: "decimal", value: cfg0.ta, placeholder: T("sur le plan du parcours, ex. 72"), onChange: function (ev) { setCfg0(Object.assign({}, cfg0, { ta: ev.target.value.replace(",", ".") })); } })] : null,
+          h("div", { className: "hj-astuce" }, cfg0.bareme === "C" ? T("Barème C : le temps du parcours plus 4 secondes par barre. Trois désobéissances ou une chute : éliminé.")
+            : T("Barème A : 4 points par barre et par désobéissance, 1 point par tranche de 4 secondes entamée au-delà du temps accordé. Trois désobéissances, une chute ou le double du temps accordé : éliminé.")),
+          h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: !String(cfg0.epreuve).trim(), onClick: function () {
+            var cps = (ctx.couples || []).filter(function (c) { return !c.epreuve || !cfg0.epreuve || c.epreuve === cfg0.epreuve; }).map(function (c) { return { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id || null, cheval_id: c.cheval_id || null }; });
+            setSt({ cfg: { epreuve: cfg0.epreuve.trim(), bareme: cfg0.bareme, ta: cfg0.ta }, couples: cps, passages: [], cur: cps.length ? 0 : -1, saisie: { barres: null, refus: null, temps: "", etat: "" } });
+          } }, T("Commencer l’épreuve"))),
+          h("div", { style: { height: 30 } })));
+    }
+
+    var cfg = st.cfg, cp = st.cur >= 0 ? st.couples[st.cur] : null, sa = st.saisie || {};
+    var calc = calculCSO(sa, cfg), CL = classerCSO(st.passages, cfg);
+    function majSaisie(o) { setSt(Object.assign({}, st, { saisie: Object.assign({}, sa, o) })); setE(Object.assign({}, e, { err: "", msg: "" })); }
+    function dicter() {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { setE(Object.assign({}, e, { err: T("La dictée n’est pas disponible ici : utilise les boutons et le temps.") })); return; }
+      if (e.ecoute) { try { recRef.current && recRef.current.stop(); } catch (x) { } return; }
+      var r = new SR(); recRef.current = r; r.lang = "fr-FR"; r.interimResults = true; r.continuous = false; var fin = "";
+      r.onresult = function (ev) { var t = ""; for (var k = 0; k < ev.results.length; k++) t += ev.results[k][0].transcript; fin = t; setE(function (x) { return Object.assign({}, x, { dit: t }); }); };
+      r.onerror = function () { setE(function (x) { return Object.assign({}, x, { ecoute: false }); }); };
+      r.onend = function () {
+        setE(function (x) { return Object.assign({}, x, { ecoute: false }); });
+        if (!fin) return; var lu = lireCSO(fin);
+        setSt0(function (s0) {
+          var s1 = Object.assign({}, s0), a = Object.assign({}, s0.saisie || {});
+          if (lu.etat) a.etat = lu.etat; if (lu.barres != null) a.barres = lu.barres; if (lu.refus != null) a.refus = lu.refus; if (lu.temps != null) a.temps = String(lu.temps);
+          s1.saisie = a; try { localStorage.setItem(cle, JSON.stringify(s1)); } catch (x) { } return s1;
+        });
+        if (!lu.etat && lu.barres == null && lu.temps == null) setE(function (x) { return Object.assign({}, x, { err: T("Je n’ai rien compris : redis par exemple « sans faute, 32 secondes 45 » ou « une barre, 40 secondes 10 ».") }); });
+      };
+      setE(Object.assign({}, e, { ecoute: true, dit: "", err: "", msg: "" }));
+      try { r.start(); } catch (x) { setE(Object.assign({}, e, { ecoute: false })); }
+    }
+    function valider() {
+      if (!cp) return;
+      var pa = { cavalier: cp.cavalier, cheval: cp.cheval, cavalier_id: cp.cavalier_id, cheval_id: cp.cheval_id, etat: sa.etat || "", barres: Number(sa.barres) || 0, refus: Number(sa.refus) || 0, temps: sa.temps === "" || sa.temps == null ? null : Number(String(sa.temps).replace(",", ".")) };
+      var ps = st.passages.filter(function (x) { return !(x.cavalier === pa.cavalier && x.cheval === pa.cheval); }).concat([pa]);
+      var suiv = -1; for (var k = 1; k <= st.couples.length; k++) { var j = (st.cur + k) % st.couples.length; var c2 = st.couples[j]; if (!ps.some(function (x) { return x.cavalier === c2.cavalier && x.cheval === c2.cheval; })) { suiv = j; break; } }
+      setSt(Object.assign({}, st, { passages: ps, cur: suiv, saisie: { barres: null, refus: null, temps: "", etat: "" } }));
+      setE(Object.assign({}, e, { dit: "", err: "", msg: "✓ " + pa.cavalier + " " + T("est classé.") }));
+      try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (x) { }
+    }
+    function choisir(k) {
+      var c = st.couples[k], d = null; st.passages.forEach(function (x) { if (x.cavalier === c.cavalier && x.cheval === c.cheval) d = x; });
+      setSt(Object.assign({}, st, { cur: k, saisie: d ? { barres: d.barres, refus: d.refus, temps: d.temps == null ? "" : String(d.temps), etat: d.etat } : { barres: null, refus: null, temps: "", etat: "" } }));
+      setE(Object.assign({}, e, { dit: "", err: "", msg: "" }));
+    }
+    function ajouterCouple() {
+      if (!String(man.cavalier).trim()) return;
+      var cs = st.couples.concat([{ cavalier: man.cavalier.trim(), cheval: man.cheval.trim(), cavalier_id: null, cheval_id: null }]);
+      setSt(Object.assign({}, st, { couples: cs, cur: cs.length - 1, saisie: { barres: null, refus: null, temps: "", etat: "" } })); setMan({ cavalier: "", cheval: "" });
+    }
+    function resume(x, c) {
+      if (c.etat) return { "El.": T("Éliminé"), "Ab.": T("Abandon"), "NP": T("Non partant") }[c.etat] || c.etat;
+      if (cfg.bareme === "C") return fmtT(c.total) + (x.barres ? " · " + x.barres + " " + (x.barres > 1 ? T("barres") : T("barre")) : "");
+      return (c.pts === 0 ? T("Sans faute") : c.pts + " " + (c.pts > 1 ? T("pts") : T("pt"))) + (cfg.bareme === "A" || x.temps != null ? " · " + fmtT(x.temps) : "");
+    }
+    async function publier() {
+      if (!e.ok) { setE(Object.assign({}, e, { ok: true })); return; }
+      setE(Object.assign({}, e, { busy: true, ok: false, err: "", msg: "" }));
+      try {
+        var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+        if (!u || !u.id) throw new Error(T("connecte-toi d’abord"));
+        if (!ctx.agenda_id) throw new Error(T("ouvre cet outil depuis la fiche du concours"));
+        var ex = await supa.from("resultats").select("id, cavalier_id, cheval_id, cavalier").eq("agenda_id", ctx.agenda_id).eq("origine", "juge").eq("epreuve", cfg.epreuve).limit(400);
+        var deja = (ex && !ex.error && ex.data) || [], maint = new Date().toISOString(), pa = CL.length, n = 0;
+        for (var i = 0; i < CL.length; i++) {
+          var x = CL[i], c = x.c, pl = c.etat ? null : x.place;
+          var ligne = { agenda_id: ctx.agenda_id, concours: ctx.concours || null, date_epreuve: String(ctx.date || "").slice(0, 10) || null, annee: String(ctx.date || "").slice(0, 4) || null,
+            epreuve: cfg.epreuve, place: pl, partants: pa, classement: (pl ? (pl === 1 ? T("1er") : pl + T("e")) : c.etat) + " / " + pa,
+            penalites: c.etat ? null : (cfg.bareme === "C" ? String(4 * (x.barres || 0)) : String(c.pts)), temps: x.temps == null ? null : String(Math.round(x.temps * 100) / 100),
+            mention: (!c.etat && ((cfg.bareme !== "C" && c.pts === 0) || (cfg.bareme === "C" && !x.barres))) ? "SF" : null,
+            cavalier: x.cavalier, cavalier_id: x.cavalier_id || null, cheval_id: x.cheval_id || null, statut: "saisie", visible: true, maj_par: u.id, maj_le: maint };
+          var avant = null; deja.forEach(function (d) { if (!avant && ((x.cavalier_id && d.cavalier_id === x.cavalier_id) || (!x.cavalier_id && String(d.cavalier || "").toLowerCase() === String(x.cavalier || "").toLowerCase())) && (!x.cheval_id || !d.cheval_id || d.cheval_id === x.cheval_id)) avant = d; });
+          var r = avant ? await supa.from("resultats").update(ligne).eq("id", avant.id).select("id") : await supa.from("resultats").insert(Object.assign({ user_id: u.id, origine: "juge" }, ligne)).select("id");
+          if (!r || r.error || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || T("enregistrement refusé"));
+          n++;
+        }
+        setE(Object.assign({}, e, { busy: false, ok: false, msg: "✓ " + n + " " + T("résultats publiés : ils apparaissent sur la fiche du concours, les performances et les podiums.") }));
+      } catch (eP) { setE(Object.assign({}, e, { busy: false, ok: false, err: T("Publication impossible : ") + String((eP && eP.message) || eP) })); }
+    }
+    function compteur(lab, k) {
+      var v = Number(sa[k]) || 0;
+      return h("div", { className: "hj-cpt" }, h("span", { className: "hj-l", style: { margin: 0 } }, lab),
+        h("div", { className: "hj-cpt-b" }, h("button", { type: "button", className: "hj-pill", onClick: function () { var o = {}; o[k] = Math.max(0, v - 1); majSaisie(o); } }, "−"), h("b", null, String(v)), h("button", { type: "button", className: "hj-pill", onClick: function () { var o = {}; o[k] = v + 1; majSaisie(o); } }, "+")));
+    }
+    function ptsTxt(n) { return n === 0 ? T("Sans faute") : n + " " + (n > 1 ? T("pts") : T("pt")); }
+    var podium = CL.filter(function (x) { return !x.c.etat; });
+
+    return h("div", { className: "hj" },
+      hero(cfg.epreuve, h("div", { className: "hj-sous" }, NOMS_B[cfg.bareme] + (cfg.bareme !== "C" && cfg.ta ? " · " + T("temps accordé") + " " + String(cfg.ta).replace(".", ",") + " s" : "") + " · " + st.passages.length + " / " + st.couples.length + " " + T("passés"))),
+      h("div", { className: "hj-in" },
+        h("div", { className: "hj-prog" }, st.couples.map(function (c, k) { var fait = st.passages.some(function (x) { return x.cavalier === c.cavalier && x.cheval === c.cheval; }); return h("i", { key: k, className: k === st.cur ? "c" : (fait ? "f" : "") }); })),
+        cp ? h("div", { className: "hj-live" },
+          h("div", { className: "hj-row" }, h("span", { className: "hj-pas" }, T("EN PISTE")), h("span", { className: "hj-coef", style: { border: "none" } }, (st.cur + 1) + " / " + st.couples.length)),
+          h("div", { className: "hj-figwrap", style: { marginTop: 12 } },
+            (cp.cheval_id && photos[cp.cheval_id]) ? h("img", { src: photos[cp.cheval_id], alt: "", style: { width: 84, height: 84, objectFit: "contain", borderRadius: 14, background: "#000", border: "1px solid rgba(243,238,228,.12)" } }) : null,
+            h("div", { style: { flex: 1 } }, h("div", { className: "hj-fig", style: { margin: 0 } }, cp.cavalier), h("div", { className: "hj-sous" }, cp.cheval || ""))),
+          h("div", { className: "hj-mic" },
+            h("button", { type: "button", className: "hj-rond" + (e.ecoute ? " on" : ""), "aria-label": T("Dicter le résultat"), onClick: dicter },
+              h("svg", { width: 30, height: 40, viewBox: "0 0 30 40" }, h("rect", { x: 9, y: 2, width: 12, height: 22, rx: 6, fill: "none", stroke: OR, strokeWidth: 1.6 }), h("path", { d: "M4 18c0 6 5 11 11 11s11-5 11-11M15 29v8M9 37h12", fill: "none", stroke: OR, strokeWidth: 1.6, strokeLinecap: "round" }))),
+            h("div", { className: "hj-ecoute" }, e.ecoute ? "● " + T("JE T’ÉCOUTE…") : T("Touche et dis le résultat : « sans faute, 32 secondes 45 »"))),
+          e.dit ? h("div", { className: "hj-dit" }, "« " + e.dit + " »") : null,
+          h("div", { className: "hj-res", style: { alignItems: "center" } },
+            h("div", { className: "hj-note", style: { fontSize: calc.etat ? 30 : 40 } }, calc.etat ? resume(sa, calc) : cfg.bareme === "C" ? fmtT(calc.total) : (calc.pts === 0 && sa.barres != null ? "0" : String(calc.pts)), h("small", null, calc.etat ? "" : cfg.bareme === "C" ? T("temps retenu") : T("points"))),
+            h("div", { style: { flex: 1 } },
+              h("span", { className: "hj-l" }, T("Temps du parcours")),
+              h("input", { className: "hj-sel", style: { marginTop: 2 }, inputMode: "decimal", value: sa.temps == null ? "" : String(sa.temps).replace(".", ","), placeholder: "00,00", onChange: function (ev) { majSaisie({ temps: ev.target.value.replace(",", ".") }); } }),
+              calc.penT ? h("div", { className: "hj-astuce", style: { marginTop: 6 } }, T("dont") + " " + calc.penT + " " + (calc.penT > 1 ? T("pts de temps") : T("pt de temps"))) : null)),
+          h("div", { className: "hj-cpts" }, compteur(T("Barres"), "barres"), compteur(T("Désobéissances"), "refus")),
+          h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))" } }, [["El.", T("Éliminé")], ["Ab.", T("Abandon")], ["NP", T("Non partant")]].map(function (z) {
+            return h("button", { key: z[0], type: "button", className: "hj-pill" + (sa.etat === z[0] ? " on" : ""), onClick: function () { majSaisie({ etat: sa.etat === z[0] ? "" : z[0] }); } }, z[1]); })),
+          e.err ? h("div", { className: "hj-err" }, e.err) : null,
+          h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: !sa.etat && sa.barres == null && (sa.temps === "" || sa.temps == null), onClick: valider }, T("Valider et couple suivant")))) : 
+          h("div", { className: "hj-live" }, h("div", { className: "hj-fig", style: { margin: 0 } }, T("Tous les couples sont passés")), h("div", { className: "hj-sous", style: { marginTop: 6 } }, T("Vérifie le classement, puis publie-le."))),
+        e.msg ? h("div", { className: "hj-msg" }, e.msg) : null,
+        h("div", { className: "hj-encart" }, h("div", { className: "hj-k" }, T("L’ordre de passage")),
+          st.couples.map(function (c, k) {
+            var d = null; CL.forEach(function (x) { if (x.cavalier === c.cavalier && x.cheval === c.cheval) d = x; });
+            return h("div", { key: k, className: "hj-li" + (k === st.cur ? " cur" : ""), onClick: function () { choisir(k); } },
+              h("span", { className: "n" }, String(k + 1)),
+              h("span", { className: "t" }, h("b", { style: { fontWeight: 500 } }, c.cavalier), c.cheval ? " · " + c.cheval : "", h("span", { className: "c" }, d ? resume(d, d.c) : (k === st.cur ? T("en piste") : T("à venir")))),
+              h("span", { className: "v", style: { fontSize: 18 } }, d && !d.c.etat ? (d.place === 1 ? T("1er") : d.place + T("e")) : ""));
+          }),
+          h("div", { className: "hj-l", style: { marginTop: 14 } }, T("Ajouter un couple")),
+          h("div", { style: { display: "flex", gap: 8 } },
+            h("input", { className: "hj-sel", style: { flex: 1, minWidth: 0 }, value: man.cavalier, placeholder: T("Cavalier"), onChange: function (ev) { setMan(Object.assign({}, man, { cavalier: ev.target.value })); } }),
+            h("input", { className: "hj-sel", style: { flex: 1, minWidth: 0 }, value: man.cheval, placeholder: T("Cheval"), onChange: function (ev) { setMan(Object.assign({}, man, { cheval: ev.target.value })); } })),
+          h("div", { className: "hj-bas", style: { marginBottom: 10 } }, h("button", { type: "button", className: "hj-btn sec", disabled: !String(man.cavalier).trim(), onClick: ajouterCouple }, T("Ajouter")))),
+        podium.length ? h("div", null,
+          COURBE(),
+          h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Le classement"), h("span", null, cfg.epreuve)),
+          podium.length >= 2 ? h("div", { className: "hj-podium" }, [1, 0, 2].filter(function (n) { return podium[n]; }).map(function (n) {
+            var o = podium[n];
+            return h("div", { key: n, className: "hj-pod" + (o.place === 1 ? " p1" : "") }, h("div", { className: "hj-rang" }, String(o.place)), h("b", null, o.cavalier), h("span", null, o.cheval || ""), h("em", { style: { fontSize: 24 } }, cfg.bareme === "C" ? fmtT(o.c.total) : cfg.bareme === "A0" ? ptsTxt(o.c.pts) : fmtT(o.temps)), cfg.bareme === "A" ? h("span", { style: { marginTop: 2 } }, ptsTxt(o.c.pts)) : null);
+          })) : null,
+          CL.map(function (o, n) {
+            return h("div", { key: n, className: "hj-li", style: { cursor: "default" } },
+              h("span", { className: "n" }, o.c.etat ? "–" : String(o.place)),
+              h("span", { className: "t" }, h("b", { style: { fontWeight: 500 } }, o.cavalier), o.cheval ? " · " + o.cheval : "", h("span", { className: "c" }, resume(o, o.c))),
+              h("span", { className: "v", style: { fontSize: 18 } }, o.c.etat ? "" : cfg.bareme === "C" ? fmtT(o.c.total) : (o.c.pts === 0 ? "SF" : o.c.pts + " pts")));
+          }),
+          h("div", { className: "hj-astuce" }, cfg.bareme === "A0" ? T("Sans chrono : à points égaux, les couples sont ex æquo.") : cfg.bareme === "C" ? T("Barème C : le plus petit temps (barres comprises) gagne ; à temps égal, ex æquo.") : T("Au chrono : à points égaux, le plus rapide passe devant ; à points et temps égaux, ex æquo.")),
+          ctx.agenda_id ? h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: e.busy, onClick: publier }, e.busy ? T("Publication…") : e.ok ? T("Touche encore pour confirmer") : T("Publier le classement"))) : null) : null,
+        h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn sec", onClick: function () { if (!e.efface) { setE(Object.assign({}, e, { efface: true })); return; } try { localStorage.removeItem(cle); } catch (x) { } setE({ ecoute: false, dit: "", msg: "", err: "", busy: false, ok: false }); setSt0(null); } }, e.efface ? T("Touche encore : tout effacer") : T("Nouvelle épreuve"))),
+        h("div", { className: "hj-astuce" }, T("Dis le résultat dès que le couple a franchi la ligne d’arrivée : « sans faute, 32 secondes 45 », « une barre et un refus, 41 secondes 10 », « éliminé ». Tu peux corriger avec les boutons. Tout est gardé sur ton téléphone ; touche un couple de la liste pour revenir dessus.")),
+        h("div", { style: { height: 30 } })));
+  }
+
+  /* 14/11 : un seul écran « juger » → reprise de dressage, ou jury de CSO quand le concours l'ouvre en mode « cso » */
+  function Juge() { var m = ""; try { m = (window.__juger || {}).mode || ""; } catch (x) { } return h(m === "cso" ? JuryCSO : EcranJuge); }
+  window.HypeJuge = { Juge: Juge, lireNote: lireNote, lireCSO: lireCSO, classerCSO: classerCSO };
 })();

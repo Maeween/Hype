@@ -34,6 +34,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 10:40 — build 20261114-1040 — Jury de CSO à la voix
+- Nouvel outil dans l'onglet Résultats d'un concours (équipe qui gère) : « Dicter les résultats de CSO ». Réglages : épreuve, barème (A au chrono, A sans chrono, C), temps accordé.
+- Pour chaque couple en piste : le jury dit « sans faute, 32 secondes 45 », « une barre et un refus, 41 secondes 10 », « 4 points 38,2 », « éliminé »… Hype remplit barres, désobéissances, temps (corrigeables avec les boutons +/− et le champ temps), calcule les points et passe au couple suivant. Couples ajoutables à la main, liste de l'ordre de passage pour revenir sur un couple.
+- Règles appliquées (règlement FFE CSO 2026, art. 8.2) : barème A = 4 pts par barre et par désobéissance, 1 pt par tranche de 4 s entamée au-delà du temps accordé, 3e désobéissance ou double du temps accordé = éliminé ; au chrono, à points égaux le plus rapide devant ; sans chrono, ex æquo ; barème C = temps + 4 s par barre.
+- PAS ENCORE : barrages, épreuves en deux phases, désobéissance avec destruction (+6 s), barème Club ; le classement est gardé sur le téléphone du jury (pas encore partagé en direct sur les autres téléphones — il faudrait une table en base, à valider).
+- « Publier le classement » → résultats du concours (place, points, temps, SF), sans doublon si on republie.
+- Traductions des nouveaux textes : après validation du français.
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 10:10 — build 20261114-1010 — « Juger une reprise » : la feuille consultable par le cavalier
 - Sur la fiche du concours (onglet Résultats), un résultat jugé dans Hype affiche son pourcentage et un lien « Voir la feuille du juge ». Le lien apparaît pour le cavalier concerné et pour l'équipe qui gère le concours.
 - Page « La feuille de notes » (lecture seule) : moyenne des juges, puis une feuille par juge (C, E…) avec chaque figure, sa note, son coefficient et le commentaire dicté, et le total.
