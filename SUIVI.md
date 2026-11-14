@@ -71,6 +71,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 15h17 — PUBLIÉ (build 20261114-1940, index.html + hype-ecran-saison.js v=195) + SQL : heures de passage masquables, partage par épreuve / cavalier / cheval
+- SQL appliqué (validé « Oui » 15h12) : club_agenda.heures_passage_masquees boolean not null default false. Aucun droit modifié.
+- Page du concours, onglet Passages (coach seulement) : case « Montrer les heures de passage aux cavaliers » ; décochée → les cavaliers ne voient plus les heures dans la liste des passages (numéro, cavalier, cheval seulement). La coach les voit toujours. Limite : page Jour J / « Ma journée » non traitées.
+- Partage de l'ordre de passage : boutons Par épreuve (défaut) / Par cavalier / Par cheval + liste pour une seule personne (« Ella, voici tes passages : ») ou un seul cheval (« Les passages avec … : ») ; case « Afficher les heures de passage », décochée d'office s'il y a des groupes publiés ou si les heures sont masquées ; l'image d'aperçu montre alors les numéros.
+- Fenêtre de partage moins sombre (Blandine 15h16 « entre du doré partout et que du noir, il y a une marge ») : fond gris anthracite, filet champagne sous le titre, bouton et choix actif en champagne doux ; le fond derrière est presque opaque (le nez du cheval ne dépasse plus du cadre).
+
 ## 2026-11-14 15h04 — PUBLIÉ (build 20261114-1930 : index.html + hype-ecran-saison.js v=194 + NOUVEAU netlify/edge-functions/partage-concours.ts) : le bon aperçu dans WhatsApp
 - Blandine 15h02 : « c'est toujours pas le bon aperçu » — WhatsApp ne lit pas ce qui suit le « # » → l'aperçu général de Hype (photo de Liam).
 - Au partage d'une partie du concours (groupes, règles du paddock, passages, infos, embarquement) : l'image du haut de la partie (720 × 900) est déposée dans le stockage public « photos/partages/ » (droit existant : tout compte connecté peut déposer — aucun droit modifié), et le lien devient 2hype.fr/partage/<id du concours>/<image>.jpg?t=<concours · partie>&d=<date>.

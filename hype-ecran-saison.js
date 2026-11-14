@@ -2263,7 +2263,7 @@ function EcranConcours() {
      une partie (ordre de passage, ordre d'embarquement, groupes du paddock) = un message prêt + la liste + le lien du concours ;
      modifiable dans l'appli de messagerie avant l'envoi. Sans partage du téléphone : copié. */
   /* 14/11 13h45 (Blandine : « à chaque fois, il faut un aperçu en image… un screen du haut de la page avec les infos ») */
-  async function partagerPartie(intro, lignes, fin, apercu) {
+  async function partagerPartie(intro, lignes, fin, apercu, opt) {
     /* 14/11 14h39 (Blandine : « ça me met tout entassé… plus lisible, plus espacé, une petite flèche à la ligne ») :
        WhatsApp écrase les retours à la ligne quand le texte accompagne une image → on passe par « Prévenir le groupe »
        (texte seul, bien aéré, titre en gras) ; l'image reste possible avec « Avec l'image ». */
@@ -2280,22 +2280,54 @@ function EcranConcours() {
       }
     } catch (eAp) { fI = null; }
     var lA = fI ? await hsLienAvecApercu(fI, idEv, apercu && apercu.libelle, ((ev && ev.titre) || F("Concours")) + " · " + ((apercu && apercu.libelle) || ""), ev ? hsPlage(ev) : "") : null;
-    hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + (lA || url), fichier: fI, apercuLien: !!lA });
+    var option = opt ? { label: opt.label, coche: opt.coche, texteSans: [tete, intro, (opt.lignesSans || []).join("\n"), fin || ""].filter(Boolean).join("\n\n"),
+      construire: opt.construire ? function (vue, filtre, avecH) { return [tete, filtre && opt.introPerso ? opt.introPerso(filtre, vue) : intro, opt.construire(vue, filtre, avecH).join("\n"), fin || ""].filter(Boolean).join("\n\n"); } : null, noms: opt.noms } : null;
+    hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + (lA || url), fichier: fI, apercuLien: !!lA, option: option });
   }
 
   var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
   function lienPartage(cle, label, f) { return h("div", { key: cle, style: { textAlign: "center", margin: "14px 0 4px" } }, (partMsg && partCle.current === cle) ? h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,.75)", marginBottom: 4 } }, partMsg) : null, h("button", { type: "button", onClick: function () { partCle.current = cle; f(); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } }, ICO_PART, h("span", { style: { borderBottom: "1px solid rgba(243,238,228,.3)", paddingBottom: 1 } }, label))); }
+  var masquerH = !!(ev && ev.heures_passage_masquees) && !gestion;
+  async function basculerHeuresPassage() {
+    var nv = !ev.heures_passage_masquees;
+    try { var r = await supa.from("club_agenda").update({ heures_passage_masquees: nv }).eq("id", idEv).select("id"); if (r && r.error) { setPartMsg(F("Erreur : ") + (r.error.message || "")); return; } } catch (eH) { setPartMsg(F("Erreur : ") + String((eH && eH.message) || eH)); return; }
+    setEv(Object.assign({}, ev, { heures_passage_masquees: nv }));
+  }
   function partagerPassages() {
-    var L = [];
-    parEpreuve.forEach(function (g) {
-      L.push((L.length ? "\n" : "") + "*" + hsNomEpreuve(g.ep) + "*");
-      g.l.slice().sort(function (a, b) { return (!!a.non_partant - !!b.non_partant) || (hsMinutes(a.passage) - hsMinutes(b.passage)); }).forEach(function (p) {
-        var num = p.ordre_passage || p.ordre || "";
-        L.push("▸ " + [p.non_partant ? F("non partant") : (p.passage || "–"), num ? F("N° ") + num : "", nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " — " + (p.cheval_brut || p.cheval_nom) : "")].filter(Boolean).join(" · "));
+    /* 14/11 15h12 (Blandine : « par défaut on partage par épreuve… mais si un cavalier nous demande qui il monte, ses numéros,
+       qu'on puisse lui partager directement son truc rien que pour elle ») : par épreuve / par cavalier / par cheval, et une seule personne ou un seul cheval */
+    var tous = []; parEpreuve.forEach(function (g) { g.l.forEach(function (p) { tous.push({ p: p, ep: hsNomEpreuve(g.ep) }); }); });
+    function chev(p) { return p.cheval_brut || p.cheval_nom || ""; }
+    function ligne(x, avecH, montrerEp, montrerCav, montrerCh) {
+      var p = x.p, num = p.ordre_passage || p.ordre || "";
+      var qui = [montrerCav ? nomP(p) : "", montrerCh ? chev(p) : ""].filter(Boolean).join(" — ");
+      return "▸ " + [avecH ? (p.non_partant ? "" : (p.passage || "–")) : "", num ? F("N° ") + num : "", qui, montrerEp ? hsEpCourt(x.ep) : "", p.non_partant ? F("non partant") : ""].filter(Boolean).join(" · ");
+    }
+    function tri(a, b) { return (!!a.p.non_partant - !!b.p.non_partant) || (hsMinutes(a.p.passage) - hsMinutes(b.p.passage)); }
+    function sections(vue) {
+      var S = [];
+      if (vue === "ep") parEpreuve.forEach(function (g) { S.push({ titre: hsNomEpreuve(g.ep), l: tous.filter(function (x) { return x.ep === hsNomEpreuve(g.ep); }) }); });
+      else {
+        var cles = []; tous.forEach(function (x) { var k = vue === "cav" ? nomP(x.p) : chev(x.p); if (k && cles.indexOf(k) === -1) cles.push(k); });
+        cles.sort(function (a, b) { return a.localeCompare(b, "fr"); });
+        cles.forEach(function (k) { S.push({ titre: k, l: tous.filter(function (x) { return (vue === "cav" ? nomP(x.p) : chev(x.p)) === k; }) }); });
+      }
+      return S;
+    }
+    function construire(vue, filtre, avecH) {
+      var S = sections(vue).filter(function (x) { return !filtre || x.titre === filtre; });
+      var Lx = [];
+      S.forEach(function (sec) {
+        if (!filtre) Lx.push((Lx.length ? "\n" : "") + "*" + sec.titre + "*");
+        sec.l.slice().sort(tri).forEach(function (x) { Lx.push(ligne(x, avecH, vue !== "ep", vue !== "cav", vue !== "ch")); });
       });
-    });
-    var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { AP.push({ h: p.passage || "–", t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
-    partagerPartie(F("L’ordre de passage est en ligne. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
+      return Lx;
+    }
+    function noms(vue) { return vue === "ep" ? [] : sections(vue).map(function (x) { return x.titre; }); }
+    var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { var sansH = (grpD || []).some(function (g) { return g.publie && (g.couples || []).length; }); var nm = p.ordre_passage || p.ordre || ""; AP.push({ h: sansH ? (nm ? "N° " + nm : "–") : (p.passage || "–"), t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
+    var avecGroupes = !!(ev && ev.heures_passage_masquees) || (grpD || []).some(function (g) { return g.publie && (g.couples || []).length; });
+    partagerPartie(F("L’ordre de passage est en ligne. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct."), construire("ep", "", !avecGroupes), "", { libelle: F("Ordre de passage"), lignes: AP },
+      { label: F("Afficher les heures de passage"), coche: !avecGroupes, construire: construire, noms: noms, introPerso: function (qui, vue) { return vue === "ch" ? F("Les passages avec ") + qui + " :" : qui + F(", voici tes passages :"); } });
   }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
@@ -2317,6 +2349,11 @@ function EcranConcours() {
        Par cheval / par cavalier : une section par cheval (ou cavalier), chaque ligne = l'épreuve (Club 3…) + l'autre nom. */
     parEpreuve.length ? h("style", { key: "pvs" }, ".hc .hc-pas-vue{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}.hc .hc-pas-vue .vr-dep-b{display:inline-flex;align-items:center;min-height:36px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.4);background:transparent;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:12.5px;cursor:pointer}.hc .hc-pas-vue .vr-dep-b.on{border-color:#C9A66B;color:#C9A66B}") : null,
     parEpreuve.length ? lienPartage("psh", F("Partager l’ordre de passage avec le groupe"), partagerPassages) : null,
+    /* 14/11 15h12 (Blandine : « en ligne aussi… une option affiche les horaires de passage qu'on coche ou qu'on décoche ») : réservé à la coach */
+    (gestion && parEpreuve.length) ? h("div", { key: "hpm", style: { textAlign: "center", margin: "2px 0 12px" } },
+      h("button", { type: "button", onClick: basculerHeuresPassage, style: { display: "inline-flex", alignItems: "center", gap: 9, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } },
+        h("span", { "aria-hidden": "true", style: { width: 18, height: 18, borderRadius: 5, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "#C9A66B", border: "1px solid " + (ev.heures_passage_masquees ? "rgba(243,238,228,.35)" : "#C9A66B") } }, ev.heures_passage_masquees ? "" : "✓"),
+        F("Montrer les heures de passage aux cavaliers"))) : null,
     parEpreuve.length ? h("div", { key: "pv", className: "vr-dep-t hc-pas-vue" }, [["ep", F("Par épreuve")], ["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) {
       return h("button", { key: o[0], type: "button", className: "vr-dep-b" + (pasVue === o[0] ? " on" : ""), "aria-pressed": pasVue === o[0], onClick: function () { setPasVue(o[0]); } }, o[1]);
     })) : null,
@@ -2348,7 +2385,7 @@ function EcranConcours() {
               h("div", { className: "k" }, num ? String(num) : String(j + 1)),
               ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "" }) : h("span", { className: "rc-vide3", style: { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } }, String(principal || "?").charAt(0).toUpperCase()),
               h("div", { className: "q" }, h("b", null, principal), h("span", null, second.filter(Boolean).join(" · ")), aLaPlace ? h("span", { className: "rc-alp" }, "⚠ " + aLaPlace) : null),
-              h("div", { className: "hh" + (p.passage ? "" : " vide") }, p.non_partant ? F("non partant") : (res || p.passage || "—")),
+              h("div", { className: "hh" + ((p.passage && !masquerH) ? "" : " vide") }, p.non_partant ? F("non partant") : (res || (masquerH ? "" : p.passage) || "—")),
               gestion ? h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier"), onClick: function () { var cl = cleCouple(p); setChg(chg && chg.cle === cl ? null : { cle: cl, ch: "", chNom: "", cav: "", cavNom: "" }); } },
                 h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))) : null,
               /* 13/11 10h32 : modifier sur place — changer de cheval ou de cavalier (l'ancien reste « à la place de »), non partant
@@ -2368,7 +2405,7 @@ function EcranConcours() {
       parEpreuve.forEach(function (g, gi) { g.l.forEach(function (p) {
         var k = parCh ? String(p.cheval_nom || "—") : String(p.cavalier_id || nomP(p));
         if (!grp[k]) { grp[k] = { k: k, nom: parCh ? String(p.cheval_nom || "—") : nomP(p), l: [] }; ordre.push(k); }
-        grp[k].l.push({ ep: g.ep, gi: gi, autre: parCh ? nomP(p) : (p.cheval_nom || ""), h: p.passage || "", n: p.ordre_passage || p.ordre || null, moi: !!(moi && p.cavalier_id === moi.id) });
+        grp[k].l.push({ ep: g.ep, gi: gi, autre: parCh ? nomP(p) : (p.cheval_nom || ""), h: masquerH ? "" : (p.passage || ""), n: p.ordre_passage || p.ordre || null, moi: !!(moi && p.cavalier_id === moi.id) });
       }); });
       ordre.sort(function (a, b) { return grp[a].nom.localeCompare(grp[b].nom, "fr", { sensitivity: "base" }); });
       return ordre.map(function (k, i) {
@@ -7634,11 +7671,11 @@ function hsPrevenirGroupe(o) {
     var anc = document.getElementById("hs-prev-groupe"); if (anc) anc.remove();
     var tx = (o.texte || "") + (o.lien ? "\n" + o.lien : "");
     var fond = document.createElement("div"); fond.id = "hs-prev-groupe";
-    fond.setAttribute("style", "position:fixed;inset:0;z-index:9900;background:rgba(4,5,6,.72);display:flex;align-items:flex-end;justify-content:center;font-family:Montserrat,Arial,sans-serif");
+    fond.setAttribute("style", "position:fixed;inset:0;z-index:9900;background:rgba(8,9,10,.985);display:flex;align-items:flex-end;justify-content:center;font-family:Montserrat,Arial,sans-serif");
     var f = document.createElement("div");
-    f.setAttribute("style", "width:100%;max-width:520px;background:#0B0C0D;border:1px solid rgba(201,166,107,.35);border-bottom:0;border-radius:22px 22px 0 0;padding:22px 20px calc(env(safe-area-inset-bottom) + 18px);color:#F3EEE4;box-sizing:border-box");
+    f.setAttribute("style", "width:100%;max-width:520px;background:#16191C;border:1px solid rgba(201,166,107,.5);border-bottom:0;border-radius:22px 22px 0 0;padding:22px 20px calc(env(safe-area-inset-bottom) + 18px);color:#F3EEE4;box-sizing:border-box");
     var t = document.createElement("div"); t.textContent = o.titre || "Prévenir le groupe";
-    t.setAttribute("style", "font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1");
+    t.setAttribute("style", "font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.35)");
     var st = document.createElement("div"); st.textContent = o.sous || "Le message est prêt, tu peux le modifier. WhatsApp s’ouvre : tu choisis le groupe et tu envoies.";
     /* 14/11 14h54 (Blandine : « on a dit qu'on mettait systématiquement un screen du haut de la partie… là il n'y a pas le screen ») :
        avec une image, le bouton principal envoie l'APERÇU ; le texte est copié en même temps → dans WhatsApp, on le colle en légende
@@ -7647,11 +7684,49 @@ function hsPrevenirGroupe(o) {
     if (o.fichier && mode === "texte" && !o.apercuLien) st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
     if (o.apercuLien) st.textContent = "Le message est prêt, tu peux le modifier. Dans WhatsApp, le lien affiche l’aperçu de la page en image : choisis le groupe et envoie.";
     if (o.fichier && mode === "coller") st.textContent = "Touche « Envoyer avec l’aperçu » : l’image part, et le message est copié. Dans WhatsApp, choisis le groupe, touche la zone de légende sous l’image, puis « Coller » : le message garde sa mise en page.";
-    st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.62);margin-top:6px");
+    st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.72);margin-top:10px");
     var ta = document.createElement("textarea"); ta.value = tx; ta.rows = 7;
-    ta.setAttribute("style", "display:block;width:100%;box-sizing:border-box;margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(243,238,228,.14);background:#111315;color:#F3EEE4;font:400 15px/1.45 Montserrat,Arial,sans-serif;resize:vertical;outline:none");
+    /* 14/11 15h11 (Blandine : « une option pour décocher les horaires de passage… quand on fonctionne par groupe ») */
+    var optL = null;
+    if (o.option) {
+      var avecOpt = !!o.option.coche;
+      var txSans = (o.option.texteSans || "") + (o.lien ? "\n" + o.lien : "");
+      if (!avecOpt) ta.value = txSans;
+      optL = document.createElement("button"); optL.type = "button";
+      optL.setAttribute("style", "display:flex;align-items:center;gap:10px;margin-top:14px;background:none;border:0;padding:0;color:#F3EEE4;font:400 14px Montserrat,Arial,sans-serif;cursor:pointer;text-align:left");
+      var caseO = document.createElement("span");
+      var peindre = function () { caseO.setAttribute("style", "width:20px;height:20px;flex:0 0 auto;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;border:1px solid " + (avecOpt ? "#C9A66B" : "rgba(243,238,228,.35)") + ";color:#C9A66B"); caseO.textContent = avecOpt ? "✓" : ""; };
+      peindre();
+      var libO = document.createElement("span"); libO.textContent = o.option.label;
+      optL.appendChild(caseO); optL.appendChild(libO);
+      optL.onclick = function () { avecOpt = !avecOpt; peindre(); ta.value = avecOpt ? tx : txSans; };
+      if (o.option.construire) {
+        var vue = "ep", filtre = "";
+        var refaire = function () { ta.value = o.option.construire(vue, filtre, avecOpt) + (o.lien ? "\n" + o.lien : ""); };
+        optL.onclick = function () { avecOpt = !avecOpt; peindre(); refaire(); };
+        var vues = document.createElement("div"); vues.setAttribute("style", "display:flex;flex-wrap:wrap;gap:8px;margin-top:14px");
+        var sel = document.createElement("select");
+        sel.setAttribute("style", "display:none;width:100%;margin-top:10px;height:42px;border-radius:12px;border:1px solid rgba(201,166,107,.28);background:#1F2327;color:#F3EEE4;font:400 14px Montserrat,Arial,sans-serif;padding:0 12px");
+        var remplir = function () {
+          sel.innerHTML = ""; var o0 = document.createElement("option"); o0.value = ""; o0.textContent = vue === "cav" ? "Tous les cavaliers" : "Tous les chevaux"; sel.appendChild(o0);
+          (o.option.noms(vue) || []).forEach(function (n) { var op = document.createElement("option"); op.value = n; op.textContent = n; sel.appendChild(op); });
+          sel.value = ""; sel.style.display = vue === "ep" ? "none" : "block";
+        };
+        sel.onchange = function () { filtre = sel.value; refaire(); };
+        var pills = [];
+        [["ep", "Par épreuve"], ["cav", "Par cavalier"], ["ch", "Par cheval"]].forEach(function (v) {
+          var b = document.createElement("button"); b.type = "button"; b.textContent = v[1];
+          var peindreB = function () { b.setAttribute("style", "height:34px;padding:0 14px;border-radius:999px;font:500 13px Montserrat,Arial,sans-serif;cursor:pointer;background:" + (vue === v[0] ? "rgba(201,166,107,.14)" : "transparent") + ";color:" + (vue === v[0] ? "#E6CFA0" : "rgba(243,238,228,.7)") + ";border:1px solid " + (vue === v[0] ? "rgba(201,166,107,.85)" : "rgba(243,238,228,.18)")); };
+          b.onclick = function () { vue = v[0]; filtre = ""; pills.forEach(function (f0) { f0(); }); remplir(); refaire(); };
+          pills.push(peindreB); peindreB(); vues.appendChild(b);
+        });
+        optL.__vues = vues; optL.__sel = sel;
+        refaire();
+      }
+    }
+    ta.setAttribute("style", "display:block;width:100%;box-sizing:border-box;margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(201,166,107,.28);background:#1F2327;color:#F3EEE4;font:400 15px/1.45 Montserrat,Arial,sans-serif;resize:vertical;outline:none");
     var bW = document.createElement("button"); bW.type = "button"; bW.textContent = "Envoyer sur WhatsApp";
-    bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#F3EEE4;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
+    bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#E6CFA0;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
     var lig = document.createElement("div"); lig.setAttribute("style", "display:flex;justify-content:center;gap:26px;margin-top:14px");
     function lien(txt) { var b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("style", "background:none;border:0;border-bottom:1px solid rgba(243,238,228,.3);padding:0 0 2px;color:rgba(243,238,228,.8);font:500 13px Montserrat,Arial,sans-serif;cursor:pointer"); return b; }
     var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = (o.fichier && !o.apercuLien) ? lien(mode === "texte" ? "Avec l’image" : "Texte seul sur WhatsApp") : null;
@@ -7670,7 +7745,7 @@ function hsPrevenirGroupe(o) {
     bP.onclick = fermer; fond.onclick = function (e) { if (e.target === fond) fermer(); };
     if (bI) { bI.onclick = mode === "texte" ? function () { var v = ta.value; try { navigator.share({ files: [o.fichier], text: v }).then(fermer, function () { }); } catch (eI) { } } : versWhatsApp; lig.appendChild(bI); }
     lig.appendChild(bA); lig.appendChild(bP);
-    f.appendChild(t); f.appendChild(st); f.appendChild(ta); f.appendChild(bW); f.appendChild(lig); fond.appendChild(f);
+    f.appendChild(t); f.appendChild(st); if (optL && optL.__vues) { f.appendChild(optL.__vues); f.appendChild(optL.__sel); } if (optL) f.appendChild(optL); f.appendChild(ta); f.appendChild(bW); f.appendChild(lig); fond.appendChild(f);
     document.body.appendChild(fond);
   } catch (eP) { }
 }
