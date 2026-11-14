@@ -295,7 +295,60 @@
       /* jury CSO : compteurs barres / désobéissances */
       ".hj-cpts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}",
       ".hj-cpt{border:1px solid rgba(243,238,228,.12);border-radius:16px;padding:10px 12px;background:#000}",
-      ".hj-cpt-b{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.hj-cpt-b b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:30px}.hj-cpt-b .hj-pill{width:44px;padding:0;font-size:20px}"
+      ".hj-cpt-b{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.hj-cpt-b b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:30px}.hj-cpt-b .hj-pill{width:44px;padding:0;font-size:20px}"      ,
+      /* 14/11 — feuille de jugement en protocole (maquette validée) : noir et ivoire, chiffres Montserrat à chasse fixe */
+      ".hp-page{padding-bottom:calc(150px + env(safe-area-inset-bottom))}",
+      ".hp-num{font-family:Montserrat,system-ui,sans-serif!important;font-variant-numeric:tabular-nums lining-nums;letter-spacing:0}",
+      ".hp-id{margin-top:18px;display:flex;flex-direction:column;gap:12px}",
+      ".hp-id-g{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}",
+      ".hp-id-g span{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:" + IV2 + "}",
+      ".hp-id-g b{display:block;font-weight:600;font-size:17px;line-height:1.3;color:#F3EEE4;margin-top:2px}",
+      ".hp-id-b{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}",
+      ".hp-etat{font-size:14px;color:#F3EEE4;border:1px solid rgba(243,238,228,.45);border-radius:999px;padding:5px 12px}",
+      ".hp-etat:before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:" + ORT + ";margin-right:8px;vertical-align:1px}",
+      ".hp-etat.ok:before{background:#96CDAA}",
+      ".hp-prog{font-size:14px;color:" + IV2 + "}.hp-prog b{color:#F3EEE4;font-weight:600}",
+      ".hp-tab{margin-top:18px;border:1px solid rgba(243,238,228,.16);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,rgba(22,23,23,.97),rgba(14,15,15,.98))}",
+      ".hp-r{display:grid;grid-template-columns:30px minmax(0,1fr) 58px 34px;column-gap:8px;align-items:center;padding:11px 10px;border-top:1px solid rgba(243,238,228,.08)}",
+      ".hp-r.tap{cursor:pointer}",
+      ".hp-th{border-top:none;background:rgba(243,238,228,.04);padding:10px}",
+      ".hp-th span{font-size:13px;font-weight:600;color:#F3EEE4;letter-spacing:.02em}",
+      ".hp-r .n{font-size:15px;font-weight:500;color:#ECE6DA;text-align:center}",
+      ".hp-r .f{font-size:15px;line-height:1.42;color:#F3EEE4;overflow-wrap:anywhere}",
+      ".hp-r .v{text-align:center}.hp-r .c{text-align:center;font-size:15px;color:#ECE6DA}",
+      ".hp-th .v,.hp-th .c{text-align:center}",
+      ".hp-r .rq{display:none}",
+      ".rq-m{display:block;margin-top:5px;font-size:14px;line-height:1.45;color:" + IV2 + "}.rq-m.vide{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16px;color:rgba(236,230,218,.7)}",
+      ".hp-nb{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:34px;padding:0 4px;box-sizing:border-box;border-radius:9px;border:1px solid rgba(243,238,228,.42);font-size:17px;font-weight:600;color:#F3EEE4}",
+      ".hp-nb.vide{border-color:transparent;color:rgba(236,230,218,.55);font-weight:400}",
+      ".hp-li.cur{background:rgba(243,238,228,.075);box-shadow:inset 3px 0 0 #F3EEE4}",
+      ".hp-li.cur .hp-nb.vide{border:1px dashed rgba(243,238,228,.5);color:#F3EEE4}",
+      ".hp-ens{padding:12px 12px 10px;border-top:1px solid rgba(243,238,228,.2);font-family:'Cinzel',Georgia,serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:" + ORT + ";background:rgba(243,238,228,.03)}",
+      ".hp-ed{padding:4px 10px 14px 12px}",".hp-ed .hj-pills{gap:5px!important}.hp-ed .hj-pill.hp-num{padding:0;font-size:15px;min-height:42px}",
+      ".hp-ed-l{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:" + IV2 + ";margin-top:12px}",
+      ".hp-ed-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}",
+      ".hp-ta{display:block;width:100%;box-sizing:border-box;margin-top:6px;min-height:64px;background:#000;border:1px solid rgba(243,238,228,.2);border-radius:12px;color:#F3EEE4;font:inherit;font-size:16px;line-height:1.5;padding:10px 12px;resize:vertical}",
+      ".hp-lien{margin-top:10px;background:none;border:none;padding:6px 0;color:" + IV2 + ";font:inherit;font-size:14px;text-decoration:underline}",
+      ".hp-recap{margin-top:22px;border:1px solid rgba(243,238,228,.16);border-radius:18px;padding:16px;background:linear-gradient(180deg,rgba(26,27,27,.97),rgba(17,18,18,.98))}",
+      ".hp-recap-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}",
+      ".hp-prov{font-family:Montserrat,sans-serif;font-size:13px;font-weight:500;color:" + ORT + ";border:1px solid rgba(232,203,148,.5);border-radius:999px;padding:3px 10px}",
+      ".hp-recap-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}",
+      ".hp-recap-g span,.hp-recap-l span{display:block;font-size:14px;color:" + IV2 + "}",
+      ".hp-recap-g b{display:block;font-size:24px;font-weight:600;margin-top:4px;color:#F3EEE4}",
+      ".hp-recap-l{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(243,238,228,.08)}",
+      ".hp-recap-l b{font-size:17px;font-weight:600;color:#F3EEE4;white-space:nowrap}",
+      ".hp-recap-l.fort b{font-size:26px}",
+      ".hp-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:linear-gradient(180deg,rgba(7,10,8,0),rgba(7,10,8,.96) 22%);padding:16px 12px calc(10px + env(safe-area-inset-bottom))}",
+      ".hp-bar-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:90px minmax(0,1fr) 90px;align-items:end;gap:8px}",
+      ".hp-bb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:64px;border-radius:16px;border:1px solid rgba(243,238,228,.35);background:rgba(10,10,10,.92);color:#F3EEE4;font:inherit;font-size:14px;line-height:1.2;padding:6px 4px;text-align:center}",
+      ".hp-bb.pret{border-color:" + OR + ";color:" + ORT + "}.hp-bb:disabled{opacity:.5}",
+      ".hp-bb-i{font-size:18px;line-height:1}",
+      ".hp-mic{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}",
+      ".hp-rond{width:64px;height:64px;border-radius:50%;border:1px solid rgba(243,238,228,.6);background:rgba(10,10,10,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 7px rgba(243,238,228,.06)}",
+      ".hp-rond.on{border-color:#F3EEE4;box-shadow:0 0 0 7px rgba(243,238,228,.16),0 0 0 14px rgba(243,238,228,.06)}",
+      ".hp-mic-t{font-size:14px;line-height:1.35;color:#ECE6DA;text-align:center;max-height:4.1em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}",
+      ".hp-mic-t.err{color:#F0B0B0}",
+      "@media (min-width:700px){.hp-r{grid-template-columns:40px minmax(0,1.5fr) 72px 56px minmax(0,1fr);column-gap:12px;padding:12px 14px}.hp-r .rq{display:block;font-size:15px;line-height:1.45;color:#ECE6DA;border-left:1px solid rgba(243,238,228,.1);padding-left:12px;align-self:stretch;display:flex;align-items:center}.hp-r .rq.vide{color:rgba(236,230,218,.55)}.hp-li.cur .rq.vide{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:rgba(236,230,218,.8)}.rq-m{display:none}.hp-r .f,.hp-r .n,.hp-r .c{font-size:16px}.hp-id-g{grid-template-columns:repeat(4,1fr)}.hp-ed{padding-left:66px;padding-right:20px}}"
     ].join("\n");
     document.head.appendChild(s);
   }
@@ -472,6 +525,18 @@
       }));
     }
     React.useEffect(function () { try { window.scrollTo(0, 0); } catch (x) { } return function () { try { recRef.current && recRef.current.abort(); } catch (x) { } }; }, []);
+    /* 14/11 refonte du protocole : la feuille suit la figure en cours, sauf si le juge vient de faire défiler lui-même */
+    var doigtRef = React.useRef(0), autoRef = React.useRef(false);
+    React.useEffect(function () {
+      function m() { doigtRef.current = Date.now(); }
+      window.addEventListener("touchmove", m, { passive: true }); window.addEventListener("wheel", m, { passive: true });
+      return function () { window.removeEventListener("touchmove", m); window.removeEventListener("wheel", m); };
+    }, []);
+    React.useEffect(function () {
+      if (!f || !autoRef.current) return; autoRef.current = false;
+      if (Date.now() - doigtRef.current < 4000) return;
+      try { var el = document.querySelector("[data-hp-cur='1']"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (x) { }
+    }, [f ? f.cur : -1]);
 
     function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } setEcran(ctx.agenda_id ? "concours" : "accueil"); }
     function hero(titre, sous, kick) {
@@ -495,12 +560,7 @@
               return h("div", { key: x.id },
                 COURBE(),
                 h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Juge en") + " " + (x.juge_place || "?"), h("span", null, fmt(x.total) + " / " + fmt(x.possible) + " · " + (x.pourcentage == null ? T("Éliminé") : fmt(x.pourcentage) + " %"))),
-                LL.map(function (l, k) {
-                  return h("div", { key: k, className: "hj-li", style: { cursor: "default" } },
-                    h("span", { className: "n" }, String(k + 1)),
-                    h("span", { className: "t" }, (l.t || "") + (l.coef > 1 ? " (×" + l.coef + ")" : ""), l.com ? h("span", { className: "c" }, l.com) : null),
-                    h("span", { className: "v" }, fmt(l.note)));
-                }),
+                tableProtocole(LL, {}),
                 (ER && (ER.trace || ER.exec)) ? h("div", { className: "hj-li", style: { cursor: "default", gridTemplateColumns: "1fr" } }, h("span", { className: "t" }, T("Erreurs"), h("span", { className: "c" }, [ER.trace ? ER.trace + " " + T("de tracé") + " (−" + ER.trace + " %)" : "", ER.exec ? ER.exec + " " + T("d’exécution") + " (−" + (2 * ER.exec) + " pts)" : ""].filter(Boolean).join(" · ")))) : null);
             })
           ],
@@ -521,7 +581,7 @@
               var on = choix.cavalier === c.cavalier && choix.cheval === c.cheval, ph = c.cheval_id && photos[c.cheval_id];
               /* règle d'équilibre (09/11) : jamais une ligne à moitié vide → le dernier d'un nombre impair prend toute la largeur */
               var seul = ctx.couples.length % 2 === 1 && k === ctx.couples.length - 1;
-              return h("button", { key: k, type: "button", className: "hj-cp" + (on ? " on" : ""), style: seul ? { gridColumn: "1 / -1", display: "flex", alignItems: "stretch" } : null, onClick: function () { setChoix(Object.assign({}, choix, { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id, cheval_id: c.cheval_id })); } },
+              return h("button", { key: k, type: "button", className: "hj-cp" + (on ? " on" : ""), style: seul ? { gridColumn: "1 / -1", display: "flex", alignItems: "stretch" } : null, onClick: function () { setChoix(Object.assign({}, choix, { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id, cheval_id: c.cheval_id, epreuve: c.epreuve || "" })); } },
                 h("div", { className: "hj-cp-ph", style: seul ? { width: "46%", flex: "0 0 46%" } : null }, ph ? h("img", { src: ph, alt: "" }) : String(c.cheval || c.cavalier || "?").charAt(0).toUpperCase()),
                 h("div", { className: "hj-cp-t", style: seul ? { alignSelf: "center", padding: "10px 14px" } : null }, h("b", null, c.cavalier), h("span", null, c.cheval || ""), c.epreuve ? h("span", { style: { display: "block" } }, c.epreuve) : null));
             })), h("div", { style: { height: 8 } })) : null,
@@ -534,7 +594,7 @@
           blocRegl("dressage", reglOuv, function () { setReglOuv(!reglOuv); }),
           h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: !choix.reprise || !String(choix.cavalier).trim(), onClick: function () {
             var R = REP[choix.reprise] || { figures: [] }; var max = /sur 5/.test(String(R.note || "")) ? 5 : 10;
-            setF({ reprise: choix.reprise, titre: R.niveauFFE || R.titre, max: max, cavalier: choix.cavalier.trim(), cheval: choix.cheval.trim(), cavalier_id: choix.cavalier_id || null, cheval_id: choix.cheval_id || null, juge: choix.juge, cur: 0,
+            setF({ reprise: choix.reprise, titre: R.niveauFFE || R.titre, max: max, cavalier: choix.cavalier.trim(), cheval: choix.cheval.trim(), cavalier_id: choix.cavalier_id || null, cheval_id: choix.cheval_id || null, epreuve: choix.epreuve || "", juge: choix.juge, cur: 0,
               lignes: (R.figures || []).map(function (x) { var lg = window.__hypeLangue || "fr"; return { t: (x && (x[lg] || x.fr || (x.t && (x.t[lg] || x.t.fr)))) || "", coef: 1, note: null, com: "" }; }).concat(ENSEMBLE.map(function (l) { return { t: T(l), coef: 1, note: null, com: "", ens: true }; })) });
           } }, T("Commencer la feuille"))),
           blocClassement()));
@@ -571,13 +631,15 @@
         setF0(function (ff) {
           var n = Object.assign({}, ff); n.lignes = ff.lignes.slice(); var c0 = n.lignes[ff.cur];
           n.lignes[ff.cur] = Object.assign({}, c0, { note: lu.note != null ? lu.note : c0.note, com: lu.com || c0.com });
-          if (lu.note != null && ff.cur < n.lignes.length - 1) n.cur = ff.cur + 1;
+          if (lu.note != null && ff.cur < n.lignes.length - 1) { n.cur = ff.cur + 1; autoRef.current = true; }
+          if (lu.note != null) n.ouv = null;
           try { localStorage.setItem(cle, JSON.stringify(n)); } catch (x) { }
           return n;
         });
         if (lu.note == null) setE(function (x) { return Object.assign({}, x, { err: T("Je n’ai pas entendu de note : redis-la au début de la phrase, ou touche-la.") }); });
+        else setE(function (x) { return Object.assign({}, x, { reconnu: fmtN(lu.note) + (lu.com ? " · " + lu.com : "") }); });
       };
-      setE(Object.assign({}, e, { ecoute: true, dit: "", err: "" }));
+      setE(Object.assign({}, e, { ecoute: true, dit: "", err: "", reconnu: "" }));
       try { r.start(); } catch (x) { setE(Object.assign({}, e, { ecoute: false })); }
     }
     async function envoyer() {
@@ -594,45 +656,105 @@
       } catch (eS) { setE(Object.assign({}, e, { busy: false, err: T("Pas encore envoyée : la feuille reste sur ce téléphone. ") + String((eS && eS.message) || "") })); }
     }
     var notes = []; for (var v = 0; v <= f.max; v += .5) notes.push(v);
+    var Rf = REP[f.reprise] || {};
+    var manque = []; L.forEach(function (l, k) { if (l.note == null) manque.push(k + 1); });
+    var brut = L.reduce(function (a, l) { return a + (l.note != null ? l.note * l.coef : 0); }, 0);
+    /* place provisoire : comparée aux feuilles déjà SIGNÉES de la même reprise ; rien n'est publié tant que la feuille n'est pas signée */
+    var autres = {}; (feuilles || []).forEach(function (x) { if (x.reprise !== f.reprise || x.pourcentage == null) return; var c = (x.cavalier_id || String(x.cavalier || "").toLowerCase()) + "|" + (x.cheval_id || String(x.cheval || "").toLowerCase()); (autres[c] = autres[c] || []).push(+x.pourcentage); });
+    var moi = (f.cavalier_id || String(f.cavalier || "").toLowerCase()) + "|" + (f.cheval_id || String(f.cheval || "").toLowerCase());
+    var moys = Object.keys(autres).filter(function (c) { return c !== moi; }).map(function (c) { var a = autres[c]; return a.reduce(function (x, y) { return x + y; }, 0) / a.length; });
+    var placeP = (pct != null && !elim) ? 1 + moys.filter(function (m) { return m > pct; }).length : null;
+    function ouvrir(k) { var n = Object.assign({}, f, { cur: k, ouv: (f.ouv === k && i === k) ? null : k }); setF(n); setE(Object.assign({}, e, { dit: "", err: "", reconnu: "" })); }
+    function signer() {
+      if (manque.length) { setE(Object.assign({}, e, { err: T("Il manque encore la note de :") + " " + manque.slice(0, 8).join(", ") + (manque.length > 8 ? "…" : "") + "." })); autoRef.current = true; doigtRef.current = 0; setF(Object.assign({}, f, { cur: manque[0] - 1 })); return; }
+      envoyer();
+    }
+    function editeur(k) {
+      var l = L[k];
+      return h("div", { className: "hp-ed", key: "ed" + k, onClick: function (ev) { ev.stopPropagation(); } },
+        h("div", { className: "hp-ed-l" }, T("Note")),
+        h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "repeat(" + (notes.length === 21 ? 7 : 6) + ", minmax(0,1fr))", marginTop: 6 } }, notes.map(function (n) { return h("button", { key: n, type: "button", className: "hj-pill hp-num" + (l.note === n ? " on" : ""), onClick: function () { maj({ note: n }); } }, fmtN(n)); })),
+        h("div", { className: "hp-ed-row" },
+          h("div", { className: "hp-ed-l", style: { margin: 0 } }, T("Coefficient")),
+          h("div", { className: "hj-cpt-b", style: { margin: 0, gap: 14 } },
+            h("button", { type: "button", className: "hj-pill", style: { width: 44, padding: 0 }, onClick: function () { maj({ coef: Math.max(1, l.coef - 1) }); } }, "−"),
+            h("b", { className: "hp-num" }, String(l.coef)),
+            h("button", { type: "button", className: "hj-pill", style: { width: 44, padding: 0 }, onClick: function () { maj({ coef: Math.min(5, l.coef + 1) }); } }, "+"))),
+        h("div", { className: "hp-ed-l" }, T("Remarques")),
+        h("textarea", { className: "hp-ta", value: l.com || "", placeholder: T("Ton commentaire"), onChange: function (ev) { maj({ com: ev.target.value }); } }),
+        l.note != null ? h("button", { type: "button", className: "hp-lien", onClick: function () { maj({ note: null }); } }, T("Retirer la note")) : null);
+    }
+    var etat = manque.length ? T("En cours") : T("Complète, à signer");
 
-    return h("div", { className: "hj" },
-      hero(f.titre, h("div", { className: "hj-sous" }, h("b", null, f.cavalier), f.cheval ? " · " + f.cheval : "", " · " + T("juge en") + " " + f.juge + " · " + T("notes sur") + " " + f.max)),
-      h("div", { className: "hj-in" },
-        h("div", { className: "hj-prog" }, L.map(function (l, k) { return h("i", { key: k, className: k === i ? "c" : (l.note != null ? "f" : "") }); })),
-        h("div", { className: "hj-live" },
-          h("div", { className: "hj-row" }, h("span", { className: "hj-pas" }, (cur.ens ? T("NOTE D’ENSEMBLE") : T("FIGURE")) + " " + (i + 1) + " / " + L.length),
-            h("button", { type: "button", className: "hj-coef", onClick: function () { maj({ coef: cur.coef >= 3 ? 1 : cur.coef + 1 }); } }, T("coefficient") + " " + cur.coef)),
-          cur.ens ? h("div", { className: "hj-fig" }, cur.t) : h("div", { className: "hj-figwrap", style: { marginTop: 10 } }, h("div", { className: "hj-fig" }, cur.t), h("div", { className: "hj-arene", style: { margin: 0 } }, arene(cur.t))),
-          h("div", { className: "hj-mic" },
-            h("button", { type: "button", className: "hj-rond" + (e.ecoute ? " on" : ""), "aria-label": T("Dicter la note et le commentaire"), onClick: dicter },
-              h("svg", { width: 30, height: 40, viewBox: "0 0 30 40" }, h("rect", { x: 9, y: 2, width: 12, height: 22, rx: 6, fill: "none", stroke: "#F3EEE4", strokeWidth: 1.6 }), h("path", { d: "M4 18c0 6 5 11 11 11s11-5 11-11M15 29v8M9 37h12", fill: "none", stroke: "#F3EEE4", strokeWidth: 1.6, strokeLinecap: "round" }))),
-            h("div", { className: "hj-ecoute" }, e.ecoute ? "● " + T("JE T’ÉCOUTE…") : T("Touche et dis la note, puis ton commentaire"))),
-          e.dit ? h("div", { className: "hj-dit" }, "« " + e.dit + " »") : null,
-          h("div", { className: "hj-res" },
-            h("div", { className: "hj-note" }, fmt(cur.note), h("small", null, T("note"))),
-            h("div", { style: { flex: 1 } }, h("span", { className: "hj-l" }, T("Commentaire")), h("textarea", { className: "hj-ta", value: cur.com || "", placeholder: T("Ton commentaire"), onChange: function (ev) { maj({ com: ev.target.value }); } }))),
-          h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "repeat(" + (notes.length === 21 ? 7 : 6) + ", minmax(0,1fr))" } }, notes.map(function (n) { return h("button", { key: n, type: "button", className: "hj-pill" + (cur.note === n ? " on" : ""), onClick: function () { maj({ note: n }); } }, fmt(n)); })),
-          e.err ? h("div", { className: "hj-err" }, e.err) : null,
-          h("div", { className: "hj-bas" },
-            h("button", { type: "button", className: "hj-btn sec", disabled: i === 0, onClick: function () { aller(i - 1); } }, "‹ " + (i > 0 ? String(i) : "")),
-            h("button", { type: "button", className: "hj-btn", disabled: i >= L.length - 1, onClick: function () { aller(i + 1); } }, (i < L.length - 1 ? String(i + 2) : "") + " ›"))),
-        COURBE(),
-        h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("La feuille"), h("span", null, nb + " / " + L.length + " " + T("notées"))),
-        L.map(function (l, k) {
-          return h("div", { key: k, className: "hj-li" + (k === i ? " cur" : (l.note == null ? " af" : "")), onClick: function () { aller(k); } },
-            h("span", { className: "n" }, String(k + 1)),
-            h("span", { className: "t" }, l.t + (l.coef > 1 ? " (×" + l.coef + ")" : ""), l.com ? h("span", { className: "c" }, l.com) : null),
-            h("span", { className: "v" }, fmt(l.note)));
-        }),
-        h("div", { className: "hj-cpts", style: { marginTop: 18 } }, compteurErr(T("Erreurs de tracé"), "errT", T("−1 % chacune, la 3e élimine")), compteurErr(T("Erreurs d’exécution"), "errE", T("−2 points chacune"))),
-        h("div", { className: "hj-total" }, h("div", null, h("span", null, T("Total")), h("br"), h("b", null, fmt(total) + " / " + fmt(possibleTout))), h("div", { style: { textAlign: "right" } }, h("span", null, T("Moyenne")), h("br"), h("b", null, elim ? T("Éliminé") : pct == null ? "—" : fmt(Math.round(pct * 100) / 100) + " %"))),
-        h("div", { className: "hj-bas" },
-          h("button", { type: "button", className: "hj-btn sec", onClick: function () { if (!e.efface) { setE(Object.assign({}, e, { efface: true })); return; } try { localStorage.removeItem(cle); } catch (x) { } setE(Object.assign({}, e, { efface: false })); setF0(null); } }, e.efface ? T("Touche encore pour effacer") : T("Nouvelle feuille")),
-          h("button", { type: "button", className: "hj-btn", disabled: e.busy || nb < L.length, onClick: envoyer }, e.busy ? "…" : T("Signer et envoyer"))),
+    return h("div", { className: "hj hp-page" },
+      hero(T("Juger une reprise à la voix"), null, T("Concours de dressage")),
+      h("div", { className: "hj-in hp-in" },
+        h("div", { className: "hp-id" },
+          h("div", { className: "hp-id-g" },
+            h("div", null, h("span", null, T("Cavalier")), h("b", null, f.cavalier || "—")),
+            h("div", null, h("span", null, T("Cheval")), h("b", null, f.cheval || "—")),
+            h("div", null, h("span", null, T("Épreuve")), h("b", null, f.epreuve || Rf.niveauFFE || "—")),
+            h("div", null, h("span", null, T("Reprise")), h("b", null, Rf.titre || f.titre || "—"))),
+          h("div", { className: "hp-id-b" },
+            h("span", { className: "hp-etat" + (manque.length ? "" : " ok") }, etat),
+            h("span", { className: "hp-prog" }, h("b", { className: "hp-num" }, String(L.length - manque.length)), " " + T("figures notées sur") + " ", h("b", { className: "hp-num" }, String(L.length))),
+            h("span", { className: "hp-prog" }, T("juge en") + " " + f.juge + " · " + T("notes sur") + " " + f.max))),
+        tableProtocole(L, { cur: i, ouv: f.ouv, onRow: ouvrir, editeur: editeur }),
+        h("div", { className: "hp-recap" },
+          h("div", { className: "hp-recap-t" }, T("Récapitulatif de la feuille"), manque.length ? h("span", { className: "hp-prov" }, T("provisoire")) : null),
+          h("div", { className: "hp-recap-g" },
+            h("div", null, h("span", null, T("Total des points")), h("b", { className: "hp-num" }, fmt(brut) + " / " + fmt(possibleTout))),
+            h("div", null, h("span", null, manque.length ? T("Pourcentage des figures notées") : T("Pourcentage")), h("b", { className: "hp-num" }, (possible ? fmt(Math.round(10000 * brut / possible) / 100) + " %" : "—")))),
+          h("div", { className: "hj-cpts" }, compteurErr(T("Erreurs de tracé"), "errT", T("−1 % chacune, la 3e élimine")), compteurErr(T("Erreurs d’exécution"), "errE", T("−2 points chacune"))),
+          h("div", { className: "hp-recap-l" }, h("span", null, T("Pénalités")), h("b", { className: "hp-num" }, (errT || errE) ? [errE ? "−" + (2 * errE) + " pts" : "", errT ? "−" + errT + " %" : ""].filter(Boolean).join(" · ") : "0")),
+          h("div", { className: "hp-recap-l fort" }, h("span", null, manque.length ? T("Résultat provisoire") : T("Résultat final")), h("b", { className: "hp-num" }, elim ? T("Éliminé") : pct == null ? "—" : fmt(Math.round(pct * 100) / 100) + " %")),
+          placeP ? h("div", { className: "hp-recap-l" }, h("span", null, T("Place provisoire parmi les feuilles signées")), h("b", { className: "hp-num" }, placeP + (placeP === 1 ? "er" : "e") + " / " + (moys.length + 1))) : null),
         e.msg ? h("div", { className: "hj-msg" }, e.msg) : null,
-        blocClassement(),
+        h("div", { className: "hj-bas" },
+          h("button", { type: "button", className: "hj-btn sec", onClick: function () { if (!e.efface) { setE(Object.assign({}, e, { efface: true })); return; } try { localStorage.removeItem(cle); } catch (x) { } setE(Object.assign({}, e, { efface: false })); setF0(null); } }, e.efface ? T("Touche encore pour effacer") : T("Nouvelle feuille"))),
+        h("div", { id: "hp-classement" }, blocClassement()),
         blocRegl("dressage", reglOuv, function () { setReglOuv(!reglOuv); }),
-        h("div", { className: "hj-astuce" }, T("Dis la note puis ton commentaire, comme à un secrétaire : Hype écrit tout et passe à la figure suivante. Touche une ligne pour la corriger. Les coefficients se règlent en touchant « coefficient ». La feuille est gardée sur ton téléphone à chaque note."))));
+        h("div", { className: "hj-astuce" }, T("Dis la note puis ton commentaire, comme à un secrétaire : Hype écrit tout et passe à la figure suivante. Touche une ligne pour la corriger : note, coefficient et remarque. La feuille est gardée sur ton téléphone à chaque note."))),
+      /* commande fixe : le micro reste à portée même quand le juge fait défiler la feuille */
+      h("div", { className: "hp-bar" },
+        h("div", { className: "hp-bar-in" },
+          h("button", { type: "button", className: "hp-bb", onClick: function () { try { document.getElementById("hp-classement").scrollIntoView({ behavior: "smooth", block: "start" }); } catch (x) { } } }, h("span", { className: "hp-bb-i" }, "☰"), T("Classement")),
+          h("div", { className: "hp-mic" },
+            h("button", { type: "button", className: "hp-rond" + (e.ecoute ? " on" : ""), "aria-label": T("Dicter la note et le commentaire"), onClick: dicter },
+              h("svg", { width: 22, height: 30, viewBox: "0 0 30 40" }, h("rect", { x: 9, y: 2, width: 12, height: 22, rx: 6, fill: "none", stroke: "#F3EEE4", strokeWidth: 2 }), h("path", { d: "M4 18c0 6 5 11 11 11s11-5 11-11M15 29v8M9 37h12", fill: "none", stroke: "#F3EEE4", strokeWidth: 2, strokeLinecap: "round" }))),
+            h("div", { className: "hp-mic-t" + (e.err ? " err" : "") },
+              e.err ? e.err
+              : e.ecoute ? (e.dit ? "« " + e.dit + " »" : "● " + T("JE T’ÉCOUTE…"))
+              : e.reconnu ? "✓ " + T("Reconnu :") + " " + e.reconnu
+              : T("Touche et dis la note, puis ton commentaire"))),
+          h("button", { type: "button", className: "hp-bb" + (manque.length ? "" : " pret"), disabled: e.busy, onClick: signer }, h("span", { className: "hp-bb-i" }, "✎"), e.busy ? "…" : T("Signer et envoyer")))));
+  }
+
+  /* ── 14/11 (refonte d'après la maquette validée) : le protocole en tableau N° · Figure · Note · Coef. · Remarques.
+     Sert au juge (o.onRow) et à la lecture par le cavalier (sans o.onRow : aucune commande). ── */
+  function fmtN(n) { return n == null ? "—" : (Math.round(n * 10) / 10).toFixed(1).replace(".", ","); }
+  function tableProtocole(L, o) {
+    o = o || {};
+    var figs = [], ens = [];
+    L.forEach(function (l, k) { if (!l || l.err) return; (l.ens ? ens : figs).push(k); });
+    function entete() {
+      return h("div", { className: "hp-r hp-th" }, h("span", { className: "n" }, "N°"), h("span", { className: "f" }, T("Figure")), h("span", { className: "v" }, T("Note")), h("span", { className: "c" }, T("Coef.")), h("span", { className: "rq" }, T("Remarques")));
+    }
+    function ligne(k) {
+      var l = L[k], cur = !!o.onRow && k === o.cur, vide = l.note == null;
+      return h("div", { key: k, className: "hp-li" + (cur ? " cur" : "") },
+        h("div", { className: "hp-r" + (o.onRow ? " tap" : ""), "data-hp-cur": cur ? "1" : null, onClick: o.onRow ? function () { o.onRow(k); } : null },
+          h("span", { className: "n hp-num" }, String(k + 1)),
+          h("span", { className: "f" }, l.t || "", (l.com || cur) ? h("span", { className: "rq-m" + (l.com ? "" : " vide") }, l.com ? l.com : T("À noter…")) : null),
+          h("span", { className: "v" }, h("span", { className: "hp-nb hp-num" + (vide ? " vide" : "") }, vide ? "—" : fmtN(l.note))),
+          h("span", { className: "c hp-num" }, (l.ens ? "× " : "") + String(l.coef || 1)),
+          h("span", { className: "rq" + (l.com ? "" : " vide") }, l.com ? l.com : (cur ? T("À noter…") : "—"))),
+        (o.editeur && o.ouv === k) ? o.editeur(k) : null);
+    }
+    return h("div", { className: "hp-tab" },
+      entete(), figs.map(ligne),
+      ens.length ? h("div", { className: "hp-ens" }, T("Notes d’ensemble")) : null,
+      ens.map(ligne));
   }
 
 

@@ -38,6 +38,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > ✅🔒 MAQUETTE VALIDÉE ET FIGÉE (Blandine 14/11 10h39 : « j'adore la maquette visuelle… vraiment tu peux la valider, elle bouge plus ») — ENCART HEY BABY UNIQUE : fichier maquettes/encart-hey-baby-VALIDE-14-11.jpg. Un seul encart, identique sur toutes les pages : grande tête de cheval noir ENTIÈRE (images/sante-fond-defaut.webp), petit titre doré « HEY BABY », titre « Une question, un document ? », texte « Demande-moi à l'écrit ou à la voix : je t'explique, je lis tes papiers et je range tout au bon endroit. », champ « Pose ta question… » + rond micro + rond envoyer (contours dorés fins, jamais de fond doré plein) ; sur les pages de travail SEULEMENT (santé, concours, écurie…) en plus le bouton « ＋ Ajouter un document » ; dessous « Tout ce qu'il sait faire ⌄ » qui se déplie au toucher. Il remplace l'encart d'aide universel (EncartAideHype, « Besoin d'un coup de main ? ») ET l'encart de l'outil documents (« Un document, une info ? ») : ils fusionnent.
 > ⚠️ RÈGLE (Blandine 14/11 10h39) : elle colle parfois des consignes de ChatGPT sans les avoir relues. Toute conversation qui reçoit une consigne DIFFÉRENTE de cette maquette (ou de toute autre maquette marquée VALIDÉE) doit d'abord la lui faire revalider, en lui montrant la différence, avant de coder.
 
+## 2026-11-14 · build 20261114-1410 — Feuille de jugement de dressage refaite en protocole (maquette validée)
+- Maquette : maquettes/feuille-dressage-maquette-14-11.png. hype-ecran-juge.js v=17.
+- Tableau N° · Figure · Note · Coef. · Remarques (iPhone : remarque sous la figure ; tablette/ordi : 5 colonnes). Figures officielles en entier, dans l'ordre. Notes Montserrat chasse fixe, virgule ; note enregistrée encadrée (0 = « 0,0 »), non notée = tiret.
+- Ligne en cours surlignée ivoire ; défilement auto vers la figure suivante après dictée (pas si le juge vient de faire défiler). Toucher une ligne = correction (notes, coefficient, remarque, retirer la note).
+- Barre fixe en bas : Classement · micro (états : prêt / j'écoute / reconnu) · Signer et envoyer (dit quelles notes manquent).
+- Notes d'ensemble séparées ; récapitulatif (total, %, erreurs, pénalités, résultat provisoire/final, place provisoire parmi les feuilles signées seulement). Classement inchangé sous la feuille. Vue cavalier : même tableau, sans commandes.
+- Écarts validés avec la maquette : « Signer et envoyer » (pas « enregistrer »), bouton « Classement » (pas « Liste des cavaliers »), moins de doré.
+- Calculs, enregistrement, droits, publication : inchangés.
+- MANQUE : les coefficients réels des figures et les notes d'ensemble propres à chaque reprise ne sont pas dans REPRISES_FFE (coef 1 par défaut, réglable par le juge ; 4 notes d'ensemble identiques partout) → il faut les protocoles officiels.
+- Non testé : dictée sur iPhone réel, plusieurs juges. Traductions des nouveaux textes après validation.
+
 ## 20261114-1403— Aide : tutos 13, 14, 15 (textes de Blandine)
 
 - Tuto « Dicte les résultats de ton épreuve » (CSO) : texte final, 5 étapes.
