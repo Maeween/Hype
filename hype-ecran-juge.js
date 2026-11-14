@@ -287,6 +287,11 @@
       /* cartes comme la Vidéothèque (noir graphite, dégradé, ombre) */
       ".hj-live,.hj-encart,.hj-total,.hj-cp,.hj-pod,.hj-cpt,.hj-res{background:linear-gradient(180deg,rgba(26,27,27,.97),rgba(17,18,18,.98));border-color:rgba(243,238,228,.09);box-shadow:0 14px 30px -18px rgba(0,0,0,.95)}",
       ".hj-h2{font-weight:500;font-size:clamp(28px,7.4vw,34px)}",
+      /* 14/11 10h35 (Blandine : « ton protocole, il est toujours illisible ») : tous les chiffres (notes, totaux, places,
+         numéros de figure) en Montserrat, chiffres droits et de même largeur — le « 1 » de Cormorant ressemblait à un « I » */
+      ".hj-note,.hj-li .v,.hj-li .n,.hj-total b,.hj-pod em,.hj-cpt-b b,.hj-rang{font-family:Montserrat,system-ui,sans-serif!important;font-variant-numeric:lining-nums tabular-nums;letter-spacing:0}",
+      ".hj-note{font-size:38px!important;font-weight:600!important}.hj-li .v{font-size:19px!important;font-weight:600!important}.hj-li .n{font-size:14px!important;font-weight:500}",
+      ".hj-total b{font-size:28px!important;font-weight:600!important}.hj-pod em{font-size:21px!important;font-weight:600!important}.hj-cpt-b b{font-size:24px!important;font-weight:600!important}.hj-rang{font-size:14px!important;font-weight:600}",
       /* jury CSO : compteurs barres / désobéissances */
       ".hj-cpts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}",
       ".hj-cpt{border:1px solid rgba(243,238,228,.12);border-radius:16px;padding:10px 12px;background:#000}",
