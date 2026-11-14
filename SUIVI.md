@@ -101,6 +101,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 18h24 — PUBLIÉ (build 20261114-2040 : index.html + hype-ecran-saison.js v=200 + netlify/edge-functions/partage-concours.ts) : adresses de partage du concours courtes et lisibles
+- Blandine 18h07 : le lien faisait 6 lignes (…/partage/<uuid>/<fichier>.jpg?t=…&d=…) — « que les adresses aient un sens… concours, CSO, qu'on sache où on va ».
+- Nouveau format : 2hype.fr/concours/<nom-du-concours-jour-mois>-<8 signes>/<partie>[/<cavalier>] ; parties : infos, regles-du-paddock, groupes-du-paddock, ordre-de-passage, embarquement, materiel ; « Prévenir le groupe » → lien du concours sans partie. Minuscules, sans accents, tirets ; plus de ?t= ni &d=.
+- partage-concours.ts (chemins /partage/* et /concours/*) : retrouve le concours par les 8 signes (club_agenda, clé publique), fabrique titre (« CSO Versailles · Ordre de passage [· Ella] ») et description (« Dimanche 15 novembre · lieu »), prend la plus récente image déposée pour ce concours et cette partie (photos/partages/<8 signes>-<partie>-<n>.jpg, sinon l'image Hype commune), envoie vers /?partie=<partie>[&qui=…]#r=<id> (matériel → /#lv=<id>). Anciens liens /partage/… inchangés. noindex.
+- Appli : à l'arrivée avec ?partie=…, la page du concours ouvre la bonne carte et descend jusqu'à la partie (infos, règles, groupes, ordre de passage, embarquement) ; l'adresse est nettoyée ensuite.
+- À VÉRIFIER par Blandine sur iPhone → WhatsApp : aperçu + ouverture de la bonne partie.
+- À DÉCIDER (référencement) : ces pages ne sont pas pour Google. Pour ramener du monde, enrichir la page publique existante 2hype.fr/evenement/<titre>-<8 signes> (10/10, sans noms de cavaliers) pour les concours : épreuves, date, lieu.
+
 ## 2026-11-14 15h24 — PUBLIÉ (build 20261114-1950, index.html + hype-ecran-saison.js v=196) : heures de passage — un par un OU par groupe, jamais les deux
 - RÈGLE (Blandine 15h17) : deux façons de fonctionner — un par un (l'heure estimée de passage est utile, ne pas la perdre) ou par groupe (seul compte le rendez-vous au paddock) ; afficher les deux perd les cavaliers.
 - À la publication des groupes : Hype propose « masquer leurs heures de passage individuelles ? » (Masquer / Garder). Plus aucun groupe publié et heures masquées → propose de les réafficher.
