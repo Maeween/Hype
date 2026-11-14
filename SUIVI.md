@@ -34,6 +34,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 11:50 — build 20261114-1150 — Écrans de jury et Règlement : en-tête Vidéothèque
+- Blandine (10h01) : « garder vraiment le design comme on a sur la page Vidéothèque ». Même en-tête que la Vidéothèque sur Juger une reprise, Jury de CSO, La feuille de notes et Le règlement : courbe champagne en haut à droite, grande photo de cheval noir fondue dans le noir (entière), courbe du bas, titre en grand Cormorant aligné à droite sous la photo, sous-titre en italique. Fond #070A08, cartes noir graphite en dégradé avec ombre comme les cartes de la Vidéothèque, titres de partie en Cormorant.
+- Fichiers : hype-ecran-juge.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 11:30 — build 20261114-1130 — Le règlement + mémo du jury ; dressage : départage et erreurs ; CORRECTIF outils Résultats
 - Blandine (09h49) : « mettre le règlement en ligne… accessible d'un clic quand ils sont sur la page ». Encart « Le règlement » (repliable) sur les écrans Juger une reprise et Jury de CSO, et outil « Le règlement » dans l'onglet Résultats de chaque concours (pour tout le monde) → page Règlement (CSO / Dressage / Complet).
   - Liens officiels FFE saison 2026-2027 (applicables au 01/09/2026) : règlement général, CSO (la FFE demande de se connecter), Dressage, CCE. La FFE fait UN règlement par discipline pour toutes les divisions.

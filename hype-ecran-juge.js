@@ -69,7 +69,7 @@
     if (document.getElementById("hype-juge-css")) return;
     var s = document.createElement("style"); s.id = "hype-juge-css";
     s.textContent = [
-      ".hj{min-height:100vh;background:#050505;color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif;padding-bottom:40px}",
+      ".hj{min-height:100vh;background:#070A08;color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif;padding-bottom:40px}",
       ".hj-hero{position:relative;background:#000;max-width:760px;margin:0 auto}",
       ".hj-hero img{display:block;width:100%;height:auto}",
       ".hj-hero:after{content:'';position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,rgba(0,0,0,0),#050505)}",
@@ -135,6 +135,23 @@
       ".hj-pod b{display:block;font-weight:500;font-size:14px;line-height:1.25}.hj-pod span{display:block;font-size:13px;color:" + IV2 + ";margin-top:3px}",
       ".hj-pod em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:26px;margin-top:6px}",
       ".hj-sep{display:block;width:100%;height:20px;margin:18px 0 0}",
+      /* en-tête façon Vidéothèque */
+      ".hj-hv{position:relative;padding-top:calc(env(safe-area-inset-top) + 54px);max-width:1240px;margin:0 auto}",
+      ".hj-hv .hj-ret{top:calc(env(safe-area-inset-top) + 12px)}",
+      ".hj-cb{position:absolute;left:0;right:0;width:100%;height:70px;pointer-events:none;z-index:2}",
+      ".hj-cb.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
+      ".hj-cb.c2{position:relative;display:block;height:64px;margin-top:-58px}",
+      "[dir=rtl] .hj-cb{transform:scaleX(-1)}",
+      ".hj-hv-ph{position:relative;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 78%,transparent 100%),linear-gradient(90deg,transparent 0,#000 10%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 78%,transparent 100%),linear-gradient(90deg,transparent 0,#000 10%,#000 100%);mask-composite:intersect}",
+      ".hj-hv-ph img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain}",
+      ".hj-tt{text-align:end;margin-top:-10px;position:relative;z-index:3}",
+      ".hj-tt .hj-k{margin-bottom:6px}",
+      ".hj-tt h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,11vw,60px);line-height:1.02;margin:0;color:#F3EEE4}",
+      ".hj-tt-s{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:20px;line-height:1.35;margin:10px 0 0;color:#F3EEE4;opacity:.92}",
+      ".hj-tt-s .hj-sous{font-family:inherit;font-size:inherit;color:inherit}.hj-tt-s .hj-sous b{font-weight:600}",
+      /* cartes comme la Vidéothèque (noir graphite, dégradé, ombre) */
+      ".hj-live,.hj-encart,.hj-total,.hj-cp,.hj-pod,.hj-cpt,.hj-res{background:linear-gradient(180deg,rgba(26,27,27,.97),rgba(17,18,18,.98));border-color:rgba(243,238,228,.09);box-shadow:0 14px 30px -18px rgba(0,0,0,.95)}",
+      ".hj-h2{font-weight:500;font-size:clamp(28px,7.4vw,34px)}",
       /* jury CSO : compteurs barres / désobéissances */
       ".hj-cpts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}",
       ".hj-cpt{border:1px solid rgba(243,238,228,.12);border-radius:16px;padding:10px 12px;background:#000}",
@@ -182,6 +199,24 @@
       }));
   }
   var COURBE = function () { return h("svg", { className: "hj-sep", viewBox: "0 0 400 20", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 16 C 140 16, 240 4, 400 6", fill: "none", stroke: "rgba(201,166,107,.45)", strokeWidth: 1 })); };
+  /* 14/11 10h01 (Blandine : « garder vraiment le design comme on a sur la page Vidéothèque ») : même en-tête que la
+     Vidéothèque — courbe champagne en haut à droite, grande photo fondue dans le noir (entière, jamais recadrée),
+     courbe du bas, titre en grand Cormorant aligné à droite sous la photo, sous-titre en italique. */
+  function courbeV(cls, d) {
+    return h("svg", { className: "hj-cb " + cls, viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+      h("defs", null, h("linearGradient", { id: "hjg-" + cls, x1: "0", x2: "1", y1: "0", y2: "0" },
+        h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+      cls === "c2" ? h("path", { d: d + " L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }) : null,
+      h("path", { d: d, fill: "none", stroke: "url(#hjg-" + cls + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
+  }
+  function heroV(img, retour, kick, titre, sous) {
+    return h("div", { className: "hj-hv" },
+      h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
+      courbeV("c1", "M250 4 C 330 8, 385 40, 400 96"),
+      h("div", { className: "hj-hv-ph" }, h("img", { src: img, alt: "" })),
+      courbeV("c2", "M0 92 C 130 90, 240 62, 400 8"),
+      h("div", { className: "hj-in" }, h("div", { className: "hj-tt" }, kick ? h("div", { className: "hj-k" }, kick) : null, h("h1", null, titre), sous ? h("div", { className: "hj-tt-s" }, sous) : null)));
+  }
   var ENSEMBLE = ["Allures", "Impulsion", "Soumission", "Position et assiette du cavalier, effet des aides"];
 
   function EcranJuge() {
@@ -300,12 +335,7 @@
 
     function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } setEcran(ctx.agenda_id ? "concours" : "accueil"); }
     function hero(titre, sous, kick) {
-      return h("div", null,
-        h("div", { className: "hj-hero" },
-          h("img", { src: "images/theme-position-cavalier-noir.webp", alt: "" }),
-          h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
-        h("div", { className: "hj-in", style: { paddingTop: 16 } }, h("div", { className: "hj-k" }, kick || T("Juger une reprise")), h("div", { className: "hj-h1" }, titre), sous));
+      return heroV("images/theme-position-cavalier-noir.webp", retour, kick || T("Juger une reprise"), titre, sous);
     }
 
     /* ── 0. lecture d'une feuille signée (cavalier) ── */
@@ -536,12 +566,7 @@
     }, []);
     function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } setEcran(ctx.agenda_id ? "concours" : "accueil"); }
     function hero(titre, sous) {
-      return h("div", null,
-        h("div", { className: "hj-hero" },
-          h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }),
-          h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
-        h("div", { className: "hj-in", style: { paddingTop: 16 } }, h("div", { className: "hj-k" }, T("Jury de CSO")), h("div", { className: "hj-h1" }, titre), sous));
+      return heroV("images/portrait-defaut-noir.webp", retour, T("Jury de CSO"), titre, sous);
     }
     var NOMS_B = { A: T("Barème A au chrono"), A0: T("Barème A sans chrono"), C: T("Barème C") };
 
@@ -788,13 +813,8 @@
     function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } (app.setEcran || function () { })(ctx.agenda_id ? "concours" : "accueil"); }
     var d = ctx.disc === "dressage" ? "dressage" : ctx.disc === "cce" ? "cce" : "cso";
     return h("div", { className: "hj" },
-      h("div", { className: "hj-hero" }, h("img", { src: d === "dressage" ? "images/theme-position-cavalier-noir.webp" : "images/portrait-defaut-noir.webp", alt: "" }),
-        h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
-        h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
-      h("div", { className: "hj-in", style: { paddingTop: 16 } },
-        h("div", { className: "hj-k" }, T("Le règlement")),
-        h("div", { className: "hj-h1" }, d === "dressage" ? T("Dressage") : d === "cce" ? T("Concours complet") : T("Saut d’obstacles")),
-        h("div", { className: "hj-sous" }, T("Un seul règlement par discipline, pour toutes les divisions (Club, Poney, Amateur, Pro), plus le règlement général.")),
+      heroV(d === "dressage" ? "images/theme-position-cavalier-noir.webp" : "images/portrait-defaut-noir.webp", retour, T("Le règlement"), d === "dressage" ? T("Dressage") : d === "cce" ? T("Concours complet") : T("Saut d’obstacles"), T("Un règlement par discipline, pour toutes les divisions")),
+      h("div", { className: "hj-in" },
         h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", marginTop: 16 } }, [["cso", "CSO"], ["dressage", T("Dressage")], ["cce", T("Complet")]].map(function (z) {
           return h("button", { key: z[0], type: "button", className: "hj-pill" + (d === z[0] ? " on" : ""), onClick: function () { try { window.__juger = Object.assign({}, ctx, { disc: z[0] }); } catch (x) { } setOuv(function (v) { return v === true ? 1 : true; }); } }, z[1]); })),
         blocRegl(d, true, function () { }),
