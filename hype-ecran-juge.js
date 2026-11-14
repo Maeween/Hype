@@ -1024,7 +1024,154 @@
         blocRegl("cso", reglOuv, function () { setReglOuv(!reglOuv); }),
         h("div", { style: { height: 30 } })));
   }
+  /* ═══ 14/11 — PLAN DU PARCOURS EN PHOTO ═══
+     Blandine (10h16) : « prendre une photo du plan… que ça calcule, en fonction des distances, le nombre de foulées… tout ce
+     qui peut être utile au cavalier… et que ça lui refasse le plan, bien écrit ». Lecture par hey-baby-vision (même service
+     que l'outil documents), plan redessiné en SVG (positions estimées par la lecture : schéma, pas un plan à l'échelle).
+     Foulées : repères courants (cheval 3,50 m ; poney D 3,30 m ; C 3,10 m ; B 2,90 m) — nb de foulées = distance ÷ foulée − 1
+     (la foulée « en plus » = réception + battue). Temps accordé = longueur ÷ vitesse × 60 (règlement CSO, art. 6.1 B). */
+  var GABARITS = [["cheval", "Cheval", 3.5], ["D", "Poney D", 3.3], ["C", "Poney C", 3.1], ["B", "Poney B", 2.9]];
+  function foulees(d, f) {
+    var x = d / f - 1; if (!(x > 0)) return null;
+    var n = Math.round(x), r = x - n;
+    return { n: Math.max(0, n), ecart: r, txt: Math.abs(r) < 0.15 ? "juste" : (r > 0 ? "longue" : "courte") };
+  }
+  function cleObs(n) { var m = String(n || "").match(/^(\d+)\s*([a-z])?/i); return m ? Number(m[1]) * 10 + (m[2] ? m[2].toLowerCase().charCodeAt(0) - 96 : 0) : 9999; }
+  async function lirePlan(images) {
+    var sess = await supa.auth.getSession(); var sv = sess && sess.data && sess.data.session;
+    if (!sv || !sv.access_token) throw new Error(T("connecte-toi d’abord"));
+    var system = "Tu lis le plan d'un parcours de saut d'obstacles (photo ou PDF). Reponds UNIQUEMENT en JSON : "
+      + "{\"epreuve\":\"nom de l'epreuve ou vide\",\"hauteur\":\"hauteur en cm ou vide\",\"longueur_m\":\"longueur du parcours en metres ou vide\",\"vitesse\":\"vitesse en m/min ou vide\",\"temps_accorde\":\"temps accorde en secondes ou vide\",\"temps_limite\":\"temps limite en secondes ou vide\",\"bareme\":\"bareme ecrit ou vide\","
+      + "\"obstacles\":[{\"num\":\"numero tel qu'ecrit (1, 2, 5a, 5b...)\",\"type\":\"vertical|oxer|triple_barre|riviere|mur|autre\",\"x\":0,\"y\":0,\"angle\":0}],"
+      + "\"distances\":[{\"de\":\"numero\",\"a\":\"numero\",\"metres\":0}],\"depart\":{\"x\":0,\"y\":0},\"arrivee\":{\"x\":0,\"y\":0},\"remarques\":\"ce qui est ecrit d'utile (sens, barrage, obstacles du barrage...) ou vide\"}. "
+      + "x et y : position du centre de l'obstacle sur le plan, en pourcentage de la largeur (x, de gauche a droite) et de la hauteur (y, de haut en bas) de la piste dessinee. angle : orientation de la barre en degres (0 = barre horizontale sur le plan). "
+      + "distances : seulement celles ECRITES sur le plan (entre deux obstacles d'une ligne ou d'une combinaison), en metres ; n'invente aucune distance. N'invente aucun obstacle. Si un nombre n'est pas lisible, laisse vide.";
+    var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
+    blocs.push({ type: "text", text: "Voici le plan." });
+    var rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify({ mode: "perception", stream: false, differe: true, system: system, messages: [{ role: "user", content: blocs }] }) });
+    var data = null; try { data = await rep.json(); } catch (e) { }
+    var texte = "";
+    if (rep.ok && data && data.ok && data.differe && data.jobId) {
+      var t0 = Date.now(), fini = null;
+      while (!fini && Date.now() - t0 < 300000) {
+        await new Promise(function (r) { setTimeout(r, 3000); });
+        try { var rj = await supa.from("heybaby_analyses").select("statut, resultat, erreur_code, erreur_message").eq("id", data.jobId).single(); if (rj && !rj.error && rj.data && rj.data.statut !== "en_cours") fini = rj.data; } catch (eJ) { }
+      }
+      if (!fini) throw new Error(T("délai dépassé"));
+      if (fini.statut !== "termine") throw new Error((fini.erreur_code || "erreur") + " " + (fini.erreur_message || ""));
+      texte = String(fini.resultat || "");
+    } else if (rep.ok && data && data.ok && data.content) texte = (data.content || []).map(function (b) { return (b && b.text) || ""; }).join("");
+    else { if (data && data.code === "PREMIUM_REQUIRED") throw new Error(T("la lecture des documents est réservée aux abonnés Premium")); throw new Error("HTTP " + rep.status); }
+    var m = texte.match(/\{[\s\S]*\}/); var o = JSON.parse(m ? m[0] : texte) || {};
+    o.obstacles = (Array.isArray(o.obstacles) ? o.obstacles : []).filter(function (x) { return x && x.num; });
+    o.distances = (Array.isArray(o.distances) ? o.distances : []).filter(function (x) { return x && Number(x.metres) > 0; });
+    return o;
+  }
+  function dessinPlan(p, gab) {
+    var W = 100, H = 62, M = 5;
+    var obs = (p.obstacles || []).slice().sort(function (a, b) { return cleObs(a.num) - cleObs(b.num); });
+    function X(v) { return M + (Math.max(0, Math.min(100, Number(v) || 0)) / 100) * (W - 2 * M); }
+    function Y(v) { return M + (Math.max(0, Math.min(100, Number(v) || 0)) / 100) * (H - 2 * M); }
+    var parN = {}; obs.forEach(function (o) { parN[String(o.num).toLowerCase()] = o; });
+    var trace = obs.map(function (o) { return X(o.x).toFixed(1) + "," + Y(o.y).toFixed(1); }).join(" ");
+    function barre(o, k) {
+      var cx = X(o.x), cy = Y(o.y), a = Number(o.angle) || 0, L = 6, t = String(o.type || "");
+      var n = t === "oxer" ? 2 : t === "triple_barre" ? 3 : 1, gap = 1.1;
+      return h("g", { key: "o" + k, transform: "rotate(" + a + " " + cx + " " + cy + ")" },
+        t === "riviere" ? h("rect", { x: cx - L / 2, y: cy - 1.4, width: L, height: 2.8, rx: .6, fill: "rgba(243,238,228,.06)", stroke: "#F3EEE4", strokeWidth: .35, strokeDasharray: ".8 .6" })
+          : Array.apply(null, Array(n)).map(function (_, i) { var dy = (i - (n - 1) / 2) * gap; return h("line", { key: i, x1: cx - L / 2, y1: cy + dy, x2: cx + L / 2, y2: cy + dy, stroke: "#F3EEE4", strokeWidth: t === "mur" ? 1.2 : .7, strokeLinecap: "round" }); }),
+        h("circle", { cx: cx, cy: cy - 3.6 - (n - 1) * gap / 2, r: 2.7, fill: "#070A08", stroke: "rgba(201,166,107,.8)", strokeWidth: .3 }),
+        h("text", { x: cx, y: cy - 3.6 - (n - 1) * gap / 2 + 1.1, textAnchor: "middle", fontSize: 3, fontFamily: "Montserrat, sans-serif", fontWeight: 600, fill: "#F3EEE4", transform: "rotate(" + (-a) + " " + cx + " " + (cy - 3.6 - (n - 1) * gap / 2) + ")" }, String(o.num)));
+    }
+    return h("svg", { viewBox: "0 0 " + W + " " + H, style: { width: "100%", height: "auto", display: "block" }, "aria-label": T("Plan du parcours") },
+      h("rect", { x: 1, y: 1, width: W - 2, height: H - 2, rx: 2, fill: "rgba(243,238,228,.025)", stroke: "rgba(243,238,228,.28)", strokeWidth: .3 }),
+      obs.length > 1 ? h("polyline", { points: trace, fill: "none", stroke: "rgba(201,166,107,.6)", strokeWidth: .35, strokeDasharray: "1.2 1", strokeLinejoin: "round" }) : null,
+      (p.distances || []).map(function (d, k) {
+        var a = parN[String(d.de).toLowerCase()], b = parN[String(d.a).toLowerCase()]; if (!a || !b) return null;
+        var fo = foulees(Number(d.metres), gab), mx = (X(a.x) + X(b.x)) / 2, my = (Y(a.y) + Y(b.y)) / 2;
+        if (Math.hypot(X(a.x) - X(b.x), Y(a.y) - Y(b.y)) < 14) mx += mx > 70 ? -14 : 14;   /* combinaison : l'étiquette à côté, pas sur les obstacles */
+        return h("g", { key: "d" + k },
+          h("rect", { x: mx - 8.4, y: my - 2.7, width: 16.8, height: 5.4, rx: 2.7, fill: "#070A08", stroke: "rgba(243,238,228,.35)", strokeWidth: .25 }),
+          h("text", { x: mx, y: my + 1, textAnchor: "middle", fontSize: 2.9, fontFamily: "Montserrat, sans-serif", fill: "#F3EEE4" }, String(d.metres).replace(".", ",") + " m" + (fo ? " · " + fo.n + " f" : "")));
+      }),
+      obs.map(barre));
+  }
+  function PagePlan() {
+    css();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var ctx = (function () { try { return window.__juger || {}; } catch (e) { return {}; } })();
+    var _p = React.useState(function () { try { return JSON.parse(localStorage.getItem("hype_plan_dernier") || "null"); } catch (e) { return null; } }), plan = _p[0], setPlan0 = _p[1];
+    function setPlan(p) { setPlan0(p); try { localStorage.setItem("hype_plan_dernier", JSON.stringify(p)); } catch (e) { } }
+    var _g = React.useState("cheval"), gab = _g[0], setGab = _g[1];
+    var _f = React.useState(""), maFoulee = _f[0], setMaFoulee = _f[1];
+    var _e = React.useState({ busy: false, err: "" }), e = _e[0], setE = _e[1];
+    var refF = React.useRef(null);
+    async function lire(imgs) {
+      setE({ busy: true, err: "" });
+      try { var p = await lirePlan(imgs); if (!p.obstacles.length) throw new Error(T("je ne vois pas d’obstacles numérotés sur cette image")); p.lu_le = new Date().toISOString(); setPlan(p); setE({ busy: false, err: "" }); }
+      catch (x) { setE({ busy: false, err: T("Lecture impossible : ") + String((x && x.message) || x) }); }
+    }
+    React.useEffect(function () {
+      try { window.scrollTo(0, 0); } catch (x) { }
+      var im = ctx.images; if (im && im.length) { try { window.__juger = Object.assign({}, ctx, { images: null }); } catch (x) { } lire(im); }
+    }, []);
+    async function fichier(ev) {
+      var f = ev && ev.target && ev.target.files && ev.target.files[0]; if (!f) return;
+      try {
+        var pdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
+        var imgs = pdf ? (await hypePdfEnImages(f, 1, 2400)).images : [await hypeImageEnJpeg(f, 2400)];
+        lire(imgs);
+      } catch (x) { setE({ busy: false, err: T("Lecture impossible : ") + String((x && x.message) || x) }); }
+      try { ev.target.value = ""; } catch (x) { }
+    }
+    function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } (app.setEcran || function () { })("accueil"); }
+    var G = GABARITS.filter(function (g) { return g[0] === gab; })[0] || GABARITS[0];
+    var fl = parseFloat(String(maFoulee).replace(",", ".")); var foul = fl > 1.5 && fl < 5 ? fl : G[2];
+    var p = plan || {};
+    var obs = (p.obstacles || []).slice().sort(function (a, b) { return cleObs(a.num) - cleObs(b.num); });
+    var nObs = {}; obs.forEach(function (o) { nObs[String(o.num).replace(/[a-z]$/i, "")] = 1; });
+    var combis = {}; obs.forEach(function (o) { var m = String(o.num).match(/^(\d+)\s*([a-z])$/i); if (m) (combis[m[1]] = combis[m[1]] || []).push(o.num); });
+    var L = parseFloat(p.longueur_m), V = parseFloat(p.vitesse), TAc = (L > 0 && V > 0) ? Math.round(L / V * 60) : null, TAe = parseFloat(p.temps_accorde);
+    var TA = TAe > 0 ? TAe : TAc;
+    var ficIn = h("input", { ref: refF, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: fichier });
+    return h("div", { className: "hj" },
+      heroV("images/portrait-defaut-noir.webp", retour, T("Plan du parcours"), p.epreuve || T("Le plan, au propre"), T("Photographie le plan affiché au paddock : Hype le redessine et calcule les foulées.")),
+      h("div", { className: "hj-in" },
+        ficIn,
+        h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: e.busy, onClick: function () { try { refF.current && refF.current.click(); } catch (x) { } } }, e.busy ? T("Lecture du plan… (1 à 2 min)") : plan ? T("Photographier un autre plan") : T("Photographier le plan"))),
+        e.err ? h("div", { className: "hj-err" }, e.err) : null,
+        plan ? h("div", null,
+          h("div", { className: "hj-encart", style: { padding: 6, marginLeft: -12, marginRight: -12 } }, dessinPlan(p, foul)),
+          h("div", { className: "hj-astuce", style: { marginTop: 8 } }, T("Schéma redessiné d’après la photo : les positions sont approximatives, les numéros et les distances sont ceux écrits sur le plan.")),
+          COURBE(),
+          h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Les foulées")),
+          h("div", { className: "hj-pills", style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))" } }, GABARITS.map(function (g) { return h("button", { key: g[0], type: "button", className: "hj-pill" + (gab === g[0] && !(fl > 1.5 && fl < 5) ? " on" : ""), onClick: function () { setGab(g[0]); setMaFoulee(""); } }, T(g[1])); })),
+          h("div", { className: "hj-l", style: { marginTop: 14 } }, T("Ou la foulée de ton cheval (m)")),
+          h("input", { className: "hj-sel", inputMode: "decimal", value: maFoulee, placeholder: String(G[2]).replace(".", ","), onChange: function (ev) { setMaFoulee(ev.target.value); } }),
+          (p.distances || []).length ? (p.distances || []).map(function (d, k) {
+            var fo = foulees(Number(d.metres), foul);
+            var conseil = !fo ? "" : fo.txt === "juste" ? T("distance juste") : fo.txt === "longue" ? T("un peu longue : galop à allonger") : T("un peu courte : galop à raccourcir");
+            return h("div", { key: k, className: "hj-li", style: { cursor: "default", gridTemplateColumns: "64px 1fr 70px" } },
+              h("span", { className: "n", style: { fontSize: 15 } }, d.de + " → " + d.a),
+              h("span", { className: "t" }, String(d.metres).replace(".", ",") + " m", h("span", { className: "c" }, conseil)),
+              h("span", { className: "v", style: { fontSize: 20 } }, fo ? fo.n + " f" : "—"));
+          }) : h("div", { className: "hj-astuce" }, T("Aucune distance n’est écrite sur ce plan : demande-les au chef de piste ou mesure-les à pied (1 grand pas ≈ 1 m).")),
+          h("div", { className: "hj-astuce" }, T("Repères courants : foulée de galop d’un cheval 3,50 m ; poney D 3,30 m ; C 3,10 m ; B 2,90 m. Nombre de foulées = distance ÷ foulée − 1 (une foulée part dans la réception et la battue). Adapte selon ton cheval, et marche toujours le parcours.")),
+          COURBE(),
+          h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Le parcours")),
+          [[T("Épreuve"), [p.epreuve, p.hauteur ? p.hauteur + " cm" : ""].filter(Boolean).join(" · ")],
+           [T("Obstacles"), obs.length ? Object.keys(nObs).length + " " + T("obstacles") + " · " + obs.length + " " + T("sauts") : ""],
+           [T("Combinaisons"), Object.keys(combis).map(function (k) { return combis[k].join("-"); }).join(" · ")],
+           [T("Longueur"), L > 0 ? L + " m" : ""], [T("Vitesse"), V > 0 ? V + " m/min" : ""],
+           [T("Temps accordé"), TA ? TA + " s" + (TAe > 0 && TAc && Math.abs(TAe - TAc) > 1 ? " (" + T("calcul : ") + TAc + " s)" : (!(TAe > 0) && TAc ? " (" + T("calculé") + ")" : "")) : ""],
+           [T("Temps limite"), TA ? (parseFloat(p.temps_limite) > 0 ? parseFloat(p.temps_limite) : 2 * TA) + " s" : ""],
+           [T("Au plan"), p.remarques || ""]].filter(function (r) { return r[1]; }).map(function (r, k) {
+            return h("div", { key: k, className: "hj-li", style: { cursor: "default", gridTemplateColumns: "120px 1fr" } }, h("span", { className: "c", style: { margin: 0, fontStyle: "normal" } }, r[0]), h("span", { className: "t" }, r[1]));
+          }),
+          TA ? h("div", { className: "hj-astuce" }, T("Au barème A : 1 point par tranche de 4 secondes entamée au-delà du temps accordé ; au-delà du temps limite, éliminé.")) : null) : null,
+        h("div", { style: { height: 30 } })));
+  }
   /* 14/11 : un seul écran « juger » → reprise de dressage, jury de CSO (mode « cso ») ou règlement (mode « regl ») */
-  function Juge() { var m = ""; try { m = (window.__juger || {}).mode || ""; } catch (x) { } return h(m === "cso" ? JuryCSO : m === "regl" ? PageRegl : m === "live" ? PageLive : EcranJuge); }
+  function Juge() { var m = ""; try { m = (window.__juger || {}).mode || ""; } catch (x) { } return h(m === "cso" ? JuryCSO : m === "regl" ? PageRegl : m === "live" ? PageLive : m === "plan" ? PagePlan : EcranJuge); }
   window.HypeJuge = { Juge: Juge, lireNote: lireNote, lireCSO: lireCSO, classerCSO: classerCSO };
 })();

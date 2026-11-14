@@ -34,6 +34,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 13:05 — build 20261114-1305 — Plan du parcours en photo
+- Blandine (10h16) : « prendre une photo du plan… que ça calcule… le nombre de foulées… tout ce qui peut être utile au cavalier… et que ça lui refasse le plan, bien écrit ».
+- Page « Plan du parcours » (écran juger, mode plan) : photo ou PDF du plan → lecture (hey-baby-vision, prompt dédié : obstacles numérotés, type, position, distances ÉCRITES seulement, longueur, vitesse, temps accordé) → plan redessiné (piste, obstacles vertical / oxer / triple barre / rivière, numéros, tracé pointillé, distances avec foulées) ; foulées par gabarit (cheval 3,50 m, poney D 3,30, C 3,10, B 2,90 — repères courants) ou foulée saisie, n = distance ÷ foulée − 1, « juste / un peu longue / un peu courte » ; fiche du parcours : obstacles, sauts, combinaisons, longueur, vitesse, temps accordé (calculé = longueur ÷ vitesse × 60 si absent, art. 6.1 B), temps limite (double), remarques. Le dernier plan lu reste sur le téléphone.
+- Accès : outil « Plan du parcours » sous les Passages de chaque concours (pour tout le monde) ; et l'outil documents reconnaît un plan (type plan_parcours) → « Voir le plan et les foulées ».
+- Positions des obstacles : estimées par la lecture (schéma, pas à l'échelle) — c'est écrit sous le plan.
+- Traductions de la page plan : après validation du français (les deux libellés du concours sont déjà traduits).
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, hype-outil-doc.js (v=15), index.html (build), SUIVI.md.
+
 ## 2026-11-14 12:45 — build 20261114-1245 — CSO en direct ; corrections de fiche : l'écurie prévenue
 - Blandine (10h16) : « préviens quand même l'écurie », « pour les CSO, on pourrait carrément faire un live ».
 - BASE (validé par Blandine) : fonction hype_notifier_correction (une demande de correction prévient le propriétaire du cheval + le propriétaire du club + les gestionnaires, jamais l'auteur, pas de doublon) ; table cso_passages (un passage dicté = une ligne ; lecture pour tous les membres connectés, écriture réservée à l'équipe qui gère le concours ou la modératrice).
