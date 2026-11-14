@@ -2749,7 +2749,7 @@ function EcranConcours() {
         lignes.forEach(function (p) { L.push("▸ " + [p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " — " + p.cheval_nom : ""), epsG.length > 1 && p.epreuve ? hsEpCourt(p.epreuve) : "", p.non_partant ? F("non partant") : ""].filter(Boolean).join(" · ")); });   /* 14/11 14h44 (Blandine) : pas l'heure de passage individuelle dans les groupes, seulement le rendez-vous */
       });
       var AG = grpEp.filter(function (g) { return g.publie; }).map(function (g, gi) { return { h: g.heure_rdv || "–", t: (g.nom || (F("Groupe ") + (gi + 1))) + " · " + (g.couples || []).length + " " + ((g.couples || []).length > 1 ? F("couples") : F("couple")) }; });
-      partagerPartie(F("Les groupes du paddock sont en ligne") + (epsG.length ? " (" + epsG.join(" et ") + ")" : "") + ".\n\n" + F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle : tous les cavaliers du groupe doivent être présents à l’heure indiquée, à l’entrée du paddock.") + "\n\n" + F("Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
+      partagerPartie(F("Les groupes du paddock sont en ligne") + (epsG.length ? " (" + epsG.join(" et ") + ")" : "") + ".\n\n" + F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle : tous les cavaliers du groupe doivent être présents à l’heure indiquée, à l’entrée du paddock."), L, F("Ces groupes pourront néanmoins être modifiés d’ici le concours ou en cours de journée : le cas échéant, les cavaliers concernés seront prévenus en temps et en heure (en direct pour ceux qui ont activé leurs notifications). 😊"), { libelle: F("Groupes du paddock"), lignes: AG });
     }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
@@ -7604,8 +7604,13 @@ function hsMinutes(v) {
    Hype ne peut pas écrire tout seul dans un groupe WhatsApp : après un changement d'heure, on propose à la coach le message
    déjà écrit (modifiable) ; « Envoyer sur WhatsApp » ouvre WhatsApp avec le texte, elle choisit le groupe et envoie. */
 function hsLienConcoursApp(id) { var base = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin; return id ? base + "/#r=" + encodeURIComponent(String(id)) : base; }
+/* 14/11 14h55 (Blandine : « fais-moi des liens avec tes propositions, que je voie ce que ça donne vraiment ») :
+   trois façons de partager, choisies par l'adresse (?partage=texte|deux|coller), gardées sur ce téléphone. Par défaut : « texte » (version en ligne). */
+try { var hsPm = new URLSearchParams(location.search).get("partage"); if (hsPm === "texte" || hsPm === "deux" || hsPm === "coller") localStorage.setItem("hype_partage_mode", hsPm); } catch (ePm) { }
+function hsModePartage() { try { return localStorage.getItem("hype_partage_mode") || "texte"; } catch (e) { return "texte"; } }
 function hsPrevenirGroupe(o) {
   try {
+    var mode = o.fichier ? hsModePartage() : "texte";
     var anc = document.getElementById("hs-prev-groupe"); if (anc) anc.remove();
     var tx = (o.texte || "") + (o.lien ? "\n" + o.lien : "");
     var fond = document.createElement("div"); fond.id = "hs-prev-groupe";
@@ -7615,7 +7620,12 @@ function hsPrevenirGroupe(o) {
     var t = document.createElement("div"); t.textContent = o.titre || "Prévenir le groupe";
     t.setAttribute("style", "font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1");
     var st = document.createElement("div"); st.textContent = o.sous || "Le message est prêt, tu peux le modifier. WhatsApp s’ouvre : tu choisis le groupe et tu envoies.";
-    if (o.fichier) st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
+    /* 14/11 14h54 (Blandine : « on a dit qu'on mettait systématiquement un screen du haut de la partie… là il n'y a pas le screen ») :
+       avec une image, le bouton principal envoie l'APERÇU ; le texte est copié en même temps → dans WhatsApp, on le colle en légende
+       (coller garde les retours à la ligne, contrairement au texte envoyé avec l'image). */
+    if (o.fichier && mode === "deux") st.textContent = "Touche « Envoyer en deux messages » : l’image part d’abord dans le groupe que tu choisis, puis WhatsApp se rouvre avec le message prêt : choisis le même groupe et envoie.";
+    if (o.fichier && mode === "texte") st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
+    if (o.fichier && mode === "coller") st.textContent = "Touche « Envoyer avec l’aperçu » : l’image part, et le message est copié. Dans WhatsApp, choisis le groupe, touche la zone de légende sous l’image, puis « Coller » : le message garde sa mise en page.";
     st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.62);margin-top:6px");
     var ta = document.createElement("textarea"); ta.value = tx; ta.rows = 7;
     ta.setAttribute("style", "display:block;width:100%;box-sizing:border-box;margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(243,238,228,.14);background:#111315;color:#F3EEE4;font:400 15px/1.45 Montserrat,Arial,sans-serif;resize:vertical;outline:none");
@@ -7623,12 +7633,21 @@ function hsPrevenirGroupe(o) {
     bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#F3EEE4;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
     var lig = document.createElement("div"); lig.setAttribute("style", "display:flex;justify-content:center;gap:26px;margin-top:14px");
     function lien(txt) { var b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("style", "background:none;border:0;border-bottom:1px solid rgba(243,238,228,.3);padding:0 0 2px;color:rgba(243,238,228,.8);font:500 13px Montserrat,Arial,sans-serif;cursor:pointer"); return b; }
-    var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = o.fichier ? lien("Avec l’image") : null;
+    var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = o.fichier ? lien(mode === "texte" ? "Avec l’image" : "Texte seul sur WhatsApp") : null;
+    if (o.fichier && mode === "coller") bW.textContent = "Envoyer avec l’aperçu";
+    if (o.fichier && mode === "deux") bW.textContent = "Envoyer en deux messages";
     function fermer() { try { fond.remove(); } catch (e) { } }
-    bW.onclick = function () { var u = "https://wa.me/?text=" + encodeURIComponent(ta.value); try { window.open(u, "_blank"); } catch (e) { location.href = u; } fermer(); };
+    function versWhatsApp() { var u = "https://wa.me/?text=" + encodeURIComponent(ta.value); try { window.open(u, "_blank"); } catch (e) { location.href = u; } fermer(); }
+    bW.onclick = function () {
+      if (!o.fichier || mode === "texte") { versWhatsApp(); return; }
+      var v = ta.value;
+      if (mode === "deux") { try { navigator.share({ files: [o.fichier] }).then(function () { location.href = "https://wa.me/?text=" + encodeURIComponent(v); fermer(); }, function () { }); } catch (eD) { versWhatsApp(); } return; }
+      try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).catch(function () { }); } catch (eC) { }
+      try { navigator.share({ files: [o.fichier] }).then(fermer, function () { }); } catch (eS) { versWhatsApp(); }
+    };
     bA.onclick = function () { var v = ta.value; if (navigator.share) { navigator.share({ text: v }).then(fermer, function () { }); return; } try { navigator.clipboard.writeText(v); bA.textContent = "Copié ✓"; } catch (e) { } };
     bP.onclick = fermer; fond.onclick = function (e) { if (e.target === fond) fermer(); };
-    if (bI) { bI.onclick = function () { var v = ta.value; try { navigator.share({ files: [o.fichier], text: v }).then(fermer, function () { }); } catch (eI) { } }; lig.appendChild(bI); }
+    if (bI) { bI.onclick = mode === "texte" ? function () { var v = ta.value; try { navigator.share({ files: [o.fichier], text: v }).then(fermer, function () { }); } catch (eI) { } } : versWhatsApp; lig.appendChild(bI); }
     lig.appendChild(bA); lig.appendChild(bP);
     f.appendChild(t); f.appendChild(st); f.appendChild(ta); f.appendChild(bW); f.appendChild(lig); fond.appendChild(f);
     document.body.appendChild(fond);

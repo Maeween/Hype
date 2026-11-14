@@ -70,6 +70,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h57 — PUBLIÉ (build 20261114-1920, index.html + hype-ecran-saison.js v=193) : 3 façons de partager à tester + phrase de fin des groupes
+- Groupes du paddock (texte validé 14h53) : phrase de fin « Ces groupes pourront néanmoins être modifiés d'ici le concours ou en cours de journée : le cas échéant, les cavaliers concernés seront prévenus en temps et en heure (en direct pour ceux qui ont activé leurs notifications). 😊 » ; la phrase « Les heures peuvent être amenées à évoluer… » retirée du haut (doublon).
+- Blandine 14h54 : « on a dit qu'on mettait systématiquement un screen du haut de la partie… là il n'y a pas le screen ». WhatsApp ne garde pas les retours à la ligne d'un texte envoyé AVEC une image. 3 façons, à tester par lien (choix gardé sur le téléphone) :
+  - ?partage=texte (par défaut, inchangé) : texte aéré seul ; « Avec l'image » en lien secondaire (texte écrasé).
+  - ?partage=deux : l'image d'abord, puis WhatsApp se rouvre avec le texte (deux envois).
+  - ?partage=coller : l'image part et le texte est copié → le coller en légende (un seul message, mise en page gardée).
+- En attente : son choix → le mettre par défaut pour tout le monde et retirer les liens de test. Option A (aperçu du lien avec la photo du concours) pas construite.
+
 ## 2026-11-14 14h46 — PUBLIÉ (build 20261114-1910, index.html + hype-ecran-saison.js v=192) : groupes du paddock — toutes les épreuves, plus d'heure de passage
 - Blandine 14h43 : le partage ne citait qu'une épreuve alors qu'une cavalière d'une autre épreuve était dans les groupes → le message nomme toutes les épreuves des cavaliers des groupes (et l'épreuve de chacun s'il y en a plusieurs).
 - Blandine 14h44 : RÈGLE — dans les groupes du paddock, jamais l'heure de passage individuelle (« ça va les perturber… on remet leur numéro mais pas l'horaire ») : retirée des cartes de groupe de la page ET du message ; seul « rendez-vous à … à l'entrée du paddock ».
