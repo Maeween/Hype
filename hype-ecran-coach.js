@@ -1,4 +1,4 @@
-/* hype-ecran-coach.js — 13/11/2026 (Blandine) — GUIDE COACH, page « Engagements » (modèle donné par Blandine).
+/* hype-ecran-coach.js — 13/11/2026 (Blandine) — GUIDE COACH, page « Engagements » (modèle donné par Blandine).
    Page par page : seule la page Engagements existe pour l'instant (adresse 2hype.fr/#guide-coach).
    Chaque carte mène à l'endroit de l'appli (le concours ouvert en dernier, sinon la page de l'équipe).
    La frise du bas mène aux pages de l'appli pour chaque moment de la journée.
@@ -45,35 +45,38 @@
   var PAGES = {
     engagements: { titre: "Engagements", sous: "Préparer, valider et éditer mes engagements.", bas: "coach-eng-camion", hero: "coach-eng-hero", cartes: [
       { n: "01", ico: "agenda", img: "coach-eng-fond-01", capture: "coach-cap-eng-nouveau", titre: "Préparer mes engagements", ecran: "engagements",
-        paras: ["Sélectionne tes cavaliers, leurs chevaux et leurs épreuves."], liste: ["Ouvre les engagements de ton concours.", "Sélectionne le cavalier, le cheval et l’épreuve.", "Appuie sur « Engager ».", "Renseigne les informations du concours et du transport.", "Les licences sont récupérées depuis les profils des cavaliers."] },
+        paras: ["Sélectionne tes cavaliers, leurs chevaux et leurs épreuves."], liste: ["Ouvre les engagements de ton concours.", "Sélectionne le cavalier, le cheval et l’épreuve.", "Appuie sur « Engager ».", "Renseigne les informations du concours et du transport.", "Les licences sont récupérées depuis les profils des cavaliers."] },
       { n: "02", ico: "micro", img: "coach-hd-coach", capture: "coach-cap-eng-voix", titre: "Dicter mes engagements", ecran: "engagements",
-        paras: ["Prépare ou modifie tes engagements en parlant avec Hype."], liste: ["Ouvre la page du concours et appuie sur « Ajouter un document ».", "Dicte ta demande, par exemple : « Engage Eva avec Yellow en Club 2 » ou « Retire Jade de la Club 2 ».", "Vérifie le récapitulatif et appuie sur « Valider ».", "Ouvre la page Engagements et retrouve « Engagements dictés — à valider ».", "En cas de doute, sélectionne le cavalier ou le cheval correspondant à ta demande dans la liste proposée.", "Valide une seconde fois pour enregistrer les modifications."] },
+        paras: ["Prépare ou modifie tes engagements en parlant avec Hype."], liste: ["Ouvre la page du concours et appuie sur « Ajouter un document ».", "Dicte ta demande, par exemple : « Engage Eva avec Yellow en Club 2 » ou « Retire Jade de la Club 2 ».", "Vérifie le récapitulatif et appuie sur « Valider ».", "Ouvre la page Engagements et retrouve « Engagements dictés — à valider ».", "En cas de doute, sélectionne le cavalier ou le cheval correspondant à ta demande dans la liste proposée.", "Valide une seconde fois pour enregistrer les modifications."] },
       { n: "03", ico: "pdf", img: "coach-hd-documents", capture: "coach-cap-eng-feuille", titre: "Sortir ma fiche d’engagement", ecran: "engagements",
-        paras: ["Génère ta fiche, imprime-la ou enregistre-la en PDF."], liste: ["Vérifie tes engagements.", "Appuie sur « Feuille d’engagement ».", "Enregistre la fiche en PDF ou imprime-la."] },
+        paras: ["Génère ta fiche, imprime-la ou enregistre-la en PDF."], liste: ["Vérifie tes engagements.", "Appuie sur « Feuille d’engagement ».", "Enregistre la fiche en PDF ou imprime-la."] },
       { n: "04", ico: "maj", img: "coach-hd-embarquement", titre: "Mise à jour automatique", ecran: "registre-mouvements",
         paras: ["Bientôt : tes déplacements dans le registre d’élevage."] }
     ], savoir: "Les licences enregistrées dans les profils de tes cavaliers t’évitent de les ressaisir." },
     feuille: { titre: "Feuille de route", sous: "Préparer mon équipe, mes chevaux et mon déplacement.", hero: "coach-fr-hero", bas: "coach-fr-camion", cartes: [
       { n: "01", ico: "lieu", img: "coach-hd-entree", capture: "coach-cap-fr-infos", titre: "Informations du concours", ecran: "concours",
         paras: ["Retrouve le lieu, les informations pratiques et l'itinéraire."],
-        liste: ["Renseigne les informations pratiques du concours.", "Retrouve l'adresse et le lieu de rendez-vous.", "Lance directement l'itinéraire GPS.", "Les cavaliers et les accompagnants ayant un compte Hype peuvent consulter ces informations."] },
+        liste: ["Renseigne les informations pratiques du concours.", "Retrouve l'adresse et le lieu de rendez-vous.", "Lance directement l'itinéraire GPS.", "Les cavaliers et les accompagnants ayant un compte Hype peuvent consulter ces informations.", "Appuie sur « Partager ces infos avec le groupe » pour les envoyer à ton équipe."] },
       { n: "02", ico: "horloge", img: "coach-hd-chrono", capture: "coach-cap-fr-horaires", titre: "Horaires du concours", ecran: "concours",
         paras: ["Planifie le départ et les horaires des épreuves, même en vocal."],
         liste: ["Renseigne les horaires d'embarquement et de départ.", "Ajoute les reconnaissances et les débuts d'épreuves.", "Saisis les horaires ou dicte-les à Hype.", "Vérifie et valide les informations.", "Les cavaliers reçoivent un rappel 15 minutes avant leur reconnaissance."] },
       { n: "03", ico: "camion", img: "coach-fr-fond-03", capture: "coach-cap-fr-embarquement", titre: "Ordre d'embarquement", ecran: "concours",
         paras: ["Hype calcule l'ordre d'embarquement à partir des passages."],
-        liste: ["Enregistre les numéros de départ de tes cavaliers.", "Hype calcule automatiquement l'ordre d'embarquement.", "Le cheval qui passe le plus tard embarque en premier.", "Consulte directement la liste sur ton téléphone."] },
+        liste: ["Enregistre les numéros de départ de tes cavaliers.", "Hype calcule automatiquement l'ordre d'embarquement.", "Le cheval qui passe le plus tard embarque en premier.", "Consulte directement la liste sur ton téléphone.", "Appuie sur « Partager l’ordre d’embarquement avec le groupe »."] },
       { n: "04", ico: "coche", img: "coach-fr-fond-04", capture: "coach-cap-fr-van", titre: "Préparer le matériel", ecran: "liste-van",
         paras: ["Une liste interactive pour ne rien oublier avant le départ."],
-        liste: ["Ouvre la « Liste du van ».", "Retrouve le matériel à préparer.", "Coche chaque élément au fur et à mesure.", "Vérifie ta liste avant de partir."] },
+        liste: ["Ouvre la « Liste du van ».", "Retrouve le matériel à préparer.", "Coche chaque élément au fur et à mesure.", "Vérifie ta liste avant de partir.", "Partage la liste du matériel avec le groupe : chacun la coche sur Hype."] },
       { n: "05", ico: "fer", img: "coach-fr-fond-05", titre: "Matériel par cheval", ecran: "liste-van",
         paras: ["Le matériel de chaque cheval s'ajoute à la liste du cavalier."],
         liste: ["Renseigne le matériel spécifique sur la fiche du cheval.", "Ajoute les embouchures, enrênements et équipements nécessaires.", "Hype les ajoute automatiquement à la Liste du van du cavalier concerné."] },
       { n: "06", ico: "cadenas", img: "coach-fr-fond-06", titre: "Documents et vaccins", ecran: "coffre",
         paras: ["Retrouve les papiers et les vaccins de tes chevaux."],
-        liste: ["Photographie les papiers et les pages de vaccination.", "Utilise « Ajouter un document » pour récupérer les informations.", "Hype complète la fiche du cheval et sa rubrique Santé.", "Conserve tes documents dans ton coffre-fort privé."] }
+        liste: ["Photographie les papiers et les pages de vaccination.", "Utilise « Ajouter un document » pour récupérer les informations.", "Hype complète la fiche du cheval et sa rubrique Santé.", "Conserve tes documents dans ton coffre-fort privé."] },
+      { n: "07", ico: "telephone", img: "coach-hd-coach", titre: "Partager avec le groupe", ecran: "concours",
+        paras: ["Envoie chaque partie de la page du concours à ton groupe WhatsApp en un toucher."],
+        liste: ["Sous la partie à envoyer (infos, règles du paddock, groupes, ordre de passage, embarquement, matériel), appuie sur « Partager… avec le groupe ».", "Le message est prêt, au « vous », sur un ton de coach : modifie-le si besoin.", "Appuie sur « Envoyer sur WhatsApp » et choisis ton groupe.", "L’aperçu montre l’image du haut de la partie, et le lien ouvre la page du concours.", "Un cavalier sans compte y accède en un instant : il entre son e-mail, son âge et accepte les conditions. Son compte est créé tout de suite, et il choisira son mot de passe grâce au mail de bienvenue."] }
     ], savoir: "Les copies numériques peuvent te dépanner, mais ne remplacent pas les originaux exigés lors d’un contrôle.",
-      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
+      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
       signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
     programme: { titre: "Programme", sous: "De la liste de départ à l’organisation de mon équipe.", hero: "images/galop2-hero-bai-entier.webp", cartes: [
       { n: "01", ico: "programme", img: "coach-prog-fond-01", capture: "coach-cap-prog-import", titre: "Importer mes listes de départ", ecran: "concours",
@@ -83,22 +86,24 @@
       { n: "03", ico: "liste", img: "coach-prog-fond-03", capture: "coach-cap-prog-passages", titre: "Calculer les passages", ecran: "concours",
         paras: ["Hype estime les heures de passage de chaque couple."], liste: ["Hype utilise les numéros de départ.", "Il tient compte des horaires et du rythme de l’épreuve.", "Consulte les heures estimées de tes cavaliers."] },
       { n: "04", ico: "maj", capture: "coach-cap-prog-decaler", img: "coach-hd-chrono", titre: "Actualiser mon programme", ecran: "concours",
-        paras: ["Décale une épreuve et actualise les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous au paddock sont décalés.", "Coche « Prévenir les cavaliers » pour les avertir."] }
+        paras: ["Décale une épreuve et actualise les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous au paddock sont décalés.", "Coche « Prévenir les cavaliers » pour les avertir."] }
     ], savoir: "Les heures de passage sont estimées et peuvent évoluer pendant le concours.",
-      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." } },
+      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." } },
     passages: { titre: "Passages", sous: "Gérer mes couples et suivre le déroulement des épreuves.", hero: "coach-pas-hero", cartes: [
       { n: "01", ico: "reglages", img: "coach-pas-fond-02", capture: "coach-cap-pas-changer", titre: "Changements et non-partants", ecran: "concours",
         paras: ["Modifie un couple ou déclare un non-partant."], liste: ["Appuie sur le crayon du passage concerné.", "Modifie le cavalier ou le cheval.", "Le remplacement apparaît sous le passage.", "Signale les non-partants si nécessaire."] },
       { n: "02", ico: "jury", capture: "coach-cap-pas-jury", img: "coach-hd-dossard", titre: "Déclarations au jury", ecran: "concours",
-        paras: ["Hype rassemble les changements à déclarer au secrétariat."], liste: ["Retrouve la liste « À déclarer au jury ».", "Hype y ajoute automatiquement les changements.", "Les non-partants y figurent également.", "Présente cette liste au secrétariat."] },
+        paras: ["Hype rassemble les changements à déclarer au secrétariat."], liste: ["Retrouve la liste « À déclarer au jury ».", "Hype y ajoute automatiquement les changements.", "Les non-partants y figurent également.", "Présente cette liste au secrétariat."] },
       { n: "03", ico: "liste", capture: "coach-cap-prog-passages", img: "coach-hd-entree", titre: "Suivre mes passages", ecran: "concours",
         paras: ["Retrouve tes passages par épreuve, cavalier ou cheval."], liste: ["Choisis ton mode d’affichage.", "Consulte les numéros de départ.", "Retrouve les heures de reconnaissance et de début d’épreuve.", "Visualise les heures estimées de passage et les pistes."] },
       { n: "04", ico: "lieu", capture: "coach-cap-pas-heure", img: "coach-hd-selle", titre: "Modifier un passage", ecran: "concours",
-        paras: ["Ajuste l’heure ou la piste d’un passage."], liste: ["Appuie sur le crayon du passage.", "Sélectionne « Heure et piste ».", "Renseigne les nouvelles informations."] },
+        paras: ["Ajuste l’heure ou la piste d’un passage."], liste: ["Appuie sur le crayon du passage.", "Sélectionne « Heure et piste ».", "Renseigne les nouvelles informations."] },
       { n: "05", ico: "horloge", capture: "coach-cap-prog-decaler", img: "coach-hd-chrono", titre: "Décaler une épreuve", ecran: "concours",
-        paras: ["Un retard ? Hype recalcule les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous des groupes sont décalés.", "Coche « Prévenir les cavaliers » pour les avertir."] },
+        paras: ["Un retard ? Hype recalcule les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous des groupes sont décalés.", "Coche « Prévenir les cavaliers », puis utilise « Prévenir le groupe » pour l’envoyer sur WhatsApp."] },
       { n: "06", ico: "programme", capture: "coach-cap-pas-direct", img: "coach-hd-cso", titre: "Suivre le direct", ecran: "concours",
-        paras: ["Retrouve le direct du chronométreur depuis Hype."], liste: ["Ouvre « Modifier les passages ».", "Ajuste le rythme de l’épreuve si nécessaire.", "Recherche le direct sur Winjump ou ajoute son lien.", "Préviens tes cavaliers si nécessaire."] }
+        paras: ["Retrouve le direct du chronométreur depuis Hype."], liste: ["Ouvre « Modifier les passages ».", "Ajuste le rythme de l’épreuve si nécessaire.", "Recherche le direct sur Winjump ou ajoute son lien.", "Préviens tes cavaliers si nécessaire."] },
+      { n: "07", ico: "telephone", img: "coach-hd-dossard", titre: "Partager l’ordre de passage", ecran: "concours",
+        paras: ["Envoie l’ordre de passage à ton groupe ou à un seul cavalier."], liste: ["Appuie sur « Partager l’ordre de passage avec le groupe ».", "Choisis la présentation : par épreuve, par cavalier ou par cheval.", "Ou envoie à un seul cavalier ses passages : « Ella, voici tes passages : ».", "Coche ou décoche « Afficher les heures de passage ».", "Envoie sur WhatsApp."] }
     ], savoir: "Hype prépare tes déclarations au jury, mais tu dois toujours les transmettre au secrétariat." },
     jourj: { titre: "Jour J", sous: "Piloter mon concours et accompagner mon équipe.", hero: "coach-jj-hero", bas: "coach-fr-camion", cartes: [
       { n: "01", ico: "camion", img: "coach-jj-fond-01", capture: "coach-cap-fr-embarquement", titre: "Préparer le départ", ecran: "concours",
@@ -108,11 +113,11 @@
       { n: "03", ico: "reglages", img: "coach-jj-fond-03", capture: "coach-cap-jj-crayon", titre: "Gérer les imprévus", ecran: "concours",
         paras: ["Adapte ton organisation au déroulement du concours."], liste: ["Retrouve les passages de ton équipe.", "Modifie les horaires ou les pistes si nécessaire.", "Enregistre les changements et les non-partants.", "Décale une épreuve en cas de retard."] },
       { n: "04", ico: "cloche", img: "coach-jj-fond-04", capture: "coach-cap-prog-decaler", titre: "Prévenir mes cavaliers", ecran: "concours",
-        paras: ["Informe ton équipe des changements de programme."], liste: ["Décale l’épreuve concernée.", "Coche « Prévenir les cavaliers ».", "Valide les modifications.", "Hype recalcule les heures de passage et décale les rendez-vous au paddock.", "Les cavaliers concernés reçoivent une notification."] },
+        paras: ["Informe ton équipe des changements de programme."], liste: ["Décale l’épreuve, change les horaires ou l’heure de rendez-vous d’un groupe.", "Coche « Prévenir les cavaliers » : ceux qui ont activé les notifications sont avertis.", "Appuie sur « Prévenir le groupe » : le message est prêt, avec l’ancienne et la nouvelle heure.", "Envoie-le sur WhatsApp pour que toute l’équipe soit au courant."] },
       { n: "05", ico: "telephone", img: "coach-jj-fond-05", capture: "coach-cap-jj-alertes", titre: "Activer mes alertes", ecran: "concours",
-        paras: ["Utilise « Me prévenir » pour recevoir les alertes disponibles."], liste: ["Retrouve le bouton « Me prévenir ».", "Active les alertes disponibles.", "Tu es prévenu avant le départ et avant chaque reconnaissance.", "Consulte les notifications reçues sur ton téléphone."] }
+        paras: ["Utilise « Me prévenir » pour recevoir les alertes disponibles."], liste: ["Retrouve le bouton « Me prévenir ».", "Active les alertes disponibles.", "Tu es prévenu avant le départ et avant chaque reconnaissance.", "Consulte les notifications reçues sur ton téléphone."] }
     ], savoir: "Les copies numériques ne remplacent pas toujours les originaux exigés, mais elles peuvent te sauver un concours.",
-      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
+      vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
       signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
     analyse: { titre: "Analyse & progression", sous: "Observer, analyser, enseigner, progresser.", hero: "images/guide-coach/coach-hd-cso.webp", cycle: true, cartes: [
       { n: "01", ico: "video", img: "coach-hd-entree", titre: "Retrouver les parcours", ecran: "team-medias",
@@ -150,21 +155,23 @@
         paras: ["Retrouve le matériel et les consignes propres à chaque cheval."], liste: ["Consulte les informations de la fiche du cheval.", "Retrouve son matériel et son enrênement.", "Consulte ses consignes particulières."] },
       { n: "04", ico: "reglages", capture: "coach-cap-pad-modifier", img: "coach-hd-coach", titre: "Modifier mes groupes", ecran: "concours",
         paras: ["Adapte les groupes de détente à ton organisation."], liste: ["Consulte les groupes proposés.", "Modifie leur composition selon tes besoins.", "Vérifie ton organisation avant publication."] },
-      { n: "05", ico: "coche", capture: "coach-cap-pad-publier", img: "coach-hd-dossard", titre: "Publier mes groupes", ecran: "concours",
-        paras: ["Publie tes groupes pour les rendre visibles aux cavaliers."], liste: ["Vérifie la composition de tes groupes.", "Contrôle les heures de rendez-vous.", "Appuie sur « Publier aux cavaliers ».", "Tes cavaliers peuvent consulter leur groupe."] },
-      { n: "06", ico: "cloche", capture: "coach-cap-pad-reco", img: "coach-hd-cso", titre: "Rappels de reconnaissance", ecran: "concours",
+      { n: "05", ico: "horloge", img: "coach-hd-chrono", titre: "Un par un ou par groupes", ecran: "concours",
+        paras: ["Choisis une seule façon de fonctionner, jamais les deux en même temps."], liste: ["Un par un : chaque cavalier voit son heure de passage estimée.", "Par groupes : il voit seulement son groupe et l’heure de rendez-vous à l’entrée du paddock.", "À la publication des groupes, Hype te propose de masquer les heures individuelles.", "Tu peux revenir en arrière avec « Montrer les heures de passage aux cavaliers ».", "Les heures masquées le sont partout (Ma journée, engagements, Jour J, rappels). Rien n’est effacé."] },
+      { n: "06", ico: "coche", capture: "coach-cap-pad-publier", img: "coach-hd-dossard", titre: "Publier mes groupes", ecran: "concours",
+        paras: ["Publie tes groupes pour les rendre visibles aux cavaliers."], liste: ["Vérifie la composition de tes groupes et les heures de rendez-vous.", "Appuie sur « Publier aux cavaliers ».", "Chaque groupe affiche le N°, le cavalier, le cheval et le rendez-vous, pour toutes les épreuves.", "Les cavaliers qui ont activé les notifications sont prévenus, puis rappelés 20 minutes avant leur rendez-vous.", "Envoie aussi l’info à toute l’équipe : « Partager les groupes du paddock avec le groupe » et « Partager les règles du paddock avec le groupe »."] },
+      { n: "07", ico: "cloche", capture: "coach-cap-pad-reco", img: "coach-hd-cso", titre: "Rappels de reconnaissance", ecran: "concours",
         paras: ["Tes cavaliers sont avertis 15 minutes avant la reconnaissance."], liste: ["Renseigne l’heure de reconnaissance.", "Hype programme le rappel automatique.", "Les cavaliers reçoivent une notification."] }
     ], savoir: "Au paddock, respecte l’heure de rendez-vous du groupe, même si ton passage est prévu plus tard." },
     resultats: { titre: "Résultats", sous: "Retrouver les performances de mon équipe.", hero: "images/team-competition-performances-hero.webp", cartes: [
       { n: "01", ico: "coupe", capture: "coach-cap-res-lire", img: "coach-hd-documents", titre: "Importer mes résultats", ecran: "concours",
-        paras: ["Récupère les résultats depuis un PDF ou une capture d’écran."], liste: ["Ouvre les résultats du concours.", "Sélectionne « Lire les résultats ».", "Ajoute le PDF ou la capture d’écran.", "Vérifie les informations récupérées."] },
+        paras: ["Récupère les résultats depuis un PDF ou une capture d’écran."], liste: ["Ouvre les résultats du concours.", "Sélectionne « Lire les résultats ».", "Ajoute le PDF ou la capture d’écran.", "Vérifie les informations récupérées."] },
       { n: "02", ico: "reglages", capture: "coach-cap-res-saisir", img: "coach-hd-coach", titre: "Saisir ou corriger", ecran: "concours",
-        paras: ["Complète ou corrige les résultats de tes cavaliers."], liste: ["Appuie sur « Saisir ou corriger ».", "Sélectionne le résultat concerné.", "Renseigne ou corrige les informations.", "Enregistre tes modifications."] },
+        paras: ["Complète ou corrige les résultats de tes cavaliers."], liste: ["Appuie sur « Saisir ou corriger ».", "Sélectionne le résultat concerné.", "Renseigne ou corrige les informations.", "Enregistre tes modifications."] },
       { n: "03", ico: "liste", img: "coach-hd-cso", titre: "Retrouver mes résultats", ecran: "performances-chevaux",
-        paras: ["Consulte les performances de ton équipe après le concours."], liste: ["Ouvre les résultats du concours.", "Retrouve les résultats de tes cavaliers.", "Vérifie les performances enregistrées.", "Retrouve-les aussi dans « Performances chevaux », le classement de la saison."] }
+        paras: ["Consulte les performances de ton équipe après le concours."], liste: ["Ouvre les résultats du concours.", "Retrouve les résultats de tes cavaliers.", "Vérifie les performances enregistrées.", "Retrouve-les aussi dans « Performances chevaux », le classement de la saison."] }
     ], savoir: "Vérifie les résultats récupérés avant de les enregistrer." }
   };
-  var FRISE = [   /* les 7 chapitres du guide (maquette « Navigation du guide ») */
+  var FRISE = [   /* les 7 chapitres du guide (maquette « Navigation du guide ») */
     { id: "engagements", nom: "Engagements", ico: "agenda", ecran: "engagements" },
     { id: "feuille", nom: "Feuille de route", ico: "route", ecran: "concours" },
     { id: "programme", nom: "Programme", ico: "programme", ecran: "concours" },
@@ -176,10 +183,10 @@
     { id: "analyse", nom: "Analyse", ico: "graph", ecran: "team-medias" }
   ];
 
-  /* 13/11 23h10 (Blandine) : « Cycle de progression Hype » — cercle SVG, HYPE au centre, 6 étapes, fines flèches champagne */
-  /* 14/11 11h30 (brief Blandine « Cycle de progression ») : on garde le cercle, en plus fin et plus sobre.
+  /* 13/11 23h10 (Blandine) : « Cycle de progression Hype » — cercle SVG, HYPE au centre, 6 étapes, fines flèches champagne */
+  /* 14/11 11h30 (brief Blandine « Cycle de progression ») : on garde le cercle, en plus fin et plus sobre.
      Tracé ivoire léger ; le retour Progresser → Préparer en champagne mat (continuité d'un concours à l'autre) ;
-     point de départ « Préparer » plein ; au centre HYPE + « Cycle de progression ». Phrases facultatives sous le cercle. */
+     point de départ « Préparer » plein ; au centre HYPE + « Cycle de progression ». Phrases facultatives sous le cercle. */
   var CYCLE_PH = ["Anticipe les besoins de chacun.", "Accompagne chaque couple.", "Veille au bien-être du cheval.", "Regarde au-delà du résultat.", "Identifie les points à travailler.", "Adapte ton enseignement.", "Construis la suite ensemble."];
   function Cycle(h, sansSignature, avecPhrases) {
     var E = ["Préparer", "Concourir", "Prendre soin", "Observer", "Analyser", "Enseigner", "Progresser"]; var N = E.length, PAS = 360 / N;
@@ -210,7 +217,7 @@
   }
 
   /* 14/11 12h20 — CYCLE DE PROGRESSION VIVANT (maquette validée de Blandine : étapes en italique ivoire au-dessus de points
-     champagne, arcs champagne fins, HYPE au centre, « Cycle de progression », signature entre deux courbes).
+     champagne, arcs champagne fins, HYPE au centre, « Cycle de progression », signature entre deux courbes).
      Un petit point champagne parcourt lentement le cercle (sens des aiguilles d'une montre) et met l'étape qu'il passe
      légèrement en valeur ; rien ne tourne, aucun effet lumineux ; immobile si le téléphone demande moins d'animations.
      Chaque étape est un lien direct (props.aller(i)) ; HYPE mène au sommaire des 9 chapitres (props.centre()). */
@@ -347,16 +354,16 @@
         h("path", { d: "M0,40 L0,30 Q200,8 400,2 L400,40 Z", fill: BG }),
         h("path", { d: "M0,30 Q200,8 400,2", fill: "none", stroke: CH, strokeWidth: 1.2, opacity: 0.85 }));
     }
-    /* 14/11 (audit de Blandine : « aucun titre sur aucune image ») : les 9 chapitres prennent le héros de la Vidéothèque,
+    /* 14/11 (audit de Blandine : « aucun titre sur aucune image ») : les 9 chapitres prennent le héros de la Vidéothèque,
        comme l'accueil et le sommaire — photo, courbe champagne, titre et sous-titre SOUS la photo. */
     function hero(titre, sous, img) {
       var src = img ? (img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp") : "images/portrait-defaut-noir.webp";
       return heroVid(src, "entiere", "GUIDE COACH", titre, sous, null, titre.length > 14 ? "clamp(36px, 9.6vw, 60px)" : null);   /* photo entière, jamais recadrée */
     }
     function gras(t) {   /* **mot** -> doré gras */
-      return String(t).replace(/ ([:;!?»])/g, "\u202f$1").replace(/« /g, "«\u202f").split("**").map(function (x, i) { return i % 2 ? h("b", { key: i, style: { color: CH, fontWeight: 600 } }, x) : x; });
+      return String(t).replace(/ ([:;!?»])/g, "\u202f$1").replace(/« /g, "«\u202f").split("**").map(function (x, i) { return i % 2 ? h("b", { key: i, style: { color: CH, fontWeight: 600 } }, x) : x; });
     }
-    function carteListe(n, titre, texte, ouvrir, k) {   /* une ligne de sommaire ; sans « ouvrir » = bientôt */
+    function carteListe(n, titre, texte, ouvrir, k) {   /* une ligne de sommaire ; sans « ouvrir » = bientôt */
       return h("div", { key: k, role: ouvrir ? "button" : undefined, tabIndex: ouvrir ? 0 : undefined, onClick: ouvrir || undefined, onKeyDown: ouvrir ? function (ev) { if (ev.key === "Enter") ouvrir(); } : undefined,
         style: { display: "grid", gridTemplateColumns: (n ? "48px 1px " : "") + "minmax(0,1fr) auto", alignItems: "center", columnGap: 14, padding: "18px 16px", borderRadius: 16, border: "1px solid rgba(243,238,228,0.16)", background: "linear-gradient(160deg, rgba(243,238,228,0.045), rgba(243,238,228,0.01))", cursor: ouvrir ? "pointer" : "default", opacity: ouvrir ? 1 : 0.55 } },
         n ? h("div", { style: { fontFamily: SERIF, fontSize: 32, color: CH, lineHeight: 1, textAlign: "center" } }, n) : null,
@@ -366,11 +373,11 @@
           h("div", { style: { fontSize: 14, color: IV2, marginTop: 4, lineHeight: 1.45 } }, texte)),
         ouvrir ? h("div", { "aria-hidden": "true", style: { color: CH, fontSize: 18 } }, "›") : h("span", { style: { fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: IV3, border: "1px solid rgba(243,238,228,0.25)", borderRadius: 999, padding: "2px 8px" } }, "Bientôt"));
     }
-    /* 14/11 01h (Blandine, « Refonte de la page d'accueil du Guide Coach » + maquette ChatGPT) — page de présentation :
-       héros Vidéothèque (titre SOUS la photo), 3 pictos, « Découvrir les 9 tutoriels », AVANT / PENDANT / APRÈS en
+    /* 14/11 01h (Blandine, « Refonte de la page d'accueil du Guide Coach » + maquette ChatGPT) — page de présentation :
+       héros Vidéothèque (titre SOUS la photo), 3 pictos, « Découvrir les 9 tutoriels », AVANT / PENDANT / APRÈS en
        compositions variées (photo à côté du texte sur tablette et ordinateur, empilé sur iPhone), exemple vocal, exemple
-       « Retard de 20 minutes », partage individuel / collectif côte à côte, cycle, encart Hey Baby. Le sommaire des 9
-       chapitres est une vue à part (« sommaire »), ouverte par le bouton et les liens « Voir les tutoriels ». */
+       « Retard de 20 minutes », partage individuel / collectif côte à côte, cycle, encart Hey Baby. Le sommaire des 9
+       chapitres est une vue à part (« sommaire »), ouverte par le bouton et les liens « Voir les tutoriels ». */
     function ligneChap(c) {   /* chapitre : numéro, titre, phrase, flèche — une ligne éditoriale */
       function ouvrirC() { setVue(c[1]); try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }
       return h("div", { key: c[0], role: "button", tabIndex: 0, onClick: ouvrirC, onKeyDown: function (ev) { if (ev.key === "Enter") ouvrirC(); }, "data-coach-chap": c[1],
@@ -456,9 +463,9 @@
       var _qHB = qHB;
       function envoyerHB() { try { window.__aideQuestion = String(_qHB || "").trim(); } catch (e) { } setEcran("aide"); }
 
-      /* 14/11 10h35 (consigne « Refonte de la page d'accueil du Guide Coach », 4 univers) : présentation + sommaire fusionnés.
+      /* 14/11 10h35 (consigne « Refonte de la page d'accueil du Guide Coach », 4 univers) : présentation + sommaire fusionnés.
          01 Préparer mon concours · 02 Piloter mon équipe · 03 Prendre soin de mes chevaux · 04 Faire progresser mon équipe.
-         Les 9 tutoriels sont accessibles en cartes dans leur univers ; ce qui n'existe pas encore est marqué « Bientôt ». */
+         Les 9 tutoriels sont accessibles en cartes dans leur univers ; ce qui n'existe pas encore est marqué « Bientôt ». */
       var CH9 = {}; CHAPS.forEach(function (g) { g[1].forEach(function (c) { CH9[c[1]] = c; }); });
       function carteChap(id) {
         var c = CH9[id]; var pg = PAGES[id] || {}; var im = pg.hero || "";
@@ -528,9 +535,9 @@
             groupe("Le programme", ["Importer une capture d’écran ou un document contenant les listes de départ.", "Retrouver les cavaliers et les chevaux déjà enregistrés dans Hype.", "Renseigner les horaires des épreuves et des reconnaissances.", "Calculer les heures de passage estimées.", "Retrouver les documents du concours sans avoir à les transmettre plusieurs fois."]),
             h("div", { className: "hcA-duo" },
               exemple(1, "EXEMPLE", "Une capture d’écran suffit.", p("Transmets la liste de départ du concours. Hype retrouve les informations de ton équipe et t’aide à préparer son programme.", 0)),
-              exemple(2, "PARLE AVEC HYPE", "« La reconnaissance de la Club 3 est à 7h30 et la Club 2 commence à 10h40. »", p("Échange avec Hype, précise les informations et valide les horaires proposés.", 0))),
-            /* 14/11 (brief « Mise à jour du guide coach ») : engagements à la voix */
-            exemple(7, "DICTE LES ENGAGEMENTS DE TON ÉQUIPE", h("span", null, "« Engage Eva avec Yellow en Club\u00a02. »", h("br"), "« Retire Jade de la Club\u00a02. »"), h("div", null,
+              exemple(2, "PARLE AVEC HYPE", "« La reconnaissance de la Club 3 est à 7h30 et la Club 2 commence à 10h40. »", p("Échange avec Hype, précise les informations et valide les horaires proposés.", 0))),
+            /* 14/11 (brief « Mise à jour du guide coach ») : engagements à la voix */
+            exemple(7, "DICTE LES ENGAGEMENTS DE TON ÉQUIPE", h("span", null, "« Engage Eva avec Yellow en Club\u00a02. »", h("br"), "« Retire Jade de la Club\u00a02. »"), h("div", null,
               p("Hype prépare les modifications. Retrouve-les dans tes engagements, vérifie-les et valide-les.", 0),
               lienTuto("Voir le tuto", "engvoix"))),
             cartes(["engagements", "feuille", "programme"]))),
@@ -541,7 +548,7 @@
           h("div", { className: "hcA-txt" },
             enTete("02", "PILOTER MON ÉQUIPE", "Garde le fil, même quand tout change.", "drapeau"),
             groupe("Les passages", ["Retrouver les ordres de passage et les horaires estimés.", "Consulter les passages par épreuve, cavalier ou cheval.", "Modifier un cavalier ou un cheval.", "Enregistrer les non-partants.", "Retrouver les changements à déclarer au jury.", "Ajuster les horaires en fonction du déroulement réel du concours."]),
-            /* situation concrète : avant / après (« Décaler l'épreuve » décale passages et rendez-vous ; prévenir = case à cocher) */
+            /* situation concrète : avant / après (« Décaler l'épreuve » décale passages et rendez-vous ; prévenir = case à cocher) */
             exemple(3, "SITUATION", "Une épreuve prend 20 minutes de retard ?", h("div", null,
               p("Décale l’épreuve dans Hype.", 0),
               h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 } },
@@ -614,7 +621,7 @@
           var resteP = tous.slice(1);
           return h("div", { key: c.n, "data-coach-carte": vue + c.n, role: "button", tabIndex: 0, "aria-expanded": ouv, onClick: basculer, onKeyDown: function (ev) { if (ev.key === "Enter") basculer(); },
             style: { position: "relative", overflow: "hidden", borderRadius: 16, border: "1px solid " + (ouv ? "rgba(201,166,107,0.45)" : "rgba(243,238,228,0.14)"), background: "#0B0E0C", cursor: "pointer" } },
-            /* 13/11 22h19 (cahier « Harmonisation graphique ») — en-tête de carte en couches :
+            /* 13/11 22h19 (cahier « Harmonisation graphique ») — en-tête de carte en couches :
                1 fond noir · 2 photo calée à droite · 3 dégradé noir sans démarcation · 4 numéro, filet, picto, titre, phrase (pleine largeur) */
             h("div", { style: { position: "relative", overflow: "hidden" } },
               c.img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(images/guide-coach/" + c.img + ".webp)", backgroundSize: "cover", backgroundPosition: rtlG ? "left center" : "right center", transform: rtlG ? "scaleX(-1)" : "none" } }) : null,   /* 22h22 : fonds pleine largeur, dégradé déjà dans l'image */
@@ -635,7 +642,7 @@
                 (c.apres || []).map(function (t, k) { return h("div", { key: "a" + k, style: { fontSize: 14, color: IV2, marginTop: 8, lineHeight: 1.45 } }, gras(t)); })),
               c.capture ? h("img", { src: "images/guide-coach/" + c.capture + ".jpg", alt: "", loading: "lazy", style: { display: "block", width: "100%", maxWidth: 360, height: "auto", marginTop: 14, borderRadius: 12, border: "1px solid rgba(201,166,107,0.28)" } }) : null) : null);
         }),
-        (function () {   /* « À savoir » : 1re phrase, le reste se déplie */
+        (function () {   /* « À savoir » : 1re phrase, le reste se déplie */
           var ouvS = !!deplie[vue + "savoir"];
           var m = String(PG.savoir).match(/^(.*?[.!?])\s+(.*)$/); var p1 = m ? m[1] : PG.savoir, p2 = m ? m[2] : "";
           function bS() { var o = Object.assign({}, deplie); o[vue + "savoir"] = !ouvS; setDeplie(o); }
