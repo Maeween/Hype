@@ -1590,7 +1590,7 @@
 
   var TYPES_SOIN_FR = [["ferrure", "Maréchal (ferrure)"], ["parage", "Maréchal (parage)"], ["vermifuge", "Vermifuge"], ["vaccin", "Vaccin"], ["dentiste", "Dentiste"], ["osteopathe", "Ostéopathe"], ["veterinaire", "Vétérinaire"], ["traitement", "Traitement"], ["autre", "Autre soin"]];
   var TYPES_SOIN = TYPES_SOIN_FR;   /* libellés traduits à l'affichage : T(t[1]) */
-  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", plan_parcours: "le plan d'un parcours", liste_chevaux: "des chevaux à ajouter dans Hype", engagements: "les engagements d'un concours", papier_echeance: "un papier avec une date de fin", contrat: "un contrat", suivi_jument: "le suivi d'une jument", autre: "un document" };
+  var NOMS_TYPE = { liste_soins: "une liste de soins", carnet_vaccins: "un carnet de vaccination", papiers_cheval: "les papiers du cheval (document d'identification)", ordonnance: "une ordonnance", facture: "une facture", programme: "le programme d'un concours", ordre_passage: "un ordre de passage", horaires_concours: "les horaires d'un concours", resultats: "des résultats de concours", mouvement_cheval: "l'arrivée ou le départ d'un cheval", engager_voix: "des engagements à faire", plan_parcours: "le plan d'un parcours", liste_chevaux: "des chevaux à ajouter dans Hype", engagements: "les engagements d'un concours", papier_echeance: "un papier avec une date de fin", contrat: "un contrat", suivi_jument: "le suivi d'une jument", autre: "un document" };
 
   function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
   /* 13/11 23h15 (Blandine : « les ordonnances qui deviennent un traitement suivi ») */
@@ -1668,7 +1668,7 @@
     var sv = sess && sess.data && sess.data.session;
     if (!sv || !sv.access_token) throw new Error(T("connecte-toi d’abord"));
     var system = "Tu es l'outil de lecture de documents de Hype (application equestre). On te donne n'importe quel document : photo, capture d'ecran, PDF, parfois ecrit a la main, parfois tres brouillon. "
-      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), suivi_jument (saillie, insemination, echographie de gestation, terme prevu, poulinage d'une jument), contrat (contrat de pension, de demi-pension, de location, d'assurance, de travail, abonnement, cotisation...), papier_echeance (papier qui expire : licence FFE, certificat medical, assurance, carte grise, controle technique, permis, carte professionnelle, piece d'identite...), ordre_passage (liste de depart d'un concours, avec numeros ou heures de passage), engagements (liste des engagements d'un concours SANS heures de passage : recapitulatif d'engagement de la FFE / FFE Compet / SIF, ou feuille d'engagement du club : cavaliers, licences, chevaux, epreuves), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), liste_chevaux (la personne demande d'ajouter des chevaux ou de leur creer une fiche, ex. « les engagements sont sortis, ajoute les nouveaux chevaux », ou une simple liste de chevaux), plan_parcours (plan d'un parcours d'obstacles : obstacles numerotes dessines sur la piste, souvent avec des distances en metres, la longueur, la vitesse ou le temps accorde), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
+      + "1) Dis ce que c'est (type) parmi : liste_soins (dates de soins pour un ou plusieurs chevaux : marechal, vermifuge, vaccin, dentiste, osteopathe, veterinaire... meme une simple liste de noms de chevaux avec une consigne de la personne), carnet_vaccins (pages de vaccination d'un livret), papiers_cheval (document d'identification, SIRE, pedigree), ordonnance, facture, programme (programme d'un concours), suivi_jument (saillie, insemination, echographie de gestation, terme prevu, poulinage d'une jument), contrat (contrat de pension, de demi-pension, de location, d'assurance, de travail, abonnement, cotisation...), papier_echeance (papier qui expire : licence FFE, certificat medical, assurance, carte grise, controle technique, permis, carte professionnelle, piece d'identite...), ordre_passage (liste de depart d'un concours, avec numeros ou heures de passage), engagements (liste des engagements d'un concours SANS heures de passage : recapitulatif d'engagement de la FFE / FFE Compet / SIF, ou feuille d'engagement du club : cavaliers, licences, chevaux, epreuves), resultats (resultats d'un concours), horaires_concours (horaires d'un concours donnes par la personne, ex. « depart 6h30, embarquement 7h, reco 8h pour la Club 3 »), mouvement_cheval (un cheval arrive a l'ecurie ou la quitte, pour le registre d'elevage : « Cirrus est arrive aujourd'hui, il vient de l'elevage X », « Ecolo est parti le 12 chez son nouveau proprietaire a Y », « Elfe part en stage du 3 au 5 a Z » ; aussi un contrat de vente, de pret ou de pension qui dit une arrivee ou un depart), liste_chevaux (la personne demande d'ajouter des chevaux ou de leur creer une fiche, ex. « les engagements sont sortis, ajoute les nouveaux chevaux », ou une simple liste de chevaux), engager_voix (la personne DICTE ou ECRIT des engagements a faire ou a retirer pour un concours, ex. « Engage Eva avec Yellow en Club 2 et en Club 1 », « Ajoute Leo sur Cooltax en Club 3 », « Retire Jade de la Club 2 » ; PAS un document d'engagements), plan_parcours (plan d'un parcours d'obstacles : obstacles numerotes dessines sur la piste, souvent avec des distances en metres, la longueur, la vitesse ou le temps accorde), autre. Parfois il n'y a AUCUNE image : seulement ce que la personne dit ou ecrit ; lis alors sa phrase. "
       + "2) Extrais ce qui sert. 3) Si tu as un VRAI doute (type, cheval, date, soin), pose UNE question courte et precise a la personne, en la tutoyant (ex. « Est-ce bien les dates de marechalerie de Cirrus, Ecolo et Elfe ? »). Tiens compte de ce que la personne a deja repondu. "
       + "Chevaux de la personne (pour reconnaitre les noms, meme mal ecrits) : " + JSON.stringify((contexte.chevaux || []).slice(0, 150).map(function (c) { return c.nom + (c.alias ? " (" + c.alias + ")" : ""); })) + ". "
       + (contexte.cheval ? "La personne est sur la page du cheval : " + contexte.cheval + ". " : "")
@@ -1687,7 +1687,7 @@
       + "\"contrat\":{\"genre\":\"pension (pension ou demi-pension d'un cheval) ou autre\",\"cheval\":\"\",\"proprietaire\":\"\",\"contact\":\"\",\"formule\":\"Box|Pre|Box et pre|Demi-pension|Travail|Autre\",\"nom\":\"nom court du contrat si autre\",\"categorie\":\"Assurance|Cotisation|Abonnement|Loyer|Autre\",\"organisme\":\"\",\"montant\":\"montant de chaque echeance en euros, chiffres seulement, ou vide\",\"frequence\":\"Mensuel|Trimestriel|Semestriel|Annuel|Une fois\",\"debut\":\"AAAA-MM-JJ ou vide\",\"prochain\":\"AAAA-MM-JJ prochaine echeance ou vide\",\"fin\":\"AAAA-MM-JJ fin du contrat ou vide\"},"
       + "\"papier\":{\"categorie\":\"licence|assurance|vehicule|identite|diplomes|autre\",\"titre\":\"nom court du papier, ex. Licence FFE 2027, Controle technique du camion\",\"echeance\":\"AAAA-MM-JJ date de fin de validite ou vide\",\"immatriculation\":\"si vehicule, sinon vide\"},"
       + "\"concours\":{\"date\":\"AAAA-MM-JJ du concours ou vide\",\"lieu\":\"ville ou club organisateur ou vide\",\"numero\":\"numero FFE du concours (7 chiffres) ou vide\",\"nom\":\"nom du concours ou vide\"},"
-      + "\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit (orthographe officielle du document)\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\",\"pere\":\"\",\"mere\":\"\",\"naissance\":\"AAAA-MM-JJ ou annee seule ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\"}]}. "
+      + "\"engager\":[{\"action\":\"ajouter|retirer\",\"cavalier\":\"prenom et/ou nom tel que dit\",\"cheval\":\"nom du cheval tel que dit, ou vide pour un retrait\",\"epreuves\":[\"nom de chaque epreuve tel que dit, ex. Club 2\"]}],\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit (orthographe officielle du document)\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\",\"pere\":\"\",\"mere\":\"\",\"naissance\":\"AAAA-MM-JJ ou annee seule ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\"}]}. "
       + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. facture : seulement pour facture (une ligne par cheval ; si la facture concerne un seul cheval ou aucun detail par cheval, une seule ligne avec le total). jument : seulement pour suivi_jument. contrat : seulement pour contrat. papier : seulement pour papier_echeance (licence et certificat medical = licence ; carte grise, controle technique = vehicule ; permis, piece d'identite = identite ; carte professionnelle, diplome = diplomes). traitements : seulement pour ordonnance (un par medicament ; si la fin n'est pas ecrite mais la duree oui, calcule-la depuis le debut ; debut = date de l'ordonnance si rien d'autre). concours : pour programme, ordre_passage, engagements, resultats, horaires_concours, liste_chevaux (date, lieu, numero tels qu'ecrits). chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon, avec tout ce que le document dit de lui (SIRE, pere, mere, naissance, sexe, robe, race ; vide si absent) ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
     var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
     var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
@@ -1715,7 +1715,7 @@
     }
     var m = texte.match(/\{[\s\S]*\}/);
     var o = JSON.parse(m ? m[0] : texte) || {};
-    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {}, concours: o.concours || {}, facture: o.facture || {}, jument: o.jument || {}, contrat: o.contrat || {}, papier: o.papier || {}, traitements: Array.isArray(o.traitements) ? o.traitements : [], veterinaire: String(o.veterinaire || ""), chevaux_liste: Array.isArray(o.chevaux_liste) ? o.chevaux_liste : [] };
+    return { message: String(o.message || "").trim(), horaires: o.horaires || {}, type: String(o.type || "autre"), resume: String(o.resume || ""), question: String(o.question || "").trim(), cheval: String(o.cheval || ""), soins: Array.isArray(o.soins) ? o.soins : [], papiers: o.papiers || {}, mouvement: o.mouvement || {}, concours: o.concours || {}, facture: o.facture || {}, jument: o.jument || {}, contrat: o.contrat || {}, papier: o.papier || {}, traitements: Array.isArray(o.traitements) ? o.traitements : [], engager: Array.isArray(o.engager) ? o.engager : [], veterinaire: String(o.veterinaire || ""), chevaux_liste: Array.isArray(o.chevaux_liste) ? o.chevaux_liste : [] };
   }
 
 
@@ -2683,6 +2683,20 @@
           pp.categorie === "vehicule" || pp.immat ? lab(T("Immatriculation")) : null,
           pp.categorie === "vehicule" || pp.immat ? h("input", { className: "hod-sel", value: pp.immat || "", placeholder: "AB-123-CD", onChange: function (e) { mp({ immat: e.target.value }); } }) : null,
           bas(rangerPapier, st.busy ? "…" : T("Ranger avec un rappel"), st.busy));
+      } else if (type === "engager_voix") {
+        /* 14/11 (Blandine : « il faut que tout puisse se faire à la voix ») : engagements dictés → récapitulatif ici, puis la page
+           Engagements du concours retrouve cavaliers, chevaux et épreuves, pose sa question s'il y a un doute, et enregistre par le
+           même chemin que le bouton « Engager » (mêmes droits). Rien n'est enregistré avant « Valider ». */
+        var EG = (lu.engager || []).filter(function (x) { return x && x.cavalier; });
+        action = sec(T("Engagements dictés"), null, !concId ? T("Choisis d’abord le concours ci-dessus.") : T("Vérifie, puis touche « Valider » : je les prépare dans les Engagements du concours, tu confirmes là-bas. Tu peux aussi me corriger à la voix."),
+          EG.map(function (x, i) {
+            return h("div", { key: i, className: "hod-ch" },
+              h("div", { className: "hod-av" }, x.action === "retirer" ? "−" : "+"),
+              h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, (x.action === "retirer" ? T("Retirer ") : T("Engager ")) + x.cavalier + (x.cheval ? " · " + x.cheval : "")),
+                h("div", { className: "hod-chs" }, (x.epreuves || []).join(" · ") || T("épreuve à préciser"))));
+          }),
+          EG.length ? bas(function () { if (!concId) { maj({ err: T("Choisis d’abord le concours ci-dessus.") }); return; } try { window.__concoursId = concId; window.__engagementsId = concId; window.__engVoix = EG; } catch (e) { } props.fermer(); if (app.setEcran) app.setEcran("engagements"); }, T("Valider"), !concId)
+            : h("div", { className: "hod-chs" }, T("Je n’ai pas compris quels engagements faire : redis par exemple « Engage Eva avec Yellow en Club 2 ».")));
       } else if (type === "engagements") {
         action = sec(T("Engagements du concours"), null, concId ? T("Je les lis dans les Engagements du concours : tu vérifies les cavaliers, les chevaux et les épreuves, puis tu enregistres.") : T("Choisis d’abord le concours ci-dessus."),
           bas(function () { allerConcours("engagements"); }, T("Continuer"), !concId));
@@ -2794,5 +2808,32 @@
       feuille ? h(Feuille, { fermer: function () { setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
   }
 
-  window.HypeOutilDoc = { Encart: Encart };
+  /* 14/11 10h50 (Blandine, maquette validée « encart Hey Baby unique ») : l'outil vit DANS l'encart Hey Baby du bas des pages.
+     Bouton = « ＋ Ajouter un document » (pages de travail) + la feuille de l'outil ; même logique que Encart (cheval de la page
+     Santé, concours des pages concours). Ouverture aussi par l'événement « hype-outil-ouvrir » (texte dicté ou tapé à ranger). */
+  function Bouton(props) {
+    cssOutil();
+    var _f = React.useState(false); var feuille = _f[0], setFeuille = _f[1];
+    var _c = React.useState(null); var chevaux = _c[0], setChevaux = _c[1];
+    var _u = React.useState(null); var moi = _u[0], setMoi = _u[1];
+    React.useEffect(function () {
+      var vif = true;
+      (async function () { try { var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; if (vif) setMoi(u || false); } catch (e) { if (vif) setMoi(false); } })();
+      return function () { vif = false; };
+    }, []);
+    async function ouvrir() {
+      setFeuille(true);
+      if (chevaux) return;
+      try { var r = await supa.from("chevaux").select("id, nom, alias").is("supprime_le", null).order("nom", { ascending: true }).limit(2000); setChevaux((r && !r.error && r.data) || []); } catch (e) { setChevaux([]); }
+    }
+    React.useEffect(function () { if (!moi) return; var x = null; try { x = window.__outilDocValider; window.__outilDocValider = null; } catch (e) { } if (x) setTimeout(ouvrir, 300); }, [moi]);
+    if (!moi) return null;
+    var chevalCtx = null; try { chevalCtx = props.ecran === "sante-cheval" ? window.__santeCheval : null; } catch (e1) { }
+    var concoursId = null; try { concoursId = ["concours", "engagements", "jour-j", "dossier-concours", "liste-van"].indexOf(props.ecran) >= 0 ? (window.__concoursId || window.__engagementsId || null) : null; } catch (e2) { }
+    return h(React.Fragment, null,
+      props.sansBouton ? null : h("button", { type: "button", className: "hod-btn", style: props.styleBouton || null, onClick: ouvrir }, T("＋ Ajouter un document")),
+      feuille ? h(Feuille, { fermer: function () { setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
+  }
+
+  window.HypeOutilDoc = { Encart: Encart, Bouton: Bouton };
 })();

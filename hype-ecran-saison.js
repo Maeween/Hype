@@ -5706,6 +5706,89 @@ function EcranEngagements() {
     try { window.__engFichier = null; } catch (e2) { }
     lireFiche({ target: { files: [f] } });
   }, [lignes ? 1 : 0]);
+  /* 14/11 (Blandine : « il faut que tout puisse se faire à la voix ») : engagements dictés dans l'outil (« Engage Eva avec Yellow en
+     Club 2 et en Club 1 », « Retire Jade de la Club 2 ») → retrouvés ici parmi les cavaliers, chevaux et épreuves du concours ;
+     doute = une question ; récapitulatif ; rien n'est enregistré avant « Valider » ; enregistrement par le même chemin que
+     « Engager » (enregistrer → concours_engagements, mêmes droits). */
+  var _ev2 = React.useState(null); var voixEng = _ev2[0], setVoixEng = _ev2[1];
+  React.useEffect(function () {
+    if (!lignes || !feuille) return;
+    var L = null; try { L = window.__engVoix || null; window.__engVoix = null; } catch (e) { }
+    if (!L || !L.length) return;
+    function nz(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+    var pool = [], vus = {};
+    (candidates || []).forEach(function (c) { var k = c.id || nz(c.nom || c.pseudo); if (!vus[k]) { vus[k] = 1; pool.push(c); } });
+    (lignes || []).forEach(function (l) { var k = l.cavalier_id || nz(l.nom); if (!vus[k]) { vus[k] = 1; pool.push({ id: l.cavalier_id || null, nom: l.nom, licence: l.licence || "" }); } });
+    function cavs(dit) { var W = nz(dit).split(" ").filter(Boolean); if (!W.length) return []; return pool.filter(function (c) { var N = nz(c.nom || c.pseudo).split(" "); return W.every(function (w) { return N.some(function (n) { return n === w || (w.length >= 3 && n.indexOf(w) === 0); }); }); }); }
+    var EPS = feuille.epreuves || [];
+    function eps(dit) { var t = nz(hsNomEpreuve(dit)); if (!t) return []; var ex = EPS.filter(function (e) { return nz(e) === t; }); if (ex.length) return ex; return EPS.filter(function (e) { var n = nz(e); return n.indexOf(t + " ") === 0 || t.indexOf(n + " ") === 0; }); }
+    var items = [];
+    L.forEach(function (x) {
+      var oc = cavs(x.cavalier), ch = String(x.cheval || "").trim(), cc = ch ? hsChevalConnu(ch, chevaux) : null;
+      (x.epreuves && x.epreuves.length ? x.epreuves : [""]).forEach(function (ed) {
+        var oe = ed ? eps(ed) : [];
+        items.push({ act: x.action === "retirer" ? "retirer" : "ajouter", cavDit: x.cavalier, cavOpts: oc, cav: oc.length === 1 ? oc[0] : null, chDit: ch, ch: cc ? cc.nom : ch, chConnu: !!cc || !ch, epDit: ed, epOpts: oe, ep: oe.length === 1 ? oe[0] : "" });
+      });
+    });
+    setVoixEng({ items: items, msg: "" });
+  }, [lignes ? 1 : 0, feuille ? 1 : 0]);
+  function validerVoix() {
+    if (!voixEng) return;
+    var n = lignes.slice(), sup = supprimees.slice(), faits = [], refus = [];
+    voixEng.items.forEach(function (it) {
+      if (!it.cav || !it.ep) return;
+      var c = it.cav, j = -1; n.forEach(function (l, k) { if (j === -1 && memeCav(l, c)) j = k; });
+      var nomC = String(c.nom || nomFfeDe(c.pseudo) || "").trim();
+      if (it.act === "retirer") {
+        if (j === -1) { refus.push(nomC + " · " + it.ep + F(" : pas engagé")); return; }
+        var l0 = Object.assign({}, n[j]), avant = (l0.tours || []).length;
+        l0.tours = (l0.tours || []).filter(function (t) { return !(hsNomEpreuve(t.epreuve) === hsNomEpreuve(it.ep) && (!it.chDit || !it.ch || String(t.cheval_nom || "").toLowerCase() === String(it.ch).toLowerCase())); });
+        if (l0.tours.length === avant) { refus.push(nomC + " · " + it.ep + F(" : pas engagé")); return; }
+        if (!l0.tours.length) { if (l0.id) sup.push(l0.id); n.splice(j, 1); } else n[j] = l0;
+        faits.push("− " + nomC + " · " + it.ep); return;
+      }
+      if (!it.ch) { refus.push(nomC + " · " + it.ep + F(" : quel cheval ?")); return; }
+      if (j === -1) { n.push({ __n: true, cavalier_id: c.id || null, nom: nomC, licence: c.licence || "", tours: [], ordre: n.length }); j = n.length - 1; }
+      var l = Object.assign({}, n[j]), t = (l.tours || []).slice();
+      if (!l.cavalier_id && c.id) l.cavalier_id = c.id;
+      if (t.some(function (x) { return x.epreuve === it.ep && x.cheval_nom === it.ch; })) { refus.push(nomC + " · " + it.ch + " · " + it.ep + F(" : déjà engagé")); return; }
+      var max = hsMaxTours(t.map(function (x) { return x.epreuve; }).concat([it.ep]));
+      if (t.length >= max) { refus.push(nomC + F(" : déjà ") + t.length + F(" tours (maximum ") + max + ")"); return; }
+      t.push({ epreuve: it.ep, cheval_nom: it.ch, passage: "", piste: "" }); l.tours = t; n[j] = l;
+      faits.push("+ " + nomC + " · " + it.ch + " · " + it.ep);
+    });
+    if (faits.length) { setLignes(n); setSupprimees(sup); setModifie(true); enregistrer(n, sup); }
+    setVoixEng(null);
+    setMsgC((faits.length ? "✓ " + faits.join(" ; ") : F("Rien n’a été enregistré.")) + (refus.length ? " — " + F("Pas fait : ") + refus.join(" ; ") : ""));
+  }
+  function blocVoixEng() {
+    if (!voixEng || !gestion) return null;
+    var it = voixEng.items, pret = it.length && it.every(function (x) { return x.cav && x.ep && (x.act === "retirer" || x.ch); });
+    function maj(i, o) { var L = it.slice(); L[i] = Object.assign({}, it[i], o); setVoixEng(Object.assign({}, voixEng, { items: L })); }
+    var EPS = (feuille && feuille.epreuves) || [];
+    return h("div", { key: "voixEng", className: "d3", style: { marginBottom: 18 } },
+      h("div", { className: "d3-k" }, F("Engagements dictés — à valider")),
+      it.map(function (x, i) {
+        var nomC = x.cav ? (x.cav.nom || nomFfeDe(x.cav.pseudo)) : "";
+        var licL = x.cav ? (lignes.filter(function (l) { return memeCav(l, x.cav); })[0] || null) : null, lic = licL ? (licL.licence || "") : ((x.cav && x.cav.licence) || "");
+        return h("div", { key: i, style: { padding: "12px 0", borderTop: i ? "1px solid rgba(243,238,228,.1)" : "none" } },
+          h("div", { style: { fontSize: 16, color: "#F3EEE4" } }, (x.act === "retirer" ? F("Retirer ") : F("Engager ")) + (nomC || x.cavDit) + (x.act === "ajouter" && x.ch ? " · " + x.ch : "") + (x.ep ? " · " + x.ep : "")),
+          x.act === "ajouter" && x.cav ? h("div", { style: { fontSize: 13.5, color: "#ECE6DA", marginTop: 3 } }, F("Licence : ") + (lic || F("pas encore connue"))) : null,
+          !x.cav ? h("div", { style: { marginTop: 8 } },
+            h("div", { style: { fontSize: 14, color: "#F0D9A8", marginBottom: 6 } }, x.cavOpts.length ? F("Quelle ") + x.cavDit + " ?" : F("Je ne trouve pas « ") + x.cavDit + F(" » parmi les cavaliers : choisis-le.")),
+            h("select", { className: "hs-in-sel", style: { width: "100%", padding: 10, borderRadius: 10, background: "#000", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.25)", fontSize: 16 }, value: "", onChange: function (e) { var c = (x.cavOpts.length ? x.cavOpts : candidates)[Number(e.target.value)]; if (c) maj(i, { cav: c }); } },
+              h("option", { value: "" }, F("— Choisir —")), (x.cavOpts.length ? x.cavOpts : candidates).map(function (c, k) { return h("option", { key: k, value: k }, (c.nom || nomFfeDe(c.pseudo)) + (c.licence ? " · " + c.licence : "")); }))) : null,
+          !x.ep ? h("div", { style: { marginTop: 8 } },
+            h("div", { style: { fontSize: 14, color: "#F0D9A8", marginBottom: 6 } }, x.epOpts.length > 1 ? F("Quelle épreuve : ") + x.epOpts.join(F(" ou ")) + " ?" : x.epDit ? F("L’épreuve « ") + x.epDit + F(" » n’est pas dans ce concours : choisis-en une (ou ajoute-la d’abord dans « Nouvel engagement »).") : F("Quelle épreuve ?")),
+            h("select", { style: { width: "100%", padding: 10, borderRadius: 10, background: "#000", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.25)", fontSize: 16 }, value: "", onChange: function (e) { if (e.target.value) maj(i, { ep: e.target.value }); } },
+              h("option", { value: "" }, F("— Choisir —")), (x.epOpts.length > 1 ? x.epOpts : EPS).map(function (ep) { return h("option", { key: ep, value: ep }, ep); }))) : null,
+          x.act === "ajouter" && !x.ch ? h("div", { style: { fontSize: 14, color: "#F0D9A8", marginTop: 8 } }, F("Quel cheval ? Redis-le à Hype, ou fais cet engagement à la main.")) : null,
+          x.act === "ajouter" && x.ch && !x.chConnu ? h("div", { style: { fontSize: 13.5, color: "#ECE6DA", marginTop: 4 } }, F("Cheval sans fiche dans Hype : engagé sous le nom « ") + x.ch + " ».") : null);
+      }),
+      h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
+        h("button", { type: "button", className: "hc-btn-l", style: { flex: 1 }, onClick: function () { setVoixEng(null); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l fort", style: { flex: 1 }, disabled: !pret || occupe, onClick: validerVoix }, F("Valider"))));
+  }
   /* 09/11 : ordre de passage choisi depuis la carte Passages de la fiche concours → lu ici dès que les engagements sont chargés */
   React.useEffect(function () {
     if (!lignes || !lignes.length) return;
@@ -6836,6 +6919,7 @@ function EcranEngagements() {
     h("div", { className: "hs-in" },
       adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
       blocOrdre(),   /* 10/11 : la lecture en cours et son résultat tout en haut */
+      blocVoixEng(),   /* 14/11 : engagements dictés à valider, tout en haut */
       carteConcours(),
       recapFin(),   /* 13/11 : les engagements en premier, le formulaire pour en ajouter ensuite */
       composeur(),
