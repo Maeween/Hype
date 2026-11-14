@@ -1855,6 +1855,7 @@
     var _vx = React.useState(false); var voix = _vx[0], setVoix = _vx[1];
     var refVoix = React.useRef(false); refVoix.current = voix;
     var _ec = React.useState(false); var ecoute = _ec[0], setEcoute = _ec[1];
+    var _ed = React.useState(""); var enDirect = _ed[0], setEnDirect = _ed[1]; var refEc = React.useRef(null);
     var refDit = React.useRef(0);
     var CODES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-SA", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" };
     function dire(t, puis) {
@@ -1871,6 +1872,13 @@
     function ecouter() {
       var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SR || !refVoix.current) return;
+      if (typeof hypeEcouteLongue === "function") {
+        var ec = hypeEcouteLongue({ lang: CODES[langue()] || "fr-FR", onPartiel: function (t) { setEnDirect(t); },
+          onFin: function (t) { setEcoute(false); setEnDirect(""); refEc.current = null; t = String(t || "").trim(); if (t) envoyerVoix(t); },
+          onErreur: function () { setEcoute(false); setEnDirect(""); refEc.current = null; } });
+        if (ec) { refEc.current = ec; setEcoute(true); }
+        return;
+      }
       try {
         var r = new SR(); r.lang = CODES[langue()] || "fr-FR"; r.interimResults = false; r.continuous = false;
         r.onresult = function (ev) { var t = ""; for (var i = 0; i < ev.results.length; i++) t += ev.results[i][0].transcript; t = String(t || "").trim(); if (t) envoyerVoix(t); };
@@ -1899,10 +1907,24 @@
       var m = st.fil[n - 1];
       if (m && m.qui === "hype" && refVoix.current) dire(m.t, ecouter);
     }, [st.fil]);
-    React.useEffect(function () { return function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) { } }; }, []);
+    React.useEffect(function () { return function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) { } try { refEc.current && refEc.current.annuler(); } catch (e) { } }; }, []);
+    React.useEffect(function () {
+      var t = null, v = false; try { t = window.__outilDocTexte; v = !!window.__outilDocVoix; window.__outilDocTexte = null; window.__outilDocVoix = false; } catch (e) { }
+      if (!t) return;
+      if (v) { setVoix(true); refVoix.current = true; }
+      envoyerVoix(String(t));
+    }, []);
     function boutonVoix() {
       return h("button", { type: "button", className: "hod-btn" + (voix ? "" : " sec"), onClick: basculerVoix, style: { width: "100%", marginTop: 10 } },
-        voix ? (ecoute ? "● " + T("Je t’écoute…") : "🎧 " + T("Conversation à la voix : activée")) : "🎧 " + T("Parler avec Hype"));   /* 13/11 22h14 (Blandine) : « à la voix » retiré, redondant */
+        voix ? (ecoute ? "🎧 " + T("Arrêter la conversation") : "🎧 " + T("Conversation à la voix : activée")) : "🎧 " + T("Parler avec Hype"));   /* 13/11 22h14 (Blandine) : « à la voix » retiré, redondant */
+    }
+    /* 14/11 : pendant l'écoute, on voit ce qui est entendu et on peut dire qu'on a fini */
+    function panneauEcoute() {
+      if (!ecoute) return null;
+      return h("div", { role: "status", style: { marginTop: 10, border: "1px solid #C9A66B", borderRadius: 16, padding: "12px 14px", textAlign: "center" } },
+        h("div", { style: { fontSize: 17, fontWeight: 600, color: "#F3EEE4" } }, h("span", { style: { color: "#E26A5A", marginInlineEnd: 8 } }, "●"), T("Je t’écoute…")),
+        h("div", { style: { fontSize: 15, lineHeight: 1.5, color: "#DEDAD2", marginTop: 6 } }, enDirect ? "« " + enDirect + " »" : T("Parle normalement : je m’arrête tout seul quand tu as fini.")),
+        h("button", { type: "button", className: "hod-btn sec", style: { marginTop: 10 }, onClick: function () { try { refEc.current && refEc.current.stop(); } catch (e) { } } }, T("J’ai fini")));
     }
 
     async function enregistrerSoins() {
@@ -2157,6 +2179,29 @@
        Une ligne déjà présente pour le même type + même épreuve est REMPLACÉE ; les autres sont gardées. */
     function hMin(t) { var m = String(t || "").toLowerCase().match(/(\d{1,2})\s*[h:]\s*(\d{0,2})/); return m ? Number(m[1]) * 60 + Number(m[2] || 0) : null; }
     function hFmt(t) { var n = hMin(t); if (n == null) return ""; return Math.floor(n / 60) + "h" + String(n % 60).padStart(2, "0"); }
+    /* 14/11 11h45 (Blandine : « il faut les deux… qu'il mette à jour les horaires » et le petit message, « modifier le petit texte
+       avant de le partager » ; « s'il l'a fait, il ne faut pas qu'il le fasse en silence ») : les horaires sont enregistrés dans le
+       concours ET un message prêt à envoyer au groupe est proposé, modifiable, à copier ou partager. */
+    function messageHoraires() {
+      var hz = (st.lu && st.lu.horaires) || {}, c = (st.lu && st.lu.concours) || {};
+      var libT = { reco: T("Reco"), debut: T("Début"), autre: "" };
+      var L = [];
+      if (hz.embarquement) L.push("• " + T("Embarquement") + " : " + hz.embarquement);
+      if (hz.depart) L.push("• " + T("Départ") + " : " + hz.depart);
+      (Array.isArray(hz.lignes) ? hz.lignes : []).forEach(function (x) { if (!x || !x.heure) return; var lib = x.type === "autre" ? (x.lib || "") : (libT[x.type] || ""); L.push("• " + [lib, x.epreuve].filter(Boolean).join(" ") + (lib || x.epreuve ? " : " : "") + x.heure); });
+      var titre = T("Les horaires") + ([c.lieu, c.date].filter(Boolean).length ? " — " + [c.lieu, c.date].filter(Boolean).join(", ") : "") + " :";
+      return [T("Coucou !"), titre].concat(L).concat([T("Pensez à mettre vos réveils !")]).join("\n");
+    }
+    function blocMessage() {
+      var m = st.msgH != null ? st.msgH : messageHoraires();
+      return h("div", { style: { marginTop: 14, textAlign: "start" } },
+        h("div", { className: "hod-sec-t", style: { marginBottom: 6 } }, T("Le message pour le groupe")),
+        h("textarea", { className: "hod-sel", value: m, rows: 7, style: { minHeight: 150, lineHeight: 1.5, whiteSpace: "pre-wrap" }, onChange: function (e) { maj({ msgH: e.target.value }); } }),
+        h("div", { className: "hod-chs", style: { marginTop: 4 } }, T("Tu peux le modifier avant de l’envoyer.")),
+        h("div", { className: "hod-bas", style: { gap: 8 } },
+          h("button", { type: "button", className: "hod-btn sec", onClick: function () { try { navigator.clipboard.writeText(m); maj({ msgH: m, okCopie: T("✓ Copié") }); } catch (e) { } } }, st.okCopie || T("Copier")),
+          h("button", { type: "button", className: "hod-btn sec", onClick: function () { try { if (navigator.share) navigator.share({ text: m }); else { navigator.clipboard.writeText(m); maj({ msgH: m, okCopie: T("✓ Copié") }); } } catch (e) { } } }, T("Partager"))));
+    }
     async function enregistrerHoraires() {
       var hz = (st.lu && st.lu.horaires) || {}; if (!concId) return;
       maj({ busy: true, err: "" });
@@ -2178,7 +2223,9 @@
         if (hFmt(hz.embarquement)) upd.heure_embarquement = hFmt(hz.embarquement);
         var r = await supa.from("club_agenda").update(upd).eq("id", concId).select("id");
         if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
-        maj({ busy: false, etape: "fini", ok: T("✓ Horaires enregistrés dans la fiche du concours.") });
+        var okH = T("✓ C’est fait : les horaires sont sur la page du concours.") + " " + T("Les rappels envoyés aux cavaliers inscrits suivent ces heures (départ et reco).") + " " + T("Je t’ai préparé un message pour ton équipe : modifie-le si tu veux, puis envoie-le.");
+        maj({ busy: false, etape: "fini", msgH: st.msgH != null ? st.msgH : messageHoraires(), ok: okH });
+        try { if (refVoix.current) dire(okH.replace("✓ ", "")); } catch (eD) { }
       } catch (eH) { maj({ busy: false, err: T("Pas enregistré : ") + String((eH && eH.message) || eH) }); }
     }
     function allerCarnet() {
@@ -2520,7 +2567,7 @@
         h("div", { style: { display: "flex", gap: 8, marginTop: 8, alignItems: "center" } },
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { note: (String(x.note || "").trim() ? x.note + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
           h("button", { type: "button", className: "hod-btn sec", style: { flex: 1 }, disabled: !String(st.note || "").trim(), onClick: function () { setSt(function (x) { return Object.assign({}, x, { fichier: null, images: [], echanges: [], fil: [{ qui: "moi", t: x.note }] }); }); setTimeout(function () { lire(null, []); }, 0); } }, T("Envoyer sans document"))),
-        boutonVoix(),
+        boutonVoix(), panneauEcoute(),
         h("input", { ref: refFic, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: choisir }),
         h("div", { className: "hod-bas" },
           h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
@@ -2534,6 +2581,7 @@
     } else if (st.etape === "fini") {
       corps = h("div", { style: { textAlign: "center", padding: "18px 0" } },
         h("div", { className: "hod-ok", style: { fontSize: 15 } }, st.ok),
+        st.msgH != null ? blocMessage() : null,
         h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
     } else {
       var lu = st.lu || {}, type = lu.type;
@@ -2575,11 +2623,12 @@
       } else if (type === "horaires_concours") {
         var hz = lu.horaires || {}, lignesH = Array.isArray(hz.lignes) ? hz.lignes.filter(function (x) { return x && x.heure; }) : [];
         var libT = { reco: T("Reco"), debut: T("Début"), autre: T("Autre") };
-        action = sec(T("Les horaires à enregistrer"), null, !concId ? T("Choisis d’abord le concours ci-dessus.") : null,
+        action = sec(T("Les horaires à enregistrer"), null, !concId ? T("Choisis d’abord le concours ci-dessus.") : T("Quand tu valides : je mets ces horaires sur la page du concours, les rappels des cavaliers inscrits suivent ces heures, et je te prépare un message pour ton équipe."),
           h("div", { className: "hod-fm" },
             hz.depart ? ligneV("dep", T("Départ"), hz.depart) : null,
             hz.embarquement ? ligneV("emb", T("Embarquement"), hz.embarquement) : null,
             lignesH.map(function (x, i) { return ligneV("h" + i, (x.type === "autre" ? (x.lib || libT.autre) : (libT[x.type] || libT.autre)) + (x.epreuve ? " · " + x.epreuve : ""), x.heure); })),
+          blocMessage(),
           bas(enregistrerHoraires, st.busy ? "…" : T("Enregistrer les horaires"), st.busy || !concId));
       } else if (type === "mouvement_cheval") {
         var mv = st.mv || {};
@@ -2758,7 +2807,7 @@
         h("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 } },
           h(Micro, { texte: function (t) { setSt(function (x) { return Object.assign({}, x, { reponse: (String(x.reponse || "").trim() ? x.reponse + " " : "") + t }); }); }, aide: function (m) { maj({ err: m }); } }),
           h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: function () { repondre(); } }, T("Envoyer"))),
-        boutonVoix(),
+        boutonVoix(), panneauEcoute(),
         blocConcours(),
         blocNouveaux(),
         blocMaj(),
@@ -2827,6 +2876,13 @@
       try { var r = await supa.from("chevaux").select("id, nom, alias").is("supprime_le", null).order("nom", { ascending: true }).limit(2000); setChevaux((r && !r.error && r.data) || []); } catch (e) { setChevaux([]); }
     }
     React.useEffect(function () { if (!moi) return; var x = null; try { x = window.__outilDocValider; window.__outilDocValider = null; } catch (e) { } if (x) setTimeout(ouvrir, 300); }, [moi]);
+    /* 14/11 : consigne dite dans l'encart → l'outil s'ouvre et la traite (récap + Valider) */
+    React.useEffect(function () {
+      if (!moi) return undefined;
+      function go() { try { if (window.__outilDocTexte) ouvrir(); } catch (e) { } }
+      go(); window.addEventListener("hype-outil-ouvrir", go);
+      return function () { window.removeEventListener("hype-outil-ouvrir", go); };
+    }, [moi]);
     if (!moi) return null;
     var chevalCtx = null; try { chevalCtx = props.ecran === "sante-cheval" ? window.__santeCheval : null; } catch (e1) { }
     var concoursId = null; try { concoursId = ["concours", "engagements", "jour-j", "dossier-concours", "liste-van"].indexOf(props.ecran) >= 0 ? (window.__concoursId || window.__engagementsId || null) : null; } catch (e2) { }
