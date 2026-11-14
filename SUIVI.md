@@ -34,6 +34,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 13:40 — build 20261114-1340 — Jury d'Equifun à la voix + classement en direct
+- Blandine (10h23) : « la même chose pour l'Equifun ». Règlement FFE Equifun applicable au 1er septembre 2026 (VI pénalités, VII classement).
+- BASE : table jury_passages (Equifun, et plus tard concours complet) — même règle que cso_passages : lecture par les membres connectés, écriture par l'équipe qui gère le concours ou la modératrice.
+- Outil « Dicter les résultats d'Equifun » (onglet Résultats, équipe qui gère) : épreuve, individuel ou par équipes ; pour chaque couple : temps dicté (« 1 minute 12 secondes 30, deux fautes ») ou tapé, 9 compteurs de pénalités (1re faute 20 s, suivantes 5 s, détruit 40/20 s, non réalisé 40/20 s, portes 20 s, aide 10 s), élimination avec son motif (erreur de parcours, 6 minutes, chute, 3 dispositifs infranchissables, coach) ou abandon ; auto-élimination à 6 min ou 3 infranchissables. Classement : temps + pénalités, ex æquo (le règlement ne prévoit pas de départage) ; équipes : somme des 3 meilleurs, non classée sous 3 arrivants. Passages en direct, reprise sur un autre téléphone, publication dans les résultats.
+- Page « Classement en direct » : CSO et Equifun ensemble. Page Règlement : lien Equifun + mémo du jury d'Equifun.
+- Traductions de l'écran Equifun : après validation du français.
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 13:15 — build 20261114-1315 — Protocole de dressage : chiffres lisibles
 - Blandine (10h24) : « ton protocole, il est toujours illisible ». En attendant les propositions de mise en page (prompt donné à Blandine pour ChatGPT : 3 présentations de la feuille de notes), tous les chiffres des écrans de jury (notes, totaux, pourcentages, places, numéros de figure, compteurs) passent en Montserrat droit à chasse fixe : les chiffres Cormorant / Cinzel (le 1 ressemblait à un I) gênaient la lecture.
 - Fichiers : hype-ecran-juge.js, index.html (build), SUIVI.md.
