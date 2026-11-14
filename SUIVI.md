@@ -71,6 +71,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 15h04 — PUBLIÉ (build 20261114-1930 : index.html + hype-ecran-saison.js v=194 + NOUVEAU netlify/edge-functions/partage-concours.ts) : le bon aperçu dans WhatsApp
+- Blandine 15h02 : « c'est toujours pas le bon aperçu » — WhatsApp ne lit pas ce qui suit le « # » → l'aperçu général de Hype (photo de Liam).
+- Au partage d'une partie du concours (groupes, règles du paddock, passages, infos, embarquement) : l'image du haut de la partie (720 × 900) est déposée dans le stockage public « photos/partages/ » (droit existant : tout compte connecté peut déposer — aucun droit modifié), et le lien devient 2hype.fr/partage/<id du concours>/<image>.jpg?t=<concours · partie>&d=<date>.
+- netlify/edge-functions/partage-concours.ts (route /partage/*) : sert les balises d'aperçu (image, titre, date) et renvoie aussitôt la personne sur /#r=<id>. Adresse mal formée → accueil.
+- La fenêtre « Partager avec le groupe » : texte aéré + ce lien → un seul message, image en aperçu, mise en page gardée. Si le dépôt de l'image échoue, on retombe sur l'ancien lien.
+- Les liens de test ?partage=… restent sans effet sur ce cas (ils ne servent plus).
+- À FAIRE plus tard : ménage automatique des images de partage anciennes (photos/partages/).
+
 ## 2026-11-14 14h57 — PUBLIÉ (build 20261114-1920, index.html + hype-ecran-saison.js v=193) : 3 façons de partager à tester + phrase de fin des groupes
 - Groupes du paddock (texte validé 14h53) : phrase de fin « Ces groupes pourront néanmoins être modifiés d'ici le concours ou en cours de journée : le cas échéant, les cavaliers concernés seront prévenus en temps et en heure (en direct pour ceux qui ont activé leurs notifications). 😊 » ; la phrase « Les heures peuvent être amenées à évoluer… » retirée du haut (doublon).
 - Blandine 14h54 : « on a dit qu'on mettait systématiquement un screen du haut de la partie… là il n'y a pas le screen ». WhatsApp ne garde pas les retours à la ligne d'un texte envoyé AVEC une image. 3 façons, à tester par lien (choix gardé sur le téléphone) :

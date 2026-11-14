@@ -2279,7 +2279,8 @@ function EcranConcours() {
         if (fI && !navigator.canShare({ files: [fI] })) fI = null;
       }
     } catch (eAp) { fI = null; }
-    hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + url, fichier: fI });
+    var lA = fI ? await hsLienAvecApercu(fI, idEv, apercu && apercu.libelle, ((ev && ev.titre) || F("Concours")) + " · " + ((apercu && apercu.libelle) || ""), ev ? hsPlage(ev) : "") : null;
+    hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + (lA || url), fichier: fI, apercuLien: !!lA });
   }
 
   var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
@@ -4402,7 +4403,8 @@ function EcranConcours() {
                   if (fI && !navigator.canShare({ files: [fI] })) fI = null;
                 }
               } catch (eAp) { fI = null; }
-              hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + url, fichier: fI });
+              var lA = fI ? await hsLienAvecApercu(fI, idEv, "infos", (ev.titre || F("Concours")) + " · " + F("Informations du concours"), jourL || "") : null;
+              hsPrevenirGroupe({ titre: F("Partager avec le groupe"), texte: txt, lien: "→ " + (lA || url), fichier: fI, apercuLien: !!lA });
             })();
           };
           var P_PART = "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7";
@@ -7603,6 +7605,24 @@ function hsMinutes(v) {
 /* 14/11 14h31 (Blandine : « on peut mettre ça en place pour WhatsApp, c'est important ») — PRÉVENIR LE GROUPE.
    Hype ne peut pas écrire tout seul dans un groupe WhatsApp : après un changement d'heure, on propose à la coach le message
    déjà écrit (modifiable) ; « Envoyer sur WhatsApp » ouvre WhatsApp avec le texte, elle choisit le groupe et envoie. */
+/* 14/11 15h02 (Blandine : « c'est toujours pas le bon aperçu ») : l'image du haut de la partie est déposée dans le stockage
+   public « photos/partages/ », et le lien partagé passe par 2hype.fr/partage/… : WhatsApp affiche alors CETTE image en aperçu,
+   et le texte garde sa mise en page (voir netlify/edge-functions/partage-concours.ts). */
+async function hsLienAvecApercu(fichier, idEv, cle, titre, desc) {
+  try {
+    if (!fichier || !idEv || typeof supa === "undefined" || !supa || !supa.storage) return null;
+    var img = await createImageBitmap(fichier);
+    var W = 720, H = Math.round(720 * img.height / img.width), c = document.createElement("canvas"); c.width = W; c.height = H;
+    c.getContext("2d").drawImage(img, 0, 0, W, H);
+    var b = await new Promise(function (ok) { c.toBlob(ok, "image/jpeg", 0.82); });
+    if (!b) return null;
+    var nom = String(idEv).slice(0, 8) + "-" + String(cle || "p").replace(/[^a-z0-9]/gi, "").slice(0, 20) + "-" + Date.now().toString(36) + ".jpg";
+    var r = await supa.storage.from("photos").upload("partages/" + nom, b, { contentType: "image/jpeg", upsert: false });
+    if (r && r.error) return null;
+    var base = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin;
+    return base + "/partage/" + idEv + "/" + nom + "?t=" + encodeURIComponent(titre || "Hype") + (desc ? "&d=" + encodeURIComponent(desc) : "");
+  } catch (e) { return null; }
+}
 function hsLienConcoursApp(id) { var base = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin; return id ? base + "/#r=" + encodeURIComponent(String(id)) : base; }
 /* 14/11 14h55 (Blandine : « fais-moi des liens avec tes propositions, que je voie ce que ça donne vraiment ») :
    trois façons de partager, choisies par l'adresse (?partage=texte|deux|coller), gardées sur ce téléphone. Par défaut : « texte » (version en ligne). */
@@ -7610,7 +7630,7 @@ try { var hsPm = new URLSearchParams(location.search).get("partage"); if (hsPm =
 function hsModePartage() { try { return localStorage.getItem("hype_partage_mode") || "texte"; } catch (e) { return "texte"; } }
 function hsPrevenirGroupe(o) {
   try {
-    var mode = o.fichier ? hsModePartage() : "texte";
+    var mode = (o.fichier && !o.apercuLien) ? hsModePartage() : "texte";
     var anc = document.getElementById("hs-prev-groupe"); if (anc) anc.remove();
     var tx = (o.texte || "") + (o.lien ? "\n" + o.lien : "");
     var fond = document.createElement("div"); fond.id = "hs-prev-groupe";
@@ -7624,7 +7644,8 @@ function hsPrevenirGroupe(o) {
        avec une image, le bouton principal envoie l'APERÇU ; le texte est copié en même temps → dans WhatsApp, on le colle en légende
        (coller garde les retours à la ligne, contrairement au texte envoyé avec l'image). */
     if (o.fichier && mode === "deux") st.textContent = "Touche « Envoyer en deux messages » : l’image part d’abord dans le groupe que tu choisis, puis WhatsApp se rouvre avec le message prêt : choisis le même groupe et envoie.";
-    if (o.fichier && mode === "texte") st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
+    if (o.fichier && mode === "texte" && !o.apercuLien) st.textContent += " « Avec l’image » ajoute l’aperçu en photo, mais WhatsApp met alors tout le texte sur une seule ligne.";
+    if (o.apercuLien) st.textContent = "Le message est prêt, tu peux le modifier. Dans WhatsApp, le lien affiche l’aperçu de la page en image : choisis le groupe et envoie.";
     if (o.fichier && mode === "coller") st.textContent = "Touche « Envoyer avec l’aperçu » : l’image part, et le message est copié. Dans WhatsApp, choisis le groupe, touche la zone de légende sous l’image, puis « Coller » : le message garde sa mise en page.";
     st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.62);margin-top:6px");
     var ta = document.createElement("textarea"); ta.value = tx; ta.rows = 7;
@@ -7633,7 +7654,7 @@ function hsPrevenirGroupe(o) {
     bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#F3EEE4;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
     var lig = document.createElement("div"); lig.setAttribute("style", "display:flex;justify-content:center;gap:26px;margin-top:14px");
     function lien(txt) { var b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("style", "background:none;border:0;border-bottom:1px solid rgba(243,238,228,.3);padding:0 0 2px;color:rgba(243,238,228,.8);font:500 13px Montserrat,Arial,sans-serif;cursor:pointer"); return b; }
-    var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = o.fichier ? lien(mode === "texte" ? "Avec l’image" : "Texte seul sur WhatsApp") : null;
+    var bA = lien("Autre appli"), bP = lien("Plus tard"), bI = (o.fichier && !o.apercuLien) ? lien(mode === "texte" ? "Avec l’image" : "Texte seul sur WhatsApp") : null;
     if (o.fichier && mode === "coller") bW.textContent = "Envoyer avec l’aperçu";
     if (o.fichier && mode === "deux") bW.textContent = "Envoyer en deux messages";
     function fermer() { try { fond.remove(); } catch (e) { } }
