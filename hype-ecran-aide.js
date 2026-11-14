@@ -229,10 +229,20 @@
             connecte === false ? h("div", { style: { marginTop: 8 } }, bouton(t("seConnecter"), function () { setEcran("connexion"); })) : null) : null,
           h("form", { onSubmit: function (e) { e.preventDefault(); demander(); }, style: { display: "flex", gap: 8, marginTop: 12 } },
             h("input", { value: q, onChange: function (e) { setQ(e.target.value); }, placeholder: t("ph"), maxLength: 500, style: { flex: 1, minWidth: 0, border: "1px solid rgba(243,238,228,.18)", background: "transparent", color: IV, borderRadius: 999, padding: "12px 16px", fontFamily: M, fontSize: 16 } }),
-            (!q.trim() && !enCours) ? h("button", { type: "button", "aria-label": "Parler", "aria-pressed": ecoute, onClick: function () {
+            (ecoute || (!q.trim() && !enCours)) ? h("button", { type: "button", "aria-label": "Parler", "aria-pressed": ecoute, onClick: function () {
                 var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (!SR) { try { var el = document.querySelector("[data-aide-hb] input"); if (el) el.focus(); } catch (x) { } return; }
                 if (ecoute && refSR.current) { try { refSR.current.stop(); } catch (x) { } return; }
+                /* 14/11 11h55 : écoute longue commune (bip, texte en direct, relance si l'iPhone coupe, fin après ~2,5 s de silence) */
+                if (typeof hypeEcouteLongue === "function") {
+                  setQ("");
+                  var ec = hypeEcouteLongue({ lang: ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" })[lg] || "fr-FR",
+                    onPartiel: function (tx) { setQ(tx); },
+                    onFin: function (tx) { refSR.current = null; setEcoute(false); tx = String(tx || "").trim(); if (tx) { setQ(""); demander(tx); } },
+                    onErreur: function () { refSR.current = null; setEcoute(false); try { var el = document.querySelector("[data-aide-hb] input"); if (el) el.focus(); } catch (x) { } } });
+                  if (ec) { refSR.current = ec; setEcoute(true); }
+                  return;
+                }
                 try { var r = new SR(); refSR.current = r; r.lang = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" })[lg] || "fr-FR"; r.interimResults = false; r.continuous = false;
                   r.onresult = function (ev) { var tx = ""; for (var i = 0; i < ev.results.length; i++) tx += ev.results[i][0].transcript; tx = String(tx || "").trim(); if (tx) demander(tx); };
                   r.onend = function () { setEcoute(false); }; r.onerror = function () { setEcoute(false); }; r.start(); setEcoute(true); } catch (x) { setEcoute(false); } },
