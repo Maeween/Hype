@@ -70,6 +70,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h46 — PUBLIÉ (build 20261114-1910, index.html + hype-ecran-saison.js v=192) : groupes du paddock — toutes les épreuves, plus d'heure de passage
+- Blandine 14h43 : le partage ne citait qu'une épreuve alors qu'une cavalière d'une autre épreuve était dans les groupes → le message nomme toutes les épreuves des cavaliers des groupes (et l'épreuve de chacun s'il y en a plusieurs).
+- Blandine 14h44 : RÈGLE — dans les groupes du paddock, jamais l'heure de passage individuelle (« ça va les perturber… on remet leur numéro mais pas l'horaire ») : retirée des cartes de groupe de la page ET du message ; seul « rendez-vous à … à l'entrée du paddock ».
+- Blandine 14h43 : retirer « Un message sera également partagé sur le groupe » / « Nous vous tiendrons également au courant sur le groupe » (la coach ne l'enverra peut-être pas) — fait dans tous les messages.
+- Message des groupes aéré en paragraphes.
+
 ## 2026-11-14 14h42 — PUBLIÉ (build 20261114-1900, index.html + hype-ecran-saison.js v=191) : partages du concours lisibles dans WhatsApp
 - Constat (capture de Blandine 14h39) : quand le texte accompagne une image, WhatsApp met tout sur une seule ligne → « tout entassé ».
 - Tous les partages du concours (infos, règles du paddock, groupes, ordre de passage, embarquement) ouvrent maintenant la fenêtre « Partager avec le groupe » : texte aéré (titre du concours en gras, une ligne « ▸ » par élément, lignes vides entre les parties), modifiable, « Envoyer sur WhatsApp » (mise en page gardée) ; « Avec l'image » reste possible (WhatsApp écrase alors les retours à la ligne, c'est dit dans la fenêtre).

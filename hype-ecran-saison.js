@@ -2294,7 +2294,7 @@ function EcranConcours() {
       });
     });
     var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { AP.push({ h: p.passage || "–", t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
-    partagerPartie(F("L’ordre de passage est en ligne. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
+    partagerPartie(F("L’ordre de passage est en ligne. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
   }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
@@ -2645,7 +2645,7 @@ function EcranConcours() {
         h("div", { className: "hc-g9-l" }, lignes.map(function (p, i) {
           return h("div", { key: i, className: "hc-g9-r" + (moi && p.cavalier_id === moi.id ? " moi" : "") + (p.non_partant ? " np" : "") },
             h("span", { className: "hc-g9-n" }, p.ordre_passage || ""), avatarHc(p, 30),
-            h("div", { className: "hc-g9-q" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, (p.epreuve && hsNomEpreuve(p.epreuve) !== hsNomEpreuve(g.epreuve || "")) ? hsNomEpreuve(p.epreuve) : "", p.non_partant ? F("non partant") : p.passage].filter(Boolean).join(" · "))));
+            h("div", { className: "hc-g9-q" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, (p.epreuve && hsNomEpreuve(p.epreuve) !== hsNomEpreuve(g.epreuve || "")) ? hsNomEpreuve(p.epreuve) : "", p.non_partant ? F("non partant") : ""].filter(Boolean).join(" · "))));   /* 14/11 14h44 (Blandine) : dans les groupes, plus l’heure de passage individuelle, seulement le rendez-vous */
         }))) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
       conf.length ? h("div", { className: "hc-grp-conf" }, conf.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null);
   }
@@ -2738,13 +2738,18 @@ function EcranConcours() {
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null,
     (!grpEd && grpEp.some(function (g) { return g.publie && (g.couples || []).length; })) ? lienPartage("gsh", F("Partager les groupes du paddock avec le groupe"), function () {
       var L = [];
+      /* 14/11 14h43 (Blandine : « il me cite qu'une des deux épreuves, alors que la cavalière de la deuxième épreuve est également dans les groupes ») :
+         on nomme TOUTES les épreuves des cavaliers présents dans les groupes, et l'épreuve de chacun quand il y en a plusieurs */
+      var epsG = [];
+      grpEp.filter(function (g) { return g.publie; }).forEach(function (g) { (g.couples || []).forEach(function (c) { var pi = infoCouple[c.engagement_id + ":" + (c.numero || 1)]; var e0 = pi && hsNomEpreuve(pi.epreuve || ""); if (e0 && epsG.indexOf(e0) === -1) epsG.push(e0); }); });
+      if (!epsG.length && epPaddock) epsG.push(epPaddock);
       grpEp.filter(function (g) { return g.publie; }).forEach(function (g, gi) {
         var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, cheval_nom: c.cheval_nom }; }).sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
-        L.push((L.length ? "\n" : "") + "*" + (g.nom || (F("Groupe ") + (gi + 1))) + "*" + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv : ""));
-        lignes.forEach(function (p) { L.push("▸ " + [p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " — " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage ? F("passage ") + p.passage : "")].filter(Boolean).join(" · ")); });
+        L.push((L.length ? "\n" : "") + "*" + (g.nom || (F("Groupe ") + (gi + 1))) + "*" + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv + F(" à l’entrée du paddock") : ""));
+        lignes.forEach(function (p) { L.push("▸ " + [p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " — " + p.cheval_nom : ""), epsG.length > 1 && p.epreuve ? hsEpCourt(p.epreuve) : "", p.non_partant ? F("non partant") : ""].filter(Boolean).join(" · ")); });   /* 14/11 14h44 (Blandine) : pas l'heure de passage individuelle dans les groupes, seulement le rendez-vous */
       });
       var AG = grpEp.filter(function (g) { return g.publie; }).map(function (g, gi) { return { h: g.heure_rdv || "–", t: (g.nom || (F("Groupe ") + (gi + 1))) + " · " + (g.couples || []).length + " " + ((g.couples || []).length > 1 ? F("couples") : F("couple")) }; });
-      partagerPartie(F("Les groupes du paddock sont en ligne") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle : tous les cavaliers du groupe doivent être présents à l’heure indiquée, à l’entrée du paddock. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
+      partagerPartie(F("Les groupes du paddock sont en ligne") + (epsG.length ? " (" + epsG.join(" et ") + ")" : "") + ".\n\n" + F("Lorsque les passages sont regroupés, respectez l’heure de rendez-vous de votre groupe, et non votre heure de passage individuelle : tous les cavaliers du groupe doivent être présents à l’heure indiquée, à l’entrée du paddock.") + "\n\n" + F("Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
     }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
@@ -4385,7 +4390,7 @@ function EcranConcours() {
             var lignesH = tl.map(function (x) { return "▸ " + String(x.t || "").replace(/^0(\d)/, "$1") + " · " + x.l + (x.s ? " (" + x.s + ")" : ""); });
             var txt = ["*" + (ev.titre || F("Concours")) + "*" + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim() ? "📍 " + String(ev.lieu || "").trim() : ""].filter(Boolean).join("\n")
               + (lignesH.length ? "\n\n" + lignesH.join("\n") : "")
-              + "\n\n" + F("Les informations du concours sont en ligne sur Hype. Les horaires peuvent être amenés à évoluer selon l’avancée des épreuves sur place : les cavaliers ayant activé leurs notifications seront prévenus en direct (le lien propose de les activer). Nous vous tiendrons également au courant sur le groupe.");
+              + "\n\n" + F("Les informations du concours sont en ligne sur Hype. Les horaires peuvent être amenés à évoluer selon l’avancée des épreuves sur place : les cavaliers ayant activé leurs notifications seront prévenus en direct (le lien propose de les activer).");
             var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
             (async function () {
               var fI = null;
