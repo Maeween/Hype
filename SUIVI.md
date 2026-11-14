@@ -58,6 +58,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Jour J : 04 « Prévenir mes cavaliers » réécrite (« Prévenir le groupe », ancienne et nouvelle heure, WhatsApp).
 - Guillemets et deux-points insécables dans tout le guide.
 
+## 2026-11-14 20h40 — PUBLIÉ build 20261114-2140 — fichiers : images/guide-coach/coach-entete-a.webp (nouveau), hype-ecran-coach.js v=23, index.html (build + ?v=23), SUIVI.md : photo d'en-tête du Guide du coach
+- Photo fournie par Blandine (générée avec ChatGPT) : enseignante à pied et jeune cavalière sur un cheval gris, bord de piste, fin de journée — choisie parmi deux (l'autre, cheval bai en plein jour, écartée car trop claire pour le design). Remplace la photo provisoire coach-hd-coach. La courbe dorée passe au niveau des bottes de l'enseignante (réglage possible si Blandine le demande).
+
 ## 2026-11-14 19h10 — PUBLIÉ build 20261114-2110 (Blandine : « Ok, vas-y ») — fichiers : index.html (build, hype-ecran-coach.js?v=22), hype-ecran-coach.js v=22, SUIVI.md : refonte de l'ACCUEIL du Guide du coach (brief « Refonte de l'accueil du Guide du coach », maquette ChatGPT n° 2)
 - Accueil court (≈ 2 750 px en 390, encart et fin de page compris) : héros Vidéothèque (« GUIDE COACH », « Le guide du coach », « Avant, pendant et après le concours. »), 2 phrases d'intro ; anciens paragraphes, 4 boutons d'univers et les 4 blocs u1–u4 (listes de fonctionnalités) retirés de l'accueil.
 - Sommaire des 9 chapitres en 3 temps (Avant / Pendant / Après) : photo différente à gauche, numéro champagne discret, titre, phrase du brief, chevron ; toute la ligne ouvre le chapitre ; retour d'un chapitre = même position sur l'accueil (hype_coach_yacc).

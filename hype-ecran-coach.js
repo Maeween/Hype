@@ -543,7 +543,7 @@
           lab, h("span", { "aria-hidden": "true", style: { color: CH, textDecoration: "none" } }, rtlG ? "←" : "→"));
       }
       return h("div", { "data-noswipe": "1", style: { background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
-        heroVid("coach-hd-coach", "entiere", "GUIDE COACH", "Le guide du coach", "Avant, pendant et après le concours.", null, "clamp(40px, 11vw, 64px)"),
+        heroVid("coach-entete-a", "entiere", "GUIDE COACH", "Le guide du coach", "Avant, pendant et après le concours.", null, "clamp(40px, 11vw, 64px)"),
         h("div", { style: { maxWidth: 680, margin: "16px auto 0", padding: "0 22px" } },
           h("p", { style: { fontSize: 14.5, lineHeight: 1.5, color: "#DEDAD2", margin: 0 } }, "Organise tes concours, accompagne tes chevaux et fais progresser ton équipe."),
           h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17.5, color: IV, lineHeight: 1.3, margin: "8px 0 0" } }, "Concentre-toi sur la performance. Hype gère la logistique.")),
