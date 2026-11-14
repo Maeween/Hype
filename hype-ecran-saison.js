@@ -2152,6 +2152,24 @@ function EcranConcours() {
   if (!ev) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" }, heroC(F("Concours"), ""), h("div", { className: "hs-in" },
     erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Impossible d’ouvrir ce concours : ") + erreur) : h("div", { className: "hs-attente", "aria-busy": "true" }, "…")));
 
+  /* 14/11 15h26 (Blandine : « loquer la page quand tout est en place… que quelqu'un ne puisse pas effacer sans le vouloir ») :
+     page verrouillée (club_agenda.page_verrouillee, pour tout le monde) → plus aucun bouton de modification ou de suppression ;
+     restent la lecture, cocher / décocher, les partages et les notifications. La coach garde le cadenas et la vue complète des heures. */
+  var gestionReelle = gestion;
+  var pageVerrouillee = !!ev.page_verrouillee;
+  if (gestion && pageVerrouillee) gestion = false;
+  async function basculerVerrou() {
+    var nv = !ev.page_verrouillee;
+    if (!nv) { var okD = false; try { okD = window.confirm(F("Déverrouiller la page pour la modifier ?")); } catch (eC) { okD = true; } if (!okD) return; }
+    try { var r = await supa.from("club_agenda").update({ page_verrouillee: nv }).eq("id", idEv).select("id"); if (r && r.error) { setPartMsg(F("Erreur : ") + (r.error.message || "")); return; } } catch (eV) { setPartMsg(F("Erreur : ") + String((eV && eV.message) || eV)); return; }
+    setEv(Object.assign({}, ev, { page_verrouillee: nv }));
+  }
+  var blocCadenas = gestionReelle ? h("div", { key: "cad", style: { textAlign: "center", margin: "0 0 18px" } },
+    h("button", { type: "button", onClick: basculerVerrou, style: { display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "1px solid " + (pageVerrouillee ? "rgba(201,166,107,.7)" : "rgba(243,238,228,.22)"), borderRadius: 999, padding: "8px 16px", color: pageVerrouillee ? "#E6CFA0" : "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } },
+      h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("rect", { x: 5, y: 11, width: 14, height: 9, rx: 2, fill: "none", stroke: "currentColor", strokeWidth: 1.5 }), h("path", { d: pageVerrouillee ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-2", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" })),
+      pageVerrouillee ? F("Page verrouillée · toucher pour modifier") : F("Verrouiller la page")),
+    pageVerrouillee ? null : h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.5)", marginTop: 6 } }, F("Quand tout est en place : plus rien ne peut être effacé par erreur."))) : null;
+
   var horaires = [
     { k: F("Rendez-vous"), v: ev.heure },
     { k: F("Embarquement"), v: ev.heure_embarquement },
@@ -2315,7 +2333,7 @@ function EcranConcours() {
 
   var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
   function lienPartage(cle, label, f) { return h("div", { key: cle, id: "hs-part-" + cle, style: { textAlign: "center", margin: "14px 0 4px" } }, (partMsg && partCle.current === cle) ? h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,.75)", marginBottom: 4 } }, partMsg) : null, h("button", { type: "button", onClick: function () { partCle.current = cle; f(); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } }, ICO_PART, h("span", { style: { borderBottom: "1px solid rgba(243,238,228,.3)", paddingBottom: 1 } }, label))); }
-  var masquerH = !!(ev && ev.heures_passage_masquees) && !gestion;
+  var masquerH = !!(ev && ev.heures_passage_masquees) && !gestionReelle;
   async function basculerHeuresPassage() {
     var nv = !ev.heures_passage_masquees;
     try { var r = await supa.from("club_agenda").update({ heures_passage_masquees: nv }).eq("id", idEv).select("id"); if (r && r.error) { setPartMsg(F("Erreur : ") + (r.error.message || "")); return; } } catch (eH) { setPartMsg(F("Erreur : ") + String((eH && eH.message) || eH)); return; }
@@ -4663,7 +4681,7 @@ function EcranConcours() {
           ["resultats", F("Résultats"), F("Les classements de l’équipe, épreuve par épreuve, dès qu’ils sont publiés.")],
           ["medias", F("Médias"), F("Les photos et les vidéos du concours, par cavalier et par cheval.")]
         ]).filter(Boolean);
-        return h("div", { className: "hc-somm", style: { margin: "34px 0 6px" } },
+        return h("div", { className: "hc-somm", style: { margin: "34px 0 6px" } }, blocCadenas,
           h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 6 } },
             h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 30, lineHeight: 1.1, color: "#F3EEE4" } }, F("Dans ce concours")),
             h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ",rgba(201,166,107,.55),rgba(201,166,107,0))" } })),
@@ -8105,7 +8123,7 @@ function EcranListeVan() {
     return h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (x.f ? "#C9A66B" : "rgba(201,166,107,.6)"), background: "transparent", color: "#C9A66B", fontSize: 13, padding: 0, lineHeight: 1 } }, x.f ? "✓" : "");
   }
   function boutonRetire(x) {
-    if (!(gestionV && edition) || x.r === "propre") return null;
+    if (!(gestionV && edition) || x.r === "propre" || (ev && ev.page_verrouillee)) return null;   /* 14/11 : page du concours verrouillée → pas de « Pas utile » */
     var on = estRetire(x);
     return h("button", { type: "button", onClick: function () { basculerRetire(x); }, style: { flex: "0 0 auto", height: 28, padding: "0 10px", borderRadius: 14, border: "1px solid rgba(243,238,228,.25)", background: "transparent", color: "rgba(243,238,228,.8)", fontSize: 11.5, whiteSpace: "nowrap" } }, on ? F("Remettre") : F("Pas utile"));
   }
@@ -8153,7 +8171,7 @@ function EcranListeVan() {
             barre(g.n, g.L.length))),
         on ? h("div", { style: { padding: "2px 14px 10px", borderTop: "1px solid rgba(243,238,228,.07)" } }, g.L.map(ligneFine), g.r !== "propre" ? ajoutLigne(g.r) : null) : null);
     }), blocRetires(), h("div", { style: { display: "flex", justifyContent: "flex-end" } }, modif),
-      gestionV ? h("div", { className: "hs-note", style: { marginTop: 4 } }, F("Coach : touche « Modifier », puis « Pas utile » à côté d’un objet pour le barrer chez tous les cavaliers, pour ce concours seulement.")) : null);
+      (gestionV && !(ev && ev.page_verrouillee)) ? h("div", { className: "hs-note", style: { marginTop: 4 } }, F("Coach : touche « Modifier », puis « Pas utile » à côté d’un objet pour le barrer chez tous les cavaliers, pour ce concours seulement.")) : null);
   }
   async function partagerListe() {
     var url = hsLienConcoursLisible(ev, idEv, "materiel") || (((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#lv=" + encodeURIComponent(String(idEv || "")));

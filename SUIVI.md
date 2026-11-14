@@ -101,6 +101,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 18h30 — PUBLIÉ (build 20261114-2050, index.html + hype-ecran-saison.js v=201) + SQL : cadenas de la page du concours
+- SQL appliqué (Blandine « Ok » 18h26) : club_agenda.page_verrouillee boolean not null default false. Aucun droit modifié.
+- Blandine 15h26 : « loquer la page quand tout est en place… que quelqu'un ne puisse pas effacer sans le vouloir une partie des infos ».
+- Bouton « Verrouiller la page » (coachs seulement) au-dessus de « Dans ce concours » ; verrouillée → « Page verrouillée · toucher pour modifier » (confirmation « Déverrouiller la page pour la modifier ? »). Le verrou vaut pour tout le monde sur ce concours.
+- Verrouillée : plus aucun outil de coach sur la page (modifier les groupes, crayons des passages, décaler, horaires, engagements, montrer/masquer les heures…), ni « Pas utile » dans la liste du matériel. Restent : lecture, cocher / décocher, partages, notifications. La coach garde la vue complète des heures.
+
 ## 2026-11-14 18h24 — PUBLIÉ (build 20261114-2040 : index.html + hype-ecran-saison.js v=200 + netlify/edge-functions/partage-concours.ts) : adresses de partage du concours courtes et lisibles
 - Blandine 18h07 : le lien faisait 6 lignes (…/partage/<uuid>/<fichier>.jpg?t=…&d=…) — « que les adresses aient un sens… concours, CSO, qu'on sache où on va ».
 - Nouveau format : 2hype.fr/concours/<nom-du-concours-jour-mois>-<8 signes>/<partie>[/<cavalier>] ; parties : infos, regles-du-paddock, groupes-du-paddock, ordre-de-passage, embarquement, materiel ; « Prévenir le groupe » → lien du concours sans partie. Minuscules, sans accents, tirets ; plus de ?t= ni &d=.
