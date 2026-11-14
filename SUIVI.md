@@ -70,6 +70,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h20 — PUBLIÉ (build 20261114-1830, index.html seul) : compte express dans le style de la Vidéothèque
+- ERREUR signalée à Blandine : son « Ok » de 14h13 (donné « parce que j'en avais marre ») a fait publier la version « œil de cheval noir » (build 1815) ; à 14h14 elle demande le style de la page Vidéothèque.
+- vueExpress() refaite comme la Vidéothèque : photo du cheval bai entière (galops-carte-cours-bai.webp) avec les deux courbes dorées, titre « Bienvenue sur Hype » sous la photo aligné à droite + phrase en italique, filet doré, champs et cartes noires à bord fin, âge en pastilles, encart « Être prévenu en direct » (cloche, interrupteur doré ou 2 étapes iPhone), bouton à contour champagne, fin de page Hype. Validé (« Ah ok, ça c'est bien. Ok, vas-y », 14h19).
+- Textes nouveaux : français + anglais seulement, traductions après relecture.
+
 ## 2026-11-14 15h00 — PUBLIÉ (build 20261114-1815, index.html seul) : aperçu « haut de la page » pour tous les partages + compte express redessiné avec les notifications
 - Blandine (13h59) : « tous les partages de pages… reproduire ça systématiquement, le haut de la page… à part celles qui ont déjà leur image » — RÈGLE : tout partage de page part avec un aperçu en image du haut de la page ; les pages qui ont déjà leur propre image de partage la gardent (le dire à Blandine quand elle demande à envoyer).
 - index.html : hypeApercuHautDePage (1080 × 1350 : la plus grande photo du haut de la page, fondue dans le noir, « HYPE », le titre de la page, « Ouvre la page sur Hype → », 2hype.fr) ; utilisé par « Envoyer » de l'encadré « Partage cette page » (toutes les pages avec la fin de page Hype) ; message propre à la page s'il existe, puis le lien. Testé : Lexique (« Le grand lexique. »), Vidéothèque.
