@@ -166,6 +166,26 @@ async function chargerCorrectionsAide(service) {
         if (r.ok) { const t = await r.json(); HB_CORR_AIDE = (t || []).map((x) => String((x && x.texte) || "").trim()).filter(Boolean); corrAideLuesA = Date.now(); }
     } catch (e) { }
 }
+/* 14/11 (Blandine : « qu'il se rappelle de quelque chose qui s'est dit il y a 10 jours ») : quand la personne demande à
+   Hey Baby de se souvenir (« tu te souviens… », « retrouve notre discussion sur… »), on cherche dans SES anciens échanges
+   (conversations_heybaby, filtré sur son identifiant) quelques messages qui contiennent les mots importants de la question.
+   Jamais les échanges d'une autre personne ; rien n'est cherché sinon. */
+const MOTS_VIDES_HB = new Set(["souviens", "souvient", "rappelle", "rappelles", "retrouve", "retrouver", "discussion", "parlé", "parle", "parler", "notre", "votre", "quand", "avait", "avais", "avons", "était", "cette", "celui", "celle", "toujours", "encore", "comment", "pourquoi", "est-ce", "quelque", "chose", "dernière", "dernier", "problème"]);
+async function souvenirsHB(service, uid, texte) {
+    try {
+        const t = String(texte || "");
+        if (!uid || !/(souvien|rappell?e|retrouv|on avait parl|on a parl|notre discussion|la dernière fois|derni[eè]re fois)/i.test(t)) return "";
+        const mots = (t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(/[a-z]{5,}/g) || []).filter((m) => !MOTS_VIDES_HB.has(m)).slice(0, 4);
+        if (!mots.length) return "";
+        const ou = "(" + mots.map((m) => "contenu.ilike.*" + encodeURIComponent(m) + "*").join(",") + ")";
+        const r = await fetch(SUPABASE_URL + "/rest/v1/conversations_heybaby?select=role,contenu,created_at&user_id=eq." + encodeURIComponent(uid) + "&or=" + ou + "&order=created_at.desc&limit=6", { headers: { apikey: service, Authorization: "Bearer " + service } });
+        if (!r.ok) return "";
+        const l = await r.json();
+        if (!Array.isArray(l) || !l.length) return "";
+        return "\n\nÉCHANGES PASSÉS RETROUVÉS (avec cette même personne, les plus récents d'abord ; sers-t'en pour répondre à sa demande de souvenir, sans les recopier) :\n"
+            + l.map((x) => "• " + String(x.created_at || "").slice(0, 10) + " — " + (x.role === "user" ? "elle/lui" : "Hey Baby") + " : " + String(x.contenu || "").replace(/\s+/g, " ").slice(0, 400)).join("\n");
+    } catch (e) { return ""; }
+}
 async function roleAide(service, jeton, uid) {
     try {
         const h = { apikey: service, Authorization: "Bearer " + service };
@@ -524,6 +544,7 @@ export default async (req, context) => {
     if (operation === "question") {
         await chargerCorrections(service);
         systeme = getSystemPrompt(langue, contexteSur(corps.contexte));
+        try { const mq = Array.isArray(corps.messages) ? corps.messages.filter((m) => m && m.role === "user").slice(-1)[0] : null; const tq = mq ? (typeof mq.content === "string" ? mq.content : (Array.isArray(mq.content) ? mq.content.map((b) => (b && b.text) || "").join(" ") : "")) : ""; systeme += await souvenirsHB(service, uid, tq); } catch (eSv) { }   /* 14/11 : « tu te souviens… » */
         // 2e étape d'une question photo : on ajoute les observations validées de la 1re étape
         // (même consigne qu'avant, désormais écrite ici). Acceptées seulement avec une étape photo valide.
         if (corps.suite && corps.observations) systeme += HEYBABY_CONSIGNES_PEDAGOGIE.replace("{OBS}", String(corps.observations).slice(0, 20000));
@@ -584,6 +605,7 @@ export default async (req, context) => {
             if (memA.length) systeme += "\n\nMÉMOIRE (fournie par l'appli, invisible pour la personne ; sers-t'en seulement si c'est utile, ne la récite jamais, ne dis jamais que tu as une fiche) :\n" + memA.join("\n\n");
         } catch (eMA) { }
         messagesApp = Array.isArray(corps.messages) ? corps.messages.slice(-6) : [];
+        try { const dq = messagesApp.length ? messagesApp[messagesApp.length - 1] : null; systeme += await souvenirsHB(service, uid, dq && typeof dq.content === "string" ? dq.content : ""); } catch (eSv) { }
         try { const derniere = messagesApp.length ? messagesApp[messagesApp.length - 1] : null; const txtQ = derniere && typeof derniere.content === "string" ? derniere.content : ""; if (txtQ) await rpc(service, "hype_aide_noter", { p_uid: uid, p_question: txtQ.slice(0, 1000), p_langue: langue }); } catch (eNote) { }
     } else if (operation === "memoire") {
         systeme = consigneMemoire(corps.memoire);

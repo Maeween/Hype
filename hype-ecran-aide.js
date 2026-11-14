@@ -143,6 +143,9 @@
         var boutons = (Array.isArray(o.boutons) ? o.boutons : []).filter(function (b) { return b && ECRANS_OK[b.ecran] && b.libelle; }).slice(0, 3);
         var tuto = TUTOS.some(function (x) { return x.id === o.tuto; }) ? o.tuto : null;
         setMsgs(hist.concat([{ role: "assistant", reponse: String(o.reponse), boutons: boutons, tuto: tuto }]));
+        /* 14/11 (« un seul Hey Baby… pas trois réponses différentes ») : l'échange est rangé dans la conversation Hey Baby en cours
+           (même fil que la page Hey Baby, propre à la personne) : il le retrouve et s'en souvient de partout. */
+        try { if (typeof sauverMessageHB === "function" && typeof obtenirConversationHB === "function") { var cid = obtenirConversationHB(); sauverMessageHB("user", question, false, cid).then(function () { return sauverMessageHB("assistant", String(o.reponse), false, cid); }).catch(function () { }); } } catch (eS) { }
       } catch (e) { setErr(t("erreur")); setMsgs(msgs); }
       setEnCours(false); majCompteur();
     }
