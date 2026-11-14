@@ -2187,12 +2187,13 @@ function EcranConcours() {
     mesLignes.push({ ep: hsNomEpreuve(p.epreuve || ""), ch: p.cheval_brut || p.cheval_nom, cid: p.cheval_id, nu: p.numero, hp: p.passage, pi: p.piste, op: p.ordre_passage, ini: p.cheval_initial_nom || null, pour: p.cavalier_initial, eid: p.engagement_id });
   });
   mesLignes.sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
+  if (ongletChoisi === null && ongletC === "engagements" && !gestion && !mesLignes.length) ongletC = "passages";   /* 14/11 : pas engagé -> on ouvre le Jour J au lieu d'une partie vide */
   /* 14/11 16h20 (Blandine : « avec leur numéro de passage ») : le N° d'entrée en piste, repris de l'ordre de passage de l'équipe */
   mesLignes.forEach(function (x) { if (x.op) return; var q = (passagesEq || []).filter(function (p) { return moi && p.cavalier_id === moi.id && p.numero === x.nu && (!x.cid || p.cheval_id === x.cid) && String(p.epreuve || "") === String(x.ep || ""); })[0] || (passagesEq || []).filter(function (p) { return moi && p.cavalier_id === moi.id && p.passage && p.passage === x.hp; })[0]; if (q && q.ordre_passage) x.op = q.ordre_passage; });
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
-    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { if (cle === "engagements" && gestion) { ouvrirEngagements(); return; } if (cle === "medias") { setOngletC("medias"); setMedVue(""); setMedPage({ conc: true }); setMedPgSel(null); return; } setOngletC(ongletC === cle ? "" : cle); } },   /* 09/11 23h15 (Blandine : « en haut je croyais qu'on mettait le héros de la nouvelle page ») : Médias ouvre la page Médias du concours */   /* 09/11 08h32 : pour la coach, Engagements ouvre la page Engagements */
+    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { if (cle === "engagements" && gestion) { ouvrirEngagements(); return; } if (cle === "medias") { setOngletC("medias"); setMedVue(""); setMedPage({ conc: true }); setMedPgSel(null); return; } setOngletC(cle); setTimeout(function () { try { var eO = document.querySelector(".hc .hc-onglet"); if (eO) eO.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 350); } },   /* 14/11 16h30 (Blandine : « vérifie que les onglets emmènent bien là où ils doivent ») : la carte touchée descend jusqu'à son contenu */   /* 09/11 23h15 (Blandine : « en haut je croyais qu'on mettait le héros de la nouvelle page ») : Médias ouvre la page Médias du concours */   /* 09/11 08h32 : pour la coach, Engagements ouvre la page Engagements */
       h("img", { src: img, alt: "", "aria-hidden": "true", decoding: "async",   /* 09/11 : plus de chargement différé (cartes visibles dès l'ouverture) ; une 2e tentative avant d'abandonner */
         ref: function (el) { if (el && el.complete && el.naturalWidth && !cartesOk[cle]) setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
         onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
@@ -3950,14 +3951,14 @@ function EcranConcours() {
       h("div", { className: "hc hcp-bas" },
         /* 09/11 22h46 (Blandine : « garde quand même les raccourcis des autres pages ») : les 4 accès du concours ; en toucher un
            referme cette page et ouvre l'onglet ; Médias ramène à la page Médias du concours */
-        pgSa ? null : h("div", { className: "hc-cartes hcp-cartes" + (fini ? " hc-c2" : ""), onClickCapture: function (e) {
+        pgSa ? null : h("div", { className: "hc-cartes hcp-cartes" + (fini ? " hc-c2" : ((!gestion && !mesLignes.length) ? " hc-c3" : "")), onClickCapture: function (e) {
           var c = null; try { c = e.target.closest(".hc-carte"); } catch (e0) { }
           if (!c) return; var estMed = c === c.parentNode.lastElementChild;
           if (pgConc && estMed) { e.stopPropagation(); e.preventDefault(); return; }
           setMedPage(null); setMedPgSel(null); setMedVue("");
           if (estMed) { e.stopPropagation(); e.preventDefault(); }
         } },
-          fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
+          (fini || (!gestion && !mesLignes.length)) ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 14/11 : pas engagé -> pas de carte Engagements */   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
           fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
           carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),
           carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
@@ -4383,8 +4384,8 @@ function EcranConcours() {
   return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
     heroC(ev.titre || F("Concours"), sousTitre),
     h("div", { className: "hs-in" },
-      h("div", { className: "hc-cartes" + (fini ? " hc-c2" : "") },
-        fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
+      h("div", { className: "hc-cartes" + (fini ? " hc-c2" : ((!gestion && !mesLignes.length) ? " hc-c3" : "")) },
+        (fini || (!gestion && !mesLignes.length)) ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 14/11 : pas engagé -> pas de carte Engagements */   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
         fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
         carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
         carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
@@ -4971,7 +4972,7 @@ var HC_CSS = [
   ".hc .hc-titre p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(14px,4vw,19px);color:#F3EEE4;opacity:.92;white-space:nowrap}",
   ".hc .hc-courbe{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:2}",
   ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:40px;padding-bottom:26px}",
-  ".hc .hc-cartes.hc-c2{grid-template-columns:repeat(2,1fr)}.hc .hc-cartes.hc-c2 .hc-carte{aspect-ratio:1.5}",   /* 12/11 : concours passé, deux cartes = deux moitiés */
+  ".hc .hc-cartes.hc-c2{grid-template-columns:repeat(2,1fr)}.hc .hc-cartes.hc-c3{grid-template-columns:repeat(3,1fr)}.hc .hc-cartes.hc-c2 .hc-carte{aspect-ratio:1.5}",   /* 12/11 : concours passé, deux cartes = deux moitiés */
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
