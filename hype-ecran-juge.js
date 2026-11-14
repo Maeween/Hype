@@ -209,6 +209,18 @@
       lire(); var t = setInterval(lire, 15000);
       return function () { vif = false; clearInterval(t); };
     }, [ctx.agenda_id, e.msg]);
+    /* 14/11 09h50 : le cavalier consulte sa feuille (ouverte depuis son résultat du concours) — lecture seule, une feuille par juge.
+       La base ne montre une feuille qu'au juge, au cavalier, à l'équipe qui gère le concours et à la modératrice. */
+    var _v = React.useState(null), vues = _v[0], setVues = _v[1];
+    React.useEffect(function () {
+      var w = ctx.voir; if (!w || !ctx.agenda_id) return;
+      try {
+        var q = supa.from("dressage_feuilles").select("id, reprise, cavalier, cheval, juge_place, lignes, total, possible, pourcentage, created_at").eq("agenda_id", ctx.agenda_id).eq("statut", "signee");
+        q = w.cavalier_id ? q.eq("cavalier_id", w.cavalier_id) : q.eq("cavalier", w.cavalier || "");
+        if (w.cheval_id) q = q.eq("cheval_id", w.cheval_id);
+        q.limit(20).then(function (r) { setVues((r && !r.error && r.data) || []); }, function () { setVues([]); });
+      } catch (x) { setVues([]); }
+    }, []);
     /* 14/11 09h45 : « Publier le classement » → table resultats (origine « juge », statut « saisie »), rattaché au concours,
        au cavalier et au cheval : il apparaît sur la fiche du concours, les performances et les podiums. Republier met à jour
        les mêmes lignes au lieu d'en créer de nouvelles. Égalité de pourcentage = même place (départage FFE à brancher). */
@@ -272,13 +284,41 @@
     React.useEffect(function () { try { window.scrollTo(0, 0); } catch (x) { } return function () { try { recRef.current && recRef.current.abort(); } catch (x) { } }; }, []);
 
     function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } setEcran(ctx.agenda_id ? "concours" : "accueil"); }
-    function hero(titre, sous) {
+    function hero(titre, sous, kick) {
       return h("div", null,
         h("div", { className: "hj-hero" },
           h("img", { src: "images/galops-carte-reprises-gris.webp", alt: "" }),
           h("button", { type: "button", className: "hj-ret", onClick: retour }, "‹ " + T("Retour")),
           h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 }))),
-        h("div", { className: "hj-in", style: { paddingTop: 16 } }, h("div", { className: "hj-k" }, T("Juger une reprise")), h("div", { className: "hj-h1" }, titre), sous));
+        h("div", { className: "hj-in", style: { paddingTop: 16 } }, h("div", { className: "hj-k" }, kick || T("Juger une reprise")), h("div", { className: "hj-h1" }, titre), sous));
+    }
+
+    /* ── 0. lecture d'une feuille signée (cavalier) ── */
+    if (ctx.voir) {
+      var w = ctx.voir, V = vues || [];
+      var moyV = V.length ? V.reduce(function (a, x) { return a + (+x.pourcentage || 0); }, 0) / V.length : null;
+      var Rv = V.length ? (REP[V[0].reprise] || {}) : {};
+      return h("div", { className: "hj" },
+        hero(T("La feuille de notes"), h("div", { className: "hj-sous" }, h("b", null, w.cavalier || (V[0] && V[0].cavalier) || ""), (w.cheval || (V[0] && V[0].cheval)) ? " · " + (w.cheval || V[0].cheval) : "", (Rv.niveauFFE || Rv.titre) ? " · " + (Rv.niveauFFE || Rv.titre) : ""), T("Reprise de dressage")),
+        h("div", { className: "hj-in" },
+          vues === null ? h("div", { className: "hj-astuce" }, T("Chargement…"))
+          : !V.length ? h("div", { className: "hj-astuce" }, T("Aucune feuille signée pour ce couple dans ce concours."))
+          : [
+            h("div", { key: "tot", className: "hj-total" }, h("div", null, h("span", null, V.length > 1 ? T("Moyenne de ") + V.length + T(" juges") : T("Juge en") + " " + (V[0].juge_place || "?"))), h("div", { style: { textAlign: "right" } }, h("b", null, fmt(Math.round(moyV * 100) / 100) + " %"))),
+            V.map(function (x) {
+              var LL = Array.isArray(x.lignes) ? x.lignes : [];
+              return h("div", { key: x.id },
+                COURBE(),
+                h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Juge en") + " " + (x.juge_place || "?"), h("span", null, fmt(x.total) + " / " + fmt(x.possible) + " · " + fmt(x.pourcentage) + " %")),
+                LL.map(function (l, k) {
+                  return h("div", { key: k, className: "hj-li", style: { cursor: "default" } },
+                    h("span", { className: "n" }, String(k + 1)),
+                    h("span", { className: "t" }, (l.t || "") + (l.coef > 1 ? " (×" + l.coef + ")" : ""), l.com ? h("span", { className: "c" }, l.com) : null),
+                    h("span", { className: "v" }, fmt(l.note)));
+                }));
+            })
+          ],
+          h("div", { className: "hj-astuce" }, T("Les commentaires sont ceux que le juge a dictés pendant ta reprise. Relis-les avec ton coach pour préparer la prochaine."))));
     }
 
     /* ── 1. préparer la feuille ── */

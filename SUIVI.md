@@ -34,6 +34,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 10:10 — build 20261114-1010 — « Juger une reprise » : la feuille consultable par le cavalier
+- Sur la fiche du concours (onglet Résultats), un résultat jugé dans Hype affiche son pourcentage et un lien « Voir la feuille du juge ». Le lien apparaît pour le cavalier concerné et pour l'équipe qui gère le concours.
+- Page « La feuille de notes » (lecture seule) : moyenne des juges, puis une feuille par juge (C, E…) avec chaque figure, sa note, son coefficient et le commentaire dicté, et le total.
+- Aucune modification de la base : la protection existante ne montre une feuille qu'au juge, au cavalier, à l'équipe qui gère le concours et à la modératrice.
+- Traductions des nouveaux textes : après validation du français.
+- Fichiers : hype-ecran-juge.js (v=6), hype-ecran-saison.js (v=175), index.html (build), SUIVI.md.
+
 ## 2026-11-14 09:55 — build 20261114-0955 — « Juger une reprise » : publier le classement
 - Sous chaque classement (concours ouvert depuis l'onglet Résultats), bouton « Publier le classement » (deux touches pour confirmer). Chaque couple devient un résultat du concours : place / partants · pourcentage (ex. « 1er / 5 · 66,1 % »), rattaché au cavalier et au cheval → fiche du concours, performances, podiums. Republier met à jour les mêmes lignes (pas de doublon).
 - Aucune modification de la base : table resultats existante (origine « juge », statut « saisie »).

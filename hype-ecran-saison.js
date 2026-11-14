@@ -2674,7 +2674,7 @@ function EcranConcours() {
     if (r.visible === false && !gestion) return;
     var x = grpRes(r.epreuve); if (r.partants) x.partants = Math.max(x.partants, Number(r.partants) || 0);
     var nom = (r.__p && r.__p.pseudo) || prenomInitiale(r.cavalier) || F("Cavalier non renseigné");
-    x.l.push({ cle: "r" + r.id, id: r.id, nom: nom, p: r.__p || { pseudo: nom }, cavalier_id: r.cavalier_id, cheval_id: r.cheval_id, cheval: r.__ch || "", place: Number(r.place) || 0, etat: etatDe(r.classement) || etatDe(r.mention), pen: r.penalites || "", temps: r.temps || "", gains: r.gains, sf: /sf|sans\s*faute/i.test(String(r.mention || "")), statut: estOfficiel(r) ? "officiel" : (r.statut || "saisie"), brouillon: r.visible === false, vids: tvRes[r.id] || [] });
+    x.l.push({ cle: "r" + r.id, id: r.id, nom: nom, p: r.__p || { pseudo: nom }, cavalier_id: r.cavalier_id, cheval_id: r.cheval_id, cheval: r.__ch || "", place: Number(r.place) || 0, etat: etatDe(r.classement) || etatDe(r.mention), pen: r.penalites || "", temps: r.temps || "", gains: r.gains, juge: r.origine === "juge", pct: (String(r.classement || "").match(/([\d.,]+)\s*%/) || [])[1] || "", sf: /sf|sans\s*faute/i.test(String(r.mention || "")), statut: estOfficiel(r) ? "officiel" : (r.statut || "saisie"), brouillon: r.visible === false, vids: tvRes[r.id] || [] });
   });
   ((enDirect && enDirect.lignes) || []).forEach(function (d) {
     var x = grpRes(d.epreuve); if (d.engages) x.partants = Math.max(x.partants, Number(d.engages) || 0); if (d.num_epreuve) x.num = d.num_epreuve; if (d.url_resultats) x.url = d.url_resultats;
@@ -2918,13 +2918,15 @@ function EcranConcours() {
             var uA = l.p && l.p.avatar_url ? String(l.p.avatar_url) : "", phA = uA ? ((uA.charAt(0) === "@") ? ((typeof CAV_IMGS !== "undefined" && CAV_IMGS[uA.slice(1)]) || "") : uA) : "";
             var phSrc = phV || (phC ? ((typeof vignetteHype === "function") ? vignetteHype(phC, 300, 300) : phC) : "") || phA;
             var etiq = l.place ? placeTxt(l.place) : (l.etat || (l.attente ? F("En attente") : "–"));
-            var detail = [l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : "", l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · ");
+            var detail = [l.pct ? l.pct + " %" : "", l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : "", l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · ");
             return h(React.Fragment, { key: l.cle }, h("div", { className: "hc-rc" + (moi && l.cavalier_id === moi.id ? " moi" : "") + ((iL === arrL.length - 1 && arrL.length % 2 === 1) ? " plein" : "") },   /* tablette / ordinateur : une carte seule sur sa ligne prend toute la largeur */
               h("div", { className: "hc-rc-ph" }, phSrc ? h("img", { src: phSrc, alt: "", loading: "lazy", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }) : h("span", null, String(l.nom || "·").charAt(0).toUpperCase()),
                 aVid ? h("button", { type: "button", className: "hc-rc-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M8 5.5v13l10.5-6.5z", fill: "#F3EEE4" }))) : null),
               h("div", { className: "hc-rc-t" },
                 h("span", { className: "hc-rc-pill" + (l.place === 1 ? " w" : "") }, [etiq, l.sf ? F("Sans faute") : ""].filter(Boolean).join(" · ")),
-                h("b", null, l.nom), l.cheval ? h("span", null, l.cheval) : null, detail ? h("small", null, detail) : null),
+                h("b", null, l.nom), l.cheval ? h("span", null, l.cheval) : null, detail ? h("small", null, detail) : null,
+                /* 14/11 09h50 : résultat jugé dans Hype → le cavalier (ou l'équipe qui gère) ouvre la feuille du juge */
+                (l.juge && l.id && (gestion || (moi && l.cavalier_id === moi.id))) ? h("button", { type: "button", className: "hs-lien", style: { marginTop: 6, fontSize: 14, padding: 0, textAlign: "left" }, onClick: function () { try { window.__juger = { agenda_id: idEv, voir: { cavalier_id: l.cavalier_id || null, cheval_id: l.cheval_id || null, cavalier: l.nom, cheval: l.cheval } }; } catch (eV) { } setEcran("juger"); } }, F("Voir la feuille du juge") + " ›") : null),
               peutMod ? h("button", { type: "button", className: "hc-rl-m hc-rc-m" + (modOuv ? " on" : ""), "aria-label": F("Modifier ou supprimer"), onClick: function () { setResMsg(""); setResMod(modOuv ? null : { id: l.id, sup: false }); } },
                 h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4", fill: "none", stroke: "rgba(243,238,228,.75)", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }))) : null),
               modOuv ? h("div", { className: "hc-rl-mp" }, resMod.sup
