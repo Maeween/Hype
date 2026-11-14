@@ -312,7 +312,7 @@
       ".hp-r{display:grid;grid-template-columns:30px minmax(0,1fr) 58px 34px;column-gap:8px;align-items:center;padding:11px 10px;border-top:1px solid rgba(243,238,228,.08)}",
       ".hp-r.tap{cursor:pointer}",
       ".hp-th{border-top:none;background:rgba(243,238,228,.04);padding:10px}",
-      ".hp-th span{font-size:13px;font-weight:600;color:#F3EEE4;letter-spacing:.02em}",
+      ".hp-th span{font-size:13px!important;font-weight:600;color:#F3EEE4;letter-spacing:.02em}",
       ".hp-r .n{font-size:15px;font-weight:500;color:#ECE6DA;text-align:center}",
       ".hp-r .f{font-size:15px;line-height:1.42;color:#F3EEE4;overflow-wrap:anywhere}",
       ".hp-r .v{text-align:center}.hp-r .c{text-align:center;font-size:15px;color:#ECE6DA}",
@@ -338,7 +338,7 @@
       ".hp-recap-l{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(243,238,228,.08)}",
       ".hp-recap-l b{font-size:17px;font-weight:600;color:#F3EEE4;white-space:nowrap}",
       ".hp-recap-l.fort b{font-size:26px}",
-      ".hp-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:linear-gradient(180deg,rgba(7,10,8,0),rgba(7,10,8,.96) 22%);padding:16px 12px calc(10px + env(safe-area-inset-bottom))}",
+      ".hp-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#070A08;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(243,238,228,.08)}",".hp-bar:before{content:'';position:absolute;left:0;right:0;top:-28px;height:28px;background:linear-gradient(180deg,rgba(7,10,8,0),#070A08);pointer-events:none}",
       ".hp-bar-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:90px minmax(0,1fr) 90px;align-items:end;gap:8px}",
       ".hp-bb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:64px;border-radius:16px;border:1px solid rgba(243,238,228,.35);background:rgba(10,10,10,.92);color:#F3EEE4;font:inherit;font-size:14px;line-height:1.2;padding:6px 4px;text-align:center}",
       ".hp-bb.pret{border-color:" + OR + ";color:" + ORT + "}.hp-bb:disabled{opacity:.5}",
@@ -348,6 +348,24 @@
       ".hp-rond.on{border-color:#F3EEE4;box-shadow:0 0 0 7px rgba(243,238,228,.16),0 0 0 14px rgba(243,238,228,.06)}",
       ".hp-mic-t{font-size:14px;line-height:1.35;color:#ECE6DA;text-align:center;max-height:4.1em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}",
       ".hp-mic-t.err{color:#F0B0B0}",
+      ".hp-page{padding-bottom:calc(270px + env(safe-area-inset-bottom))!important}",
+      ".hp-info{margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(150,205,170,.45);color:#CFE8D6;font-size:15px;line-height:1.45}",
+      ".hp-outils{margin-top:16px;display:flex;flex-direction:column;gap:12px}",
+      ".hp-continu{min-height:56px;border-radius:999px;border:1px solid " + OR + ";background:transparent;color:" + ORT + ";font:inherit;font-size:17px;font-weight:500;padding:8px 18px;line-height:1.3}",
+      ".hp-continu.on{border-color:#F3EEE4;color:#F3EEE4;box-shadow:0 0 0 4px rgba(243,238,228,.1)}",
+      ".hp-reg{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}",
+      ".hp-reg>span{font-size:15px;color:#ECE6DA}.hp-reg-b{display:flex;gap:6px;flex-wrap:wrap}.hp-reg-b .hj-pill{min-height:44px;font-size:15px;padding:6px 12px}",
+      ".hp-aide{border:1px solid rgba(243,238,228,.14);border-radius:14px;padding:12px 14px}",
+      ".hp-aide summary{font-size:16px;color:#F3EEE4;cursor:pointer}",
+      ".hp-aide ul{margin:10px 0 0;padding-left:18px}.hp-aide li{font-size:15px;line-height:1.5;color:#ECE6DA;margin:6px 0}.hp-aide li b{color:#F3EEE4;font-weight:600}",
+      ".hp-aide p{font-size:15px;line-height:1.55;color:#ECE6DA;margin:10px 0 0}",
+      ".hp-fc{max-width:720px;margin:0 auto 10px;border:1px solid rgba(243,238,228,.35);border-radius:16px;background:rgba(14,15,15,.97);padding:10px 14px;box-shadow:0 -10px 30px rgba(0,0,0,.6)}",
+      ".hp-fc-n{display:block;font-size:14px;color:" + ORT + ";letter-spacing:.04em}",
+      ".hp-fc-t{display:block;margin-top:4px;font-size:19px;line-height:1.35;color:#F3EEE4;font-weight:500;max-height:4.1em;overflow:auto}",
+      ".hp-reprendre{display:block;width:100%;max-width:720px;margin:0 auto 10px;min-height:58px;border-radius:999px;border:1px solid #F3EEE4;background:rgba(10,10,10,.95);color:#F3EEE4;font:inherit;font-size:18px;font-weight:600}",
+      ".hp-rond.cont{border-color:" + OR + ";box-shadow:0 0 0 7px rgba(232,203,148,.12)}",
+      ".hp-t1 .hp-r .f{font-size:18px}.hp-t1 .rq-m{font-size:16px}.hp-t1 .hp-nb{font-size:20px;height:38px;min-width:52px}.hp-t1 .hp-r .n,.hp-t1 .hp-r .c{font-size:17px}.hp-t1 .hp-fc-t{font-size:23px}",
+      ".hp-t2 .hp-r .f{font-size:21px}.hp-t2 .rq-m{font-size:18px}.hp-t2 .hp-nb{font-size:23px;height:42px;min-width:56px}.hp-t2 .hp-r .n,.hp-t2 .hp-r .c{font-size:19px}.hp-t2 .hp-fc-t{font-size:27px}.hp-t2 .hp-r{grid-template-columns:28px minmax(0,1fr) 62px 40px;column-gap:6px}",
       "@media (min-width:700px){.hp-r{grid-template-columns:40px minmax(0,1.5fr) 72px 56px minmax(0,1fr);column-gap:12px;padding:12px 14px}.hp-r .rq{display:block;font-size:15px;line-height:1.45;color:#ECE6DA;border-left:1px solid rgba(243,238,228,.1);padding-left:12px;align-self:stretch;display:flex;align-items:center}.hp-r .rq.vide{color:rgba(236,230,218,.55)}.hp-li.cur .rq.vide{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:rgba(236,230,218,.8)}.rq-m{display:none}.hp-r .f,.hp-r .n,.hp-r .c{font-size:16px}.hp-id-g{grid-template-columns:repeat(4,1fr)}.hp-ed{padding-left:66px;padding-right:20px}}"
     ].join("\n");
     document.head.appendChild(s);
@@ -358,7 +376,7 @@
   function lireNote(phrase, max) {
     var p = String(phrase || "").trim(), bas = p.toLowerCase();
     var m = bas.match(/^\s*(\d{1,2})(?:\s*(?:[,.]|virgule)\s*(\d))?/), note = null, reste = p;
-    if (m) { note = Number(m[1]) + (m[2] ? Number(m[2]) / 10 : 0); reste = p.slice(m[0].length); }
+    if (m) { note = Number(m[1]) + (m[2] ? Number(m[2]) / 10 : 0); reste = p.slice(m[0].length); var md = !m[2] && reste.match(/^\s*et dem(?:ie|i)\b/i); if (md) { note += .5; reste = reste.slice(md[0].length); } }
     else {
       var m2 = bas.match(/^\s*(z[ée]ro|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix)\b(\s*(et demie?|virgule cinq|,\s*5))?/);
       if (m2) { note = MOTS[m2[1]] + (m2[2] ? .5 : 0); reste = p.slice(m2[0].length); }
@@ -424,8 +442,24 @@
     var f = _f[0], setF0 = _f[1];
     function setF(n) { setF0(n); try { localStorage.setItem(cle, JSON.stringify(n)); } catch (e) { } }
     var _r = React.useState({ cavalier: ctx.cavalier || "", cheval: ctx.cheval || "", reprise: ctx.reprise || "", juge: "C" }), choix = _r[0], setChoix = _r[1];
-    var _e = React.useState({ ecoute: false, dit: "", msg: "", err: "", busy: false }), e = _e[0], setE = _e[1];
+    var _e = React.useState(function () { var r = false; try { r = !!(f && f.lignes && f.lignes.some(function (l) { return l && l.note != null; })); } catch (x) { } return { ecoute: false, dit: "", msg: "", err: "", busy: false, retrouve: r }; }), e = _e[0], setE = _e[1];
     var recRef = React.useRef(null);
+    /* 14/11 11h30 (Blandine : « des jurys d'un certain âge… tout ce qu'on peut faire pour leur rendre simple ») :
+       taille du texte réglable, figure en cours en grand, mode « Juger en continu » tout à la voix */
+    var _pr = React.useState(function () { var o = { taille: 0, annonce: "tout" }; try { o.taille = Math.min(2, Math.max(0, +localStorage.getItem("hype_juge_taille") || 0)); o.annonce = localStorage.getItem("hype_juge_annonce") || "tout"; } catch (x) { } return o; }), pref = _pr[0], setPref0 = _pr[1];
+    function setPref(o) { var n = Object.assign({}, pref, o); setPref0(n); try { localStorage.setItem("hype_juge_taille", String(n.taille)); localStorage.setItem("hype_juge_annonce", n.annonce); } catch (x) { } }
+    var contRef = React.useRef(false), fRef = React.useRef(f), lastRef = React.useRef(null), echecRef = React.useRef(0), wakeRef = React.useRef(null), bipRef = React.useRef(null), prefRef = React.useRef(pref);
+    fRef.current = f; prefRef.current = pref;
+    React.useEffect(function () {
+      function vis() {
+        if (document.visibilityState === "hidden" && contRef.current) {
+          contRef.current = false; try { recRef.current && recRef.current.abort(); } catch (x) { } try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (x) { }
+          setE(function (x) { return Object.assign({}, x, { continu: false, coupe: true, ecoute: false }); });
+        }
+      }
+      document.addEventListener("visibilitychange", vis);
+      return function () { document.removeEventListener("visibilitychange", vis); contRef.current = false; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (x) { } try { wakeRef.current && wakeRef.current.release(); } catch (x) { } };
+    }, []);
     var _ph = React.useState({}), photos = _ph[0], setPhotos = _ph[1];
     var _rg = React.useState(false), reglOuv = _rg[0], setReglOuv = _rg[1];
     React.useEffect(function () {
@@ -639,9 +673,99 @@
         if (lu.note == null) setE(function (x) { return Object.assign({}, x, { err: T("Je n’ai pas entendu de note : redis-la au début de la phrase, ou touche-la.") }); });
         else setE(function (x) { return Object.assign({}, x, { reconnu: fmtN(lu.note) + (lu.com ? " · " + lu.com : "") }); });
       };
-      setE(Object.assign({}, e, { ecoute: true, dit: "", err: "", reconnu: "" }));
+      setE(Object.assign({}, e, { ecoute: true, dit: "", err: "", reconnu: "", info: "", retrouve: false }));
       try { r.start(); } catch (x) { setE(Object.assign({}, e, { ecoute: false })); }
     }
+    /* ── mode « Juger en continu » : Hype annonce la figure, écoute la note, enregistre, passe à la suivante ── */
+    function lisible(t) { return String(t || "").replace(/\s*[—–]\s*/g, ", ").replace(/\s*·\s*/g, ", "); }
+    function parler(txt, ensuite) {
+      var fini = false; function go() { if (fini) return; fini = true; if (ensuite) ensuite(); }
+      try {
+        var ss = window.speechSynthesis; if (!ss || !txt) { go(); return; }
+        ss.cancel(); var u = new SpeechSynthesisUtterance(txt); u.lang = "fr-FR"; u.rate = 0.95; u.onend = go; u.onerror = go; ss.speak(u);
+        setTimeout(go, 2000 + String(txt).length * 95);   /* garde-fou : sur iPhone la fin de lecture n'est pas toujours signalée */
+      } catch (x) { go(); }
+    }
+    function bip(ensuite) {
+      try { var C = window.AudioContext || window.webkitAudioContext; var c = bipRef.current || (bipRef.current = new C()); var o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; g.gain.value = 0.08; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + 0.15); } catch (x) { }
+      setTimeout(function () { if (ensuite) ensuite(); }, 350);
+    }
+    function annoncer(k, avant) {
+      var ff = fRef.current; if (!ff || !contRef.current) return; var l = ff.lignes[k] || {}, a = prefRef.current.annonce;
+      var quoi = (l.ens ? T("Note d’ensemble") + " " : T("Figure") + " ") + (k + 1) + (a === "tout" ? ". " + lisible(l.t) : "");
+      if (a === "bip") { if (avant) parler(avant, function () { bip(ecouterC); }); else bip(ecouterC); }
+      else parler((avant ? avant + " " : "") + quoi, ecouterC);
+    }
+    async function eveil(on) { try { if (on) { if (navigator.wakeLock && !wakeRef.current) wakeRef.current = await navigator.wakeLock.request("screen"); } else if (wakeRef.current) { wakeRef.current.release(); wakeRef.current = null; } } catch (x) { } }
+    function arreterC(etat) {
+      contRef.current = false; try { recRef.current && recRef.current.abort(); } catch (x) { } eveil(false);
+      setE(function (x) { return Object.assign({}, x, { continu: false, ecoute: false }, etat || {}); });
+    }
+    function demarrerC() {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { setE(Object.assign({}, e, { err: T("La dictée n’est pas possible sur ce téléphone : touche une ligne pour mettre la note à la main.") })); return; }
+      contRef.current = true; echecRef.current = 0; eveil(true);
+      setE(Object.assign({}, e, { continu: true, coupe: false, err: "", info: "", reconnu: "", retrouve: false }));
+      autoRef.current = true; doigtRef.current = 0; setF(Object.assign({}, f));
+      annoncer(fRef.current.cur);
+    }
+    function ecouterC() {
+      if (!contRef.current) return;
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) { arreterC(); return; }
+      var r = new SR(); recRef.current = r; r.lang = "fr-FR"; r.interimResults = true; r.continuous = false;
+      var fin = "";
+      r.onresult = function (ev) { var t = ""; for (var k = 0; k < ev.results.length; k++) t += ev.results[k][0].transcript; fin = t; setE(function (x) { return Object.assign({}, x, { dit: t }); }); };
+      r.onerror = function (ev) {
+        var c = ev && ev.error;
+        if (c === "not-allowed" || c === "service-not-allowed") arreterC({ err: T("Le micro est bloqué. Sur iPhone : Réglages › Safari › Micro › Autoriser. Puis touche « Juger en continu ».") });
+      };
+      r.onend = function () {
+        setE(function (x) { return Object.assign({}, x, { ecoute: false }); });
+        if (!contRef.current) return;
+        if (!String(fin).trim()) { echecRef.current++; if (echecRef.current > 8) { arreterC({ coupe: true }); return; } setTimeout(ecouterC, 250); return; }
+        echecRef.current = 0; traiter(fin);
+      };
+      setE(function (x) { return Object.assign({}, x, { ecoute: true, dit: "" }); });
+      try { r.start(); } catch (x) { echecRef.current++; if (echecRef.current > 8) arreterC({ coupe: true }); else setTimeout(ecouterC, 600); }
+    }
+    function ecrire(k, o, cur2) {
+      var ff = fRef.current, n = Object.assign({}, ff); n.lignes = ff.lignes.slice(); n.lignes[k] = Object.assign({}, n.lignes[k], o); n.cur = cur2; n.ouv = null;
+      fRef.current = n; autoRef.current = true; setF(n); return n;
+    }
+    function traiter(txt) {
+      var ff = fRef.current, b = String(txt).toLowerCase().trim();
+      if (/\b(pause|stop|arr[eê]te)\b/.test(b) && b.length < 30) { arreterC({ info: T("En pause.") }); parler(T("Pause.")); return; }
+      if (/r[ée]p[eè]te/.test(b)) { annoncer(ff.cur); return; }
+      var mf = b.match(/figure\s*(\d{1,2})/);
+      if (mf && /(reviens|revenir|retour|va |aller|passe)/.test(b)) { var k = Math.max(0, Math.min(ff.lignes.length - 1, Number(mf[1]) - 1)); ecrire(k, {}, k); annoncer(k); return; }
+      if (/pr[ée]c[ée]dente/.test(b)) { var k2 = Math.max(0, ff.cur - 1); ecrire(k2, {}, k2); annoncer(k2); return; }
+      if (/^(termin|c.est fini|fini\b|j.ai fini)/.test(b)) {
+        var mq = []; ff.lignes.forEach(function (l, j) { if (l.note == null) mq.push(j + 1); });
+        arreterC();
+        parler(mq.length ? T("Il manque encore la note de :") + " " + mq.slice(0, 6).join(", ") + "." : T("Feuille complète. Vérifie, puis touche Signer et envoyer."));
+        return;
+      }
+      var corr = /^non\b/.test(b);
+      var t2 = corr ? String(txt).replace(/^\s*non\b[\s,]*/i, "").replace(/^(c.est|plutôt)\s+/i, "") : txt;
+      var lu = lireNote(t2, ff.max);
+      if (lu.note == null) { setE(function (x) { return Object.assign({}, x, { err: T("Je n’ai pas entendu de note : redis-la au début de la phrase.") }); }); parler(T("Je n’ai pas compris la note. Redis-la."), ecouterC); return; }
+      var dit = fmtN(lu.note).replace(/,0$/, "");
+      if (corr && lastRef.current != null) {
+        var kc = lastRef.current, ancien = ff.lignes[kc] || {};
+        ecrire(kc, { note: lu.note, com: lu.com || ancien.com || "" }, ff.cur);
+        setE(function (x) { return Object.assign({}, x, { err: "", reconnu: T("Figure") + " " + (kc + 1) + " " + T("corrigée :") + " " + dit + (lu.com ? " · " + lu.com : "") }); });
+        parler(T("Corrigé.") + " " + T("Figure") + " " + (kc + 1) + " : " + dit + ".", ecouterC); return;
+      }
+      var kn = ff.cur, L2 = ff.lignes, suiv = null;
+      for (var j = kn + 1; j < L2.length; j++) if (L2[j].note == null) { suiv = j; break; }
+      if (suiv == null) for (var j2 = 0; j2 < L2.length; j2++) if (j2 !== kn && L2[j2].note == null) { suiv = j2; break; }
+      lastRef.current = kn;
+      ecrire(kn, { note: lu.note, com: lu.com || L2[kn].com || "" }, suiv == null ? kn : suiv);
+      setE(function (x) { return Object.assign({}, x, { err: "", reconnu: dit + (lu.com ? " · " + lu.com : "") }); });
+      if (suiv == null) { arreterC(); parler(dit + ". " + T("Feuille complète. Vérifie, puis touche Signer et envoyer.")); return; }
+      annoncer(suiv, dit + ".");
+    }
+
     async function envoyer() {
       setE(Object.assign({}, e, { busy: true, err: "", msg: "" }));
       try {
@@ -667,7 +791,8 @@
     function ouvrir(k) { var n = Object.assign({}, f, { cur: k, ouv: (f.ouv === k && i === k) ? null : k }); setF(n); setE(Object.assign({}, e, { dit: "", err: "", reconnu: "" })); }
     function signer() {
       if (manque.length) { setE(Object.assign({}, e, { err: T("Il manque encore la note de :") + " " + manque.slice(0, 8).join(", ") + (manque.length > 8 ? "…" : "") + "." })); autoRef.current = true; doigtRef.current = 0; setF(Object.assign({}, f, { cur: manque[0] - 1 })); return; }
-      envoyer();
+      if (!e.signerOk) { setE(Object.assign({}, e, { signerOk: true, err: "" })); setTimeout(function () { setE(function (x) { return Object.assign({}, x, { signerOk: false }); }); }, 5000); return; }
+      setE(Object.assign({}, e, { signerOk: false })); envoyer();
     }
     function editeur(k) {
       var l = L[k];
@@ -686,7 +811,8 @@
     }
     var etat = manque.length ? T("En cours") : T("Complète, à signer");
 
-    return h("div", { className: "hj hp-page" },
+    var curL = L[i] || {};
+    return h("div", { className: "hj hp-page hp-t" + pref.taille },
       hero(T("Juger une reprise à la voix"), null, T("Concours de dressage")),
       h("div", { className: "hj-in hp-in" },
         h("div", { className: "hp-id" },
@@ -699,6 +825,25 @@
             h("span", { className: "hp-etat" + (manque.length ? "" : " ok") }, etat),
             h("span", { className: "hp-prog" }, h("b", { className: "hp-num" }, String(L.length - manque.length)), " " + T("figures notées sur") + " ", h("b", { className: "hp-num" }, String(L.length))),
             h("span", { className: "hp-prog" }, T("juge en") + " " + f.juge + " · " + T("notes sur") + " " + f.max))),
+        e.retrouve ? h("div", { className: "hp-info" }, T("Feuille retrouvée, rien n’est perdu : on reprend à la figure") + " " + (i + 1) + ".") : null,
+        h("div", { className: "hp-outils" },
+          h("button", { type: "button", className: "hp-continu" + (e.continu ? " on" : ""), onClick: function () { if (e.continu) { arreterC({ info: T("En pause.") }); try { window.speechSynthesis.cancel(); } catch (x) { } } else demarrerC(); } },
+            e.continu ? "● " + T("Juger en continu : en cours (toucher pour mettre en pause)") : (e.info || e.coupe) ? T("Reprendre à la figure") + " " + (i + 1) : T("Juger en continu, tout à la voix")),
+          h("div", { className: "hp-reg" },
+            h("span", null, T("Taille du texte")),
+            h("div", { className: "hp-reg-b" }, [0, 1, 2].map(function (t) { return h("button", { key: t, type: "button", className: "hj-pill" + (pref.taille === t ? " on" : ""), style: { fontSize: 15 + 4 * t, minWidth: 48 }, "aria-label": T("Taille du texte") + " " + (t + 1), onClick: function () { setPref({ taille: t }); } }, "A"); }))),
+          h("div", { className: "hp-reg" },
+            h("span", null, T("Hype annonce")),
+            h("div", { className: "hp-reg-b" }, [["tout", T("la figure")], ["num", T("le numéro")], ["bip", T("un bip")]].map(function (x) { return h("button", { key: x[0], type: "button", className: "hj-pill" + (pref.annonce === x[0] ? " on" : ""), onClick: function () { setPref({ annonce: x[0] }); } }, x[1]); }))),
+          h("details", { className: "hp-aide" }, h("summary", null, T("Ce que tu peux dire")),
+            h("ul", null,
+              h("li", null, h("b", null, "« 6,5, arrêt un peu court »"), " — " + T("la note puis la remarque ; Hype passe à la figure suivante")),
+              h("li", null, h("b", null, "« non, 7 »"), " — " + T("corrige la note qui vient d’être dite")),
+              h("li", null, h("b", null, "« répète »"), " — " + T("Hype relit la figure")),
+              h("li", null, h("b", null, "« reviens à la figure 5 »"), " — " + T("pour revenir sur une figure")),
+              h("li", null, h("b", null, "« pause »"), " — " + T("Hype arrête d’écouter ; « Reprendre » pour continuer")),
+              h("li", null, h("b", null, "« termine »"), " — " + T("Hype dit s’il manque des notes"))),
+            h("p", null, T("Si ça coupe (appel, écran éteint, silence trop long), rien n’est perdu : chaque note est gardée sur le téléphone. Touche « Reprendre » et Hype repart à la bonne figure. Un écouteur dans une oreille évite de gêner les voisins.")))),
         tableProtocole(L, { cur: i, ouv: f.ouv, onRow: ouvrir, editeur: editeur }),
         h("div", { className: "hp-recap" },
           h("div", { className: "hp-recap-t" }, T("Récapitulatif de la feuille"), manque.length ? h("span", { className: "hp-prov" }, T("provisoire")) : null),
@@ -717,17 +862,23 @@
         h("div", { className: "hj-astuce" }, T("Dis la note puis ton commentaire, comme à un secrétaire : Hype écrit tout et passe à la figure suivante. Touche une ligne pour la corriger : note, coefficient et remarque. La feuille est gardée sur ton téléphone à chaque note."))),
       /* commande fixe : le micro reste à portée même quand le juge fait défiler la feuille */
       h("div", { className: "hp-bar" },
+        h("div", { className: "hp-fc", onClick: function () { autoRef.current = true; doigtRef.current = 0; setF(Object.assign({}, f)); } },
+          h("span", { className: "hp-fc-n" }, (curL.ens ? T("Note d’ensemble") : T("Figure")) + " " + (i + 1) + " / " + L.length + (curL.note != null ? " · " + T("notée") + " " + fmtN(curL.note) : "")),
+          h("span", { className: "hp-fc-t" }, curL.t || "")),
+        ((e.coupe || e.info) && !e.continu) ? h("button", { type: "button", className: "hp-reprendre", onClick: demarrerC }, T("Reprendre à la figure") + " " + (i + 1)) : null,
         h("div", { className: "hp-bar-in" },
           h("button", { type: "button", className: "hp-bb", onClick: function () { try { document.getElementById("hp-classement").scrollIntoView({ behavior: "smooth", block: "start" }); } catch (x) { } } }, h("span", { className: "hp-bb-i" }, "☰"), T("Classement")),
           h("div", { className: "hp-mic" },
-            h("button", { type: "button", className: "hp-rond" + (e.ecoute ? " on" : ""), "aria-label": T("Dicter la note et le commentaire"), onClick: dicter },
+            h("button", { type: "button", className: "hp-rond" + (e.ecoute ? " on" : "") + (e.continu ? " cont" : ""), "aria-label": T("Dicter la note et le commentaire"), onClick: function () { if (e.continu) { arreterC({ info: T("En pause.") }); try { window.speechSynthesis.cancel(); } catch (x) { } } else dicter(); } },
               h("svg", { width: 22, height: 30, viewBox: "0 0 30 40" }, h("rect", { x: 9, y: 2, width: 12, height: 22, rx: 6, fill: "none", stroke: "#F3EEE4", strokeWidth: 2 }), h("path", { d: "M4 18c0 6 5 11 11 11s11-5 11-11M15 29v8M9 37h12", fill: "none", stroke: "#F3EEE4", strokeWidth: 2, strokeLinecap: "round" }))),
             h("div", { className: "hp-mic-t" + (e.err ? " err" : "") },
               e.err ? e.err
               : e.ecoute ? (e.dit ? "« " + e.dit + " »" : "● " + T("JE T’ÉCOUTE…"))
+              : e.info ? e.info
               : e.reconnu ? "✓ " + T("Reconnu :") + " " + e.reconnu
+              : e.continu ? T("Hype annonce la figure, puis t’écoute")
               : T("Touche et dis la note, puis ton commentaire"))),
-          h("button", { type: "button", className: "hp-bb" + (manque.length ? "" : " pret"), disabled: e.busy, onClick: signer }, h("span", { className: "hp-bb-i" }, "✎"), e.busy ? "…" : T("Signer et envoyer")))));
+          h("button", { type: "button", className: "hp-bb" + (manque.length ? "" : " pret"), disabled: e.busy, onClick: signer }, h("span", { className: "hp-bb-i" }, "✎"), e.busy ? "…" : e.signerOk ? T("Touche encore pour signer") : T("Signer et envoyer")))));
   }
 
   /* ── 14/11 (refonte d'après la maquette validée) : le protocole en tableau N° · Figure · Note · Coef. · Remarques.
