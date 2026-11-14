@@ -112,6 +112,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 20h29 — PUBLIÉ (build 20261114-2120, index.html + hype-ecran-saison.js v=202) : mode édition de la coach + partage simple pour les cavaliers
+- Blandine 18h32 : « quand on est coach, qu'on ait un mode édition… on a le même visuel que tout le monde… et quand on a besoin d'intervenir, tous les boutons s'affichent ». Validé 18h35 / 20h27 (« Top »).
+- Page du concours : la coach voit par défaut la page des cavaliers (heures masquées comprises) ; bouton « Mode édition » sous le titre → bandeau « Mode édition » + « Terminer », tous les outils (crayons, groupes, horaires, décaler, engagements, case des heures, Prévenir le groupe, partage complet modifiable, cadenas). Repart en vue normale à chaque ouverture. Page verrouillée : le mode édition ne montre que le cadenas.
+- RÈGLE (Blandine 18h33) : les cavaliers ne doivent pas pouvoir modifier les textes partagés (« ils peuvent raconter n'importe quoi »). Hors mode édition, « Partager » envoie une phrase fixe + le lien court (« Ordre de passage — CSO Versailles (dimanche 15 novembre), sur la page du concours : » + lien), l'image d'aperçu se prépare en arrière-plan.
+
 ## 2026-11-14 18h30 — PUBLIÉ (build 20261114-2050, index.html + hype-ecran-saison.js v=201) + SQL : cadenas de la page du concours
 - SQL appliqué (Blandine « Ok » 18h26) : club_agenda.page_verrouillee boolean not null default false. Aucun droit modifié.
 - Blandine 15h26 : « loquer la page quand tout est en place… que quelqu'un ne puisse pas effacer sans le vouloir une partie des infos ».

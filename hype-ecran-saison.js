@@ -1639,6 +1639,7 @@ function EcranConcours() {
   var _pm = React.useState(""); var pushMsg = _pm[0], setPushMsg = _pm[1];
   var _ptm = React.useState(""); var partMsg = _ptm[0], setPartMsg = _ptm[1];
   var _pmq = React.useState(null); var propMasq = _pmq[0], setPropMasq = _pmq[1];
+  var _med = React.useState(false); var modeEdition = _med[0], setModeEdition = _med[1];   /* 14/11 18h32 : mode édition de la coach (vue normale = celle des cavaliers) */
   /* 14/11 18h07 : un lien 2hype.fr/concours/…/<partie> arrive sur /?partie=<partie>#r=<id> → on ouvre la bonne carte et on descend jusqu'à la partie */
   var refPartieLien = React.useRef(null);
   if (refPartieLien.current === null) { try { var qP = new URLSearchParams(location.search); refPartieLien.current = window.__hsPartieLien || qP.get("partie") || ""; window.__hsPartieLien = ""; } catch (eQp) { refPartieLien.current = ""; } }
@@ -2155,16 +2156,18 @@ function EcranConcours() {
   /* 14/11 15h26 (Blandine : « loquer la page quand tout est en place… que quelqu'un ne puisse pas effacer sans le vouloir ») :
      page verrouillée (club_agenda.page_verrouillee, pour tout le monde) → plus aucun bouton de modification ou de suppression ;
      restent la lecture, cocher / décocher, les partages et les notifications. La coach garde le cadenas et la vue complète des heures. */
+  /* 14/11 18h32 (Blandine : « qu'on ait un mode édition… comme ça on a le même visuel que tout le monde ») :
+     la coach voit la page comme ses cavaliers ; « Mode édition » fait apparaître tous ses outils (sauf si la page est verrouillée). */
   var gestionReelle = gestion;
   var pageVerrouillee = !!ev.page_verrouillee;
-  if (gestion && pageVerrouillee) gestion = false;
+  if (gestion && (!modeEdition || pageVerrouillee)) gestion = false;
   async function basculerVerrou() {
     var nv = !ev.page_verrouillee;
     if (!nv) { var okD = false; try { okD = window.confirm(F("Déverrouiller la page pour la modifier ?")); } catch (eC) { okD = true; } if (!okD) return; }
     try { var r = await supa.from("club_agenda").update({ page_verrouillee: nv }).eq("id", idEv).select("id"); if (r && r.error) { setPartMsg(F("Erreur : ") + (r.error.message || "")); return; } } catch (eV) { setPartMsg(F("Erreur : ") + String((eV && eV.message) || eV)); return; }
     setEv(Object.assign({}, ev, { page_verrouillee: nv }));
   }
-  var blocCadenas = gestionReelle ? h("div", { key: "cad", style: { textAlign: "center", margin: "0 0 18px" } },
+  var blocCadenas = (gestionReelle && modeEdition) ? h("div", { key: "cad", style: { textAlign: "center", margin: "0 0 18px" } },
     h("button", { type: "button", onClick: basculerVerrou, style: { display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "1px solid " + (pageVerrouillee ? "rgba(201,166,107,.7)" : "rgba(243,238,228,.22)"), borderRadius: 999, padding: "8px 16px", color: pageVerrouillee ? "#E6CFA0" : "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } },
       h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("rect", { x: 5, y: 11, width: 14, height: 9, rx: 2, fill: "none", stroke: "currentColor", strokeWidth: 1.5 }), h("path", { d: pageVerrouillee ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-2", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" })),
       pageVerrouillee ? F("Page verrouillée · toucher pour modifier") : F("Verrouiller la page")),
@@ -2305,7 +2308,18 @@ function EcranConcours() {
      une partie (ordre de passage, ordre d'embarquement, groupes du paddock) = un message prêt + la liste + le lien du concours ;
      modifiable dans l'appli de messagerie avant l'envoi. Sans partage du téléphone : copié. */
   /* 14/11 13h45 (Blandine : « à chaque fois, il faut un aperçu en image… un screen du haut de la page avec les infos ») */
+  /* 14/11 18h35 (Blandine : « il ne faut pas que les cavaliers puissent partager en modifiant les textes… ils peuvent raconter n'importe quoi ») :
+     hors mode édition, « Partager » envoie une phrase fixe + le lien court (aperçu en image) — aucun texte modifiable dans Hype. */
+  function partageSimple(partie, libelle, apercu) {
+    var lien = hsLienConcoursLisible(ev, idEv, partie) || hsLienConcoursApp(idEv);
+    var txt = libelle + " — " + ((ev && ev.titre) || F("Concours")) + (ev ? " (" + hsPlage(ev) + ")" : "") + F(", sur la page du concours :") + "\n" + lien;
+    /* l'image de l'aperçu se prépare en arrière-plan : le partage s'ouvre tout de suite (sinon l'iPhone le refuse) */
+    if (apercu && typeof hsImageListeVan === "function") (async function () { try { var ph = hsPhotoDe(idEv); var bI = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: libelle, titre: (ev && ev.titre) || F("Concours"), sous: ev ? hsPlage(ev) : "", lignes: apercu.lignes || [], rond: false, appel: F("Ouvre la page sur Hype") + " →" }); if (bI) await hsDeposerApercu(new File([bI], "a.jpg", { type: "image/jpeg" }), idEv, partie); } catch (eBg) { } })();
+    try { if (navigator.share) { navigator.share({ text: txt }).catch(function () { }); return; } } catch (eS) { return; }
+    try { navigator.clipboard.writeText(txt).then(function () { setPartMsg(F("Lien copié : colle-le dans ta conversation.")); }, function () { }); } catch (eC) { }
+  }
   async function partagerPartie(intro, lignes, fin, apercu, opt) {
+    if (!gestion && apercu && apercu.partie) { partageSimple(apercu.partie, apercu.libelle || F("Concours"), apercu); return; }
     /* 14/11 14h39 (Blandine : « ça me met tout entassé… plus lisible, plus espacé, une petite flèche à la ligne ») :
        WhatsApp écrase les retours à la ligne quand le texte accompagne une image → on passe par « Prévenir le groupe »
        (texte seul, bien aéré, titre en gras) ; l'image reste possible avec « Avec l'image ». */
@@ -2333,7 +2347,7 @@ function EcranConcours() {
 
   var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
   function lienPartage(cle, label, f) { return h("div", { key: cle, id: "hs-part-" + cle, style: { textAlign: "center", margin: "14px 0 4px" } }, (partMsg && partCle.current === cle) ? h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,.75)", marginBottom: 4 } }, partMsg) : null, h("button", { type: "button", onClick: function () { partCle.current = cle; f(); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } }, ICO_PART, h("span", { style: { borderBottom: "1px solid rgba(243,238,228,.3)", paddingBottom: 1 } }, label))); }
-  var masquerH = !!(ev && ev.heures_passage_masquees) && !gestionReelle;
+  var masquerH = !!(ev && ev.heures_passage_masquees) && !gestion;
   async function basculerHeuresPassage() {
     var nv = !ev.heures_passage_masquees;
     try { var r = await supa.from("club_agenda").update({ heures_passage_masquees: nv }).eq("id", idEv).select("id"); if (r && r.error) { setPartMsg(F("Erreur : ") + (r.error.message || "")); return; } } catch (eH) { setPartMsg(F("Erreur : ") + String((eH && eH.message) || eH)); return; }
@@ -4415,9 +4429,16 @@ function EcranConcours() {
                 return h("span", { key: i, className: "al-npl" }, h("b", null, (p.ordre_passage ? F("N° ") + p.ordre_passage : "–") + " · " + (ch || "?")), " · " + qui + (p.epreuve ? " · " + hsEpCourt(p.epreuve) : ""));
               }))) : null));
       })();
+  var barreEdition = gestionReelle ? h("div", { key: "bed", style: { display: "flex", alignItems: "center", justifyContent: modeEdition ? "space-between" : "flex-end", gap: 10, margin: "4px 0 16px", padding: modeEdition ? "10px 14px" : 0, borderRadius: 14, border: modeEdition ? "1px solid rgba(201,166,107,.5)" : "none", background: modeEdition ? "rgba(201,166,107,.07)" : "transparent" } },
+    modeEdition ? h("span", { style: { fontFamily: "Montserrat,sans-serif", fontSize: 13, color: "#E6CFA0" } }, pageVerrouillee ? F("Mode édition · page verrouillée") : F("Mode édition")) : null,
+    h("button", { type: "button", onClick: function () { setModeEdition(!modeEdition); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: "1px solid " + (modeEdition ? "rgba(201,166,107,.75)" : "rgba(243,238,228,.22)"), borderRadius: 999, padding: "7px 14px", color: modeEdition ? "#E6CFA0" : "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } },
+      modeEdition ? null : h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinejoin: "round" })),
+      modeEdition ? F("Terminer") : F("Mode édition"))) : null;
   return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
     heroC(ev.titre || F("Concours"), sousTitre),
     h("div", { className: "hs-in" },
+      barreEdition,
+      (gestionReelle && modeEdition && pageVerrouillee) ? blocCadenas : null,
       h("div", { className: "hc-cartes" + (fini ? " hc-c2" : ((!gestion && !mesLignes.length) ? " hc-c3" : "")) },
         (fini || (!gestion && !mesLignes.length)) ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 14/11 : pas engagé -> pas de carte Engagements */   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
         fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
@@ -4482,6 +4503,7 @@ function EcranConcours() {
             horMsg ? h("div", { className: "ic-msg" }, horMsg) : null);
           /* 14/11 13h23 (Blandine) : partager seulement cette partie (date, lieu, horaires) avec un petit message et le lien du concours */
           var partagerInfos = function () {
+            if (!gestion) { partageSimple("infos", F("Informations du concours"), null); return; }
             var lignesH = tl.map(function (x) { return "▸ " + String(x.t || "").replace(/^0(\d)/, "$1") + " · " + x.l + (x.s ? " (" + x.s + ")" : ""); });
             var txt = ["*" + (ev.titre || F("Concours")) + "*" + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim() ? "📍 " + String(ev.lieu || "").trim() : ""].filter(Boolean).join("\n")
               + (lignesH.length ? "\n\n" + lignesH.join("\n") : "")
@@ -4681,7 +4703,7 @@ function EcranConcours() {
           ["resultats", F("Résultats"), F("Les classements de l’équipe, épreuve par épreuve, dès qu’ils sont publiés.")],
           ["medias", F("Médias"), F("Les photos et les vidéos du concours, par cavalier et par cheval.")]
         ]).filter(Boolean);
-        return h("div", { className: "hc-somm", style: { margin: "34px 0 6px" } }, blocCadenas,
+        return h("div", { className: "hc-somm", style: { margin: "34px 0 6px" } }, pageVerrouillee ? null : blocCadenas,
           h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 6 } },
             h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 30, lineHeight: 1.1, color: "#F3EEE4" } }, F("Dans ce concours")),
             h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ",rgba(201,166,107,.55),rgba(201,166,107,0))" } })),
