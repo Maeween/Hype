@@ -62,6 +62,11 @@ function EcranAssistantIA() {
     /* 14/11 11h05 : question venant de l'encart Hey Baby (abonnés, window.__hbAutoEnvoi) → envoyée toute seule
        une fois l'historique chargé (voir suite() plus bas), sans repasser par le champ. */
     const autoEnvoiRef = useRef(null);
+    /* 14/11 12h10 (Blandine : « à n'importe quel moment… on lui dit les horaires viennent de tomber… et que tout soit fait ») :
+       l'outil documents est chargé sur la page Hey Baby ; une consigne (horaires, engager, retirer, soins, registre…) y part
+       directement (récap → Valider), seules les questions vont à Hey Baby. */
+    const [outilPretHB, setOutilPretHB] = useState(() => { try { return !!(window.HypeOutilDoc && window.HypeOutilDoc.Hote); } catch (e) { return false; } });
+    useEffect(() => { if (outilPretHB) return undefined; let vif = true; try { if (typeof hypeChargerDiffere === "function") hypeChargerDiffere("hype-outil-doc.js?v=19", "HypeOutilDoc").then((ok) => { if (vif && ok) setOutilPretHB(true); }); } catch (e) { } return () => { vif = false; }; }, []);
     useEffect(function () { try { if (typeof window !== "undefined" && window.__hbPrefill != null) { var pf = String(window.__hbPrefill); if (window.__hbAutoEnvoi === true && pf.trim()) { autoEnvoiRef.current = pf.trim(); } else { setSaisie(pf); } window.__hbPrefill = null; window.__hbAutoEnvoi = null; } } catch (e) { } }, []);
     const [enCours, setEnCours] = useState(false);
     const [questionsPosees, setQuestionsPosees] = useState(() => {
@@ -665,6 +670,14 @@ function EcranAssistantIA() {
         if (reprise) { if (enCours) return; }
         else if ((!question && !imageJointe) || enCours || (limiteAtteinte && !renvoi) || extractionVideo)   /* 21/10 : un renvoi a deja ete compte sur le telephone ; le serveur tranche */
             return;
+        if (!reprise && !renvoi && !imageJointe && question) {
+            try {
+                if (typeof hypeEstConsigne === "function" && hypeEstConsigne(question) && window.HypeOutilDoc && typeof window.HypeOutilDoc.traiterTexte === "function") {
+                    const okO = window.HypeOutilDoc.traiterTexte(question, { ecran: "assistant", origine: "heybaby", voix: !!(opts && opts.voix) });
+                    if (okO !== false) { setSaisie(""); return; }
+                }
+            } catch (eC) { }
+        }
         if (!reprise) hypeQueteMarquer("hey-baby");
         const imgEnvoyee = (reprise || renvoi) ? null : imageJointe;
         const framesEnvoyees = (!reprise && !renvoi && framesVideo && framesVideo.length) ? framesVideo : null;
@@ -1702,7 +1715,7 @@ function EcranAssistantIA() {
                                 setSaisie("");
                                 const ec = hypeEcouteLongue({ lang: ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR" })[langue] || "fr-FR",
                                     onPartiel: (tx) => setSaisie(tx),
-                                    onFin: (tx) => { srHBRef.current = null; setEcouteHB(false); tx = String(tx || "").trim(); if (tx) { setSaisie(""); envoyer(tx); } },
+                                    onFin: (tx) => { srHBRef.current = null; setEcouteHB(false); tx = String(tx || "").trim(); if (tx) { setSaisie(""); envoyer(tx, { voix: true }); } },
                                     onErreur: () => { srHBRef.current = null; setEcouteHB(false); try { const el = document.querySelector("input[aria-label]"); if (el) el.focus(); } catch (e) { } } });
                                 if (ec) { srHBRef.current = ec; setEcouteHB(true); }
                                 return;
@@ -1995,6 +2008,8 @@ function EcranAssistantIA() {
       ".hb-cote-b{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(127,163,173,.45);background:rgba(16,29,34,.7);color:#F3EEE4;font:600 13.5px 'Montserrat',sans-serif;cursor:pointer;text-align:start}" +
       ".hb-cote-b:hover{border-color:#8FB3BC}.hb-cote-l{display:flex;flex-direction:column;gap:8px}}";
     return (React.createElement("div", { dir: hbRtl ? "rtl" : "ltr", style: { height: "var(--hype-h-page, 100dvh)", display: "flex", flexDirection: "row", position: "relative", overflow: "hidden", background: HB_C.fond, fontFamily: HB_SANS, color: HB_C.ivoire } },
+        /* 14/11 12h10 : hôte invisible de l'outil « Ajouter un document » (une consigne dictée ici s'ouvre dans l'outil) */
+        (outilPretHB && window.HypeOutilDoc && window.HypeOutilDoc.Hote) ? React.createElement(window.HypeOutilDoc.Hote, { ecran: "assistant" }) : null,
         hbGrand ? React.createElement("aside", { style: { width: hbColW, flexShrink: 0, height: "100%", boxSizing: "border-box", background: HB_C.petrole2, borderInlineEnd: "1px solid rgba(201,166,107,0.14)", position: "relative", zIndex: 4 } }, hbRendreHistorique(false)) : null,
         React.createElement("div", { ref: hbMainRef, style: { flex: 1, minWidth: 0, height: "100%", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" } },
             hbFondCheval,
