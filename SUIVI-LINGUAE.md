@@ -1,3 +1,17 @@
+# 🗓️ 14/11 (20h20) — LEXIQUE V2 PROPOSÉ (branche `lexique-v2`, commit `d5aad99`, SANS [publier])
+
+Selon la passation ChatGPT (direction « dictionnaire éditorial ») ; seul le lexique est touché.
+**Fait** :
+- Charte commune : fond #04070C ; encarts #0B111A ; bordures #344653 ; glacier #7FD3E3 ; textes #F3EEE4 et #A4AFBA ; titre en Cormorant 34 px (au lieu de Cinzel) ; champ de recherche de 48 px.
+- Une entrée = le mot en ivoire, la traduction dessous (en italique sauf en ja, zh, ar, fa), la ville en petit à droite et un chevron ; filet fin entre les entrées ; en-têtes de lettre en Cormorant glacier.
+- Abécédaire : bandeau horizontal à glisser (cibles de 44 px) sur téléphone et tablette ; colonne fixe à droite à partir de 1000 px ; colonne de 860 px maximum.
+- Arabe et persan : chaque ligne suit le sens de sa langue (dir posé), mots latins isolés (<bdi>), traduction et ville alignées sur le côté de la ligne, abécédaire dans l'alphabet et le sens de la langue lue.
+- « 1 mot » au singulier.
+- Inchangés : 864 mots, verrou (gratuit 123/741), tri, recherche, feuille des langues ; toucher un mot ouvre toujours sa ville.
+**Tests** : 15 cas avant/après (fr→en, de→en, fa→en à 390/820/1440 ; fr→fa à 390/820 ; gratuit à 390), aucune erreur JS. Archive HorseLingo-5-lexique-avant-apres.zip (captures + TESTS.md) pour contre-vérification par ChatGPT.
+**À décider par Blandine** : il n'existe PAS de fiche détaillée d'un mot (toucher un mot ouvre sa ville), ni son, ni favoris dans le lexique. Créer une fiche (mot, traduction, son, définition, exemple, bouton vers la ville) serait une NOUVELLE fonction : à valider avant.
+**Mise en ligne** : seulement après le « ok » de Blandine (fusion de `lexique-v2` + VER ?v=106 + cache linguae-v24).
+
 # 🗓️ 14/11 (19h50) — PASSATION CHATGPT : AUDIT VISUEL V2 (112 captures de `06696d6`) — rien de modifié
 
 **Charte proposée par ChatGPT** : fond #04070C ; encarts #0B111A ; surfaces secondaires #101923 ; accent #7FD3E3 ; texte #F3EEE4, secondaire #A4AFBA ; bordures #344653 ; Cormorant Garamond (titres) + Montserrat (interface) ; titres mobiles 32–36 px, sections 25–28 px, texte 15–16 px ; boutons transparents, contour 1 px, hauteur ≥ 48 px ; encarts rayon 14–18 px ; marges mobiles 20–24 px, 32–40 px entre sections ; photos entières, courbes espacées, titres sous les images ; aucun doré dans l'interface (couleurs des médias préservées). Références : 02, 04, 05, 06, 21–28 ; globe 36 intouchable.
