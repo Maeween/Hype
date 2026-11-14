@@ -291,7 +291,7 @@ var HS_TR_BRUT = {
   "Modifier l’adresse": ["Edit the address"],
   "1er passage ": ["1st round "],
   "reco ": ["course walk "],
-  "Ordre d’embarquement": ["Loading order"],
+  "Ordre d’embarquement": ["Loading order", "Orden de carga", "Ordine di carico", "積み込み順", "Verladereihenfolge", "ترتيب الصعود", "装车顺序", "Inlaadvolgorde", "Ordem de embarque", "Lastningsordning", "Порядок погрузки", "Kolejność załadunku", "적재 순서", "ترتیب سوار کردن"],
   "Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.": ["The first horse loaded is the one competing last; the last one loaded comes out first."],
   "Pas encore d’ordre de passage.": ["No start order yet."],
   "Agenda": ["Calendar"],
@@ -836,7 +836,7 @@ function EcranMaSaison() {
   }
 
   /* ── navigation ── */
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { if (window.__teamCourante) window.__teamArmee = true; } catch (eA) { } setEcran("team-competition"); }   /* 07/11 : on revient sur l'équipe qu'on regardait */
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { if (window.__teamCourante) window.__teamArmee = true; } catch (eA) { } try { window.__hypeNavRemplacer = true; } catch (eNr) { } setEcran("team-competition"); }   /* 07/11 : on revient sur l'équipe qu'on regardait */
   function ouvrir(ev) {
     var fin = String(ev.date_fin || ev.date_jour || "").slice(0, 10);
     /* 07/11 : passé ou à venir, un concours s'ouvre sur la fiche du Centre (qui contient maintenant le fil, les photos et les résultats) */
@@ -2078,7 +2078,7 @@ function EcranConcours() {
     } catch (eP) { setPushMsg(String(eP)); }
   }
 
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("ma-saison"); }
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { window.__hypeNavRemplacer = true; } catch (eNr) { } setEcran("ma-saison"); }
   /* 07/11 : le fil, les photos et les résultats sont maintenant SUR cette fiche (page du rendez-vous intégrée en bas) */
   function ficheComplete() { try { var el = document.getElementById("hs-fil"); if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); return; } } catch (e) { } }
   function modifierRdv() { try { window.__agendaFiche = idEv; window.__agendaFicheDirect = true; window.__agendaFicheRetour = "concours"; } catch (e) { } setEcran("guilde"); }
@@ -2176,7 +2176,7 @@ function EcranConcours() {
   var mesLignes = mesEng.reduce(function (acc, e) {
     (e.tours || hsToursDepuis(e, null)).forEach(function (t) {
       if ((t.remplacant_id && !(moi && t.remplacant_id === moi.id)) || (!t.remplacant_id && t.remplacant_nom)) return;   /* 13/11 : passage donné à un autre cavalier */
-      acc.push({ ep: t.epreuve, ch: t.cheval_nom, cid: t.cheval_id, nu: t.numero, hp: t.passage, pi: t.piste, maj: e.passage_maj_le, ini: t.cheval_initial_nom || null });
+      acc.push({ ep: t.epreuve, ch: t.cheval_nom, cid: t.cheval_id, nu: t.numero, hp: t.passage, pi: t.piste, op: t.ordre_passage, maj: e.passage_maj_le, ini: t.cheval_initial_nom || null });
     });
     return acc;
   }, []);
@@ -2184,9 +2184,11 @@ function EcranConcours() {
   if (moi) (passagesEq || []).forEach(function (p) {
     if (p.cavalier_id !== moi.id || !p.cavalier_initial || p.non_partant) return;
     if (mesLignes.some(function (x) { return x.eid === p.engagement_id && x.nu === p.numero; })) return;
-    mesLignes.push({ ep: hsNomEpreuve(p.epreuve || ""), ch: p.cheval_brut || p.cheval_nom, cid: p.cheval_id, nu: p.numero, hp: p.passage, pi: p.piste, ini: p.cheval_initial_nom || null, pour: p.cavalier_initial, eid: p.engagement_id });
+    mesLignes.push({ ep: hsNomEpreuve(p.epreuve || ""), ch: p.cheval_brut || p.cheval_nom, cid: p.cheval_id, nu: p.numero, hp: p.passage, pi: p.piste, op: p.ordre_passage, ini: p.cheval_initial_nom || null, pour: p.cavalier_initial, eid: p.engagement_id });
   });
   mesLignes.sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
+  /* 14/11 16h20 (Blandine : « avec leur numéro de passage ») : le N° d'entrée en piste, repris de l'ordre de passage de l'équipe */
+  mesLignes.forEach(function (x) { if (x.op) return; var q = (passagesEq || []).filter(function (p) { return moi && p.cavalier_id === moi.id && p.numero === x.nu && (!x.cid || p.cheval_id === x.cid) && String(p.epreuve || "") === String(x.ep || ""); })[0] || (passagesEq || []).filter(function (p) { return moi && p.cavalier_id === moi.id && p.passage && p.passage === x.hp; })[0]; if (q && q.ordre_passage) x.op = q.ordre_passage; });
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
@@ -4072,7 +4074,7 @@ function EcranConcours() {
       h("g", { fill: "#C9A66B" }, [[5.2, 19.5, -55], [3.6, 14.5, -25], [4.2, 9.5, 0], [6.4, 5, 20], [26.8, 19.5, 55], [28.4, 14.5, 25], [27.8, 9.5, 0], [25.6, 5, -20], [9, 22.3, -80], [23, 22.3, 80]].map(function (f, i) { return h("ellipse", { key: i, cx: f[0], cy: f[1], rx: 1.5, ry: 3, transform: "rotate(" + f[2] + " " + f[0] + " " + f[1] + ")" }); })));
   }
   function horloge() { return h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("g", { fill: "none", stroke: "#F3EEE4", strokeWidth: 1.6, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 13, r: 8 }), h("path", { d: "M12 9v4l2.5 2M9.5 3h5" }))); }
-  var blocMesEng = gestion ? null : h("div", { key: "me" },
+  var blocMesEng = (gestion || !mesLignes.length) ? null : h("div", { key: "me" },
     h("div", { className: "hc-titre-s" }, h("h2", null, F("Mes engagements")), h("span", { className: "hc-filet", "aria-hidden": "true" })),
     h("div", { className: "hc-sous-c" }, F("Mes épreuves sur ce concours")),
     mesLignes.length ? h("div", { className: "hc-engs" }, mesLignes.map(function (x, i) {
@@ -4084,9 +4086,9 @@ function EcranConcours() {
           x.ep ? h("span", { className: "hc-pill" }, x.ep) : null,
           h("b", { className: "hc-eng-ch" }, (ch && (ch.alias || ch.nom)) || x.ch || F("Cheval à préciser")),
           (x.ini || x.pour) ? h("span", { className: "hc-eng-ini" }, "(" + F("à la place de ") + [x.pour, x.ini].filter(Boolean).join(" · ") + ")") : null,
-          h("span", { className: "hc-eng-tour" }, [F("Tour ") + (x.nu || (i + 1)), x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
+          h("span", { className: "hc-eng-tour" }, [x.op ? F("N° ") + x.op : "", F("Tour ") + (x.nu || (i + 1)), x.pi ? (/^\s*piste/i.test(String(x.pi)) ? String(x.pi).toLowerCase().replace(/^\s*piste/, F("piste")) : F("piste ") + x.pi) : ""].filter(Boolean).join(" · ")),   /* 14/11 : N° de passage ; plus de « piste PISTE 1 » */
           (x.hp && !masquerH) ? h("span", { className: "hc-eng-h" }, horloge(), h("span", null, F("Passage : ") + x.hp)) : null));
-    })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Tu n’es engagé sur aucune épreuve de ce concours.")),
+    })) : null,   /* 14/11 16h10 (Blandine : « si la personne n'est pas engagée, tu mets rien ») */
     mesChevaux.length ? h("div", { id: "hc-histo", className: "hc-histo" },
       h("div", { className: "hc-histo-tete" },
         h("div", null, h("div", { className: "hc-titre-s" }, h("h2", null, F("Historique")), h("span", { className: "hc-filet court", "aria-hidden": "true" })), h("div", { className: "hc-sous-c" }, F("Tes derniers résultats"))),
@@ -4624,7 +4626,7 @@ function EcranConcours() {
           if (cle === "engagements" && gestion) { ouvrirEngagements(); return; }
           if (cle === "medias") { setOngletC("medias"); setMedVue(""); setMedPage({ conc: true }); setMedPgSel(null); }
           else setOngletC(cle);
-          setTimeout(function () { try { var e2 = document.querySelector(".hc .hc-onglet"); if (e2) e2.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 150);
+          setTimeout(function () { try { var e2 = document.querySelector(".hc .hc-onglet"); if (e2) e2.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 350);
         }
         var IC = {
           engagements: "M7 4h10v16H7zM10 8h4M10 12h4M10 16h2",
@@ -4635,14 +4637,14 @@ function EcranConcours() {
           medias: "M3.5 5h17v14h-17zM4 17l5-4.5 3.5 3 3-2.5L20 17M7.4 10a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0"
         };
         var L = (fini ? [] : [
-          ["engagements", F("Mes engagements"), F("Tes épreuves sur ce concours : le cheval que tu montes, l’épreuve et ton heure de passage.")],
+          (gestion || mesLignes.length) ? ["engagements", F("Mes engagements"), F("Tes épreuves sur ce concours : le cheval que tu montes, l’épreuve et ton heure de passage.")] : null,
           ["passages", F("Jour J"), F("L’ordre de passage de l’équipe, les groupes du paddock avec leur heure de rendez-vous, et les règles du paddock.")],
           ["embarquement", F("Ordre d’embarquement"), F("Les chevaux dans l’ordre où ils montent dans le camion, avec l’heure de départ.")],
           ["van", F("Liste du van"), F("Tout ce qu’il faut emporter pour toi et ton cheval, à cocher avant de partir.")]
         ]).concat([
           ["resultats", F("Résultats"), F("Les classements de l’équipe, épreuve par épreuve, dès qu’ils sont publiés.")],
           ["medias", F("Médias"), F("Les photos et les vidéos du concours, par cavalier et par cheval.")]
-        ]);
+        ]).filter(Boolean);
         return h("div", { className: "hc-somm", style: { margin: "34px 0 6px" } },
           h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 6 } },
             h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 30, lineHeight: 1.1, color: "#F3EEE4" } }, F("Dans ce concours")),
@@ -6272,7 +6274,7 @@ function EcranEngagements() {
     return function () { vif = false; };
   }, [idEv]);
 
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("concours"); }
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { window.__hypeNavRemplacer = true; } catch (eNr) { } setEcran("concours"); }
   /* 04/11 23h57 (Blandine : « que l'appli trouve le numéro elle-même quand on rentre la date et le lieu ; commence par la recherche,
      et si ça marche pas, on va chercher à la main ») : recherche sur internet par le serveur (netlify/functions/recherche-concours.js,
      réservée aux coachs) ; on touche un résultat pour remplir la case ; sinon lien vers le calendrier FFE. */
