@@ -59,7 +59,10 @@ function EcranAssistantIA() {
     const [ecouteHB, setEcouteHB] = useState(false); const srHBRef = useRef(null);
     useEffect(() => () => { try { if (srHBRef.current) srHBRef.current.stop(); } catch (e) { } }, []);
     const [saisie, setSaisie] = useState(() => { try { return (coursCtx && coursCtx.question) ? String(coursCtx.question) : ""; } catch (e) { return ""; } });
-    useEffect(function () { try { if (typeof window !== "undefined" && window.__hbPrefill != null) { setSaisie(String(window.__hbPrefill)); window.__hbPrefill = null; } } catch (e) { } }, []);
+    /* 14/11 11h05 : question venant de l'encart Hey Baby (abonnés, window.__hbAutoEnvoi) → envoyée toute seule
+       une fois l'historique chargé (voir suite() plus bas), sans repasser par le champ. */
+    const autoEnvoiRef = useRef(null);
+    useEffect(function () { try { if (typeof window !== "undefined" && window.__hbPrefill != null) { var pf = String(window.__hbPrefill); if (window.__hbAutoEnvoi === true && pf.trim()) { autoEnvoiRef.current = pf.trim(); } else { setSaisie(pf); } window.__hbPrefill = null; window.__hbAutoEnvoi = null; } } catch (e) { } }, []);
     const [enCours, setEnCours] = useState(false);
     const [questionsPosees, setQuestionsPosees] = useState(() => {
         try {
@@ -507,7 +510,7 @@ function EcranAssistantIA() {
     // Historique : recharge la conversation depuis Supabase \u00e0 l'ouverture
     useEffect(() => {
         let actif = true;
-        const suite = () => { if (!actif) return; try { reprendreJobHB(); } catch (eS) { } try { setTimeout(renvoyerAttenteHB, 800); } catch (eRa) { } }; /* 26/09 (401) ; 21/10 : + question en attente d envoi */
+        const suite = () => { if (!actif) return; try { reprendreJobHB(); } catch (eS) { } try { setTimeout(renvoyerAttenteHB, 800); } catch (eRa) { } try { if (autoEnvoiRef.current) { const qA = autoEnvoiRef.current; autoEnvoiRef.current = null; setTimeout(() => { try { if (envoyerRef.current) envoyerRef.current(qA); } catch (eA2) { } }, 250); } } catch (eA) { } }; /* 26/09 (401) ; 21/10 : + question en attente d envoi */
         if (coursCtx && !hbChoixRef.current) { suite(); return () => { actif = false; }; } // arrivée depuis un cours : accueil + suggestions du chapitre restent visibles
         try {
             chargerConversationHB(30, conversationId).then((r) => {
