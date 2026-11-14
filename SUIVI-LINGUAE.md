@@ -2,7 +2,7 @@
 
 **Blandine : « Ok, vas-y »** pour la traduction du dialogue ; demande à ChatGPT de poursuivre l'audit, surtout VISUEL (« plein de choses qui vont pas très bien ensemble »).
 **Fait** : lingo-dialogue.html : toute l'interface traduite (76 textes : consignes, verdicts, boutons, SOS, fin, verrou, titres des scènes de La Baule, Le Morne et Golegã) ; `td(clé)` lit la langue de lecture, repli sur le français ; noms de langues repris de LANGUE_NOM de lingo.html. Textes français corrigés en passant : « Réservé aux abonnées » → « abonnés », « On vous dit » → « On te dit ». Testé en fr, de, ja, ar, fa (La Baule, Golegã, panneau SOS) : aucune erreur.
-⚠️ Un bug que j'ai intropuis corrigé pendant le travail (le dictionnaire s'appelait lui-même) : il n'a jamais été publié ; les captures concernées ont été refaites.
+⚠️ Un bug que j’avais introduit puis corrigé pendant le travail (le dictionnaire s'appelait lui-même) : il n'a jamais été publié ; les captures concernées ont été refaites.
 **Captures** : HorseLingo-4-captures-corrigees.zip (112 écrans de la version corrigée, aucune erreur JS ni image manquante) + message pour ChatGPT (audit visuel de cohérence, charte commune à proposer).
 **Dépôt de captures** : impossible pour moi de créer un nouveau dépôt GitHub ; l'archive ZIP est donnée directement à ChatGPT.
 **Toujours en attente** : « mets en ligne » (corrections-v1 + retrait des adresses) ; dépôt public a/b ; coque A/B et identifiant ; XP autonome ; protection Premium.
