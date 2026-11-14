@@ -1,3 +1,16 @@
+# 🗓️ 14/11 (16h30) — CORRECTIONS V1 PRÉPARÉES SUR LA BRANCHE `corrections-v1` (horselingo) — RIEN EN LIGNE, en attente du « ok » de Blandine
+
+Blandine : « règle déjà tout ce que tu peux régler ». Une correction par commit, testée sous Chrome (captures avant/après), **aucune mise en ligne** :
+1. `c93108e` — **Page de ville : récit et lettre dans la langue de lecture.** `langue` partait toujours de "fr" : en persan, allemand… le récit restait en français. Il s'ouvre maintenant dans la langue de lecture ; les pastilles FR/EN/… permettent toujours de changer.
+2. `feb8f1b` — **Flyinge** : fond-flyinge.webp et carte-flyinge.webp fabriqués à partir de la vignette existante (la carte est agrandie, donc un peu moins nette : à remplacer si Blandine a l'image d'origine). objet-flyinge.webp manque toujours, l'icône s'affiche à sa place.
+3. `37a69ce` — **Derniers boutons pleins → contour fin bleu glacier** : Me connecter / Se connecter / Créer mon compte, Découvrir l'abonnement (doré), offre annuelle (doré), C'est parti (Sprint, Défi, Duel), Reprendre la route, Continuer mon voyage, Continuer sans dire (dialogue). Un bloc CSS en fin de `<head>`, « POUR ANNULER : supprimer ce bloc ».
+4. (commit suivant) — **Vidéo d'arrivée introuvable (hors ligne…)** : la carte postale s'affiche à la place du panneau de chantier « Vidéo introuvable… à déposer à la racine du dépôt ».
+5. (commit suivant) — **Écrans de compte traduits dans les 17 langues** (question, connexion, création, mon compte, suppression + 21 messages). Avant, ils restaient en français. Nouvelles clés `cp*` ajoutées à `UI`, attribut `data-tp` pour les textes d'aide des champs, pluriel polonais géré.
+**Déjà réglé, sans code** : passer le film d'ouverture (il n'y a plus de film plein écran au démarrage ; le film entre deux villes a un bouton « Passer » visible).
+**Constat corrigé** : la bulle « L'étoile garde un mot » ne recouvre les exercices que dans les captures (stockage remis à zéro) ; en vrai, elle n'apparaît qu'une fois.
+**Reste à faire (prochaine étape proposée)** : traduire l'interface du dialogue (lingo-dialogue.html, ≈ 60 textes + titres de scènes, et « On vous dit » à passer au « tu ») ; XP en version autonome (décision) ; Premium réellement protégé (décision) ; dépôt public (choix a/b) ; coque A/B.
+**Mise en ligne** : fusion de `corrections-v1` dans `main` avec [publier] + nouveau cache `linguae-v23` dans sw-linguae.js, uniquement après le « ok » de Blandine.
+
 # 🗓️ 14/11 (15h) — ADRESSES DES AMBASSADEURS RETIRÉES + HISTORIQUE NETTOYÉ + ARCHIVES POUR L'AUDIT CHATGPT — horselingo `f331311` (SANS [publier])
 
 **Constat** : lingo.html contenait en clair, dans la liste de secours Premium (`SECOURS`), les adresses e-mail de trois cavaliers ambassadeurs, lisibles par quiconque affiche le code de la page.
