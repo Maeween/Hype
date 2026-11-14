@@ -185,7 +185,13 @@
     "Seules les reprises en musique (Libre, Pas de deux, Carrousel) sont chronométrées.": ["Only tests to music (Freestyle, Pas de deux, Quadrille) are timed.", "Solo se cronometran las reprises con música (Libre, Pas de deux, Carrusel).", "Solo le riprese in musica (Libera, Pas de deux, Carosello) sono cronometrate.", "計時されるのは音楽付き経路（自由演技、パ・ド・ドゥ、カドリーユ）のみ。", "Nur Aufgaben mit Musik (Kür, Pas de deux, Quadrille) werden gestoppt.", "لا يُوقَّت إلا الاختبارات مع الموسيقى (الحر، الثنائي، الكاروسيل).", "只有配乐测试（自由演绎、双人舞、团体）计时。", "Alleen proeven op muziek (Kür, Pas de deux, Quadrille) worden getimed.", "Só as reprises com música (Livre, Pas de deux, Carrossel) são cronometradas.", "Bara program till musik (Kür, Pas de deux, Kadrilj) tidtas.", "По времени судятся только тесты под музыку (произвольная, па-де-де, карусель).", "Mierzone są tylko programy z muzyką (dowolny, pas de deux, kadryl).", "음악 과제(자유연기, 파드되, 카루셀)만 시간을 재.", "فقط آزمون‌های با موسیقی (آزاد، پادودو، کاروسل) زمان‌گیری می‌شوند."],
     "Les égalités": ["Ties", "Los empates", "Le parità", "同点", "Gleichstände", "التعادلات", "同分", "Gelijke standen", "Os empates", "Lika resultat", "Равенство", "Remisy", "동점", "تساوی‌ها"],
     "Pour les trois premières places, à pourcentage égal, les notes d’ensemble les plus élevées décident. En Libre : la note artistique.": ["For the top three places, on equal percentage, the highest collective marks decide. In a Freestyle: the artistic mark.", "Para los tres primeros puestos, a igual porcentaje, deciden las notas de conjunto más altas. En Libre: la nota artística.", "Per i primi tre posti, a parità di percentuale, decidono i voti d’insieme più alti. Nella Libera: il voto artistico.", "上位3位で％が同じ場合、総合点の高い方が上位。自由演技では芸術点。", "Für die ersten drei Plätze entscheiden bei gleichem Prozentwert die höheren Gesamtnoten. In der Kür: die künstlerische Note.", "في المراكز الثلاثة الأولى، عند تساوي النسبة تحسم الدرجات العامة الأعلى. في الحر: الدرجة الفنية.", "前三名百分比相同时，综合分高者胜。自由演绎：艺术分。", "Voor de eerste drie plaatsen beslissen bij gelijk percentage de hoogste algemene punten. In de Kür: het artistieke cijfer.", "Para os três primeiros lugares, com percentagem igual, decidem as notas de conjunto mais altas. Na Livre: a nota artística.", "För de tre första platserna avgör de högsta helhetsbetygen vid lika procent. I kür: det konstnärliga betyget.", "Для первых трёх мест при равном проценте решают более высокие общие оценки. В произвольной — артистическая оценка.", "Na trzech pierwszych miejscach przy równym procencie decydują wyższe noty ogólne. W programie dowolnym: nota artystyczna.", "상위 3위에서 퍼센트가 같으면 종합 점수가 높은 쪽이 앞서. 자유연기는 예술 점수.", "برای سه رتبه اول، با درصد برابر، نمره‌های کلی بالاتر تعیین می‌کنند. در آزاد: نمره هنری."],
-    "Pour les places suivantes : ex æquo.": ["For the following places: tied.", "Para los puestos siguientes: ex aequo.", "Per i posti successivi: ex aequo.", "それ以降は同順位。", "Für die folgenden Plätze: gleichplatziert.", "للمراكز التالية: تعادل.", "之后的名次：并列。", "Voor de volgende plaatsen: ex aequo.", "Para os lugares seguintes: ex aequo.", "För följande platser: delad placering.", "Для следующих мест — дележ.", "Dla kolejnych miejsc: ex aequo.", "그다음 순위는 공동 순위.", "برای رتبه‌های بعدی: هم‌رتبه."]
+    "Pour les places suivantes : ex æquo.": ["For the following places: tied.", "Para los puestos siguientes: ex aequo.", "Per i posti successivi: ex aequo.", "それ以降は同順位。", "Für die folgenden Plätze: gleichplatziert.", "للمراكز التالية: تعادل.", "之后的名次：并列。", "Voor de volgende plaatsen: ex aequo.", "Para os lugares seguintes: ex aequo.", "För följande platser: delad placering.", "Для следующих мест — дележ.", "Dla kolejnych miejsc: ex aequo.", "그다음 순위는 공동 순위.", "برای رتبه‌های بعدی: هم‌رتبه."],
+    "En direct : l’écurie voit le classement sur son téléphone.": ["Live: the stable sees the ranking on their phones.", "En directo: la cuadra ve la clasificación en su teléfono.", "In diretta: la scuderia vede la classifica sul telefono.", "ライブ：厩舎のみんながスマホで順位を見られます。", "Live: der Stall sieht die Rangliste auf dem Handy.", "مباشر: يرى الإسطبل الترتيب على هواتفهم.", "直播中：马房成员可在手机上看到排名。", "Live: de stal ziet het klassement op de telefoon.", "Em direto: a cavalariça vê a classificação no telemóvel.", "Live: stallet ser placeringen i telefonen.", "Онлайн: конюшня видит классификацию в телефоне.", "Na żywo: stajnia widzi klasyfikację w telefonie.", "실시간: 마구간 사람들이 휴대폰으로 순위를 봐.", "زنده: اصطبل رده‌بندی را روی گوشی می‌بیند."],
+    "Le direct ne passe pas (réseau ?) : le passage est gardé sur ce téléphone.": ["The live feed isn’t getting through (network?): the round is kept on this phone.", "El directo no pasa (¿red?): el recorrido se guarda en este teléfono.", "La diretta non passa (rete?): il percorso resta su questo telefono.", "ライブが送信できません（通信？）：この走行はこのスマホに保存されています。", "Live kommt nicht durch (Netz?): der Ritt bleibt auf diesem Handy gespeichert.", "البث المباشر لا يصل (الشبكة؟): تُحفظ الجولة على هذا الهاتف.", "直播未送达（网络？）：本轮成绩保存在此手机上。", "Live komt niet door (netwerk?): de omloop blijft op deze telefoon bewaard.", "O direto não passa (rede?): o percurso fica guardado neste telemóvel.", "Livesändningen går inte fram (nätet?): rundan sparas på den här telefonen.", "Онлайн не проходит (сеть?): маршрут сохранён на этом телефоне.", "Transmisja nie dochodzi (sieć?): przejazd zostaje w tym telefonie.", "실시간 전송이 안 돼(네트워크?): 이 주행은 이 휴대폰에 저장돼 있어.", "پخش زنده نمی‌رسد (شبکه؟): این دور روی همین گوشی نگه داشته شد."],
+    "En direct": ["Live", "En directo", "In diretta", "ライブ", "Live", "مباشر", "直播", "Live", "Em direto", "Live", "Онлайн", "Na żywo", "실시간", "زنده"],
+    "Pas encore de passage : le classement apparaît dès que le jury valide le premier couple.": ["No round yet: the ranking appears as soon as the jury confirms the first pair.", "Aún no hay recorridos: la clasificación aparece en cuanto el jurado valida la primera pareja.", "Nessun percorso ancora: la classifica appare appena la giuria conferma il primo binomio.", "まだ走行はありません：審判が最初のペアを確定すると順位が表示されます。", "Noch kein Ritt: die Rangliste erscheint, sobald die Jury das erste Paar bestätigt.", "لا جولة بعد: يظهر الترتيب بمجرد أن تؤكد اللجنة أول ثنائي.", "尚无成绩：裁判确认第一组后即显示排名。", "Nog geen omloop: het klassement verschijnt zodra de jury de eerste combinatie bevestigt.", "Ainda sem percursos: a classificação aparece assim que o júri valida o primeiro conjunto.", "Ingen runda än: placeringen visas så fort juryn bekräftar första ekipaget.", "Ещё нет маршрутов: классификация появится, как только жюри подтвердит первую пару.", "Jeszcze brak przejazdów: klasyfikacja pojawi się, gdy jury zatwierdzi pierwszą parę.", "아직 주행이 없어: 심판이 첫 콤비를 확정하면 순위가 나와.", "هنوز دوری نیست: رده‌بندی به‌محض تأیید اولین زوج توسط داور ظاهر می‌شود."],
+    "dernier passage": ["latest round", "último recorrido", "ultimo percorso", "最新の走行", "letzter Ritt", "آخر جولة", "最新一轮", "laatste omloop", "último percurso", "senaste rundan", "последний маршрут", "ostatni przejazd", "최근 주행", "آخرین دور"],
+    "Mis à jour toutes les 10 secondes. Classement provisoire : le résultat officiel est celui que l’équipe publie.": ["Updated every 10 seconds. Provisional ranking: the official result is the one the team publishes.", "Se actualiza cada 10 segundos. Clasificación provisional: el resultado oficial es el que publica el equipo.", "Aggiornata ogni 10 secondi. Classifica provvisoria: il risultato ufficiale è quello pubblicato dalla squadra.", "10秒ごとに更新。暫定順位です：正式結果はチームが公開するものです。", "Alle 10 Sekunden aktualisiert. Vorläufige Rangliste: offiziell ist das Ergebnis, das das Team veröffentlicht.", "يُحدَّث كل 10 ثوانٍ. ترتيب مؤقت: النتيجة الرسمية هي التي ينشرها الفريق.", "每10秒更新。暂定排名：以团队发布的成绩为准。", "Elke 10 seconden bijgewerkt. Voorlopig klassement: de officiële uitslag is die het team publiceert.", "Atualizada a cada 10 segundos. Classificação provisória: o resultado oficial é o que a equipa publica.", "Uppdateras var 10:e sekund. Preliminär placering: det officiella resultatet är det laget publicerar.", "Обновляется каждые 10 секунд. Предварительная классификация: официален результат, опубликованный командой.", "Aktualizacja co 10 sekund. Klasyfikacja wstępna: oficjalny jest wynik opublikowany przez zespół.", "10초마다 갱신돼. 임시 순위야: 공식 결과는 팀이 게시한 거야.", "هر ۱۰ ثانیه به‌روز می‌شود. رده‌بندی موقت: نتیجه رسمی همان است که تیم منتشر می‌کند."]
   };
   function T(fr) { try { var lg = window.__hypeLangue || "fr"; var t = TXT[fr]; var L = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"]; var i = L.indexOf(lg); return (t && i >= 0 && t[i]) || fr; } catch (e) { return fr; } }
 
@@ -711,7 +717,17 @@
           blocRegl("cso", reglOuv, function () { setReglOuv(!reglOuv); }),
           h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: !String(cfg0.epreuve).trim(), onClick: function () {
             var cps = (ctx.couples || []).filter(function (c) { return !c.epreuve || !cfg0.epreuve || c.epreuve === cfg0.epreuve; }).map(function (c) { return { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id || null, cheval_id: c.cheval_id || null }; });
-            setSt({ cfg: { epreuve: cfg0.epreuve.trim(), bareme: cfg0.bareme, ta: cfg0.ta }, couples: cps, passages: [], cur: cps.length ? 0 : -1, saisie: { barres: null, refus: null, temps: "", etat: "" } });
+            var st0 = { cfg: { epreuve: cfg0.epreuve.trim(), bareme: cfg0.bareme, ta: cfg0.ta }, couples: cps, passages: [], cur: cps.length ? 0 : -1, saisie: { barres: null, refus: null, temps: "", etat: "" } };
+            setSt(st0);
+            /* passages déjà enregistrés pour cette épreuve (autre téléphone du jury, page rechargée) : on les reprend */
+            if (ctx.agenda_id) try { supa.from("cso_passages").select("cavalier, cavalier_id, cheval, cheval_id, etat, barres, refus, temps").eq("agenda_id", ctx.agenda_id).eq("epreuve", st0.cfg.epreuve).limit(300).then(function (r) {
+              var L = (r && !r.error && r.data) || []; if (!L.length) return;
+              setSt0(function (s0) { if (!s0) return s0; var s1 = Object.assign({}, s0), cs = s0.couples.slice();
+                L.forEach(function (x) { if (!cs.some(function (c) { return c.cavalier === x.cavalier && (c.cheval || "") === (x.cheval || ""); })) cs.push({ cavalier: x.cavalier, cheval: x.cheval, cavalier_id: x.cavalier_id, cheval_id: x.cheval_id }); });
+                s1.couples = cs; s1.passages = L.map(function (x) { return { cavalier: x.cavalier, cheval: x.cheval, cavalier_id: x.cavalier_id, cheval_id: x.cheval_id, etat: x.etat || "", barres: x.barres || 0, refus: x.refus || 0, temps: x.temps == null ? null : Number(x.temps) }; });
+                var k = cs.findIndex(function (c) { return !s1.passages.some(function (p) { return p.cavalier === c.cavalier && (p.cheval || "") === (c.cheval || ""); }); }); s1.cur = k;
+                try { localStorage.setItem(cle, JSON.stringify(s1)); } catch (x) { } return s1; });
+            }, function () { }); } catch (x) { }
           } }, T("Commencer l’épreuve"))),
           h("div", { style: { height: 30 } })));
     }
@@ -747,6 +763,19 @@
       setSt(Object.assign({}, st, { passages: ps, cur: suiv, saisie: { barres: null, refus: null, temps: "", etat: "" } }));
       setE(Object.assign({}, e, { dit: "", err: "", msg: "✓ " + pa.cavalier + " " + T("est classé.") }));
       try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (x) { }
+      envoyerDirect(pa, st.couples.indexOf(cp));
+    }
+    /* 14/11 (Blandine : « on pourrait carrément faire un live ») : chaque passage validé part dans cso_passages → classement en
+       direct sur les téléphones de l'écurie. Si ça échoue (réseau), le passage reste sur ce téléphone et on le dit. */
+    async function envoyerDirect(pa, ordre) {
+      if (!ctx.agenda_id) return;
+      try {
+        var r = await supa.from("cso_passages").upsert({ agenda_id: ctx.agenda_id, epreuve: cfg.epreuve, bareme: cfg.bareme, temps_accorde: cfg.ta ? Number(cfg.ta) : null, ordre: ordre >= 0 ? ordre + 1 : null,
+          cavalier: pa.cavalier, cavalier_id: pa.cavalier_id || null, cheval: pa.cheval || "", cheval_id: pa.cheval_id || null, etat: pa.etat || "", barres: Math.min(50, pa.barres || 0), refus: Math.min(3, pa.refus || 0), temps: pa.temps, maj_le: new Date().toISOString() },
+          { onConflict: "agenda_id,epreuve,cavalier,cheval" }).select("id");
+        if (!r || r.error || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || "x");
+        setE(function (x) { return Object.assign({}, x, { direct: "ok" }); });
+      } catch (eD) { setE(function (x) { return Object.assign({}, x, { direct: "ko" }); }); }
     }
     function choisir(k) {
       var c = st.couples[k], d = null; st.passages.forEach(function (x) { if (x.cavalier === c.cavalier && x.cheval === c.cheval) d = x; });
@@ -822,6 +851,7 @@
           h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: !sa.etat && sa.barres == null && (sa.temps === "" || sa.temps == null), onClick: valider }, T("Valider et couple suivant")))) : 
           h("div", { className: "hj-live" }, h("div", { className: "hj-fig", style: { margin: 0 } }, T("Tous les couples sont passés")), h("div", { className: "hj-sous", style: { marginTop: 6 } }, T("Vérifie le classement, puis publie-le."))),
         e.msg ? h("div", { className: "hj-msg" }, e.msg) : null,
+        e.direct === "ok" ? h("div", { className: "hj-astuce", style: { marginTop: 6 } }, "● " + T("En direct : l’écurie voit le classement sur son téléphone.")) : e.direct === "ko" ? h("div", { className: "hj-err" }, T("Le direct ne passe pas (réseau ?) : le passage est gardé sur ce téléphone.")) : null,
         h("div", { className: "hj-encart" }, h("div", { className: "hj-k" }, T("L’ordre de passage")),
           st.couples.map(function (c, k) {
             var d = null; CL.forEach(function (x) { if (x.cavalier === c.cavalier && x.cheval === c.cheval) d = x; });
@@ -945,7 +975,56 @@
         h("div", { style: { height: 30 } })));
   }
 
+  /* ═══ 14/11 — CLASSEMENT CSO EN DIRECT (pour toute l'écurie) : lit cso_passages toutes les 10 s ═══ */
+  function PageLive() {
+    css();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var ctx = (function () { try { return window.__juger || {}; } catch (e) { return {}; } })();
+    var _l = React.useState(null), lignes = _l[0], setLignes = _l[1];
+    var _r = React.useState(false), reglOuv = _r[0], setReglOuv = _r[1];
+    React.useEffect(function () {
+      try { window.scrollTo(0, 0); } catch (x) { }
+      var vif = true;
+      function lire() { try { supa.from("cso_passages").select("epreuve, bareme, temps_accorde, ordre, cavalier, cavalier_id, cheval, cheval_id, etat, barres, refus, temps, maj_le").eq("agenda_id", ctx.agenda_id).limit(1000).then(function (r) { if (vif) setLignes((r && !r.error && r.data) || []); }, function () { if (vif) setLignes([]); }); } catch (x) { setLignes([]); } }
+      lire(); var t = setInterval(lire, 10000);
+      return function () { vif = false; clearInterval(t); };
+    }, []);
+    function retour() { try { if (app.histLen && app.retourEcran) { app.retourEcran(); return; } } catch (x) { } (app.setEcran || function () { })(ctx.agenda_id ? "concours" : "accueil"); }
+    var NOMS = { A: T("Barème A au chrono"), A0: T("Barème A sans chrono"), C: T("Barème C") };
+    function ptsTxt(n) { return n === 0 ? T("Sans faute") : n + " " + (n > 1 ? T("pts") : T("pt")); }
+    var eps = {}, ordreEp = [], dernier = null;
+    (lignes || []).forEach(function (x) { if (!eps[x.epreuve]) { eps[x.epreuve] = []; ordreEp.push(x.epreuve); } eps[x.epreuve].push(x); if (!dernier || x.maj_le > dernier.maj_le) dernier = x; });
+    return h("div", { className: "hj" },
+      heroV("images/portrait-defaut-noir.webp", retour, "● " + T("En direct"), T("Le classement"), ctx.concours || ""),
+      h("div", { className: "hj-in" },
+        lignes === null ? h("div", { className: "hj-astuce" }, T("Chargement…"))
+        : !ordreEp.length ? h("div", { className: "hj-astuce" }, T("Pas encore de passage : le classement apparaît dès que le jury valide le premier couple."))
+        : ordreEp.map(function (ep) {
+          var L0 = eps[ep], cfg = { bareme: L0[0].bareme || "A", ta: L0[0].temps_accorde };
+          var CL = classerCSO(L0.map(function (x) { return Object.assign({}, x, { temps: x.temps == null ? null : Number(x.temps) }); }), cfg);
+          var pod = CL.filter(function (x) { return !x.c.etat; });
+          return h("div", { key: ep },
+            COURBE(),
+            h("div", { className: "hj-h2", style: { marginTop: 8 } }, ep, h("span", null, NOMS[cfg.bareme] + " · " + L0.length + " " + T("passés"))),
+            pod.length >= 2 ? h("div", { className: "hj-podium" }, [1, 0, 2].filter(function (n) { return pod[n]; }).map(function (n) {
+              var o = pod[n];
+              return h("div", { key: n, className: "hj-pod" + (o.place === 1 ? " p1" : "") }, h("div", { className: "hj-rang" }, String(o.place)), h("b", null, o.cavalier), h("span", null, o.cheval || ""), h("em", { style: { fontSize: 24 } }, cfg.bareme === "C" ? fmtT(o.c.total) : cfg.bareme === "A0" ? ptsTxt(o.c.pts) : fmtT(o.temps)), cfg.bareme === "A" ? h("span", { style: { marginTop: 2 } }, ptsTxt(o.c.pts)) : null);
+            })) : null,
+            CL.map(function (o, n) {
+              var neuf = dernier && dernier.epreuve === ep && dernier.cavalier === o.cavalier && dernier.cheval === o.cheval;
+              var etatTxt = { "El.": T("Éliminé"), "Ab.": T("Abandon"), "NP": T("Non partant") }[o.c.etat] || o.c.etat;
+              return h("div", { key: n, className: "hj-li" + (neuf ? " cur" : ""), style: { cursor: "default", gridTemplateColumns: "26px 1fr 70px" } },
+                h("span", { className: "n" }, o.c.etat ? "–" : String(o.place)),
+                h("span", { className: "t" }, h("b", { style: { fontWeight: 500 } }, o.cavalier), o.cheval ? " · " + o.cheval : "",
+                  h("span", { className: "c" }, (o.c.etat ? etatTxt : (cfg.bareme === "C" ? fmtT(o.c.total) : ptsTxt(o.c.pts) + (o.temps != null ? " · " + fmtT(o.temps) : ""))) + (neuf ? " · " + T("dernier passage") : ""))),
+                h("span", { className: "v", style: { fontSize: 18 } }, o.c.etat ? "" : cfg.bareme === "C" ? fmtT(o.c.total) : (o.c.pts === 0 ? "SF" : o.c.pts + " pts")));
+            }));
+        }),
+        h("div", { className: "hj-astuce" }, T("Mis à jour toutes les 10 secondes. Classement provisoire : le résultat officiel est celui que l’équipe publie.")),
+        blocRegl("cso", reglOuv, function () { setReglOuv(!reglOuv); }),
+        h("div", { style: { height: 30 } })));
+  }
   /* 14/11 : un seul écran « juger » → reprise de dressage, jury de CSO (mode « cso ») ou règlement (mode « regl ») */
-  function Juge() { var m = ""; try { m = (window.__juger || {}).mode || ""; } catch (x) { } return h(m === "cso" ? JuryCSO : m === "regl" ? PageRegl : EcranJuge); }
+  function Juge() { var m = ""; try { m = (window.__juger || {}).mode || ""; } catch (x) { } return h(m === "cso" ? JuryCSO : m === "regl" ? PageRegl : m === "live" ? PageLive : EcranJuge); }
   window.HypeJuge = { Juge: Juge, lireNote: lireNote, lireCSO: lireCSO, classerCSO: classerCSO };
 })();

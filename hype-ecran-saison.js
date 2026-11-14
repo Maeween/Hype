@@ -535,6 +535,8 @@ var HS_TR_BRUT = {
   "Le jury dit « sans faute, 32 secondes 45 » : Hype compte et classe.": ["The jury says “clear, 32 seconds 45”: Hype counts and ranks.", "El jurado dice «sin faltas, 32 segundos 45»: Hype cuenta y clasifica.", "La giuria dice «netto, 32 secondi 45»: Hype conta e classifica.", "審判が「減点なし、32秒45」と言えば、Hypeが計算して順位を出す。", "Die Jury sagt „fehlerfrei, 32 Sekunden 45“: Hype rechnet und platziert.", "تقول اللجنة «بدون أخطاء، 32 ثانية 45»: يحسب Hype ويرتّب.", "裁判说“零罚分，32秒45”：Hype 计算并排名。", "De jury zegt „foutloos, 32 seconden 45”: Hype telt en klasseert.", "O júri diz «sem faltas, 32 segundos 45»: a Hype conta e classifica.", "Juryn säger ”felfritt, 32 sekunder 45”: Hype räknar och placerar.", "Жюри говорит «чисто, 32 секунды 45»: Hype считает и ранжирует.", "Jury mówi „czysto, 32 sekundy 45”: Hype liczy i klasyfikuje.", "심판이 “무감점, 32초 45”라고 하면 Hype가 계산하고 순위를 매겨.", "داور می‌گوید «بدون خطا، ۳۲ ثانیه ۴۵»: Hype حساب و رده‌بندی می‌کند."],
   "Le règlement": ["The rules", "El reglamento", "Il regolamento", "規程", "Das Reglement", "اللائحة", "规则", "Het reglement", "O regulamento", "Reglementet", "Правила", "Regulamin", "규정", "مقررات"],
   "Liens officiels FFE et mémo du jury": ["Official FFE links and jury memo", "Enlaces oficiales FFE y memo del jurado", "Link ufficiali FFE e promemoria della giuria", "FFE公式リンクと審判メモ", "Offizielle FFE-Links und Richter-Merkblatt", "روابط FFE الرسمية ومذكرة الحكام", "FFE官方链接和裁判备忘", "Officiële FFE-links en jurymemo", "Links oficiais FFE e memo do júri", "Officiella FFE-länkar och jurymemo", "Официальные ссылки FFE и памятка жюри", "Oficjalne linki FFE i notatka dla jury", "FFE 공식 링크와 심판 메모", "پیوندهای رسمی FFE و یادداشت داوری"],
+  "Classement CSO en direct": ["Live show jumping ranking", "Clasificación de salto en directo", "Classifica di salto in diretta", "障害飛越ライブ順位", "Live-Rangliste Springen", "ترتيب القفز المباشر", "障碍赛实时排名", "Live klassement springen", "Classificação de saltos em direto", "Live-placering hoppning", "Классификация конкура онлайн", "Klasyfikacja skoków na żywo", "장애물 실시간 순위", "رده‌بندی زنده پرش"],
+  "Mis à jour à chaque passage dicté par le jury.": ["Updated with every round the jury dictates.", "Se actualiza con cada recorrido que dicta el jurado.", "Aggiornata a ogni percorso dettato dalla giuria.", "審判が口述するたびに更新。", "Wird bei jedem von der Jury diktierten Ritt aktualisiert.", "يُحدَّث مع كل جولة تمليها لجنة التحكيم.", "裁判每口述一轮即更新。", "Bijgewerkt bij elke omloop die de jury dicteert.", "Atualizada a cada percurso ditado pelo júri.", "Uppdateras vid varje runda juryn dikterar.", "Обновляется с каждым маршрутом, продиктованным жюри.", "Aktualizowana przy każdym przejeździe dyktowanym przez jury.", "심판이 말할 때마다 갱신돼.", "با هر دوری که داور دیکته می‌کند به‌روز می‌شود."],
   "Résultats en direct": ["Live results", "Resultados en directo", "Risultati in diretta", "ライブ結果", "Live-Ergebnisse", "النتائج المباشرة", "实时成绩", "Live-uitslagen", "Resultados em direto", "Liveresultat", "Результаты онлайн", "Wyniki na żywo", "실시간 결과"],
   "Impossible d’ouvrir ce concours : ": ["Couldn’t open this show: ", "No se pudo abrir este concurso: ", "Impossibile aprire questo concorso: ", "この大会を開けませんでした：", "Dieses Turnier konnte nicht geöffnet werden: ", "تعذّر فتح هذه المسابقة: ", "无法打开该比赛：", "Kan deze wedstrijd niet openen: ", "Não foi possível abrir este concurso: ", "Kunde inte öppna tävlingen: ", "Не удалось открыть соревнование: ", "Nie udało się otworzyć zawodów: ", "이 대회를 열 수 없어요: "],
   "Rendez-vous": ["Meeting time", "Hora de encuentro", "Ritrovo", "集合", "Treffpunkt", "الموعد", "集合时间", "Verzamelen", "Encontro", "Samling", "Сбор", "Zbiórka", "집합"],
@@ -2046,6 +2048,14 @@ function EcranConcours() {
     if ((passagesEq || []).length) { go(); return undefined; }
     var t = setTimeout(go, 5000); return function () { clearTimeout(t); };
   }, [ev && ev.id, (passagesEq || []).length]);
+  /* 14/11 : y a-t-il un classement CSO en direct pour ce concours ? (jury à la voix) — avant le « if (!ev) return » */
+  var _csl = React.useState(0); var csoLive = _csl[0], setCsoLive = _csl[1];
+  React.useEffect(function () {
+    if (!idEv) return undefined; var vif = true;
+    function lire() { try { supa.from("cso_passages").select("id", { count: "exact", head: true }).eq("agenda_id", idEv).then(function (r) { if (vif && r && !r.error) setCsoLive(r.count || 0); }, function () { }); } catch (e) { } }
+    lire(); var t = setInterval(lire, 30000);
+    return function () { vif = false; clearInterval(t); };
+  }, [idEv]);
   if (!ev) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" }, heroC(F("Concours"), ""), h("div", { className: "hs-in" },
     erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Impossible d’ouvrir ce concours : ") + erreur) : h("div", { className: "hs-attente", "aria-busy": "true" }, "…")));
 
@@ -3925,6 +3935,7 @@ function EcranConcours() {
       : gestion ? outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages) : null,
     gestion ? outil("juge", F("Juger une reprise à la voix"), F("Le juge dicte la note et le commentaire, Hype calcule tout."), ouvrirJuge) : null,
     gestion ? outil("jury", F("Dicter les résultats de CSO"), F("Le jury dit « sans faute, 32 secondes 45 » : Hype compte et classe."), function () { ouvrirJuge("cso"); }) : null,
+    csoLive ? outil("live", "● " + F("Classement CSO en direct"), F("Mis à jour à chaque passage dicté par le jury."), function () { try { window.__juger = { mode: "live", agenda_id: idEv, concours: ev.titre || "" }; } catch (eL) { } setEcran("juger"); }) : null,
     /* 14/11 (Blandine : « mettre le règlement… accessible d'un clic ») : pour tout le monde */
     outil("regl", F("Le règlement"), F("Liens officiels FFE et mémo du jury"), function () { var t = String(ev.titre || "") + " " + String(ev.lieu || ""); try { window.__juger = { mode: "regl", agenda_id: idEv, disc: /dressage/i.test(t) ? "dressage" : /complet|cce/i.test(t) ? "cce" : "cso" }; } catch (eR) { } setEcran("juger"); })); }
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },

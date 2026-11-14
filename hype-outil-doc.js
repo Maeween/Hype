@@ -2326,7 +2326,9 @@
           if (!(up && up.error)) await supa.from("cheval_corrections").update({ doc_chemin: chemin, doc_mime: fi.type || null }).eq("id", idD);
         } catch (eD) { }
       }
-      try { if (f.user_id && typeof hypeNotifier === "function") hypeNotifier({ type: "correction", destinataire: f.user_id, extrait: T("Correction proposée pour ") + (f.nom || ""), cible: "cheval:" + f.id }); } catch (eN) { }
+      /* 14/11 : le propriétaire ET l'équipe de l'écurie sont prévenus (fonction hype_notifier_correction) ; ancienne voie en secours */
+      var nN = 0; try { var rn = await supa.rpc("hype_notifier_correction", { p_correction: idD }); nN = (rn && !rn.error && rn.data) || 0; if (rn && rn.error) nN = -1; } catch (eR) { nN = -1; }
+      if (nN < 0) { try { if (f.user_id && typeof hypeNotifier === "function") hypeNotifier({ type: "correction", destinataire: f.user_id, extrait: T("Correction proposée pour ") + (f.nom || ""), cible: "cheval:" + f.id }); } catch (eN) { } }
     }
     /* les demandes en attente que je peux traiter, montrées en tête de l'outil */
     var _ca = React.useState([]), aValider = _ca[0], setAValider = _ca[1];
@@ -2770,6 +2772,8 @@
         setChevaux((r && !r.error && r.data) || []);
       } catch (e) { setChevaux([]); }
     }
+    /* 14/11 : notification « Correction proposée » → l'outil s'ouvre tout seul sur les demandes à valider */
+    React.useEffect(function () { if (!moi) return; var x = null; try { x = window.__outilDocValider; window.__outilDocValider = null; } catch (e) { } if (x) setTimeout(ouvrir, 300); }, [moi]);
     if (!moi) return null;   /* visiteur sans compte : pas d'outil */
     var chevalCtx = null; try { chevalCtx = props.ecran === "sante-cheval" ? window.__santeCheval : null; } catch (e1) { }
     var concoursId = null; try { concoursId = ["concours", "engagements", "jour-j", "dossier-concours", "liste-van"].indexOf(props.ecran) >= 0 ? (window.__concoursId || window.__engagementsId || null) : null; } catch (e2) { }

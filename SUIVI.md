@@ -34,6 +34,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 12:45 — build 20261114-1245 — CSO en direct ; corrections de fiche : l'écurie prévenue
+- Blandine (10h16) : « préviens quand même l'écurie », « pour les CSO, on pourrait carrément faire un live ».
+- BASE (validé par Blandine) : fonction hype_notifier_correction (une demande de correction prévient le propriétaire du cheval + le propriétaire du club + les gestionnaires, jamais l'auteur, pas de doublon) ; table cso_passages (un passage dicté = une ligne ; lecture pour tous les membres connectés, écriture réservée à l'équipe qui gère le concours ou la modératrice).
+- Outil documents (v=14) : la demande de correction passe par cette fonction ; la notification « Correction proposée » ouvre la fiche du cheval et l'outil directement sur les demandes à valider.
+- Jury de CSO : chaque passage validé part en direct (« ● En direct : l'écurie voit le classement… » ou message si le réseau ne passe pas, le passage reste sur le téléphone) ; en commençant une épreuve, les passages déjà enregistrés (autre téléphone, page rechargée) sont repris.
+- Nouvelle page « Le classement — En direct » : par épreuve, podium + liste, dernier passage surligné, mise à jour toutes les 10 s, « classement provisoire ». Accès : outil « ● Classement CSO en direct » dans l'onglet Résultats du concours, visible dès qu'il y a un passage. Traduit (14 langues).
+- « Ajouter une vidéo » (onglet Médias) : rien à corriger, l'ajout existe déjà dans « Ajouter des médias » (Vidéo de parcours de l'équipe) ; l'ancien bloc était un reste inutilisé.
+- Fichiers : hype-ecran-juge.js, hype-ecran-saison.js, hype-outil-doc.js, index.html (build, outil v=14, notification « correction »), SUIVI.md.
+
 ## 2026-11-14 12:15 — build 20261114-1215 — Jurys, règlement, feuille du cavalier : traduits dans les 14 langues
 - Tous les textes ajoutés aujourd'hui sur Juger une reprise, Jury de CSO, La feuille de notes, Le règlement (dont le mémo du jury CSO et Dressage) et les outils de l'onglet Résultats (Voir la feuille du juge, Dicter les résultats de CSO, Le règlement) : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa.
 - Places : « 1er / 2e » en français ; chiffres seuls dans les autres langues. Le texte enregistré dans les résultats reste au format FFE (« 1er / 5 »).
