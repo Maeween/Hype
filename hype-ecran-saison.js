@@ -1629,7 +1629,8 @@ function EcranConcours() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _pe = React.useState(""); var pushEtat = _pe[0], setPushEtat = _pe[1];
   var _pm = React.useState(""); var pushMsg = _pm[0], setPushMsg = _pm[1];
-  var _ptm = React.useState(""); var partMsg = _ptm[0], setPartMsg = _ptm[1];   /* 14/11 : « message copié » des partages par partie */
+  var _ptm = React.useState(""); var partMsg = _ptm[0], setPartMsg = _ptm[1];
+  var _pmq = React.useState(null); var propMasq = _pmq[0], setPropMasq = _pmq[1];   /* 14/11 15h20 : proposer de masquer / réafficher les heures de passage */   /* 14/11 : « message copié » des partages par partie */
   var partCle = React.useRef("");
   var _ge = React.useState(false); var gestion = _ge[0], setGestion = _ge[1];
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
@@ -2334,9 +2335,9 @@ function EcranConcours() {
       mesLignes.map(function (x, i, tous) {
         var recent = x.maj && (Date.now() - new Date(x.maj).getTime() < 36 * 3600 * 1000);
         return h("div", { key: i, className: "hc-l" },
-          tous.some(function (t) { return t.hp; }) ? h("span", { className: "hc-h" }, x.hp || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
+          (!masquerH && tous.some(function (t) { return t.hp; })) ? h("span", { className: "hc-h" }, x.hp || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
           h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")),
-            h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : "", (x.hp && recent) ? F("heure mise à jour par ta coach") : ""].filter(Boolean).join(" · "))));
+            h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : "", (x.hp && recent && !masquerH) ? F("heure mise à jour par ta coach") : ""].filter(Boolean).join(" · "))));
       })) : null,
     /* 09/11 12h (brief « Passages & Organisation du paddock ») : titre, bouton « Voir le direct » bien visible,
        une section repliable par épreuve dans l'ordre du concours, une seule ouverte (la sienne, sinon la première).
@@ -2644,6 +2645,11 @@ function EcranConcours() {
       setGrpMsg(publier ? F("✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe.") : "");
       setGrpDemande(!publier);
       try {
+        var resteG = (rg && !rg.error && rg.data ? rg.data : []).some(function (g0) { return g0.publie && (g0.couples || []).length; });
+        if (publier && resteG && !ev.heures_passage_masquees) setPropMasq("masquer");
+        else if (!resteG && ev.heures_passage_masquees) setPropMasq("afficher");
+      } catch (ePm) { }
+      try {
         var avant = {}; (grpD || []).forEach(function (g0) { if (g0.id) avant[g0.id] = g0; });
         var chg = [];
         grpEd.forEach(function (g1) { var a0 = g1.id && avant[g1.id]; if (!a0 || !a0.publie || g1.__suppr) return; var hN = hsHeurePropre(g1.heure_rdv) || String(g1.heure_rdv || "").trim(), hA = hsHeurePropre(a0.heure_rdv) || String(a0.heure_rdv || "").trim(); if (hN && hN !== hA) chg.push("• " + (String(g1.nom || "").trim() || F("Groupe")) + F(" : rendez-vous à ") + hsHeureLisible(hN) + (hA ? " (" + F("au lieu de ") + hsHeureLisible(hA) + ")" : "")); });
@@ -2667,6 +2673,7 @@ function EcranConcours() {
       if (rg && !rg.error) setGrpD(rg.data || []);
       setGrpDemande(false);
       setGrpMsg(F("✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe."));
+      if (!ev.heures_passage_masquees) setPropMasq("masquer");
     } catch (eP) { setGrpMsg(F("Enregistrement impossible : ") + String((eP && eP.message) || eP)); }
     setGrpOcc(false);
   }
@@ -2774,6 +2781,11 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { setGrpDemande(false); } }, F("Plus tard")),
         h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: publierBrouillons }, grpOcc ? "…" : F("Publier maintenant")))) : null,
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null,
+    (gestion && propMasq) ? h("div", { key: "pmq", className: "hc-pad-etape" },
+      h("p", null, propMasq === "masquer" ? F("Les cavaliers passent par groupes : masquer leurs heures de passage individuelles ? Ils ne verront que leur groupe et l’heure de rendez-vous au paddock.") : F("Il n’y a plus de groupes publiés : réafficher les heures de passage aux cavaliers ?")),
+      h("div", { className: "hc-pad-etape-b" },
+        h("button", { type: "button", className: "hc-btn-l fort", onClick: function () { setPropMasq(null); if ((propMasq === "masquer") !== !!ev.heures_passage_masquees) basculerHeuresPassage(); } }, propMasq === "masquer" ? F("Masquer les heures") : F("Réafficher les heures")),
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { setPropMasq(null); } }, propMasq === "masquer" ? F("Garder les heures") : F("Laisser masquées")))) : null,
     (!grpEd && grpEp.some(function (g) { return g.publie && (g.couples || []).length; })) ? lienPartage("gsh", F("Partager les groupes du paddock avec le groupe"), function () {
       var L = [];
       /* 14/11 14h43 (Blandine : « il me cite qu'une des deux épreuves, alors que la cavalière de la deuxième épreuve est également dans les groupes ») :
@@ -4065,7 +4077,7 @@ function EcranConcours() {
           h("b", { className: "hc-eng-ch" }, (ch && (ch.alias || ch.nom)) || x.ch || F("Cheval à préciser")),
           (x.ini || x.pour) ? h("span", { className: "hc-eng-ini" }, "(" + F("à la place de ") + [x.pour, x.ini].filter(Boolean).join(" · ") + ")") : null,
           h("span", { className: "hc-eng-tour" }, [F("Tour ") + (x.nu || (i + 1)), x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
-          x.hp ? h("span", { className: "hc-eng-h" }, horloge(), h("span", null, F("Passage : ") + x.hp)) : null));
+          (x.hp && !masquerH) ? h("span", { className: "hc-eng-h" }, horloge(), h("span", null, F("Passage : ") + x.hp)) : null));
     })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Tu n’es engagé sur aucune épreuve de ce concours.")),
     mesChevaux.length ? h("div", { id: "hc-histo", className: "hc-histo" },
       h("div", { className: "hc-histo-tete" },
@@ -4171,7 +4183,7 @@ function EcranConcours() {
       if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; })) aj(F("Rendez-vous au paddock") + " · " + (g.nom || "") + " · " + hsNomEpreuve(g.epreuve || ""), g.heure_rdv, 20); });
       /* 13/11 09h13 (Blandine : « les passages, t'es pas obligé… surtout le rendez-vous paddock ») : un passage déjà couvert par un groupe publié n'est pas ajouté */
       function dansGroupe(x) { return grpD.some(function (g) { return g.publie && hsNomEpreuve(g.epreuve || "") === hsNomEpreuve(x.ep || "") && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id && (c.numero || 1) === (x.nu || 1); }); }); }
-      if (!gestion) mesLignes.forEach(function (x) { if (moi && dansGroupe(x)) return; aj(F("Passage") + (x.nu ? " · " + F("tour ") + x.nu : "") + " · " + (x.ep || "") + (x.ch ? " · " + x.ch : ""), x.hp, 15); });
+      if (!gestion && !masquerH) mesLignes.forEach(function (x) { if (moi && dansGroupe(x)) return; aj(F("Passage") + (x.nu ? " · " + F("tour ") + x.nu : "") + " · " + (x.ep || "") + (x.ch ? " · " + x.ch : ""), x.hp, 15); });
       if (!items.length) { setHorMsg(F("Les horaires ne sont pas encore indiqués.")); return; }
       var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hype//Concours//FR", "CALSCALE:GREGORIAN"];
       items.forEach(function (it, i) {
@@ -8479,7 +8491,7 @@ function EcranJourJ(props) {
                 h("div", { className: "k" }, String(j0 + 1)),
                 ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "" }) : h("span", { className: "rc-vide3", style: { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } }, String(p.ch || "?").charAt(0).toUpperCase()),
                 h("div", { className: "q" }, h("b", null, p.nom), h("span", null, [p.ch || F("cheval à choisir"), p.pi ? F("piste ") + p.pi : ""].filter(Boolean).join(" · "))),
-                h("div", { className: "hh" + (p.hp ? "" : " vide") }, p.hp ? hsHeurePropre(p.hp) || p.hp : "—"),
+                h("div", { className: "hh" + ((p.hp && !(ev && ev.heures_passage_masquees && !gestion)) ? "" : " vide") }, (p.hp && !(ev && ev.heures_passage_masquees && !gestion)) ? hsHeurePropre(p.hp) || p.hp : "—"),
                 h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier"), onClick: function () { setEdPass(edPass === cle ? "" : cle); } },
                   h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))),
                 conf ? h("div", { style: { gridColumn: "1 / -1", fontSize: 11.5, color: "#C9A66B" } }, F("En même temps que ") + conf + F(", sur une autre piste")) : null,

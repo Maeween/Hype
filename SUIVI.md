@@ -71,6 +71,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 15h24 — PUBLIÉ (build 20261114-1950, index.html + hype-ecran-saison.js v=196) : heures de passage — un par un OU par groupe, jamais les deux
+- RÈGLE (Blandine 15h17) : deux façons de fonctionner — un par un (l'heure estimée de passage est utile, ne pas la perdre) ou par groupe (seul compte le rendez-vous au paddock) ; afficher les deux perd les cavaliers.
+- À la publication des groupes : Hype propose « masquer leurs heures de passage individuelles ? » (Masquer / Garder). Plus aucun groupe publié et heures masquées → propose de les réafficher.
+- Heures masquées : retirées aussi de « Ma journée » (onglet Passages), des engagements du cavalier (« Passage : … »), des rappels ajoutés à l'agenda, et de la page Jour J pour les cavaliers. La coach les voit toujours ; rien n'est effacé.
+
 ## 2026-11-14 15h17 — PUBLIÉ (build 20261114-1940, index.html + hype-ecran-saison.js v=195) + SQL : heures de passage masquables, partage par épreuve / cavalier / cheval
 - SQL appliqué (validé « Oui » 15h12) : club_agenda.heures_passage_masquees boolean not null default false. Aucun droit modifié.
 - Page du concours, onglet Passages (coach seulement) : case « Montrer les heures de passage aux cavaliers » ; décochée → les cavaliers ne voient plus les heures dans la liste des passages (numéro, cavalier, cheval seulement). La coach les voit toujours. Limite : page Jour J / « Ma journée » non traitées.
