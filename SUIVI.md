@@ -63,6 +63,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h30 — PUBLIÉ build 20261114-1710 (Blandine « Oui », 13h48) — fichiers : index.html, hype-ecran-saison.js v=189, SUIVI.md : partages avec un aperçu en image + liste du van « Partager » + consignes d'embarquement lisibles
+- Blandine (13h44-13h45) : la liste du van ne fait que « Télécharger » ; elle veut partager, avec un aperçu du haut de la page et du début de la liste qui se fond, puis le lien et le message — et un aperçu en image pour CHAQUE partage.
+- hype-ecran-saison.js v=189 : hsImageListeVan (image 1080 × 1350 : photo du concours fondue dans le noir, petit titre champagne de la partie, nom du concours, date, 5 premières lignes qui se fondent, « Ouvre la page sur Hype → » / « Coche ta liste sur Hype → », 2hype.fr). Utilisée par : liste du van (nouveau bouton « Partager » ; « Télécharger » à côté, « Tout décocher » en lien discret ; lien #lv=), infos du concours, ordre de passage, groupes du paddock, ordre d'embarquement. L'image part avec le message et le lien ; sans partage d'image possible : message + lien seuls.
+- Consignes sous l'ordre d'embarquement : ivoire, 15 px (étaient grises et petites).
+- Liste du van (base, 5 listes + liste de départ) : « Trousse de pansage » → « Matériel de pansage, élastiques à natter et ciseaux compris » ; ligne « Élastiques pour natter et ciseaux » retirée.
+
 ## 2026-11-14 14h15 — PUBLIÉ build 20261114-1700 (Blandine « Oui », 13h44) — fichiers : index.html, hype-ecran-saison.js v=188, SUIVI.md : règles et organisation du paddock rapprochées
 - Blandine (13h43) : rapprocher « un tout petit peu » l'encadré « Règles du paddock » et « Organisation du paddock », pour faire une capture propre avec toutes les consignes du paddock.
 - hype-ecran-saison.js v=188 : quand les deux se suivent, l'espace au-dessus de « Organisation du paddock » passe d'environ 136 px à 80 px (courbe de chapitre gardée).

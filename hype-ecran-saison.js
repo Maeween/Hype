@@ -468,6 +468,7 @@ var HS_TR_BRUT = {
   "Couvre-reins": ["Quarter sheet", "Cubreriñones", "Coprireni", "腰掛け（ウエストシート）", "Nierendecke", "غطاء الظهر", "护腰毯", "Uitrijdeken", "Cobre-rins", "Ländtäcke", "Попона на круп", "Derka na nerki", "허리 덮개", "پوشش کمر"],
   "Polaire séchante": ["Fleece cooler", "Manta polar secante", "Coperta in pile asciugante", "フリースクーラー", "Abschwitzdecke", "غطاء صوف مجفف", "吸湿抓绒毯", "Fleece zweetdeken", "Manta polar de secagem", "Fleecetäcke", "Флисовая попона", "Derka polarowa osuszająca", "건조용 플리스", "پتوی پلار خشک‌کن"],
   "Poubelle pour l’eau et tuyau d’arrosage si concours prolongé": ["Water bin and hose for a long show", "Cubo grande para el agua y manguera si el concurso es largo", "Bidone per l’acqua e tubo dell’acqua se il concorso è lungo", "長い競技会なら水用タンクとホース", "Wassertonne und Gartenschlauch bei langem Turnier", "حاوية ماء وخرطوم إذا طالت المسابقة", "比赛时间长时：储水桶和水管", "Waterton en tuinslang bij een lange wedstrijd", "Caixote para a água e mangueira se o concurso for longo", "Vattentunna och slang vid lång tävling", "Бак для воды и шланг, если соревнования долгие", "Pojemnik na wodę i wąż przy długich zawodach", "대회가 길면 물통과 호스", "سطل بزرگ آب و شلنگ اگر مسابقه طولانی باشد"],
+  "Matériel de pansage, élastiques à natter et ciseaux compris": ["Grooming kit, including plaiting bands and scissors", "Material de limpieza, gomas para trenzar y tijeras incluidas", "Materiale per la pulizia, elastici per intrecciare e forbici compresi", "手入れ道具（三つ編み用ゴムとハサミを含む）", "Putzzeug inklusive Einflechtgummis und Schere", "أدوات التنظيف، مع مطاطات الضفائر والمقص", "刷拭用具（含编辫皮筋和剪刀）", "Poetsspullen, inclusief vlechtelastiekjes en schaar", "Material de limpeza, incluindo elásticos para entrançar e tesoura", "Ryktsaker, inklusive flätgummin och sax", "Принадлежности для чистки, включая резинки для косичек и ножницы", "Akcesoria do czyszczenia, w tym gumki do warkoczyków i nożyczki", "그루밍 도구(땋기용 고무줄과 가위 포함)", "وسایل تیمار، همراه با کش بافت و قیچی"],
   "Seau pour l’eau": ["Water bucket", "Cubo para el agua", "Secchio per l’acqua", "水用のバケツ", "Wassereimer", "دلو للماء", "水桶", "Emmer voor water", "Balde para a água", "Vattenhink", "Ведро для воды", "Wiadro na wodę", "물 양동이", "سطل آب"],
   "Foin": ["Hay", "Heno", "Fieno", "干し草", "Heu", "تبن", "干草", "Hooi", "Feno", "Hö", "Сено", "Siano", "건초", "یونجه"],
   "Seau, foin et eau": ["Bucket, hay and water", "Cubo, heno y agua", "Secchio, fieno e acqua", "バケツ、干し草、水", "Eimer, Heu und Wasser", "دلو وتبن وماء", "水桶、干草和水", "Emmer, hooi en water", "Balde, feno e água", "Hink, hö och vatten", "Ведро, сено и вода", "Wiadro, siano i woda", "양동이, 건초, 물"],
@@ -1514,6 +1515,42 @@ function hsPhotoDe(id) {
   var s = String(id || ""), n = 0; for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
   return PHOTOS_SAISON[n % PHOTOS_SAISON.length];
 }
+/* 14/11 13h44 (Blandine : « ça me fait juste télécharger… j'aurais voulu pouvoir partager et que les gens aillent sur la page cochée…
+   un aperçu du haut de la page avec le début de la liste, qui commence à se fondre, et paf, le lien avec le petit message ») :
+   image 1080 × 1350 (photo du concours, « Liste du van », le concours, les premières lignes qui se fondent dans le noir). */
+async function hsImageListeVan(o) {
+  var W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H;
+  var x = c.getContext("2d"), IV = "#F3EEE4", CH = "#C9A66B", SE = "'Cormorant Garamond', Georgia, serif", MO = "Montserrat, Arial, sans-serif";
+  try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load("500 80px 'Cormorant Garamond'"), document.fonts.load("400 34px Montserrat"), document.fonts.load("500 26px Montserrat")]); } catch (eF) { }
+  x.fillStyle = "#070A08"; x.fillRect(0, 0, W, H);
+  /* la photo du haut, entière en largeur, qui se fond dans le noir */
+  try {
+    var img = await new Promise(function (ok, ko) { var im = new Image(); im.onload = function () { ok(im); }; im.onerror = ko; im.src = o.photo; });
+    var hP = 760, r = Math.max(W / img.width, hP / img.height), dw = img.width * r, dh = img.height * r;
+    x.save(); x.beginPath(); x.rect(0, 0, W, hP); x.clip(); x.drawImage(img, (W - dw) * 0.6, (hP - dh) * 0.35, dw, dh); x.restore();
+    var g = x.createLinearGradient(0, hP * 0.45, 0, hP); g.addColorStop(0, "rgba(7,10,8,0)"); g.addColorStop(1, "rgba(7,10,8,1)"); x.fillStyle = g; x.fillRect(0, 0, W, hP + 2);
+  } catch (eI) { }
+  x.textAlign = "left"; x.fillStyle = CH; x.font = "500 26px " + MO; try { x.letterSpacing = "6px"; } catch (eL) { }
+  x.fillText(String(o.libelle || "").toUpperCase(), 80, 690); try { x.letterSpacing = "0px"; } catch (eL2) { }
+  x.fillStyle = IV; x.font = "500 84px " + SE; x.fillText(String(o.titre || ""), 76, 780);
+  x.fillStyle = "rgba(243,238,228,.75)"; x.font = "400 32px " + MO; x.fillText(String(o.sous || ""), 80, 835);
+  /* les premières lignes de la liste, avec leur rond à cocher */
+  var y = 920;
+  /* lignes : texte simple (liste à cocher : un rond devant) ou { h: "8h00", t: "…" } (heure en champagne à gauche) */
+  (o.lignes || []).slice(0, 5).forEach(function (t) {
+    var xt = 145;
+    if (t && typeof t === "object") {
+      x.fillStyle = CH; x.font = "500 44px " + SE; x.fillText(String(t.h || ""), 80, y + 2); xt = 80 + Math.max(String(t.h || "").length <= 2 ? 50 : 150, x.measureText(String(t.h || "")).width + 34); t = t.t;
+    } else if (o.rond !== false) { x.strokeStyle = "rgba(201,166,107,.75)"; x.lineWidth = 2.5; x.beginPath(); x.arc(102, y - 11, 17, 0, Math.PI * 2); x.stroke(); }
+    else xt = 80;
+    x.fillStyle = IV; x.font = "400 34px " + MO; var tt = String(t); while (x.measureText(tt).width > W - xt - 70 && tt.length > 4) tt = tt.slice(0, -2); if (tt !== String(t)) tt = tt.trim() + "…";
+    x.fillText(tt, xt, y); y += 66;
+  });
+  var g2 = x.createLinearGradient(0, 1030, 0, 1200); g2.addColorStop(0, "rgba(7,10,8,0)"); g2.addColorStop(1, "rgba(7,10,8,1)"); x.fillStyle = g2; x.fillRect(0, 1000, W, H - 1000);
+  x.textAlign = "center"; x.fillStyle = CH; x.font = "500 32px " + MO; x.fillText(String(o.appel || ""), W / 2, 1255);
+  x.fillStyle = "rgba(243,238,228,.55)"; x.font = "400 24px " + MO; x.fillText("2hype.fr", W / 2, 1300);
+  return await new Promise(function (ok) { try { c.toBlob(function (b) { ok(b); }, "image/jpeg", 0.88); } catch (eB) { ok(null); } });
+}
 function hsDateLoc(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }
 function hsFmt(iso, o) { var d = hsDateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat("fr-FR", o).format(d); } catch (e) { return String(iso).slice(0, 10); } }
 function hsPlage(ev) {
@@ -2224,10 +2261,19 @@ function EcranConcours() {
   /* 14/11 13h32 (Blandine : « qu'on puisse partager chaque partie indépendamment… juste un clic et que ça envoie un petit message ») :
      une partie (ordre de passage, ordre d'embarquement, groupes du paddock) = un message prêt + la liste + le lien du concours ;
      modifiable dans l'appli de messagerie avant l'envoi. Sans partage du téléphone : copié. */
-  function partagerPartie(intro, lignes, fin) {
+  /* 14/11 13h45 (Blandine : « à chaque fois, il faut un aperçu en image… un screen du haut de la page avec les infos ») */
+  async function partagerPartie(intro, lignes, fin, apercu) {
     var tete = [ev && ev.titre, ev ? hsPlage(ev) : ""].filter(Boolean).join(" — ");
     var txt = [tete, intro, (lignes || []).join("\n"), fin || ""].filter(Boolean).join("\n\n");
     var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
+    try {
+      if (apercu && navigator.share && navigator.canShare && typeof hsImageListeVan === "function") {
+        var ph = hsPhotoDe(idEv);
+        var bI = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: apercu.libelle, titre: (ev && ev.titre) || F("Concours"), sous: ev ? hsPlage(ev) : "", lignes: apercu.lignes, rond: false, appel: F("Ouvre la page sur Hype") + " →" });
+        var fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
+        if (fI && navigator.canShare({ files: [fI] })) { await navigator.share({ files: [fI], title: (ev && ev.titre) || "Hype", text: txt + "\n" + url }); return; }
+      }
+    } catch (eAp) { if (eAp && eAp.name === "AbortError") return; }
     try { if (navigator.share) { navigator.share({ title: (ev && ev.titre) || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
     var tout = txt + "\n" + url;
     try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setPartMsg(F("Message copié : colle-le dans ton groupe.")); setTimeout(function () { setPartMsg(""); }, 3000); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
@@ -2244,7 +2290,8 @@ function EcranConcours() {
         L.push([p.non_partant ? F("non partant") : (p.passage || "–"), num ? F("N° ") + num : "", nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "")].filter(Boolean).join("  "));
       });
     });
-    partagerPartie(F("Voici l’ordre de passage. Les heures peuvent bouger selon l’avancée des épreuves : si tu as activé les notifications de Hype, tu seras prévenu automatiquement de ton heure de passage ; dans tous les cas, un message sera envoyé sur le groupe."), L);
+    var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { AP.push({ h: p.passage || "–", t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
+    partagerPartie(F("Voici l’ordre de passage. Les heures peuvent bouger selon l’avancée des épreuves : si tu as activé les notifications de Hype, tu seras prévenu automatiquement de ton heure de passage ; dans tous les cas, un message sera envoyé sur le groupe."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
   }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
@@ -2687,7 +2734,8 @@ function EcranConcours() {
         L.push((L.length ? "\n" : "") + (g.nom || (F("Groupe ") + (gi + 1))) + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv : ""));
         lignes.forEach(function (p) { L.push([p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " · " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage || "")].filter(Boolean).join("  ")); });
       });
-      partagerPartie(F("Voici les groupes du paddock") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Sois à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard. Les heures peuvent changer selon l’avancée du concours ; avec les notifications de Hype, tu es prévenu automatiquement, et un message sera envoyé sur le groupe."), L);
+      var AG = grpEp.filter(function (g) { return g.publie; }).map(function (g, gi) { return { h: g.heure_rdv || "–", t: (g.nom || (F("Groupe ") + (gi + 1))) + " · " + (g.couples || []).length + " " + ((g.couples || []).length > 1 ? F("couples") : F("couple")) }; });
+      partagerPartie(F("Voici les groupes du paddock") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Sois à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard. Les heures peuvent changer selon l’avancée du concours ; avec les notifications de Hype, tu es prévenu automatiquement, et un message sera envoyé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
     }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
@@ -4282,7 +4330,7 @@ function EcranConcours() {
                 h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")),
                 h("div", { className: "al-l3", style: { padding: "2px 0 4px" } }, F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque.")),   /* 14/11 13h39 (Blandine) */
                 l.length ? lienPartage("esh", F("Partager l’ordre d’embarquement avec le groupe"), function () {
-                  partagerPartie(F("Ordre d’embarquement") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Sois prêt avec ton cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."));
+                  partagerPartie(F("Ordre d’embarquement") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Sois prêt avec ton cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."), { libelle: F("Ordre d’embarquement"), lignes: l.map(function (x, i) { return { h: String(i + 1), t: x.ch + (x.qui ? " · " + x.qui : "") }; }) });
                 }) : null);
             })(); };
         /* 13/11 16h14 (Blandine : « la présentation du concours, tu peux faire mieux que ça ») : propositions A / B / C */
@@ -4313,7 +4361,21 @@ function EcranConcours() {
               + "\n\n" + F("Les horaires peuvent changer pendant la journée selon l’avancée du concours. Si tu as activé les notifications de Hype, tu seras prévenu automatiquement ; dans tous les cas, un message sera envoyé sur le groupe.")
               + "\n" + F("Pas encore activé les notifications ? Ouvre le lien : Hype te le propose en un toucher.");
             var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
-            try { if (navigator.share) { navigator.share({ title: ev.titre || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
+            (async function () {
+              try {
+                if (navigator.share && navigator.canShare && typeof hsImageListeVan === "function") {
+                  var ph = hsPhotoDe(idEv);
+                  var bI = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: F("Informations du concours"), titre: ev.titre || F("Concours"), sous: [jourL, lieuNom].filter(Boolean).join(" · "), lignes: tl.map(function (x) { return { h: String(x.t || "").replace(/^0(\d)/, "$1"), t: x.l }; }), rond: false, appel: F("Ouvre la page sur Hype") + " →" });
+                  var fI = bI ? new File([bI], "hype-concours.jpg", { type: "image/jpeg" }) : null;
+                  if (fI && navigator.canShare({ files: [fI] })) { await navigator.share({ files: [fI], title: ev.titre || "Hype", text: txt + "\n" + url }); return; }
+                }
+              } catch (eAp) { if (eAp && eAp.name === "AbortError") return; }
+              try { if (navigator.share) { navigator.share({ title: ev.titre || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
+              var tout = txt + "\n" + url;
+              try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setHorMsg(F("Message copié : colle-le dans ton groupe.")); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
+              try { window.prompt("", tout); } catch (eP2) { }
+            })();
+            return;
             var tout = txt + "\n" + url;
             try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setHorMsg(F("Message copié : colle-le dans ton groupe.")); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
             try { window.prompt("", tout); } catch (eP2) { }
@@ -5021,6 +5083,7 @@ var HC_CSS = [
   ".hc .hc-pad-tete .hc-pad-ic{display:none}",
   ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(24px,6.6vw,29px)}",
   ".hc .hc-pad-tete .hc-pad-tt span{display:block;margin-top:6px}",
+  ".hc .hc-emb .al-l3{color:rgba(243,238,228,.92) !important;font-size:15px !important;line-height:1.55 !important}",   /* 14/11 13h45 (Blandine) : les consignes sous l'ordre d'embarquement, plus lisibles */
   ".hc .hc-regles+.hc-pad div.hc-pad-tete{margin-top:22px;padding-top:58px}",   /* 14/11 13h43 (Blandine) : règles et organisation du paddock un peu plus rapprochées, pour tenir sur une capture */
   ".hc .hc-apres-pas{position:relative;margin-top:44px;padding-top:56px}",
   ".hc .hc-apres-pas:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
@@ -7626,8 +7689,8 @@ var HS_LISTE_DEFAUT = [
   { r: "cheval", t: "Selle et tapis" }, { r: "cheval", t: "Filet ou bride" }, { r: "cheval", t: "Sangle bavette" },
   { r: "cheval", t: "Guêtres ou bandes de polo, protège-boulets" }, { r: "cheval", t: "Enrênement si le cheval en a" }, { r: "cheval", t: "Amortisseur pour le dos" },
   { r: "cheval", t: "Protections de transport" }, { r: "cheval", t: "Licol et longe" }, { r: "cheval", t: "Couverture" }, { r: "cheval", t: "Couvre-reins" }, { r: "cheval", t: "Polaire séchante" },   /* 14/11 13h37 (Blandine) */
-  { r: "cheval", t: "Seau pour l’eau" }, { r: "cheval", t: "Foin" },   /* 14/11 13h35 (Blandine) : séparés */ { r: "cheval", t: "Nourriture si concours prolongé à l’extérieur" }, { r: "cheval", t: "Trousse de pansage" },
-  { r: "cheval", t: "Élastiques pour natter et ciseaux" }, { r: "cheval", t: "Tendonyl ou équivalent post compétition à mettre sur les membres" },
+  { r: "cheval", t: "Seau pour l’eau" }, { r: "cheval", t: "Foin" },   /* 14/11 13h35 (Blandine) : séparés */ { r: "cheval", t: "Nourriture si concours prolongé à l’extérieur" }, { r: "cheval", t: "Matériel de pansage, élastiques à natter et ciseaux compris" },
+  { r: "cheval", t: "Tendonyl ou équivalent post compétition à mettre sur les membres" },
   { r: "cheval", t: "Stable boots pour le repos après compétition" }, { r: "cheval", t: "Livret du cheval (vaccins)" }, { r: "cheval", t: "Poubelle pour l’eau et tuyau d’arrosage si concours prolongé" },
   { r: "moi", t: "Casque" }, { r: "moi", t: "Veste de concours" }, { r: "moi", t: "Culotte claire" }, { r: "moi", t: "Bottes" },
   { r: "moi", t: "Gants" }, { r: "moi", t: "Cravache" }, { r: "moi", t: "Éperons si besoin" }, { r: "moi", t: "Airbag" },
@@ -7656,6 +7719,7 @@ function EcranListeVan() {
   /* 14/11 13h19 (Blandine : « en tant que coach, je puisse barrer le matériel qui est pas utile pour un concours ») :
      club_agenda.van_retires = textes des objets barrés pour CE concours ; barrés pour tous les cavaliers, hors du compte, rangés en bas. */
   var _gv = React.useState(false); var gestionV = _gv[0], setGestionV = _gv[1];
+  var _pe = React.useState(""); var partEtat = _pe[0], setPartEtat = _pe[1];
   var _rt = React.useState(null); var retiresLoc = _rt[0], setRetiresLoc = _rt[1];
   var retires = retiresLoc || (ev && Array.isArray(ev.van_retires) ? ev.van_retires : []);
   function normV(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
@@ -7806,6 +7870,20 @@ function EcranListeVan() {
     }), blocRetires(), h("div", { style: { display: "flex", justifyContent: "flex-end" } }, modif),
       gestionV ? h("div", { className: "hs-note", style: { marginTop: 4 } }, F("Coach : touche « Modifier », puis « Pas utile » à côté d’un objet pour le barrer chez tous les cavaliers, pour ce concours seulement.")) : null);
   }
+  async function partagerListe() {
+    var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#lv=" + encodeURIComponent(String(idEv || ""));
+    var msg = (typeof hypeTextePartagePage === "function" ? hypeTextePartagePage("liste-van", (c.app && c.app.langue) || "fr") : "") || F("La liste du matériel à emporter pour le concours, à cocher sur Hype :");
+    var lignes = (items || []).filter(function (x) { return x.r === "cheval" && !estRetire(x); }).map(function (x) { return x.t; });
+    setPartEtat("…");
+    try {
+      var ph = hsPhotoDe(idEv);
+      var b = await hsImageListeVan({ photo: (ph && ph.img) || ph, libelle: F("Liste du van"), titre: (ev && ev.titre) || F("Concours"), sous: ev ? hsPlage(ev) : "", lignes: lignes, appel: F("Coche ta liste sur Hype") + " →" });
+      var f = b ? new File([b], "liste-du-van.jpg", { type: "image/jpeg" }) : null;
+      if (f && navigator.share && navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: F("Liste du van"), text: msg + "\n" + url }); setPartEtat(""); return; }
+      if (navigator.share) { await navigator.share({ title: F("Liste du van"), text: msg, url: url }); setPartEtat(""); return; }
+      try { await navigator.clipboard.writeText(msg + "\n" + url); setPartEtat(F("Message copié : colle-le dans ton groupe.")); } catch (eC) { try { window.prompt("", msg + "\n" + url); } catch (eP) { } setPartEtat(""); }
+    } catch (eS) { setPartEtat(""); }
+  }
   function pdf() {
     var lignes = [];
     if (lignesPropres.length) { lignes.push({ titre: F("Son matériel à lui") + (nomCheval ? " · " + nomCheval : "") }); lignesPropres.forEach(function (o) { lignes.push({ t: o.t, f: !!o.x.f }); }); }
@@ -7819,8 +7897,10 @@ function EcranListeVan() {
     h("div", { className: "hs-in" },
       vueHype(),
       h("div", { className: "hs-duo", style: { marginTop: 18 } },
-        h("button", { type: "button", className: "hs-btn plein", onClick: pdf }, F("Télécharger")),
-        h("button", { type: "button", className: "hs-btn doux", onClick: toutDecocher }, F("Tout décocher"))),
+        h("button", { type: "button", className: "hs-btn plein", onClick: partagerListe }, partEtat === "…" ? "…" : F("Partager")),
+        h("button", { type: "button", className: "hs-btn doux", onClick: pdf }, F("Télécharger"))),
+      h("div", { style: { textAlign: "center", marginTop: 10 } }, h("button", { type: "button", onClick: toutDecocher, style: { background: "none", border: "none", color: "rgba(243,238,228,.7)", fontSize: 13, textDecoration: "underline", textUnderlineOffset: 3, padding: 6 } }, F("Tout décocher")),
+        partEtat && partEtat !== "…" ? h("div", { className: "hs-note", style: { marginTop: 4 } }, partEtat) : null),
       h("div", { className: "hs-note" }, F("Ta liste n’est visible que par toi. Au prochain concours, elle repart de celle-ci, cases décochées.")),
       etat && etat !== "✓" && etat !== "…" ? h("div", { className: "hs-msg" }, etat) : null,
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
