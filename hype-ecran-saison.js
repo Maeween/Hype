@@ -2239,6 +2239,7 @@ function EcranConcours() {
       }
       try { var rq = await supa.rpc("hype_passages_concours", { p_agenda: idEv }); if (rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); } catch (eR) { }
       setDecEp({ ep: g.ep, fait: true, msg: txt });
+      hsPrevenirGroupe({ texte: F("Changement d’horaire") + " — " + g.ep + " : " + (d > 0 ? F("les passages sont retardés de ") + d : F("les passages sont avancés de ") + (-d)) + " min" + (nG ? F(", rendez-vous au paddock compris") : "") + ". " + (decEp.prev ? F("Les nouvelles heures sont sur la page du concours ; les cavaliers ayant activé leurs notifications sont prévenus en direct.") : F("Les nouvelles heures sont sur la page du concours.")), lien: hsLienConcoursApp(idEv) });
     } catch (eD) { setDecEp(Object.assign({}, decEp, { occ: false, msg: F("Pas enregistré : ") + String((eD && eD.message) || eD) })); }
   }
   function panneauDecaler(g) {
@@ -2291,7 +2292,7 @@ function EcranConcours() {
       });
     });
     var AP = []; parEpreuve.forEach(function (g) { g.l.filter(function (p) { return !p.non_partant; }).slice().sort(function (a, b) { return hsMinutes(a.passage) - hsMinutes(b.passage); }).forEach(function (p) { AP.push({ h: p.passage || "–", t: nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "") }); }); });
-    partagerPartie(F("Voici l’ordre de passage. Les heures peuvent bouger selon l’avancée des épreuves : si tu as activé les notifications de Hype, tu seras prévenu automatiquement de ton heure de passage ; dans tous les cas, un message sera envoyé sur le groupe."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
+    partagerPartie(F("L’ordre de passage est en ligne. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Ordre de passage"), lignes: AP });
   }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
@@ -2602,6 +2603,12 @@ function EcranConcours() {
       setGrpEd(null);
       setGrpMsg(publier ? F("✓ Groupes publiés. Seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 minutes avant leur rendez-vous : pense à envoyer aussi l’info à l’équipe.") : "");
       setGrpDemande(!publier);
+      try {
+        var avant = {}; (grpD || []).forEach(function (g0) { if (g0.id) avant[g0.id] = g0; });
+        var chg = [];
+        grpEd.forEach(function (g1) { var a0 = g1.id && avant[g1.id]; if (!a0 || !a0.publie || g1.__suppr) return; var hN = hsHeurePropre(g1.heure_rdv) || String(g1.heure_rdv || "").trim(), hA = hsHeurePropre(a0.heure_rdv) || String(a0.heure_rdv || "").trim(); if (hN && hN !== hA) chg.push("• " + (String(g1.nom || "").trim() || F("Groupe")) + F(" : rendez-vous à ") + hsHeureLisible(hN) + (hA ? " (" + F("au lieu de ") + hsHeureLisible(hA) + ")" : "")); });
+        if (chg.length) hsPrevenirGroupe({ texte: F("Changement au paddock") + (epPaddock ? " (" + epPaddock + ")" : "") + " :\n" + chg.join("\n") + "\n" + F("Tout est à jour sur la page du concours."), lien: hsLienConcoursApp(idEv) });
+      } catch (ePg) { }
     } catch (eG) { setGrpMsg(F("Enregistrement impossible : ") + String((eG && eG.message) || eG)); }
     setGrpOcc(false);
   }
@@ -2735,14 +2742,21 @@ function EcranConcours() {
         lignes.forEach(function (p) { L.push([p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " · " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage || "")].filter(Boolean).join("  ")); });
       });
       var AG = grpEp.filter(function (g) { return g.publie; }).map(function (g, gi) { return { h: g.heure_rdv || "–", t: (g.nom || (F("Groupe ") + (gi + 1))) + " · " + (g.couples || []).length + " " + ((g.couples || []).length > 1 ? F("couples") : F("couple")) }; });
-      partagerPartie(F("Voici les groupes du paddock") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Sois à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard. Les heures peuvent changer selon l’avancée du concours ; avec les notifications de Hype, tu es prévenu automatiquement, et un message sera envoyé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
+      partagerPartie(F("Les groupes du paddock sont en ligne") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Merci d’être à l’heure au rendez-vous à l’entrée du paddock : un retard décale tout le monde. Les heures peuvent être amenées à évoluer selon l’avancée des épreuves sur place. Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe."), L, "", { libelle: F("Groupes du paddock"), lignes: AG });
     }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
-  var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
+  var blocRegles0 = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
     h("div", { className: "hc-reg-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 34, height: 34 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinejoin: "round", strokeLinecap: "round" }, h("path", { d: "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z" }), h("path", { d: "M8.6 12.2l2.4 2.4 4.6-4.8" })))),
     h("h3", null, F("Règles du paddock")),
     h("ul", null, [F("Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard."), F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach."), F("Prévois si besoin quelqu’un pour marcher ton cheval pendant la reconnaissance, et de quoi changer la cartouche de ton gilet airbag.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
+  /* 14/11 14h35 (Blandine : « partager les règles du paddock avant qu'on envoie les numéros… petit rappel pour l'organisation au paddock ») */
+  var blocRegles = blocRegles0 ? [blocRegles0, lienPartage("rsh", F("Partager les règles du paddock avec le groupe"), function () {
+    partagerPartie(F("Petit rappel pour l’organisation au paddock :"),
+      [F("• Soyez bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard."), F("• Ne rentrez jamais seuls au paddock : attendez l’accord de votre coach."), F("• Dès votre arrivée, signalez à votre coach que vous êtes sur le paddock."), F("• Ne quittez jamais le paddock sans l’accord de votre coach."), F("• Prévoyez si besoin quelqu’un pour marcher votre cheval pendant la reconnaissance, et de quoi changer la cartouche de votre gilet airbag.")],
+      F("Les groupes et les heures de rendez-vous au paddock arriveront sur la page du concours."),
+      { libelle: F("Règles du paddock"), lignes: [{ h: "✓", t: F("À l’heure au rendez-vous") }, { h: "✓", t: F("Jamais seul au paddock") }, { h: "✓", t: F("Se signaler en arrivant") }, { h: "✓", t: F("Ne pas partir sans accord") }, { h: "✓", t: F("Marcheur et cartouche airbag") }] });
+  })] : null;
 
   /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
   var gens = [];
@@ -4144,7 +4158,18 @@ function EcranConcours() {
       if (r && r.error) { setHorMsg(F("Erreur : ") + (r.error.message || "")); return; }
       if (!r || !r.data || !r.data.length) { setHorMsg(F("Erreur : ") + "—"); return; }
     } catch (e) { setHorMsg(F("Erreur : ") + String((e && e.message) || e)); return; }
+    var evAvant = ev;
     setEv(Object.assign({}, ev, upd)); setHorForm(null); setHorMsg(F("Horaires enregistrés."));
+    try {
+      var chH = [];
+      function cmp(lib, nv, an) { if (String(nv || "") !== String(an || "") && nv) chH.push("• " + lib + " : " + hsHeureLisible(nv) + (an ? " (" + F("au lieu de ") + hsHeureLisible(an) + ")" : "")); }
+      cmp(F("Embarquement"), upd.heure_embarquement, evAvant.heure_embarquement);
+      cmp(F("Départ de l’écurie"), upd.heure_depart, evAvant.heure_depart);
+      var libT = function (x) { return (x.type === "reco" ? F("Reco") : x.type === "debut" ? F("Début") : (x.lib || F("Horaire"))) + (x.ep ? " " + hsEpCourt(x.ep) : ""); };
+      var anc = {}; (evAvant.horaires || []).forEach(function (x) { anc[x.type + "|" + (x.ep || "") + "|" + (x.lib || "")] = x.heure; });
+      (upd.horaires || []).forEach(function (x) { cmp(libT(x), x.heure, anc[x.type + "|" + (x.ep || "") + "|" + (x.lib || "")]); });
+      if (chH.length) hsPrevenirGroupe({ texte: F("Horaires mis à jour") + " — " + (ev.titre || F("Concours")) + " :\n" + chH.join("\n") + "\n" + F("Tout est à jour sur la page du concours ; les heures peuvent encore évoluer selon l’avancée des épreuves."), lien: hsLienConcoursApp(idEv) });
+    } catch (eHp) { }
   }
   /* 13/11 16h21 (Blandine : « il faut qu'ils puissent ajouter d'autres cases… l'heure de reco, l'heure de début d'épreuve, pour chaque épreuve ») */
   function formHoraires2() {
@@ -4330,7 +4355,7 @@ function EcranConcours() {
                 h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")),
                 h("div", { className: "al-l3", style: { padding: "2px 0 4px" } }, F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque.")),   /* 14/11 13h39 (Blandine) */
                 l.length ? lienPartage("esh", F("Partager l’ordre d’embarquement avec le groupe"), function () {
-                  partagerPartie(F("Ordre d’embarquement") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Sois prêt avec ton cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."), { libelle: F("Ordre d’embarquement"), lignes: l.map(function (x, i) { return { h: String(i + 1), t: x.ch + (x.qui ? " · " + x.qui : "") }; }) });
+                  partagerPartie(F("L’ordre d’embarquement est en ligne") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Merci d’être prêts avec votre cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."), { libelle: F("Ordre d’embarquement"), lignes: l.map(function (x, i) { return { h: String(i + 1), t: x.ch + (x.qui ? " · " + x.qui : "") }; }) });
                 }) : null);
             })(); };
         /* 13/11 16h14 (Blandine : « la présentation du concours, tu peux faire mieux que ça ») : propositions A / B / C */
@@ -4358,8 +4383,8 @@ function EcranConcours() {
             var lignesH = tl.map(function (x) { return String(x.t || "").replace(/^0(\d)/, "$1") + " " + x.l + (x.s ? " (" + x.s + ")" : ""); });
             var txt = [(ev.titre || F("Concours")) + (jourL ? " — " + jourL : ""), String(ev.lieu || "").trim()].filter(Boolean).join("\n")
               + (lignesH.length ? "\n\n" + lignesH.join("\n") : "")
-              + "\n\n" + F("Les horaires peuvent changer pendant la journée selon l’avancée du concours. Si tu as activé les notifications de Hype, tu seras prévenu automatiquement ; dans tous les cas, un message sera envoyé sur le groupe.")
-              + "\n" + F("Pas encore activé les notifications ? Ouvre le lien : Hype te le propose en un toucher.");
+              + "\n\n" + F("Les informations du concours sont en ligne sur Hype. Les horaires peuvent être amenés à évoluer selon l’avancée des épreuves sur place : les cavaliers ayant activé leurs notifications seront prévenus en direct (le lien propose de les activer). Nous vous tiendrons également au courant sur le groupe.")
+              ;
             var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
             (async function () {
               try {
@@ -5084,7 +5109,7 @@ var HC_CSS = [
   ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(24px,6.6vw,29px)}",
   ".hc .hc-pad-tete .hc-pad-tt span{display:block;margin-top:6px}",
   ".hc .hc-emb .al-l3{color:rgba(243,238,228,.92) !important;font-size:15px !important;line-height:1.55 !important}",   /* 14/11 13h45 (Blandine) : les consignes sous l'ordre d'embarquement, plus lisibles */
-  ".hc .hc-regles+.hc-pad div.hc-pad-tete{margin-top:22px;padding-top:58px}",   /* 14/11 13h43 (Blandine) : règles et organisation du paddock un peu plus rapprochées, pour tenir sur une capture */
+  ".hc .hc-regles+.hc-pad div.hc-pad-tete,.hc .hc-regles+div+.hc-pad div.hc-pad-tete{margin-top:22px;padding-top:58px}",   /* 14/11 13h43 (Blandine) : règles et organisation du paddock un peu plus rapprochées, pour tenir sur une capture */
   ".hc .hc-apres-pas{position:relative;margin-top:44px;padding-top:56px}",
   ".hc .hc-apres-pas:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
   /* 13/11 13h24 (Blandine : « pas mal de boutons dorés… modifier les passages, etc… éviter de nous cramer les yeux ») : 3 propositions */
@@ -7575,6 +7600,40 @@ function hsMinutes(v) {
   if (!m) return 99999;
   return Number(m[1]) * 60 + Number(m[2] || 0);
 }
+/* 14/11 14h31 (Blandine : « on peut mettre ça en place pour WhatsApp, c'est important ») — PRÉVENIR LE GROUPE.
+   Hype ne peut pas écrire tout seul dans un groupe WhatsApp : après un changement d'heure, on propose à la coach le message
+   déjà écrit (modifiable) ; « Envoyer sur WhatsApp » ouvre WhatsApp avec le texte, elle choisit le groupe et envoie. */
+function hsLienConcoursApp(id) { var base = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin; return id ? base + "/#r=" + encodeURIComponent(String(id)) : base; }
+function hsPrevenirGroupe(o) {
+  try {
+    var anc = document.getElementById("hs-prev-groupe"); if (anc) anc.remove();
+    var tx = (o.texte || "") + (o.lien ? "\n" + o.lien : "");
+    var fond = document.createElement("div"); fond.id = "hs-prev-groupe";
+    fond.setAttribute("style", "position:fixed;inset:0;z-index:9900;background:rgba(4,5,6,.72);display:flex;align-items:flex-end;justify-content:center;font-family:Montserrat,Arial,sans-serif");
+    var f = document.createElement("div");
+    f.setAttribute("style", "width:100%;max-width:520px;background:#0B0C0D;border:1px solid rgba(201,166,107,.35);border-bottom:0;border-radius:22px 22px 0 0;padding:22px 20px calc(env(safe-area-inset-bottom) + 18px);color:#F3EEE4;box-sizing:border-box");
+    var t = document.createElement("div"); t.textContent = o.titre || "Prévenir le groupe";
+    t.setAttribute("style", "font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.1");
+    var st = document.createElement("div"); st.textContent = o.sous || "Le message est prêt, tu peux le modifier. WhatsApp s’ouvre : tu choisis le groupe et tu envoies.";
+    st.setAttribute("style", "font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.62);margin-top:6px");
+    var ta = document.createElement("textarea"); ta.value = tx; ta.rows = 7;
+    ta.setAttribute("style", "display:block;width:100%;box-sizing:border-box;margin-top:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(243,238,228,.14);background:#111315;color:#F3EEE4;font:400 15px/1.45 Montserrat,Arial,sans-serif;resize:vertical;outline:none");
+    var bW = document.createElement("button"); bW.type = "button"; bW.textContent = "Envoyer sur WhatsApp";
+    bW.setAttribute("style", "display:block;width:100%;height:52px;margin-top:14px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:transparent;color:#F3EEE4;font:500 15px Montserrat,Arial,sans-serif;cursor:pointer");
+    var lig = document.createElement("div"); lig.setAttribute("style", "display:flex;justify-content:center;gap:26px;margin-top:14px");
+    function lien(txt) { var b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("style", "background:none;border:0;border-bottom:1px solid rgba(243,238,228,.3);padding:0 0 2px;color:rgba(243,238,228,.8);font:500 13px Montserrat,Arial,sans-serif;cursor:pointer"); return b; }
+    var bA = lien("Autre appli"), bP = lien("Plus tard");
+    function fermer() { try { fond.remove(); } catch (e) { } }
+    bW.onclick = function () { var u = "https://wa.me/?text=" + encodeURIComponent(ta.value); try { window.open(u, "_blank"); } catch (e) { location.href = u; } fermer(); };
+    bA.onclick = function () { var v = ta.value; if (navigator.share) { navigator.share({ text: v }).then(fermer, function () { }); return; } try { navigator.clipboard.writeText(v); bA.textContent = "Copié ✓"; } catch (e) { } };
+    bP.onclick = fermer; fond.onclick = function (e) { if (e.target === fond) fermer(); };
+    lig.appendChild(bA); lig.appendChild(bP);
+    f.appendChild(t); f.appendChild(st); f.appendChild(ta); f.appendChild(bW); f.appendChild(lig); fond.appendChild(f);
+    document.body.appendChild(fond);
+  } catch (eP) { }
+}
+try { window.hsPrevenirGroupe = hsPrevenirGroupe; } catch (eW) { }
+function hsHeureLisible(v) { var t = String(v || "").trim(); var m = t.match(/^(\d{1,2})[:h](\d{2})/); return m ? (Number(m[1]) + "h" + m[2]) : t; }
 function hsHeure(min) {
   if (!(min >= 0 && min < 24 * 60)) return "";
   var hh = Math.floor(min / 60), mm = min % 60;

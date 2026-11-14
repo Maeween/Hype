@@ -70,6 +70,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
 - **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
 
+## 2026-11-14 14h37 — PUBLIÉ (build 20261114-1850, index.html + hype-ecran-saison.js v=190) : partages du concours au ton coach, « Prévenir le groupe » WhatsApp, partage des règles du paddock
+- RÈGLE (Blandine 14h36) : dans les messages de partage, ne pas répéter « Hype » à chaque fois → « sur la page du concours » ; ne pas parler du « van » (certains ont un camion).
+- Liste du van (texte de Blandine) : « Vous pouvez retrouver sur la page du concours la liste du matériel à emporter, et la cocher au fur et à mesure en préparant vos affaires. N'oubliez pas le matériel spécifique à chaque cheval si vous en montez plusieurs. »
+- Messages au « vous », ton coach à élèves (Blandine 14h28) : infos (« Les informations du concours sont en ligne sur Hype… Nous vous tiendrons également au courant sur le groupe. »), ordre de passage (« L'ordre de passage est en ligne. Les heures peuvent être amenées à évoluer… Les cavaliers ayant activé leurs notifications seront prévenus en direct. Un message sera également partagé sur le groupe. »), groupes du paddock et embarquement sur le même modèle.
+- « Prévenir le groupe » (Blandine 14h31 « important ») : WhatsApp ne permet pas à Hype d'écrire seule dans un groupe → après un changement d'heure (heure de rendez-vous d'un groupe publié, décalage d'une épreuve, horaires du concours), fenêtre avec le message prêt (ancienne et nouvelle heure + lien du concours), modifiable ; « Envoyer sur WhatsApp » (la coach choisit le groupe), « Autre appli », « Plus tard ».
+- Règles du paddock : lien « Partager les règles du paddock avec le groupe » sous l'encadré → « Petit rappel pour l'organisation au paddock : » + les 5 règles au « vous » + image du haut de la page.
+- À FAIRE : traduire ces nouveaux textes après relecture ; bandeau « Prochain concours » (A accueil / B Écurie) en attente de son choix.
+
 ## 2026-11-14 14h33 — ERREUR CORRIGÉE : les builds 1815, 1830 et 1840 n'étaient pas partis en ligne
 - Cause : leurs messages d'envoi ne commençaient pas par « [publier] » → Netlify ne déploie pas (le site était resté sur le mail de bienvenue, 13h57). Blandine voyait toujours l'ancien texte de la liste du van.
 - Correction : nouvel envoi marqué [publier] (même contenu : compte express style Vidéothèque + notifications, aperçu image des partages, texte de la liste du van). RÈGLE : chaque publication doit avoir « [publier] » dans le message.
