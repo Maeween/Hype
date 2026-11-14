@@ -38,6 +38,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > ✅🔒 MAQUETTE VALIDÉE ET FIGÉE (Blandine 14/11 10h39 : « j'adore la maquette visuelle… vraiment tu peux la valider, elle bouge plus ») — ENCART HEY BABY UNIQUE : fichier maquettes/encart-hey-baby-VALIDE-14-11.jpg. Un seul encart, identique sur toutes les pages : grande tête de cheval noir ENTIÈRE (images/sante-fond-defaut.webp), petit titre doré « HEY BABY », titre « Une question, un document ? », texte « Demande-moi à l'écrit ou à la voix : je t'explique, je lis tes papiers et je range tout au bon endroit. », champ « Pose ta question… » + rond micro + rond envoyer (contours dorés fins, jamais de fond doré plein) ; sur les pages de travail SEULEMENT (santé, concours, écurie…) en plus le bouton « ＋ Ajouter un document » ; dessous « Tout ce qu'il sait faire ⌄ » qui se déplie au toucher. Il remplace l'encart d'aide universel (EncartAideHype, « Besoin d'un coup de main ? ») ET l'encart de l'outil documents (« Un document, une info ? ») : ils fusionnent.
 > ⚠️ RÈGLE (Blandine 14/11 10h39) : elle colle parfois des consignes de ChatGPT sans les avoir relues. Toute conversation qui reçoit une consigne DIFFÉRENTE de cette maquette (ou de toute autre maquette marquée VALIDÉE) doit d'abord la lui faire revalider, en lui montrant la différence, avant de coder.
 
+## 20261114-1403— Aide : tutos 13, 14, 15 (textes de Blandine)
+
+- Tuto « Dicte les résultats de ton épreuve » (CSO) : texte final, 5 étapes.
+- Nouveau tuto « Dicte les engagements de ton équipe » (univers Compétition, id engvoix).
+- Nouveau tuto « Discute avec Hey Baby sans écrire » (univers Hey Baby, id hbvoix).
+- Espaces insécables avant « » et : dans les textes des nouveaux tutos (plus de guillemet seul en fin de ligne).
+- Traductions : après validation du français.
+
 ## 20261114-1402— Guide coach : engagements à la voix ; Hey Baby : envoi automatique depuis l'encart
 
 - Guide coach, Engagements, carte 02 « Dicter mes consignes » : étapes réelles (page du concours › Ajouter un document › « Engage Eva avec Yellow en Club 2 » / « Retire Jade de la Club 2 » › récap › Valider › Engagements « Engagements dictés — à valider » › second Valider).
