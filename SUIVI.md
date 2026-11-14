@@ -38,6 +38,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > ✅🔒 MAQUETTE VALIDÉE ET FIGÉE (Blandine 14/11 10h39 : « j'adore la maquette visuelle… vraiment tu peux la valider, elle bouge plus ») — ENCART HEY BABY UNIQUE : fichier maquettes/encart-hey-baby-VALIDE-14-11.jpg. Un seul encart, identique sur toutes les pages : grande tête de cheval noir ENTIÈRE (images/sante-fond-defaut.webp), petit titre doré « HEY BABY », titre « Une question, un document ? », texte « Demande-moi à l'écrit ou à la voix : je t'explique, je lis tes papiers et je range tout au bon endroit. », champ « Pose ta question… » + rond micro + rond envoyer (contours dorés fins, jamais de fond doré plein) ; sur les pages de travail SEULEMENT (santé, concours, écurie…) en plus le bouton « ＋ Ajouter un document » ; dessous « Tout ce qu'il sait faire ⌄ » qui se déplie au toucher. Il remplace l'encart d'aide universel (EncartAideHype, « Besoin d'un coup de main ? ») ET l'encart de l'outil documents (« Un document, une info ? ») : ils fusionnent.
 > ⚠️ RÈGLE (Blandine 14/11 10h39) : elle colle parfois des consignes de ChatGPT sans les avoir relues. Toute conversation qui reçoit une consigne DIFFÉRENTE de cette maquette (ou de toute autre maquette marquée VALIDÉE) doit d'abord la lui faire revalider, en lui montrant la différence, avant de coder.
 
+## 20261114-1411— Guide coach et Aide : brief « Mise à jour du guide coach et de la page Aide »
+
+- Cycle de progression : cercle gardé, tracé plus fin ; retour Progresser → Préparer en champagne mat, point « Préparer » plein ; au centre HYPE + « Cycle de progression » (italique). Les 7 phrases (Anticipe les besoins de chacun…) existent en option sous le cercle (window.__cyclePhrases), non affichées par défaut.
+- Accueil du guide, Préparer mon concours : ligne « Préparer ou modifier les engagements à la voix. » + exemple « Dicte les engagements de ton équipe » (Eva/Yellow, Jade) + lien « Voir le tuto » (tuto engvoix).
+- Chapitre Engagements, carte 02 : « Dicter mes engagements », description et étapes du tuto 14 (double validation).
+- Accueil du guide, Analyser et progresser : groupe « Parler avec Hey Baby » (écrit ou oral, échange sans répéter, encart dans les pages, effacer ce qu'il a retenu) + lien « Voir le tuto » (hbvoix).
+- Aide : textes définitifs tutos 13 (commande vocale), 14 (étapes 5-6, À savoir), 15 (titre « Échange avec Hey Baby à l'oral », « tes échanges »).
+
 ## 2026-11-14 · build 20261114-1410 — Feuille de jugement de dressage refaite en protocole (maquette validée)
 - Maquette : maquettes/feuille-dressage-maquette-14-11.png. hype-ecran-juge.js v=17.
 - Tableau N° · Figure · Note · Coef. · Remarques (iPhone : remarque sous la figure ; tablette/ordi : 5 colonnes). Figures officielles en entier, dans l'ordre. Notes Montserrat chasse fixe, virgule ; note enregistrée encadrée (0 = « 0,0 »), non notée = tiret.

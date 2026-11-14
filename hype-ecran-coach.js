@@ -46,8 +46,8 @@
     engagements: { titre: "Engagements", sous: "Préparer, valider et éditer mes engagements.", bas: "coach-eng-camion", hero: "coach-eng-hero", cartes: [
       { n: "01", ico: "agenda", img: "coach-eng-fond-01", capture: "coach-cap-eng-nouveau", titre: "Préparer mes engagements", ecran: "engagements",
         paras: ["Sélectionne tes cavaliers, leurs chevaux et leurs épreuves."], liste: ["Ouvre les engagements de ton concours.", "Sélectionne le cavalier, le cheval et l’épreuve.", "Appuie sur « Engager ».", "Renseigne les informations du concours et du transport.", "Les licences sont récupérées depuis les profils des cavaliers."] },
-      { n: "02", ico: "micro", img: "coach-hd-coach", capture: "coach-cap-eng-voix", titre: "Dicter mes consignes", ecran: "engagements",
-        paras: ["Engage ou retire tes couples à la voix, puis valide."], liste: ["Sur la page du concours, ouvre « Ajouter un document ».", "Dis par exemple « Engage Eva avec Yellow en Club 2 » ou « Retire Jade de la Club 2 ».", "Vérifie le récapitulatif et appuie sur « Valider ».", "Dans Engagements, retrouve « Engagements dictés — à valider ». En cas de doute, choisis dans la liste.", "Valide une seconde fois : les engagements sont enregistrés."] },
+      { n: "02", ico: "micro", img: "coach-hd-coach", capture: "coach-cap-eng-voix", titre: "Dicter mes engagements", ecran: "engagements",
+        paras: ["Prépare ou modifie tes engagements en parlant avec Hype."], liste: ["Ouvre la page du concours et appuie sur « Ajouter un document ».", "Dicte ta demande, par exemple : « Engage Eva avec Yellow en Club 2 » ou « Retire Jade de la Club 2 ».", "Vérifie le récapitulatif et appuie sur « Valider ».", "Ouvre la page Engagements et retrouve « Engagements dictés — à valider ».", "En cas de doute, sélectionne le cavalier ou le cheval correspondant à ta demande dans la liste proposée.", "Valide une seconde fois pour enregistrer les modifications."] },
       { n: "03", ico: "pdf", img: "coach-hd-documents", capture: "coach-cap-eng-feuille", titre: "Sortir ma fiche d’engagement", ecran: "engagements",
         paras: ["Génère ta fiche, imprime-la ou enregistre-la en PDF."], liste: ["Vérifie tes engagements.", "Appuie sur « Feuille d’engagement ».", "Enregistre la fiche en PDF ou imprime-la."] },
       { n: "04", ico: "maj", img: "coach-hd-embarquement", titre: "Mise à jour automatique", ecran: "registre-mouvements",
@@ -177,24 +177,35 @@
   ];
 
   /* 13/11 23h10 (Blandine) : « Cycle de progression Hype » — cercle SVG, HYPE au centre, 6 étapes, fines flèches champagne */
-  function Cycle(h, sansSignature) {
+  /* 14/11 11h30 (brief Blandine « Cycle de progression ») : on garde le cercle, en plus fin et plus sobre.
+     Tracé ivoire léger ; le retour Progresser → Préparer en champagne mat (continuité d'un concours à l'autre) ;
+     point de départ « Préparer » plein ; au centre HYPE + « Cycle de progression ». Phrases facultatives sous le cercle. */
+  var CYCLE_PH = ["Anticipe les besoins de chacun.", "Accompagne chaque couple.", "Veille au bien-être du cheval.", "Regarde au-delà du résultat.", "Identifie les points à travailler.", "Adapte ton enseignement.", "Construis la suite ensemble."];
+  function Cycle(h, sansSignature, avecPhrases) {
     var E = ["Préparer", "Concourir", "Prendre soin", "Observer", "Analyser", "Enseigner", "Progresser"]; var N = E.length, PAS = 360 / N;
-    var cx = 180, cy = 180, R = 112, kids = [], LI = "rgba(243,238,228,0.72)";
+    var cx = 180, cy = 180, R = 112, kids = [], LI = "rgba(243,238,228,0.42)", CHM = "rgba(201,166,107,0.78)";
     for (var i = 0; i < N; i++) {
-      var a0 = (-90 + i * PAS + 11) * Math.PI / 180, a1 = (-90 + (i + 1) * PAS - 11) * Math.PI / 180;
+      var retour = (i === N - 1);
+      var a0 = (-90 + i * PAS + 10) * Math.PI / 180, a1 = (-90 + (i + 1) * PAS - 10) * Math.PI / 180;
       var x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0), x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
-      kids.push(h("path", { key: "a" + i, d: "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + R + " " + R + " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1), fill: "none", stroke: LI, strokeWidth: 1, markerEnd: "url(#hcFl)" }));
+      kids.push(h("path", { key: "a" + i, d: "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + R + " " + R + " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1), fill: "none", stroke: retour ? CHM : LI, strokeWidth: 0.9, markerEnd: retour ? "url(#hcFlC)" : "url(#hcFl)" }));
       var a = (-90 + i * PAS) * Math.PI / 180, nx = cx + R * Math.cos(a), ny = cy + R * Math.sin(a);
-      kids.push(h("circle", { key: "p" + i, cx: nx, cy: ny, r: 4, fill: BG, stroke: IV, strokeWidth: 1 }));
+      kids.push(h("circle", { key: "p" + i, cx: nx, cy: ny, r: i === 0 ? 4.5 : 3.6, fill: i === 0 ? CHM : BG, stroke: i === 0 ? CHM : "rgba(243,238,228,0.85)", strokeWidth: 0.9 }));
       var lx = cx + (R + 16) * Math.cos(a), ly = cy + (R + 16) * Math.sin(a) + 5 + (Math.sin(a) < -0.9 ? -6 : (Math.sin(a) > 0.5 ? 10 : 0));
-      kids.push(h("text", { key: "t" + i, x: lx, y: ly, textAnchor: Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end"), fill: IV, style: { fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.2 } }, E[i]));
+      kids.push(h("text", { key: "t" + i, x: lx, y: ly, textAnchor: Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end"), fill: IV, style: { fontFamily: M, fontSize: 15, fontWeight: 500, letterSpacing: 0.2 } }, E[i]));
     }
-    kids.push(h("text", { key: "h", x: cx, y: cy + 4, textAnchor: "middle", fill: IV, style: { fontFamily: SERIF, fontSize: 40, fontWeight: 500, letterSpacing: 6 } }, "HYPE"));
-    kids.push(h("text", { key: "s", x: cx, y: cy + 28, textAnchor: "middle", fill: IV, opacity: 0.8, style: { fontFamily: M, fontSize: 10, letterSpacing: 2.4 } }, "CYCLE DE PROGRESSION"));
+    kids.push(h("text", { key: "h", x: cx, y: cy + 2, textAnchor: "middle", fill: IV, style: { fontFamily: SERIF, fontSize: 40, fontWeight: 500, letterSpacing: 6 } }, "HYPE"));
+    kids.push(h("text", { key: "s", x: cx, y: cy + 28, textAnchor: "middle", fill: IV, opacity: 0.82, style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18 } }, "Cycle de progression"));
+    var fl = function (id, c) { return h("marker", { key: id, id: id, viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 6.5, markerHeight: 6.5, orient: "auto-start-reverse" }, h("path", { d: "M1 1L9 5L1 9", fill: "none", stroke: c, strokeWidth: 1.2 })); };
     return h("div", { style: { padding: "18px 0 6px", textAlign: "center" } },
-      h("svg", { viewBox: "-70 14 500 336", role: "img", "aria-label": "Cycle de progression Hype : préparer, concourir, prendre soin, observer, analyser, enseigner, progresser", style: { display: "block", width: "100%", maxWidth: 440, height: "auto", margin: "0 auto" } },
-        h("defs", null, h("marker", { id: "hcFl", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, h("path", { d: "M1 1L9 5L1 9", fill: "none", stroke: "rgba(243,238,228,0.72)", strokeWidth: 1.3 }))),
+      h("svg", { viewBox: "-70 14 500 336", role: "img", "aria-label": "Cycle de progression Hype : préparer, concourir, prendre soin, observer, analyser, enseigner, progresser, puis de nouveau préparer", style: { display: "block", width: "100%", maxWidth: 440, height: "auto", margin: "0 auto" } },
+        h("defs", null, fl("hcFl", LI), fl("hcFlC", CHM)),
         kids),
+      avecPhrases ? h("div", { style: { maxWidth: 420, margin: "14px auto 0", textAlign: "start" } }, E.map(function (v, k) {
+        return h("div", { key: k, style: { display: "flex", gap: 14, alignItems: "baseline", padding: "9px 2px", borderTop: k ? "1px solid rgba(243,238,228,0.08)" : "none" } },
+          h("span", { style: { flex: "0 0 112px", fontFamily: M, fontSize: 14.5, fontWeight: 600, color: IV } }, v),
+          h("span", { style: { fontFamily: M, fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2" } }, CYCLE_PH[k]));
+      })) : null,
       sansSignature ? null : h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, marginTop: 6 } }, "Chaque concours prépare le suivant."));
   }
 
@@ -406,6 +417,8 @@
             picto ? h("span", { "aria-hidden": "true", style: { color: IV, opacity: 0.85, display: "inline-flex", alignSelf: "center" } }, ico(h, picto, 24)) : null),
           titre2(benefice));
       }
+      /* 14/11 : accès direct à un tuto de la page Aide */
+      function lienTuto(lab, id) { return h("button", { type: "button", "data-coach-tuto": id, onClick: function () { try { window.__aideTuto = id; } catch (eT) { } setEcran("aide"); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 6, border: "none", background: "transparent", color: IV, opacity: 0.85, fontFamily: M, fontSize: 14, textDecoration: "underline", textUnderlineOffset: 5, textDecorationColor: "rgba(243,238,228,0.3)", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→")); }
       function lienVers(lab, ecran) { return h("button", { type: "button", onClick: function () { aller2(ecran); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 8, border: "none", background: "transparent", color: IV, opacity: 0.85, fontFamily: M, fontSize: 14, textDecoration: "underline", textUnderlineOffset: 5, textDecorationColor: "rgba(243,238,228,0.3)", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→")); }
       function aller2(ec) { try { setEcran(ec); } catch (e) { } }
 
@@ -430,12 +443,16 @@
           photo("coach-acc-camion_soir", "80% 50%"),
           h("div", { className: "hcA-txt" },
             enTete("01", "PRÉPARER MON CONCOURS", "Prépare sans tout ressaisir.", "agenda"),
-            groupe("Les engagements", ["Sélectionner les cavaliers, leurs chevaux et leurs épreuves.", "Retrouver automatiquement les licences renseignées dans les profils.", "Préparer et vérifier les engagements de toute l’équipe.", "Générer, imprimer ou enregistrer la fiche d’engagement en PDF."]),
+            groupe("Les engagements", ["Sélectionner les cavaliers, leurs chevaux et leurs épreuves.", "Retrouver automatiquement les licences renseignées dans les profils.", "Préparer et vérifier les engagements de toute l’équipe.", "Préparer ou modifier les engagements à la voix.", "Générer, imprimer ou enregistrer la fiche d’engagement en PDF."]),
             groupe("La feuille de route", ["Organiser les horaires d’embarquement et de départ.", "Retrouver l’itinéraire du concours.", "Calculer l’ordre d’embarquement selon les passages.", "Préparer la liste du matériel à emporter.", "Retrouver le matériel et les consignes propres à chaque cheval.", "Accéder aux documents des chevaux et du camion.", "Anticiper les échéances administratives et sanitaires."]),
             groupe("Le programme", ["Importer une capture d’écran ou un document contenant les listes de départ.", "Retrouver les cavaliers et les chevaux déjà enregistrés dans Hype.", "Renseigner les horaires des épreuves et des reconnaissances.", "Calculer les heures de passage estimées.", "Retrouver les documents du concours sans avoir à les transmettre plusieurs fois."]),
             h("div", { className: "hcA-duo" },
               exemple(1, "EXEMPLE", "Une capture d’écran suffit.", p("Transmets la liste de départ du concours. Hype retrouve les informations de ton équipe et t’aide à préparer son programme.", 0)),
               exemple(2, "PARLE AVEC HYPE", "« La reconnaissance de la Club 3 est à 7h30 et la Club 2 commence à 10h40. »", p("Échange avec Hype, précise les informations et valide les horaires proposés.", 0))),
+            /* 14/11 (brief « Mise à jour du guide coach ») : engagements à la voix */
+            exemple(7, "DICTE LES ENGAGEMENTS DE TON ÉQUIPE", h("span", null, "« Engage Eva avec Yellow en Club\u00a02. »", h("br"), "« Retire Jade de la Club\u00a02. »"), h("div", null,
+              p("Hype prépare les modifications. Retrouve-les dans tes engagements, vérifie-les et valide-les.", 0),
+              lienTuto("Voir le tuto", "engvoix"))),
             cartes(["engagements", "feuille", "programme"]))),
 
         /* 02 — PILOTER MON ÉQUIPE : grande photo, groupes, avant / après */
@@ -492,11 +509,14 @@
                 h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Un retour personnalisé, visible uniquement par le coach et le cavalier concerné.")], "ind"),
               encart([h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 10 } }, h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV } }, ico(h, "groupe", 20)), h("span", { style: { fontSize: 16, fontWeight: 600, color: IV } }, "Un enseignement collectif")),
                 h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Un contenu pédagogique anonymisé, accessible à toute l’équipe après validation du coach.")], "col")),
+            /* 14/11 (brief) : nouvelles possibilités de conversation avec Hey Baby */
+            groupe("Parler avec Hey Baby", ["Poser une question à l’écrit ou à l’oral.", "Poursuivre un échange sans répéter les informations déjà données.", "Interroger Hey Baby depuis son encart présent dans les différentes pages de Hype.", "Effacer ce qu’il a retenu depuis ton compte."]),
+            lienTuto("Voir le tuto", "hbvoix"),
             p("Tu gardes toujours la maîtrise pédagogique et décides de ce qui est partagé.", 1),
             cartes(["resultats", "analyse"]))),
 
         /* conclusion : cycle de progression */
-        h("div", { style: { maxWidth: 680, margin: "52px auto 0", padding: "26px 22px 0", borderTop: "1px solid rgba(243,238,228,0.10)" } }, Cycle(h, true)),
+        h("div", { style: { maxWidth: 680, margin: "52px auto 0", padding: "26px 22px 0", borderTop: "1px solid rgba(243,238,228,0.10)" } }, Cycle(h, true, (typeof window !== "undefined" && window.__cyclePhrases === true))),
         h("div", { style: { maxWidth: 680, margin: "24px auto 0", padding: "0 22px", display: "flex", alignItems: "center", gap: 16 } },
           h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(243,238,228,0.25)" } }),
           h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 24, color: IV, lineHeight: 1.2, textAlign: "center" } }, "Chaque concours prépare le suivant."),
