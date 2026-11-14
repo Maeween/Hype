@@ -1751,6 +1751,21 @@
        date / lieu / n° FFE du document et retrouve le concours dans l'agenda (club_agenda type concours, ±3 jours ; n° FFE dans
        concours_feuille.numero). concId = celui de la page, sinon celui retrouvé ou choisi. */
     var _cc = React.useState({ liste: null, choisi: "" }), concR = _cc[0], setConcR = _cc[1];
+    var refAttConc = React.useRef(false), refConcR = React.useRef(concR); refConcR.current = concR;
+    /* réponse à « Pour quel concours ? » : on cherche le lieu, le titre ou le jour dans ce qui est dit ou écrit */
+    function choisirConcoursDit(t) {
+      var L = (refConcR.current && refConcR.current.liste) || []; if (!L.length) return null;
+      var b = norm(t), best = null, bs = 0;
+      L.forEach(function (x) {
+        var sc = 0, mots = (norm(x.titre || "") + " " + norm(x.lieu || "")).split(" ").filter(function (m) { return m.length > 3 && ["concours", "club", "hippique", "equitation", "societe", "poney"].indexOf(m) < 0; });
+        mots.forEach(function (m) { if (b.indexOf(m) >= 0) sc += 10; });
+        var j = String(x.date_jour || "").slice(8, 10); if (j && new RegExp("\\b" + String(+j) + "\\b").test(b)) sc += 5;
+        try { var wd = norm(new Date(String(x.date_jour).slice(0, 10) + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long" })); if (wd && b.indexOf(wd) >= 0) sc += 4; } catch (e) { }
+        if (sc > bs) { bs = sc; best = x; }
+      });
+      if (!best && /\b(le seul|celui-la|oui)\b/.test(b) && L.length === 1) best = L[0];
+      return best;
+    }
     var concId = props.concoursId || concR.choisi || "";
     var _ci = React.useState(null), concInfo = _ci[0], setConcInfo = _ci[1];
     React.useEffect(function () {
@@ -1791,6 +1806,20 @@
       })();
       return function () { vif = false; };
     }, [st.lu, props.concoursId]);
+    /* 14/11 12h (Blandine : « s'il ne sait pas quel concours c'est, il demande ») : Hype pose la question dans la conversation
+       (lue à voix haute si la conversation est à la voix) ; la réponse est comprise par choisirConcoursDit */
+    var refDemande = React.useRef(null);
+    React.useEffect(function () {
+      var lu = st.lu; if (!lu || props.concoursId || !concR.liste || concR.choisi) return;
+      if (["programme", "ordre_passage", "resultats", "horaires_concours", "liste_chevaux", "engagements"].indexOf(lu.type) < 0) return;
+      if (refDemande.current === lu) return; refDemande.current = lu;
+      var L = concR.liste;
+      var jr = function (x) { try { return new Date(String(x.date_jour).slice(0, 10) + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }); } catch (eJ) { return ""; } };
+      var qc = !L.length ? T("Je ne trouve pas ce concours dans l’agenda. Il est où, et quel jour ?")
+        : T("Pour quel concours ?") + " " + L.slice(0, 4).map(function (x) { return (x.titre || x.lieu || "") + " (" + jr(x) + ")"; }).join(", ") + (L.length > 4 ? "…" : "") + " " + T("Dis-moi lequel.");
+      refAttConc.current = L.length > 0;
+      setSt(function (x) { return Object.assign({}, x, { fil: (x.fil || []).concat([{ qui: "hype", t: qc }]) }); });
+    }, [concR, st.lu]);
     function blocConcours() {
       var lu = st.lu || {}; if (props.concoursId || !concR.liste) return null;
       if (["programme", "ordre_passage", "resultats", "horaires_concours", "liste_chevaux", "engagements"].indexOf(lu.type) < 0) return null;
@@ -1803,7 +1832,7 @@
       return h("div", { className: "hod-sec" },
         h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Le concours")), ch ? h("div", { className: "hod-pas" }, "✓") : null),
         h("div", { className: "hod-sec-p" }, ch ? T("Je l’ai retrouvé dans l’agenda. Change-le si ce n’est pas le bon.") : T("J’ai plusieurs concours possibles : lequel est-ce ?")),
-        h("select", { className: "hod-sel", value: concR.choisi, onChange: function (e) { setConcR(Object.assign({}, concR, { choisi: e.target.value })); } },
+        h("select", { className: "hod-sel", value: concR.choisi, onChange: function (e) { refAttConc.current = false; setConcR(Object.assign({}, concR, { choisi: e.target.value })); } },
           h("option", { value: "" }, T("— Quel concours ? —")),
           concR.liste.map(function (x) { return h("option", { key: x.id, value: x.id }, [dd(x.date_jour), x.titre, x.lieu].filter(Boolean).join(" · ")); })));
     }
@@ -1852,6 +1881,16 @@
     }
     function repondre(texte) {
       var r = String((typeof texte === "string" ? texte : st.reponse) || "").trim(); if (!r) return;
+      if (refAttConc.current) {
+        var cx = choisirConcoursDit(r);
+        if (cx) {
+          refAttConc.current = false; setConcR(Object.assign({}, refConcR.current, { choisi: cx.id }));
+          setSt(function (x) { return Object.assign({}, x, { reponse: "", fil: x.fil.concat([{ qui: "moi", t: r }, { qui: "hype", t: T("D’accord :") + " " + (cx.titre || cx.lieu) + ". " + T("Vérifie le récapitulatif, puis touche Enregistrer.") }]) }); });
+          return;
+        }
+        setSt(function (x) { return Object.assign({}, x, { reponse: "", fil: x.fil.concat([{ qui: "moi", t: r }, { qui: "hype", t: T("Je n’ai pas trouvé ce concours dans la liste. Redis-moi le lieu ou le jour, ou choisis-le juste en dessous.") }]) }); });
+        return;
+      }
       var ech = st.echanges.concat([{ q: (st.lu && (st.lu.message || st.lu.question)) || "", r: r }]);
       setSt(function (x) { return Object.assign({}, x, { echanges: ech, fil: x.fil.concat([{ qui: "moi", t: r }]) }); });
       lire(null, ech);
