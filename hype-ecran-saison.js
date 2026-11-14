@@ -7582,6 +7582,30 @@ function EcranListeVan() {
   var _pc = React.useState(""); var photoCheval = _pc[0], setPhotoCheval = _pc[1];
   var _moi = React.useState(null); var moi = _moi[0], setMoi = _moi[1];
   var minuteur = React.useRef(null);
+  /* 14/11 13h19 (Blandine : « en tant que coach, je puisse barrer le matériel qui est pas utile pour un concours ») :
+     club_agenda.van_retires = textes des objets barrés pour CE concours ; barrés pour tous les cavaliers, hors du compte, rangés en bas. */
+  var _gv = React.useState(false); var gestionV = _gv[0], setGestionV = _gv[1];
+  var _rt = React.useState(null); var retiresLoc = _rt[0], setRetiresLoc = _rt[1];
+  var retires = retiresLoc || (ev && Array.isArray(ev.van_retires) ? ev.van_retires : []);
+  function normV(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
+  function estRetire(x) {
+    if (!x || x.r === "propre" || !retires.length) return false;
+    var n = normV(x.t), B = retires.map(normV);
+    if (B.indexOf(n) >= 0) return true;
+    return HS_LISTE_DEFAUT.some(function (d) { return B.indexOf(normV(d.t)) >= 0 && normV(F(String(d.t || ""))) === n; });   /* liste de départ traduite chez la cavalière */
+  }
+  async function basculerRetire(x) {
+    var n = normV(x.t), base = retires.slice();
+    var deja = base.filter(function (t) { return normV(t) === n; }).length > 0 || estRetire(x);
+    var L = deja ? base.filter(function (t) { var m = normV(t); if (m === n) return false; return !HS_LISTE_DEFAUT.some(function (d) { return normV(d.t) === m && normV(F(String(d.t || ""))) === n; }); }) : base.concat([String(x.t || "")]);
+    setRetiresLoc(L); setEtat("…");
+    try {
+      var r = await supa.from("club_agenda").update({ van_retires: L }).eq("id", idEv).select("id");
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      if (!r || !r.data || !r.data.length) throw new Error(F("refusé par la base"));
+      setEtat("✓");
+    } catch (eR) { setRetiresLoc(base); setEtat(F("Pas enregistré : ") + String((eR && eR.message) || eR)); }
+  }
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
   React.useEffect(function () {
@@ -7593,6 +7617,7 @@ function EcranListeVan() {
         if (!u || !u.id) { if (vif) { setMoi(null); setItems([]); } return; }
         if (vif) setMoi(u);
         var r = await chargerAgendaEvenement(idEv); if (vif && r && r.data) setEv(r.data);
+        try { if (r && r.data && typeof hsPeutGerer === "function") { var gV = await hsPeutGerer(r.data.club_clef); if (vif) setGestionV(!!gV); } } catch (eGv) { }
         var rl = await supa.from("listes_van").select("items").eq("agenda_id", idEv).eq("user_id", u.id).maybeSingle();
         if (rl && rl.error) throw new Error(rl.error.message || String(rl.error));
         var L = rl && rl.data && Array.isArray(rl.data.items) ? rl.data.items : null;
@@ -7642,7 +7667,7 @@ function EcranListeVan() {
   [materiel, enrenement].forEach(function (t) { String(t || "").split(/[\n,;]+/).forEach(function (z) { z = z.trim(); if (z) propres.push(z); }); });
   var lignesPropres = propres.map(function (t) { var i = -1; (items || []).forEach(function (x, j) { if (x.r === "propre" && x.t === t) i = j; }); return { x: i >= 0 ? (items || [])[i] : { t: t, f: false }, i: i, t: t }; });
   var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Liste du van"),
-    sous: items && items.length ? (function () { var vus = items.filter(function (x) { return x.r !== "propre"; }); var n = vus.filter(function (x) { return x.f; }).length + lignesPropres.filter(function (o) { return o.x.f; }).length; return n + F(" sur ") + (vus.length + lignesPropres.length) + F(" cochés."); })() : "" });
+    sous: items && items.length ? (function () { var vus = items.filter(function (x) { return x.r !== "propre" && !estRetire(x); }); var n = vus.filter(function (x) { return x.f; }).length + lignesPropres.filter(function (o) { return o.x.f; }).length; return n + F(" sur ") + (vus.length + lignesPropres.length) + F(" cochés."); })() : "" });
   if (items === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-attente" }, "…")));
   if (!moi) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Connecte-toi pour avoir ta liste."))));
 
@@ -7659,17 +7684,30 @@ function EcranListeVan() {
   function rondCoche(x, i) {
     return h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (x.f ? "#C9A66B" : "rgba(201,166,107,.6)"), background: "transparent", color: "#C9A66B", fontSize: 13, padding: 0, lineHeight: 1 } }, x.f ? "✓" : "");
   }
+  function boutonRetire(x) {
+    if (!(gestionV && edition) || x.r === "propre") return null;
+    var on = estRetire(x);
+    return h("button", { type: "button", onClick: function () { basculerRetire(x); }, style: { flex: "0 0 auto", height: 28, padding: "0 10px", borderRadius: 14, border: "1px solid rgba(243,238,228,.25)", background: "transparent", color: "rgba(243,238,228,.8)", fontSize: 11.5, whiteSpace: "nowrap" } }, on ? F("Remettre") : F("Pas utile"));
+  }
   function ligneFine(o, k) {
     var x = o.x; return h("div", { key: o.i, style: { display: "flex", alignItems: "center", gap: 12, padding: "7px 2px", minHeight: 40, borderTop: k ? "1px solid rgba(243,238,228,.07)" : "0" } },
-      rondCoche(x, o.i), h("button", { type: "button", onClick: function () { cocher(o.i); }, style: { flex: 1, minWidth: 0, textAlign: "start", background: "none", border: "none", padding: 0, fontSize: 13, lineHeight: 1.35, color: x.f ? "rgba(243,238,228,.45)" : "#F3EEE4", textDecoration: x.f ? "line-through" : "none" } }, x.t), (typeof o.i === "number" && x.r !== "propre") ? croix(x, o.i) : null);   /* le matériel du cheval se change sur SA fiche */
+      rondCoche(x, o.i), h("button", { type: "button", onClick: function () { cocher(o.i); }, style: { flex: 1, minWidth: 0, textAlign: "start", background: "none", border: "none", padding: 0, fontSize: 13, lineHeight: 1.35, color: x.f ? "rgba(243,238,228,.45)" : "#F3EEE4", textDecoration: x.f ? "line-through" : "none" } }, x.t), boutonRetire(x), (typeof o.i === "number" && x.r !== "propre") ? croix(x, o.i) : null);   /* le matériel du cheval se change sur SA fiche */
   }
   function groupes() {
     var G = [];
     if (lignesPropres.length) G.push({ r: "propre", t: F("Son matériel à lui"), s: nomCheval || F("ton cheval"), L: lignesPropres.map(function (o) { return { x: o.x, i: o.i >= 0 ? o.i : o.t }; }) });
-    G.push({ r: "cheval", t: F("Pour le cheval"), s: nomCheval || "", L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "cheval"; }) });
-    G.push({ r: "moi", t: F("Pour toi"), s: F("ta tenue, ta sécurité"), L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "moi"; }) });
+    G.push({ r: "cheval", t: F("Pour le cheval"), s: nomCheval || "", L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "cheval" && !estRetire(o.x); }) });
+    G.push({ r: "moi", t: F("Pour toi"), s: F("ta tenue, ta sécurité"), L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "moi" && !estRetire(o.x); }) });
     G.forEach(function (g) { g.n = g.L.filter(function (o) { return o.x.f; }).length; });
     return G;
+  }
+  function blocRetires() {
+    var R = (items || []).map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return estRetire(o.x); });
+    if (!R.length) return null;
+    return h("div", { style: { marginTop: 14, padding: "10px 14px", border: "1px solid rgba(243,238,228,.1)", borderRadius: 14 } },
+      h("div", { style: { fontSize: 12, letterSpacing: ".08em", textTransform: "uppercase", color: "rgba(243,238,228,.6)", marginBottom: 4 } }, F("Pas utile pour ce concours")),
+      R.map(function (o, k) { return h("div", { key: o.i, style: { display: "flex", alignItems: "center", gap: 12, padding: "6px 2px", minHeight: 36, borderTop: k ? "1px solid rgba(243,238,228,.07)" : "0" } },
+        h("span", { style: { flex: 1, minWidth: 0, fontSize: 13, color: "rgba(243,238,228,.45)", textDecoration: "line-through" } }, o.x.t), boutonRetire(o.x)); }));
   }
   function vueHype() {
     /* style de la Vidéothèque : pastilles dorées « Toutes (9) », titres au trait doré, cartes photo à gauche + barre de progression */
@@ -7694,14 +7732,15 @@ function EcranListeVan() {
             h("div", { style: { marginTop: 7 } }, tag(g.r === "propre" ? F("de sa fiche") : (g.L.length + " " + F("objets")))),
             barre(g.n, g.L.length))),
         on ? h("div", { style: { padding: "2px 14px 10px", borderTop: "1px solid rgba(243,238,228,.07)" } }, g.L.map(ligneFine), g.r !== "propre" ? ajoutLigne(g.r) : null) : null);
-    }), h("div", { style: { display: "flex", justifyContent: "flex-end" } }, modif));
+    }), blocRetires(), h("div", { style: { display: "flex", justifyContent: "flex-end" } }, modif),
+      gestionV ? h("div", { className: "hs-note", style: { marginTop: 4 } }, F("Coach : touche « Modifier », puis « Pas utile » à côté d’un objet pour le barrer chez tous les cavaliers, pour ce concours seulement.")) : null);
   }
   function pdf() {
     var lignes = [];
     if (lignesPropres.length) { lignes.push({ titre: F("Son matériel à lui") + (nomCheval ? " · " + nomCheval : "") }); lignesPropres.forEach(function (o) { lignes.push({ t: o.t, f: !!o.x.f }); }); }
     [["cheval", F("Pour ") + (nomCheval || F("le cheval"))], ["moi", F("Pour moi")]].forEach(function (g) {
       lignes.push({ titre: g[1] });
-      items.forEach(function (x) { if (x.r === g[0]) lignes.push({ t: x.t, f: x.f }); });
+      items.forEach(function (x) { if (x.r === g[0] && !estRetire(x)) lignes.push({ t: x.t, f: x.f }); });
     });
     hsPartagerPdf(hsPdfListe(F("Liste du van") + " · " + ((ev && ev.titre) || ""), ev ? hsPlage(ev) : "", lignes), "liste-du-van-" + String((ev && ev.titre) || "concours"));
   }
