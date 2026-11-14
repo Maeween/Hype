@@ -209,12 +209,41 @@
       lire(); var t = setInterval(lire, 15000);
       return function () { vif = false; clearInterval(t); };
     }, [ctx.agenda_id, e.msg]);
+    /* 14/11 09h45 : « Publier le classement » → table resultats (origine « juge », statut « saisie »), rattaché au concours,
+       au cavalier et au cheval : il apparaît sur la fiche du concours, les performances et les podiums. Republier met à jour
+       les mêmes lignes au lieu d'en créer de nouvelles. Égalité de pourcentage = même place (départage FFE à brancher). */
+    var _pb = React.useState({}), pub = _pb[0], setPub = _pb[1];
+    function placeTxt(n) { return n === 1 ? T("1er") : n + T("e"); }
+    async function publierClassement(k, L, epreuve) {
+      if (pub[k] !== "ok?") { var o1 = Object.assign({}, pub); o1[k] = "ok?"; setPub(o1); return; }
+      var o2 = Object.assign({}, pub); o2[k] = "busy"; setPub(o2);
+      try {
+        var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+        if (!u || !u.id) throw new Error(T("connecte-toi d’abord"));
+        var ex = await supa.from("resultats").select("id, cavalier_id, cheval_id, cavalier").eq("agenda_id", ctx.agenda_id).eq("origine", "juge").eq("epreuve", epreuve).limit(400);
+        var deja = (ex && !ex.error && ex.data) || [];
+        var maint = new Date().toISOString(), pa = L.length, n = 0, prec = null, place = 0;
+        for (var i = 0; i < L.length; i++) {
+          var o = L[i], pc = Math.round(o.moy * 100) / 100;
+          if (pc !== prec) { place = i + 1; prec = pc; }
+          var ligne = { agenda_id: ctx.agenda_id, concours: ctx.concours || null, date_epreuve: String(ctx.date || "").slice(0, 10) || null, annee: String(ctx.date || "").slice(0, 4) || null,
+            epreuve: epreuve, place: place, partants: pa, classement: placeTxt(place) + " / " + pa + " · " + fmt(pc) + " %",
+            cavalier: o.cavalier, cavalier_id: o.cavalier_id, cheval_id: o.cheval_id, statut: "saisie", visible: true, maj_par: u.id, maj_le: maint };
+          var avant = null; deja.forEach(function (d) { if (!avant && ((o.cavalier_id && d.cavalier_id === o.cavalier_id) || (!o.cavalier_id && String(d.cavalier || "").toLowerCase() === String(o.cavalier || "").toLowerCase())) && (!o.cheval_id || !d.cheval_id || d.cheval_id === o.cheval_id)) avant = d; });
+          var r = avant ? await supa.from("resultats").update(ligne).eq("id", avant.id).select("id")
+            : await supa.from("resultats").insert(Object.assign({ user_id: u.id, origine: "juge" }, ligne)).select("id");
+          if (!r || r.error || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || T("enregistrement refusé"));
+          n++;
+        }
+        var o3 = Object.assign({}, pub); o3[k] = "✓ " + n + " " + T("résultats publiés : ils apparaissent sur la fiche du concours, les performances et les podiums."); setPub(o3);
+      } catch (eP) { var o4 = Object.assign({}, pub); o4[k] = "!" + T("Publication impossible : ") + String((eP && eP.message) || eP); setPub(o4); }
+    }
     function blocClassement() {
       if (!feuilles.length) return null;
       var parRep = {};
       feuilles.forEach(function (x) {
         var k = x.reprise, c = (x.cavalier_id || String(x.cavalier).toLowerCase()) + "|" + (x.cheval_id || String(x.cheval || "").toLowerCase());
-        var g = parRep[k] = parRep[k] || {}; var o = g[c] = g[c] || { cavalier: x.cavalier, cheval: x.cheval, pcts: [], juges: [] };
+        var g = parRep[k] = parRep[k] || {}; var o = g[c] = g[c] || { cavalier: x.cavalier, cheval: x.cheval, cavalier_id: x.cavalier_id || null, cheval_id: x.cheval_id || null, pcts: [], juges: [] };
         if (x.pourcentage != null) { o.pcts.push(+x.pourcentage); o.juges.push(x.juge_place || ""); }
       });
       return h("div", null, Object.keys(parRep).map(function (k) {
@@ -234,7 +263,10 @@
               h("span", { className: "t" }, h("b", { style: { fontWeight: 500 } }, o.cavalier), o.cheval ? " · " + o.cheval : "", h("span", { className: "c" }, o.pcts.length > 1 ? T("Moyenne de ") + o.pcts.length + T(" juges") + " (" + o.juges.join(", ") + ")" : T("Juge en") + " " + (o.juges[0] || "?"))),
               h("span", { className: "v", style: { fontSize: 18 } }, fmt(Math.round(o.moy * 100) / 100) + " %"));
           }),
-          h("div", { className: "hj-astuce" }, T("Le classement se met à jour tout seul à chaque feuille signée. En cas d’égalité, départage selon le règlement de la FFE.")));
+          h("div", { className: "hj-astuce" }, T("Le classement se met à jour tout seul à chaque feuille signée. En cas d’égalité, départage selon le règlement de la FFE.")),
+          (ctx.agenda_id && L.length) ? h("div", { className: "hj-bas" }, h("button", { type: "button", className: "hj-btn", disabled: pub[k] === "busy", onClick: function () { publierClassement(k, L, R.niveauFFE || R.titre || k); } },
+            pub[k] === "busy" ? T("Publication…") : pub[k] === "ok?" ? T("Touche encore pour confirmer") : T("Publier le classement"))) : null,
+          (pub[k] && pub[k] !== "busy" && pub[k] !== "ok?") ? h("div", { className: pub[k].charAt(0) === "!" ? "hj-err" : "hj-msg" }, pub[k].charAt(0) === "!" ? pub[k].slice(1) : pub[k]) : null);
       }));
     }
     React.useEffect(function () { try { window.scrollTo(0, 0); } catch (x) { } return function () { try { recRef.current && recRef.current.abort(); } catch (x) { } }; }, []);

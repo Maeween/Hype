@@ -3909,7 +3909,7 @@ function EcranConcours() {
     h(EcranJourJ, { integre: true, onFermer: fermerModifPassages })) : null;   /* « Terminer » du bas remplacé par « Fermer » dans la barre qui reste visible */
   /* 14/11 (Blandine : « que les juges n'aient qu'à dicter… plus besoin de lapins ») : juger une reprise à la voix, pour l'équipe qui gère */
   function ouvrirJuge() {
-    try { window.__juger = { agenda_id: idEv, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
+    try { window.__juger = { agenda_id: idEv, concours: ev.titre || null, date: ev.date_jour || null, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
     setEcran("juger");
   }
   var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },

@@ -34,6 +34,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 09:55 — build 20261114-0955 — « Juger une reprise » : publier le classement
+- Sous chaque classement (concours ouvert depuis l'onglet Résultats), bouton « Publier le classement » (deux touches pour confirmer). Chaque couple devient un résultat du concours : place / partants · pourcentage (ex. « 1er / 5 · 66,1 % »), rattaché au cavalier et au cheval → fiche du concours, performances, podiums. Republier met à jour les mêmes lignes (pas de doublon).
+- Aucune modification de la base : table resultats existante (origine « juge », statut « saisie »).
+- Égalité de pourcentage = même place pour l'instant. À FAIRE : départage officiel FFE (lire le règlement dressage avant).
+- Traductions des nouveaux textes du bouton : à faire après validation du français.
+- Fichiers : hype-ecran-juge.js (v=5), hype-ecran-saison.js (v=174 : le concours transmet son nom et sa date au juge), index.html (build), SUIVI.md.
+
 ## 2026-11-14 09:40 — build 20261114-0940 — « Juger une reprise » : couleurs lisibles
 - Blandine (09h35) : « au niveau couleurs ce n'est pas lisible les textes ». Tous les textes secondaires passent en ivoire plein (#ECE6DA) au lieu d'un ivoire transparent, le doré des textes est éclairci (#E8CB94 ; le doré des contours ne change pas), plus aucun italique fin (commentaires, phrase dictée en Montserrat 17 px), lettres de la carrière plus claires, lignes déjà passées à 80 %.
 - RÈGLE : sur fond noir, texte jamais transparent ; doré réservé aux petits titres et contours.
