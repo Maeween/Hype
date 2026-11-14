@@ -594,12 +594,12 @@ function EcranTeamMedias() {
   var heroSerie = h("div", { style: { position: "relative", height: "min(calc(100svh - 190px), 720px)", minHeight: 460, overflow: "hidden", background: "#050607" } },
     h("img", { src: "images/galop1-hero-bai.webp", alt: "", decoding: "async", style: { position: "absolute", left: 0, right: 0, bottom: 30, width: "100%", height: "calc(100% - 230px)", objectFit: "cover", objectPosition: "78% 45%", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%)" } }),   /* comme la série : le cheval sous les ronds */
     h("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, bottom: 0, height: 160, background: "linear-gradient(180deg, rgba(5,6,7,0), #070A08)" } }),
-    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back"),
+    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "بازگشت"),
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 14, width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.45)", border: "1px solid rgba(201,166,107,0.7)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer", zIndex: 2 } }, rtl ? "›" : "‹"),
     h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 70px)", insetInlineEnd: 14, display: "flex", flexDirection: "column", gap: 16, zIndex: 2 } },
-      rondSerie("cav", T("Cavaliers", "Riders"), "cavaliere"), rondSerie("ch", T("Chevaux", "Horses"), "cheval"), rondSerie("conc", T("Concours", "Shows"), "concours")),
+      rondSerie("cav", T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "騎乗者", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더", "سوارکاران"), "cavaliere"), rondSerie("ch", T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "اسب‌ها"), "cheval"), rondSerie("conc", T("Concours", "Shows", "Concursos", "Concorsi", "大会", "Turniere", "المسابقات", "比赛", "Wedstrijden", "Concursos", "Tävlingar", "Соревнования", "Zawody", "대회", "مسابقه‌ها"), "concours")),
     h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 54, zIndex: 2, maxWidth: "70%" } },
-      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(40px, 11vw, 58px)", lineHeight: 1, margin: 0, color: IV, textShadow: "0 2px 14px rgba(0,0,0,.6)" } }, T("Médias", "Media")),
+      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(40px, 11vw, 58px)", lineHeight: 1, margin: 0, color: IV, textShadow: "0 2px 14px rgba(0,0,0,.6)" } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Média", "Media", "Медиа", "Media", "미디어", "رسانه‌ها")),
       h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(16px, 4.4vw, 20px)", margin: "6px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "", (groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")),
     h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: 0, width: "100%", height: 50, transform: rtl ? "scaleX(-1)" : "none" } },
       h("path", { d: "M0 56 C 140 52, 260 36, 400 6", fill: "none", stroke: CH, strokeWidth: 1.2, vectorEffect: "non-scaling-stroke" })));
@@ -779,7 +779,7 @@ function EcranTeamMedias() {
     var img = photoProfil(p) || (der ? vignetteDe(der) : "") || "images/portrait-defaut-" + ["gris", "alezan", "noir", "isabelle"][i % 4] + ".webp";
     var msq = "linear-gradient(" + (droite ? "270deg" : "90deg") + ", transparent 0%, #000 30%)";
     var nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
-    var sous = n ? compte(n, T("vidéo", "video"), T("vidéos", "videos")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse"), T("chevaux", "horses")) : "") : T("Pas encore de vidéo", "No video yet");
+    var sous = n ? compte(n, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 영상", "ویدیو"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video’s", "vídeos", "videor", "видео", "filmy", "개 영상", "ویدیو")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "اسب"), T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошадей", "konie", "마리", "اسب")) : "") : T("Pas encore de vidéo", "No video yet", "Aún no hay vídeo", "Ancora nessun video", "動画はまだありません", "Noch kein Video", "لا يوجد فيديو بعد", "还没有视频", "Nog geen video", "Ainda sem vídeo", "Ingen video än", "Видео пока нет", "Brak jeszcze filmu", "아직 영상이 없어요", "هنوز ویدیویی نیست");
     var dDer = n ? dateCourte(siennes[0].date_video || siennes[0].cree_le) : "";
     return h("div", { key: "bc" + p.id },
       i > 0 ? h("div", { "aria-hidden": "true", style: { height: 1, margin: "14px 0", background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.45) 20%, rgba(201,166,107,0.45) 80%, rgba(201,166,107,0))" } }) : null,   /* 13/11 09h30 : traits droits */
@@ -789,11 +789,11 @@ function EcranTeamMedias() {
           h("img", { src: (typeof vignetteHype === "function" && /^https?:/.test(img)) ? vignetteHype(img, 360, 260) : img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } },
             style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", WebkitMaskImage: msq, maskImage: msq, opacity: n ? 1 : 0.55 } })),
         h("span", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 4, width: "58%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end" } },
-          dDer ? h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CH } }, T("Dernière vidéo", "Latest video") + " · " + dDer) : null,
+          dDer ? h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CH } }, T("Dernière vidéo", "Latest video", "Último vídeo", "Ultimo video", "最新の動画", "Neuestes Video", "آخر فيديو", "最新视频", "Laatste video", "Último vídeo", "Senaste video", "Последнее видео", "Ostatni film", "최근 영상", "آخرین ویدیو") + " · " + dDer) : null,
           h("span", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 27, lineHeight: 1.08, marginTop: 4, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, nomProfil(p)),
           h("span", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 4, fontFamily: M, fontSize: 11.5, color: IV3 } }, sous,
             n ? h("span", { "aria-hidden": "true", style: { color: CH, fontSize: 15, transform: ouv ? "rotate(90deg)" : "none", transition: "transform .2s" } }, "›")
-              : (estDuGroupe ? h("span", { style: { color: CH } }, "+ " + T("Ajouter", "Add")) : null)))),
+              : (estDuGroupe ? h("span", { style: { color: CH } }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن")) : null)))),
       ouv ? (function () {
         /* 13/11 09h46 (Blandine : « ça c'est bien quand c'est fermé ») — ouvert : O1 vignettes aérées ; O2 grandes vignettes qui
            s'arrêtent une par une ; O3 les vidéos posées dans un encart (fond un peu plus clair, cadre fin) */
@@ -804,7 +804,7 @@ function EcranTeamMedias() {
           estDuGroupe ? h("div", { key: "aj", style: { flex: grand ? "0 0 min(40%, 170px)" : "0 0 clamp(148px, 21vw, 210px)", scrollSnapAlign: "start" } }, tuileAjout("bdaj" + p.id, 0, false, { cav: [p.id] })) : null);
         if (OV !== "O3") return rang;
         return h("div", { style: { margin: "14px 0 24px", padding: "18px 16px 14px", borderRadius: 18, background: "linear-gradient(180deg, #121618, #0C0F11)", border: "1px solid rgba(201,166,107,0.22)", overflow: "hidden" } },
-          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH, marginBottom: 12 } }, T("Les vidéos de", "Videos of") + " " + String(nomProfil(p)).split(/\s+/)[0]), rang);
+          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH, marginBottom: 12 } }, T("Les vidéos de", "Videos of", "Los vídeos de", "I video di", "動画：", "Die Videos von", "فيديوهات", "的视频", "De video’s van", "Os vídeos de", "Videor med", "Видео", "Filmy", "영상:", "ویدیوهای") + " " + String(nomProfil(p)).split(/\s+/)[0]), rang);
       })() : null);
   }
   /* 13/11 09h30 (Blandine : « pas trop fan, fais-moi d'autres propositions ») — B : une rangée par cavalier (petite photo ronde,
@@ -823,7 +823,7 @@ function EcranTeamMedias() {
       avatar(p, 46),
       h("div", { style: { minWidth: 0, flex: 1 } },
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 25, lineHeight: 1.1 } }, nomProfil(p)),
-        h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, n ? compte(n, T("vidéo", "video"), T("vidéos", "videos")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse"), T("chevaux", "horses")) : "") : T("Pas encore de vidéo", "No video yet"))));
+        h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, n ? compte(n, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 영상", "ویدیو"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video’s", "vídeos", "videor", "видео", "filmy", "개 영상", "ویدیو")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "اسب"), T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошадей", "konie", "마리", "اسب")) : "") : T("Pas encore de vidéo", "No video yet", "Aún no hay vídeo", "Ancora nessun video", "動画はまだありません", "Noch kein Video", "لا يوجد فيديو بعد", "还没有视频", "Nog geen video", "Ainda sem vídeo", "Ingen video än", "Видео пока нет", "Brak jeszcze filmu", "아직 영상이 없어요", "هنوز ویدیویی نیست"))));
   }
   function rangCav(p, i, VAR) {
     var siennes = videosRecentes(p), n = siennes.length, droite = VAR === "C" ? false : i % 2 === 1;
@@ -833,7 +833,7 @@ function EcranTeamMedias() {
     return h("div", { key: "rc" + p.id }, i > 0 ? courbe(i) : null, enteteCav(p, n, false),
       der ? h("div", { style: { maxWidth: 560 } }, tuileVideo(der, "rcg" + der.id, true)) : (estDuGroupe ? tuileAjout("rcaj" + p.id, 0, true, { cav: [p.id] }) : null),
       n > 1 ? h("button", { type: "button", onClick: function () { setCavDepl(ouv ? null : p.id); }, style: { display: "block", margin: "8px 0 4px", background: "none", border: "none", padding: "6px 0", color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } },
-        ouv ? T("Masquer les autres vidéos", "Hide the other videos") : "+ " + compte(n - 1, T("autre vidéo", "other video"), T("autres vidéos", "other videos")) + " ›") : null,
+        ouv ? T("Masquer les autres vidéos", "Hide the other videos", "Ocultar los otros vídeos", "Nascondi gli altri video", "ほかの動画を隠す", "Andere Videos ausblenden", "إخفاء الفيديوهات الأخرى", "隐藏其他视频", "Andere video’s verbergen", "Ocultar os outros vídeos", "Dölj de andra videorna", "Скрыть другие видео", "Ukryj pozostałe filmy", "다른 영상 숨기기", "پنهان کردن ویدیوهای دیگر") : "+ " + compte(n - 1, T("autre vidéo", "other video", "vídeo más", "altro video", "本のほかの動画", "weiteres Video", "فيديو آخر", "个其他视频", "andere video", "outro vídeo", "annan video", "другое видео", "inny film", "개 다른 영상", "ویدیوی دیگر"), T("autres vidéos", "other videos", "vídeos más", "altri video", "本のほかの動画", "weitere Videos", "فيديوهات أخرى", "个其他视频", "andere video’s", "outros vídeos", "andra videor", "других видео", "innych filmów", "개 다른 영상", "ویدیوی دیگر")) + " ›") : null,
       (ouv && n > 1) ? ligneVideos(siennes.slice(1), "rcl" + p.id, p) : null);
   }
   function rondsCav(liste) {
@@ -853,7 +853,7 @@ function EcranTeamMedias() {
       courbe(0),
       enteteCav(sel, siennes.length, false),
       siennes.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + COLS + ", minmax(0, 1fr))", gap: "14px 10px" } }, siennes.map(function (v) { return tuileVideo(v, "rdv" + v.id, true); }))
-        : (estDuGroupe ? tuileAjout("rdaj" + sel.id, 0, true, { cav: [sel.id] }) : vide(T("Pas encore de vidéo", "No video yet"))));
+        : (estDuGroupe ? tuileAjout("rdaj" + sel.id, 0, true, { cav: [sel.id] }) : vide(T("Pas encore de vidéo", "No video yet", "Aún no hay vídeo", "Ancora nessun video", "動画はまだありません", "Noch kein Video", "لا يوجد فيديو بعد", "还没有视频", "Nog geen video", "Ainda sem vídeo", "Ingen video än", "Видео пока нет", "Brak jeszcze filmu", "아직 영상이 없어요", "هنوز ویدیویی نیست"))));
   }
   function sectionCavaliere(p, i) {
     var siennes = videosDe(p), nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
@@ -962,29 +962,29 @@ function EcranTeamMedias() {
     var d = coupleDonnees && coupleDonnees.cle === cp.cav + "|" + cp.ch ? coupleDonnees : null;
     function titreRub(t) { return h("div", { style: { display: "flex", alignItems: "center", gap: 12, margin: "26px 0 12px" } }, h("span", { style: { fontFamily: SERIF, fontSize: 24, color: IV } }, t), h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(90deg," + CH2 + ",transparent)" } })); }
     return h("div", { style: { marginTop: 14 } },
-      h("button", { type: "button", onClick: function () { setCoupleOuv(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Retour", "Back")),
+      h("button", { type: "button", onClick: function () { setCoupleOuv(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "بازگشت")),
       h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginTop: 6 } },
         photoCheval(cp.ch, 64),
         h("div", { style: { minWidth: 0 } },
-          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH } }, T("Couple", "Pair")),
+          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".24em", textTransform: "uppercase", color: CH } }, T("Couple", "Pair", "Pareja", "Binomio", "コンビ", "Paar", "الثنائي", "组合", "Combinatie", "Conjunto", "Ekipage", "Пара", "Para", "콤비", "زوج")),
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 28, lineHeight: 1.08, marginTop: 3 } }, prenom + " × " + nomCheval(cp.ch)),
-          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(vids.length, T("vidéo", "video"), T("vidéos", "videos")) + (d && d.res.length ? " · " + compte(d.res.length, T("résultat", "result"), T("résultats", "results")) : "")))),
-      titreRub(T("Vidéos", "Videos")),
+          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(vids.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 영상", "ویدیو"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video’s", "vídeos", "videor", "видео", "filmy", "개 영상", "ویدیو")) + (d && d.res.length ? " · " + compte(d.res.length, T("résultat", "result", "resultado", "risultato", "件の成績", "Ergebnis", "نتيجة", "个成绩", "uitslag", "resultado", "resultat", "результат", "wynik", "개 성적", "نتیجه"), T("résultats", "results", "resultados", "risultati", "件の成績", "Ergebnisse", "نتائج", "个成绩", "uitslagen", "resultados", "resultat", "результатов", "wyników", "개 성적", "نتیجه")) : "")))),
+      titreRub(T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video’s", "Vídeos", "Videor", "Видео", "Filmy", "영상", "ویدیوها")),
       vids.length ? h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 10, overflowX: "auto", margin: "0 -18px", padding: "4px 18px 10px", scrollbarWidth: "none" } }, vids.map(function (v) { return tuileVideo(v, "cp" + v.id, false); }))
-        : vide(T("Pas encore de vidéo de ce couple.", "No video of this pair yet.")),
-      titreRub(T("Photos", "Photos")),
+        : vide(T("Pas encore de vidéo de ce couple.", "No video of this pair yet.", "Aún no hay vídeo de esta pareja.", "Ancora nessun video di questo binomio.", "このコンビの動画はまだありません。", "Noch kein Video von diesem Paar.", "لا يوجد فيديو لهذا الثنائي بعد.", "这对组合还没有视频。", "Nog geen video van deze combinatie.", "Ainda sem vídeo deste conjunto.", "Ingen video på det här ekipaget än.", "Видео этой пары пока нет.", "Brak jeszcze filmu tej pary.", "이 콤비의 영상이 아직 없어요.", "هنوز ویدیویی از این زوج نیست.")),
+      titreRub(T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto’s", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها")),
       !d ? chargement() : d.photos.length ? h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 8, overflowX: "auto", margin: "0 -18px", padding: "0 18px 8px", scrollbarWidth: "none" } },
           d.photos.map(function (u, k) { return h("button", { key: "cph" + k, type: "button", onClick: function () { setVisuMuet(false); setVisu(u); }, style: { flex: "0 0 auto", height: 150, padding: 0, border: "none", borderRadius: 10, overflow: "hidden", background: PAN, cursor: "pointer" } },
             h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 400, 300) : u, alt: "", loading: "lazy", style: { height: "100%", width: "auto", display: "block" } })); }))
-        : vide(T("Pas encore de photo où les deux sont identifiés.", "No photo with both tagged yet.")),
-      titreRub(T("Résultats", "Results")),
+        : vide(T("Pas encore de photo où les deux sont identifiés.", "No photo with both tagged yet.", "Aún no hay foto en la que estén los dos identificados.", "Ancora nessuna foto in cui siano identificati entrambi.", "二人ともタグ付けされた写真はまだありません。", "Noch kein Foto, auf dem beide markiert sind.", "لا توجد صورة بعد يظهر فيها الاثنان معرّفين.", "还没有两者都被标记的照片。", "Nog geen foto waarop ze allebei getagd zijn.", "Ainda sem foto em que os dois estejam identificados.", "Inget foto där båda är taggade än.", "Пока нет фото, где отмечены оба.", "Brak jeszcze zdjęcia, na którym oboje są oznaczeni.", "둘 다 태그된 사진이 아직 없어요.", "هنوز عکسی نیست که هر دو در آن مشخص شده باشند.")),
+      titreRub(T("Résultats", "Results", "Resultados", "Risultati", "成績", "Ergebnisse", "النتائج", "成绩", "Uitslagen", "Resultados", "Resultat", "Результаты", "Wyniki", "성적", "نتایج")),
       !d ? chargement() : d.res.length ? h("div", null, d.res.map(function (r, k) {
           return h("div", { key: "cr" + k, style: { display: "flex", alignItems: "baseline", gap: 12, padding: "10px 0", borderTop: k ? "1px solid rgba(243,238,228,0.07)" : "none" } },
-            h("span", { style: { flex: "0 0 64px", fontFamily: SERIF, fontSize: 20, color: r.place === 1 ? CH : IV } }, r.place ? (r.place === 1 ? T("1er", "1st") : r.place + T("e", "th")) : "—"),
+            h("span", { style: { flex: "0 0 64px", fontFamily: SERIF, fontSize: 20, color: r.place === 1 ? CH : IV } }, r.place ? (r.place === 1 ? T("1er", "1st", "1.º", "1°", "1位", "1.", "الأول", "第1名", "1e", "1.º", "1:a", "1-й", "1.", "1위", "اول") : r.place + T("e", "th", "º", "°", "位", ".", "", "名", "e", ".º", ":e", "-й", ".", "위", "م")) : "—"),
             h("span", { style: { flex: 1, minWidth: 0 } },
               h("span", { style: { display: "block", fontFamily: M, fontSize: 12.5, color: IV } }, r.epreuve || ""),
-              h("span", { style: { display: "block", fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 2 } }, [r.concours, dateCourte(r.date_epreuve), r.partants ? r.partants + " " + T("partants", "starters") : ""].filter(Boolean).join(" · "))));
-        })) : vide(T("Pas encore de résultat enregistré pour ce couple.", "No result recorded for this pair yet.")));
+              h("span", { style: { display: "block", fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 2 } }, [r.concours, dateCourte(r.date_epreuve), r.partants ? r.partants + " " + T("partants", "starters", "participantes", "partenti", "人出走", "Starter", "مشاركين", "名参赛", "starters", "partantes", "startande", "участников", "startujących", "명 출전", "شرکت‌کننده") : ""].filter(Boolean).join(" · "))));
+        })) : vide(T("Pas encore de résultat enregistré pour ce couple.", "No result recorded for this pair yet.", "Aún no hay resultados registrados para esta pareja.", "Ancora nessun risultato registrato per questo binomio.", "このコンビの成績はまだ登録されていません。", "Noch kein Ergebnis für dieses Paar gespeichert.", "لا توجد نتيجة مسجّلة لهذا الثنائي بعد.", "这对组合还没有登记成绩。", "Nog geen uitslag geregistreerd voor deze combinatie.", "Ainda sem resultados registados para este conjunto.", "Inga resultat registrerade för det här ekipaget än.", "Для этой пары результатов пока нет.", "Brak jeszcze zapisanych wyników tej pary.", "이 콤비의 성적이 아직 없어요.", "هنوز نتیجه‌ای برای این زوج ثبت نشده.")));
   }
   function pageCheval(c) {
     var siens = videosDuCheval(c), cavs = cavalieresDe(siens);
@@ -1015,7 +1015,7 @@ function EcranTeamMedias() {
       return h("button", { key: cle, type: "button", onClick: function () { setVue(cle); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); },
         style: { background: "none", border: "none", borderBottom: "1px solid " + (on ? CH : "transparent"), padding: "8px 0 6px", minHeight: 36, color: on ? IV : IV3, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: largeur < 420 ? "0.12em" : "0.2em", whiteSpace: "nowrap", flex: "0 0 auto", textTransform: "uppercase", cursor: "pointer" } }, txt);
     }
-    return h("div", { id: "tm-sel-vue", "data-hscroll": "1", style: { display: "flex", gap: largeur < 420 ? 16 : 22, marginTop: 18, scrollMarginTop: 20, overflowX: "auto", scrollbarWidth: "none" } }, lien("cavaliere", T("Par cavalier", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiter", "حسب الفارس", "按骑手", "Per ruiter", "Por cavaleiro", "Per ryttare", "По всадникам", "Według jeźdźca", "라이더별", "بر اساس سوارکار")), lien("concours", T("Par concours", "By competition", "Por concurso", "Per concorso", "競技会別", "Nach Turnier", "حسب المسابقة", "按比赛", "Per wedstrijd", "Por concurso", "Per tävling", "По соревнованиям", "Według zawodów", "대회별", "بر اساس مسابقه")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب"), lien("travail", T("Entraînement", "Training"))));
+    return h("div", { id: "tm-sel-vue", "data-hscroll": "1", style: { display: "flex", gap: largeur < 420 ? 16 : 22, marginTop: 18, scrollMarginTop: 20, overflowX: "auto", scrollbarWidth: "none" } }, lien("cavaliere", T("Par cavalier", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiter", "حسب الفارس", "按骑手", "Per ruiter", "Por cavaleiro", "Per ryttare", "По всадникам", "Według jeźdźca", "라이더별", "بر اساس سوارکار")), lien("concours", T("Par concours", "By competition", "Por concurso", "Per concorso", "競技会別", "Nach Turnier", "حسب المسابقة", "按比赛", "Per wedstrijd", "Por concurso", "Per tävling", "По соревнованиям", "Według zawodów", "대회별", "بر اساس مسابقه")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب"), lien("travail", T("Entraînement", "Training", "Entrenamiento", "Allenamento", "トレーニング", "Training", "تدريب", "训练", "Training", "Treino", "Träning", "Тренировка", "Trening", "훈련", "تمرین"))));
   }
 
   function ongletVideos() {
@@ -2013,7 +2013,7 @@ null)) });
       h("div", { style: { padding: "0 18px 24px" } },
         /* 13/11 10h17 (Blandine : « et du coup, les photos, elles sont où ? ») : on passe d'une rubrique à l'autre sans remonter */
         (["videos", "travail", "photos"].indexOf(onglet) !== -1) ? h("div", { role: "tablist", style: { display: "flex", gap: 8, margin: "18px 0 4px" } },
-          [["videos", T("Vidéos", "Videos")], ["photos", T("Photos", "Photos")]]   /* 13/11 10h21 : Travail devient un onglet des Vidéos */.map(function (r) {
+          [["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video’s", "Vídeos", "Videor", "Видео", "Filmy", "영상", "ویدیوها")], ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto’s", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها")]]   /* 13/11 10h21 : Travail devient un onglet des Vidéos */.map(function (r) {
             var on = onglet === r[0] || (r[0] === "videos" && onglet === "travail");
             return h("button", { key: "rub" + r[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setOnglet(r[0]); setCavOuverte(null); setChOuvert(null); setCoupleOuv(null); },
               style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + (on ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"), background: on ? "#1A1E21" : "transparent", color: on ? IV : IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, r[1]);
