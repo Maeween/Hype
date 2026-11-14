@@ -465,6 +465,11 @@ var HS_TR_BRUT = {
   "Protections de transport": ["Travel boots", "Protectores de transporte", "Protezioni da trasporto", "輸送用プロテクター", "Transportgamaschen", "واقيات النقل", "运输护具", "Transportbeschermers", "Protetores de transporte", "Transportskydd", "Транспортировочные ногавки", "Ochraniacze transportowe", "운송용 보호대"],
   "Licol et longe": ["Headcollar and lead rope", "Cabezada de cuadra y ramal", "Capezza e lunghina", "無口と引き手", "Halfter und Strick", "الرسن والحبل", "笼头和牵绳", "Halster en touw", "Cabresto e guia", "Grimma och grimskaft", "Недоуздок и чумбур", "Kantar i uwiąz", "굴레와 리드줄"],
   "Couverture": ["Rug", "Manta", "Coperta", "馬着", "Decke", "الغطاء", "马衣", "Deken", "Capa", "Täcke", "Попона", "Derka", "담요"],
+  "Couvre-reins": ["Quarter sheet", "Cubreriñones", "Coprireni", "腰掛け（ウエストシート）", "Nierendecke", "غطاء الظهر", "护腰毯", "Uitrijdeken", "Cobre-rins", "Ländtäcke", "Попона на круп", "Derka na nerki", "허리 덮개", "پوشش کمر"],
+  "Polaire séchante": ["Fleece cooler", "Manta polar secante", "Coperta in pile asciugante", "フリースクーラー", "Abschwitzdecke", "غطاء صوف مجفف", "吸湿抓绒毯", "Fleece zweetdeken", "Manta polar de secagem", "Fleecetäcke", "Флисовая попона", "Derka polarowa osuszająca", "건조용 플리스", "پتوی پلار خشک‌کن"],
+  "Poubelle pour l’eau et tuyau d’arrosage si concours prolongé": ["Water bin and hose for a long show", "Cubo grande para el agua y manguera si el concurso es largo", "Bidone per l’acqua e tubo dell’acqua se il concorso è lungo", "長い競技会なら水用タンクとホース", "Wassertonne und Gartenschlauch bei langem Turnier", "حاوية ماء وخرطوم إذا طالت المسابقة", "比赛时间长时：储水桶和水管", "Waterton en tuinslang bij een lange wedstrijd", "Caixote para a água e mangueira se o concurso for longo", "Vattentunna och slang vid lång tävling", "Бак для воды и шланг, если соревнования долгие", "Pojemnik na wodę i wąż przy długich zawodach", "대회가 길면 물통과 호스", "سطل بزرگ آب و شلنگ اگر مسابقه طولانی باشد"],
+  "Seau pour l’eau": ["Water bucket", "Cubo para el agua", "Secchio per l’acqua", "水用のバケツ", "Wassereimer", "دلو للماء", "水桶", "Emmer voor water", "Balde para a água", "Vattenhink", "Ведро для воды", "Wiadro na wodę", "물 양동이", "سطل آب"],
+  "Foin": ["Hay", "Heno", "Fieno", "干し草", "Heu", "تبن", "干草", "Hooi", "Feno", "Hö", "Сено", "Siano", "건초", "یونجه"],
   "Seau, foin et eau": ["Bucket, hay and water", "Cubo, heno y agua", "Secchio, fieno e acqua", "バケツ、干し草、水", "Eimer, Heu und Wasser", "دلو وتبن وماء", "水桶、干草和水", "Emmer, hooi en water", "Balde, feno e água", "Hink, hö och vatten", "Ведро, сено и вода", "Wiadro, siano i woda", "양동이, 건초, 물"],
   "Nourriture si concours prolongé à l’extérieur": ["Feed if the show runs long away from home", "Comida si el concurso se alarga fuera", "Cibo se il concorso dura a lungo fuori", "遠征が長引くときの飼料", "Futter, falls das Turnier auswärts länger dauert", "علف إذا طالت المسابقة خارجا", "比赛在外时间长时带上饲料", "Voer als de wedstrijd buiten lang duurt", "Comida se o concurso fora se prolongar", "Foder om tävlingen borta drar ut", "Корм, если соревнования на выезде затянутся", "Pasza, jeśli zawody wyjazdowe się przedłużą", "원정 대회가 길어질 때 사료"],
   "Trousse de pansage": ["Grooming kit", "Kit de limpieza", "Kit di grooming", "手入れ道具", "Putzzeug", "عدة التنظيف", "刷拭工具包", "Poetsdoos", "Kit de limpeza", "Ryktlåda", "Набор для чистки", "Zestaw do czyszczenia", "그루밍 키트"],
@@ -478,6 +483,7 @@ var HS_TR_BRUT = {
   "Bottes": ["Boots", "Botas", "Stivali", "ブーツ", "Stiefel", "الأحذية", "马靴", "Laarzen", "Botas", "Stövlar", "Сапоги", "Oficerki", "부츠"],
   "Gants": ["Gloves", "Guantes", "Guanti", "手袋", "Handschuhe", "القفازات", "手套", "Handschoenen", "Luvas", "Handskar", "Перчатки", "Rękawiczki", "장갑"],
   "Cravache": ["Whip", "Fusta", "Frustino", "鞭", "Gerte", "السوط", "马鞭", "Zweep", "Chicote", "Spö", "Хлыст", "Palcat", "채찍"],
+  "Éperons si besoin": ["Spurs if needed", "Espuelas si hace falta", "Speroni se servono", "必要なら拍車", "Sporen, falls nötig", "المهاميز عند الحاجة", "需要时带马刺", "Sporen indien nodig", "Esporas se necessário", "Sporrar vid behov", "Шпоры, если нужно", "Ostrogi w razie potrzeby", "필요하면 박차", "مهمیز در صورت نیاز"],
   "Éperons": ["Spurs", "Espuelas", "Speroni", "拍車", "Sporen", "المهاميز", "马刺", "Sporen", "Esporas", "Sporrar", "Шпоры", "Ostrogi", "박차"],
   "Airbag": ["Air vest", "Chaleco airbag", "Gilet airbag", "エアバッグベスト", "Airbagweste", "سترة الوسادة الهوائية", "气囊背心", "Airbagvest", "Colete airbag", "Airbagväst", "Подушка безопасности", "Kamizelka airbag", "에어백 조끼"],
   "Cartouche de recharge et / ou protection dorsale": ["Spare cartridge and/or back protector", "Cartucho de recarga y/o protector dorsal", "Cartuccia di ricarica e/o paraschiena", "予備カートリッジ／背中プロテクター", "Ersatzkartusche und/oder Rückenprotektor", "خرطوشة احتياطية و/أو واقي الظهر", "备用气瓶和/或护背", "Reservepatroon en/of rugbeschermer", "Cartucho de recarga e/ou protetor de costas", "Reservpatron och/eller ryggskydd", "Запасной баллон и/или защита спины", "Zapasowy nabój i/lub ochraniacz pleców", "예비 카트리지 및/또는 등 보호대"],
@@ -1586,6 +1592,8 @@ function EcranConcours() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _pe = React.useState(""); var pushEtat = _pe[0], setPushEtat = _pe[1];
   var _pm = React.useState(""); var pushMsg = _pm[0], setPushMsg = _pm[1];
+  var _ptm = React.useState(""); var partMsg = _ptm[0], setPartMsg = _ptm[1];   /* 14/11 : « message copié » des partages par partie */
+  var partCle = React.useRef("");
   var _ge = React.useState(false); var gestion = _ge[0], setGestion = _ge[1];
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
@@ -2213,6 +2221,31 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l", onClick: function () { setDecEp(null); } }, F("Annuler")),
         h("button", { type: "button", className: "hc-btn-l fort", disabled: !d || decEp.occ, onClick: function () { decalerEpreuve(g); } }, decEp.occ ? "…" : (d ? F("Décaler de ") + (d > 0 ? "+" : "−") + Math.abs(d) + " min" : F("Décaler")))));
   }
+  /* 14/11 13h32 (Blandine : « qu'on puisse partager chaque partie indépendamment… juste un clic et que ça envoie un petit message ») :
+     une partie (ordre de passage, ordre d'embarquement, groupes du paddock) = un message prêt + la liste + le lien du concours ;
+     modifiable dans l'appli de messagerie avant l'envoi. Sans partage du téléphone : copié. */
+  function partagerPartie(intro, lignes, fin) {
+    var tete = [ev && ev.titre, ev ? hsPlage(ev) : ""].filter(Boolean).join(" — ");
+    var txt = [tete, intro, (lignes || []).join("\n"), fin || ""].filter(Boolean).join("\n\n");
+    var url = ((typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin) + "/#r=" + encodeURIComponent(String(idEv || ""));
+    try { if (navigator.share) { navigator.share({ title: (ev && ev.titre) || "Hype", text: txt, url: url }).catch(function () { }); return; } } catch (eSh) { }
+    var tout = txt + "\n" + url;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tout).then(function () { setPartMsg(F("Message copié : colle-le dans ton groupe.")); setTimeout(function () { setPartMsg(""); }, 3000); }, function () { try { window.prompt("", tout); } catch (eP) { } }); return; } } catch (eC) { }
+    try { window.prompt("", tout); } catch (eP2) { }
+  }
+  var ICO_PART = h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }));
+  function lienPartage(cle, label, f) { return h("div", { key: cle, style: { textAlign: "center", margin: "14px 0 4px" } }, (partMsg && partCle.current === cle) ? h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,.75)", marginBottom: 4 } }, partMsg) : null, h("button", { type: "button", onClick: function () { partCle.current = cle; f(); }, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "6px 4px", color: "rgba(243,238,228,.85)", fontFamily: "Montserrat,sans-serif", fontSize: 13, cursor: "pointer" } }, ICO_PART, h("span", { style: { borderBottom: "1px solid rgba(243,238,228,.3)", paddingBottom: 1 } }, label))); }
+  function partagerPassages() {
+    var L = [];
+    parEpreuve.forEach(function (g) {
+      L.push((L.length ? "\n" : "") + hsNomEpreuve(g.ep));
+      g.l.slice().sort(function (a, b) { return (!!a.non_partant - !!b.non_partant) || (hsMinutes(a.passage) - hsMinutes(b.passage)); }).forEach(function (p) {
+        var num = p.ordre_passage || p.ordre || "";
+        L.push([p.non_partant ? F("non partant") : (p.passage || "–"), num ? F("N° ") + num : "", nomP(p) + ((p.cheval_brut || p.cheval_nom) ? " · " + (p.cheval_brut || p.cheval_nom) : "")].filter(Boolean).join("  "));
+      });
+    });
+    partagerPartie(F("Voici l’ordre de passage. Les heures peuvent bouger selon l’avancée des épreuves : si tu as activé les notifications de Hype, tu seras prévenu automatiquement de ton heure de passage ; dans tous les cas, un message sera envoyé sur le groupe."), L);
+  }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
       mesLignes.map(function (x, i, tous) {
@@ -2232,6 +2265,7 @@ function EcranConcours() {
        concernées à chaque fois ») : 3 façons de lire les passages — par épreuve (comme avant), par cavalier, par cheval.
        Par cheval / par cavalier : une section par cheval (ou cavalier), chaque ligne = l'épreuve (Club 3…) + l'autre nom. */
     parEpreuve.length ? h("style", { key: "pvs" }, ".hc .hc-pas-vue{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}.hc .hc-pas-vue .vr-dep-b{display:inline-flex;align-items:center;min-height:36px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.4);background:transparent;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:12.5px;cursor:pointer}.hc .hc-pas-vue .vr-dep-b.on{border-color:#C9A66B;color:#C9A66B}") : null,
+    parEpreuve.length ? lienPartage("psh", F("Partager l’ordre de passage avec le groupe"), partagerPassages) : null,
     parEpreuve.length ? h("div", { key: "pv", className: "vr-dep-t hc-pas-vue" }, [["ep", F("Par épreuve")], ["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) {
       return h("button", { key: o[0], type: "button", className: "vr-dep-b" + (pasVue === o[0] ? " on" : ""), "aria-pressed": pasVue === o[0], onClick: function () { setPasVue(o[0]); } }, o[1]);
     })) : null,
@@ -2645,7 +2679,16 @@ function EcranConcours() {
       h("div", { className: "hc-pad-etape-b" },
         h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { setGrpDemande(false); } }, F("Plus tard")),
         h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: publierBrouillons }, grpOcc ? "…" : F("Publier maintenant")))) : null,
-    grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
+    grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null,
+    (!grpEd && grpEp.some(function (g) { return g.publie && (g.couples || []).length; })) ? lienPartage("gsh", F("Partager les groupes du paddock avec le groupe"), function () {
+      var L = [];
+      grpEp.filter(function (g) { return g.publie; }).forEach(function (g, gi) {
+        var lignes = (g.couples || []).map(function (c) { return infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, cheval_nom: c.cheval_nom }; }).sort(function (a, b) { return (a.ordre_passage || 999) - (b.ordre_passage || 999) || hsMinutes(a.passage) - hsMinutes(b.passage); });
+        L.push((L.length ? "\n" : "") + (g.nom || (F("Groupe ") + (gi + 1))) + (g.heure_rdv ? " — " + F("rendez-vous à ") + g.heure_rdv : ""));
+        lignes.forEach(function (p) { L.push([p.ordre_passage ? F("N° ") + p.ordre_passage : "", nomP(p) + (p.cheval_nom ? " · " + p.cheval_nom : ""), p.non_partant ? F("non partant") : (p.passage || "")].filter(Boolean).join("  ")); });
+      });
+      partagerPartie(F("Voici les groupes du paddock") + (epPaddock ? " (" + epPaddock + ")" : "") + ". " + F("Sois à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard. Les heures peuvent changer selon l’avancée du concours ; avec les notifications de Hype, tu es prévenu automatiquement, et un message sera envoyé sur le groupe."), L);
+    }) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
   var grpAuDessus = !!blocPaddock && grpD.some(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock && (gestion || g.publie) && (g.couples || []).length; });   /* d'après les groupes enregistrés : la place ne change pas pendant la modification */
   var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
@@ -4236,7 +4279,11 @@ function EcranConcours() {
                 h("div", { className: "al-t" }, h("span", null, F("Ordre d’embarquement")), h("i", null, String(l.length))),
                 l.length ? l.map(function (x, i) { return h("div", { key: i, className: "hc-emb-l" }, h("span", { className: "n" }, String(i + 1)), h("span", null, h("b", null, x.ch), " · " + x.qui)); })   /* 13/11 14h12 (Blandine) : sans les heures de passage, pour ne pas embrouiller */
                   : h("div", { className: "al-l3" }, F("Pas encore d’ordre de passage.")),
-                h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")));
+                h("div", { className: "al-l3", style: { padding: "8px 0 4px" } }, F("Le premier embarqué est celui qui passe le plus tard ; le dernier embarqué sort en premier.")),
+                h("div", { className: "al-l3", style: { padding: "2px 0 4px" } }, F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque.")),   /* 14/11 13h39 (Blandine) */
+                l.length ? lienPartage("esh", F("Partager l’ordre d’embarquement avec le groupe"), function () {
+                  partagerPartie(F("Ordre d’embarquement") + (ev.heure_depart ? " — " + F("départ de l’écurie à ") + ev.heure_depart : "") + ". " + F("Sois prêt avec ton cheval à l’heure prévue : le camion ne peut pas attendre."), l.map(function (x, i) { return (i + 1) + ". " + x.ch + (x.qui ? " · " + x.qui : ""); }), F("L’ordre des chevaux ne change pas, mais le nom indiqué à côté n’est qu’un repère : si vous êtes plusieurs à monter le même cheval, libre à vous de vous organiser pour savoir qui l’embarque."));
+                }) : null);
             })(); };
         /* 13/11 16h14 (Blandine : « la présentation du concours, tu peux faire mieux que ça ») : propositions A / B / C */
         var vIC = (function () { var m = (document.documentElement.className || "").match(/\bic-([a-f])\b/g); return m ? m[m.length - 1].slice(3) : ""; })();
@@ -7577,15 +7624,15 @@ function hsIdConcours() {
 var HS_LISTE_DEFAUT = [
   { r: "cheval", t: "Selle et tapis" }, { r: "cheval", t: "Filet ou bride" }, { r: "cheval", t: "Sangle bavette" },
   { r: "cheval", t: "Guêtres ou bandes de polo, protège-boulets" }, { r: "cheval", t: "Enrênement si le cheval en a" }, { r: "cheval", t: "Amortisseur pour le dos" },
-  { r: "cheval", t: "Protections de transport" }, { r: "cheval", t: "Licol et longe" }, { r: "cheval", t: "Couverture" },
-  { r: "cheval", t: "Seau, foin et eau" }, { r: "cheval", t: "Nourriture si concours prolongé à l’extérieur" }, { r: "cheval", t: "Trousse de pansage" },
+  { r: "cheval", t: "Protections de transport" }, { r: "cheval", t: "Licol et longe" }, { r: "cheval", t: "Couverture" }, { r: "cheval", t: "Couvre-reins" }, { r: "cheval", t: "Polaire séchante" },   /* 14/11 13h37 (Blandine) */
+  { r: "cheval", t: "Seau pour l’eau" }, { r: "cheval", t: "Foin" },   /* 14/11 13h35 (Blandine) : séparés */ { r: "cheval", t: "Nourriture si concours prolongé à l’extérieur" }, { r: "cheval", t: "Trousse de pansage" },
   { r: "cheval", t: "Élastiques pour natter et ciseaux" }, { r: "cheval", t: "Tendonyl ou équivalent post compétition à mettre sur les membres" },
-  { r: "cheval", t: "Stable boots pour le repos après compétition" }, { r: "cheval", t: "Livret du cheval (vaccins)" },
+  { r: "cheval", t: "Stable boots pour le repos après compétition" }, { r: "cheval", t: "Livret du cheval (vaccins)" }, { r: "cheval", t: "Poubelle pour l’eau et tuyau d’arrosage si concours prolongé" },
   { r: "moi", t: "Casque" }, { r: "moi", t: "Veste de concours" }, { r: "moi", t: "Culotte claire" }, { r: "moi", t: "Bottes" },
-  { r: "moi", t: "Gants" }, { r: "moi", t: "Cravache" }, { r: "moi", t: "Éperons" }, { r: "moi", t: "Airbag" },
+  { r: "moi", t: "Gants" }, { r: "moi", t: "Cravache" }, { r: "moi", t: "Éperons si besoin" }, { r: "moi", t: "Airbag" },
   { r: "moi", t: "Cartouche de recharge et / ou protection dorsale" }, { r: "moi", t: "Matériel pour changer la cartouche" },
   { r: "moi", t: "Manteau ou veste imperméable" }, { r: "moi", t: "Affaires de rechange en cas de pluie" },
-  { r: "moi", t: "Licence sur le téléphone" }, { r: "moi", t: "Eau et goûter" }
+  { r: "moi", t: "Licence sur le téléphone" }   /* 14/11 13h42 (Blandine) : « Eau et goûter » retiré */
 ];
 
 /* ════════════════════ LISTE DU VAN ════════════════════ */
