@@ -34,6 +34,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 13:45 — build 20261114-1345 — Protocole de dressage : chiffres lisibles
+- Blandine (10h24) : « ton protocole, il est toujours illisible » → (10h35 « Ok ») en attendant les propositions de mise en page demandées à ChatGPT : toutes les notes, totaux, places, numéros de figure et compteurs passent en Montserrat, chiffres droits et de même largeur (le « 1 » de Cormorant ressemblait à un « I »). Rien d'autre ne change.
+- INCIDENT CORRIGÉ : la publication précédente (af8dd7b) est partie sans changer le numéro de build ni la version du fichier (une autre conversation avait publié en 20261114-1340) → les téléphones gardaient l'ancienne version ; corrigé par ce build.
+- À VENIR : nouvelle présentation de la feuille d'après les propositions de ChatGPT.
+- Fichiers : hype-ecran-juge.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 13:40 — build 20261114-1340 — Jury d'Equifun à la voix + classement en direct
 - Blandine (10h23) : « la même chose pour l'Equifun ». Règlement FFE Equifun applicable au 1er septembre 2026 (VI pénalités, VII classement).
 - BASE : table jury_passages (Equifun, et plus tard concours complet) — même règle que cso_passages : lecture par les membres connectés, écriture par l'équipe qui gère le concours ou la modératrice.
