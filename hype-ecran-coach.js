@@ -318,7 +318,7 @@
     function versPhase(ph) { setTimeout(function () { try { var el = document.getElementById("hc-" + ph); if (el) el.scrollIntoView({ block: "start" }); } catch (e) { } }, 80); }
     /* 14/11 12h20 : liens directs du cycle. Préparer et Concourir → leur temps sur l'accueil (les 3 chapitres y sont) ;
        les autres → le chapitre, carte concernée ouverte. Le retour d'un chapitre ouvert depuis le cycle revient sur le cycle. */
-    var CYC_DEST = [["u1"], ["u2"], ["retour"], ["analyse", "01"], ["resultats"], ["analyse", "06"], ["analyse", "08"]];
+    var CYC_DEST = [["engagements"], ["jourj"], ["retour"], ["analyse", "01"], ["analyse", "03"], ["analyse", "07"], ["analyse", "08"]];   /* 14/11 18h30 (brief) : Préparer→01, Concourir→06, Prendre soin→07, Observer/Analyser/Enseigner/Progresser→09 cartes 01/03/07/08 */
     function allerCycle(i) {
       var d = CYC_DEST[i]; if (!d) return;
       if (/^u\d$/.test(d[0])) { try { sessionStorage.removeItem("hype_coach_cycle"); } catch (e) { } if (vue !== "accueil") setVue("accueil"); versPhase(d[0]); return; }
@@ -329,7 +329,7 @@
     }
     function retourCycle() { var c = null; try { c = sessionStorage.getItem("hype_coach_cycle"); sessionStorage.removeItem("hype_coach_cycle"); } catch (e) { } return c != null && c !== "" ? Number(c) : null; }
     function versY(y) { [80, 360].forEach(function (t) { setTimeout(function () { try { var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, y); else window.scrollTo(0, y); } catch (e) { } }, t); }); }
-    function retour() { if (PAGES[vue]) { var yc = retourCycle(); var ph = PHASE_DE[vue]; setVue("accueil"); if (yc != null) versY(yc); else if (ph) versPhase(ph); }   /* 14/11 : plus de page intermédiaire, retour au bon temps de l'accueil */ else if (vue === "sommaire" || vue === "journee") { var rc = retourCycle(); setVue("accueil"); if (rc != null) versY(rc); } else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
+    function retour() { if (PAGES[vue]) { var yc = retourCycle(); var ph = PHASE_DE[vue]; var ph0 = vue; setVue("accueil"); var ya = null; try { ya = sessionStorage.getItem("hype_coach_yacc"); sessionStorage.removeItem("hype_coach_yacc"); } catch (eY) { } if (yc != null) versY(yc); else if (ya != null && ya !== "") versY(Number(ya)); else { setTimeout(function () { try { var el = document.querySelector('[data-coach-chap="' + ph0 + '"]'); if (el) el.scrollIntoView({ block: "center" }); } catch (e) { } }, 120); } }   /* 14/11 : plus de page intermédiaire, retour au bon temps de l'accueil */ else if (vue === "sommaire" || vue === "journee") { var rc = retourCycle(); setVue("accueil"); if (rc != null) versY(rc); } else if (app.retourEcran) app.retourEcran(); else setEcran("aide"); }
     /* le concours ouvert en dernier, s'il n'est pas passé : les liens y mènent directement */
     React.useEffect(function () {
       (async function () {
@@ -509,102 +509,62 @@
       function lienVers(lab, ecran) { return h("button", { type: "button", onClick: function () { aller2(ecran); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: 0, marginTop: 8, border: "none", background: "transparent", color: IV, opacity: 0.85, fontFamily: M, fontSize: 14, textDecoration: "underline", textUnderlineOffset: 5, textDecorationColor: "rgba(243,238,228,0.3)", cursor: "pointer" } }, lab, h("span", { "aria-hidden": "true" }, rtlG ? "←" : "→")); }
       function aller2(ec) { try { setEcran(ec); } catch (e) { } }
 
-      return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
-        h("style", null, CSS + ".hcA-nav4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media (min-width:760px){.hcA-nav4{grid-template-columns:repeat(4,minmax(0,1fr))}}"),
-        heroVid("coach-acc-entete_cheval", "76% 40%", "GUIDE COACH", "Le guide du coach", "Avant, pendant et après le concours.", null),
-        h("div", { style: { maxWidth: 680, margin: "22px auto 0", padding: "0 22px" } },
-          p("Prépare tes concours, organise ton équipe, accompagne tes chevaux et transforme chaque parcours en une occasion de progresser.", 0),
-          p("De la préparation des engagements à l’analyse des performances, Hype t’accompagne à chaque étape.", 1),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.25, marginTop: 14 } }, "Concentre-toi sur la performance.", h("br"), "Hype gère la logistique."),
-          /* accès rapide aux 4 univers */
-          h("nav", { className: "hcA-nav4", "aria-label": "Les quatre univers du guide", style: { marginTop: 22 } },
-            [["u1", "01", "Préparer mon concours"], ["u2", "02", "Piloter mon équipe"], ["u3", "03", "Prendre soin de mes chevaux"], ["u4", "04", "Faire progresser mon équipe"]].map(function (r) {
-              return h("button", { key: r[0], type: "button", onClick: function () { aller(r[0]); }, "data-coach-phase": r[0],
-                style: { textAlign: "start", minHeight: 74, padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.18)", background: "#0B0E0C", color: IV, fontFamily: M, cursor: "pointer" } },
-                h("div", { style: { fontFamily: SERIF, fontSize: 20, color: CH, lineHeight: 1 } }, r[1]),
-                h("div", { style: { fontSize: 14, fontWeight: 600, lineHeight: 1.25, marginTop: 6 } }, r[2]));
-            }))),
-
-        /* 01 — PRÉPARER MON CONCOURS : photo à côté, groupes, deux exemples */
-        h("section", { id: "hc-u1", className: "hcA-bloc hcA-cote", style: { marginTop: 44, scrollMarginTop: 16 } },
-          photo("coach-acc-camion_soir", "80% 50%"),
-          h("div", { className: "hcA-txt" },
-            enTete("01", "PRÉPARER MON CONCOURS", "Prépare sans tout ressaisir.", "agenda"),
-            groupe("Les engagements", ["Sélectionner les cavaliers, leurs chevaux et leurs épreuves.", "Retrouver automatiquement les licences renseignées dans les profils.", "Préparer et vérifier les engagements de toute l’équipe.", "Préparer ou modifier les engagements à la voix.", "Générer, imprimer ou enregistrer la fiche d’engagement en PDF."]),
-            groupe("La feuille de route", ["Organiser les horaires d’embarquement et de départ.", "Retrouver l’itinéraire du concours.", "Calculer l’ordre d’embarquement selon les passages.", "Préparer la liste du matériel à emporter.", "Retrouver le matériel et les consignes propres à chaque cheval.", "Accéder aux documents des chevaux et du camion.", "Anticiper les échéances administratives et sanitaires."]),
-            groupe("Le programme", ["Importer une capture d’écran ou un document contenant les listes de départ.", "Retrouver les cavaliers et les chevaux déjà enregistrés dans Hype.", "Renseigner les horaires des épreuves et des reconnaissances.", "Calculer les heures de passage estimées.", "Retrouver les documents du concours sans avoir à les transmettre plusieurs fois."]),
-            h("div", { className: "hcA-duo" },
-              exemple(1, "EXEMPLE", "Une capture d’écran suffit.", p("Transmets la liste de départ du concours. Hype retrouve les informations de ton équipe et t’aide à préparer son programme.", 0)),
-              exemple(2, "PARLE AVEC HYPE", "« La reconnaissance de la Club 3 est à 7h30 et la Club 2 commence à 10h40. »", p("Échange avec Hype, précise les informations et valide les horaires proposés.", 0))),
-            /* 14/11 (brief « Mise à jour du guide coach ») : engagements à la voix */
-            exemple(7, "DICTE LES ENGAGEMENTS DE TON ÉQUIPE", h("span", null, "« Engage Eva avec Yellow en Club\u00a02. »", h("br"), "« Retire Jade de la Club\u00a02. »"), h("div", null,
-              p("Hype prépare les modifications. Retrouve-les dans tes engagements, vérifie-les et valide-les.", 0),
-              lienTuto("Voir le tuto", "engvoix"))),
-            cartes(["engagements", "feuille", "programme"]))),
-
-        /* 02 — PILOTER MON ÉQUIPE : grande photo, groupes, avant / après */
-        h("section", { id: "hc-u2", className: "hcA-bloc", style: { marginTop: 52, scrollMarginTop: 16 } },
-          photo("coach-acc-cso", "84% 40%"),
-          h("div", { className: "hcA-txt" },
-            enTete("02", "PILOTER MON ÉQUIPE", "Garde le fil, même quand tout change.", "drapeau"),
-            groupe("Les passages", ["Retrouver les ordres de passage et les horaires estimés.", "Consulter les passages par épreuve, cavalier ou cheval.", "Modifier un cavalier ou un cheval.", "Enregistrer les non-partants.", "Retrouver les changements à déclarer au jury.", "Ajuster les horaires en fonction du déroulement réel du concours."]),
-            /* situation concrète : avant / après (« Décaler l'épreuve » décale passages et rendez-vous ; prévenir = case à cocher) */
-            exemple(3, "SITUATION", "Une épreuve prend 20 minutes de retard ?", h("div", null,
-              p("Décale l’épreuve dans Hype.", 0),
-              h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 } },
-                [["AVANT", "10h40", "10h10"], ["APRÈS", "11h00", "10h30"]].map(function (c, k) {
-                  return h("div", { key: k, style: { border: "1px solid rgba(243,238,228,0.14)", borderRadius: 12, padding: "10px 12px" } },
-                    h("div", { style: { fontSize: 10.5, letterSpacing: "0.22em", color: k ? IV : "rgba(243,238,228,0.55)" } }, c[0]),
-                    h("div", { style: { fontSize: 13.5, color: "#DEDAD2", marginTop: 6 } }, "Passage ", h("b", { style: { color: IV } }, c[1])),
-                    h("div", { style: { fontSize: 13.5, color: "#DEDAD2", marginTop: 2 } }, "Rendez-vous ", h("b", { style: { color: IV } }, c[2])));
-                })),
-              p("Les heures de passage et les rendez-vous des groupes de paddock sont ajustés.", 1),
-              p("Tu peux également choisir de prévenir les cavaliers.", 2))),
-            groupe("Le paddock", ["Constituer automatiquement les groupes de détente selon les heures de passage.", "Calculer les heures de rendez-vous.", "Adapter les groupes à son organisation.", "Retrouver les consignes et le matériel propres à chaque cheval.", "Publier les groupes pour les rendre accessibles aux cavaliers.", "Prévenir les cavaliers 15 minutes avant leur reconnaissance."]),
-            exemple(4, "EXEMPLE", "Ton équipe compte plusieurs cavaliers dans la même épreuve ?", h("div", null, p("Hype constitue les groupes de détente et calcule leurs heures de rendez-vous selon les passages.", 0), p("Tu peux modifier les groupes avant de les publier.", 1))),
-            groupe("Le jour J", ["Retrouver toutes les informations utiles au même endroit.", "Accéder aux documents du concours.", "Suivre le direct du concours.", "Gérer les retards et les imprévus.", "Informer les cavaliers des changements.", "Activer les alertes utiles."]),
-            cartes(["passages", "paddock", "jourj"]))),
-
-        /* 03 — PRENDRE SOIN DE MES CHEVAUX : photo de l'autre côté, liste, exemple, lien Santé */
-        h("section", { id: "hc-u3", className: "hcA-bloc hcA-cote hcA-inv", style: { marginTop: 52, scrollMarginTop: 16 } },
-          photo("coach-hd-selle", "70% 50%"),
-          h("div", { className: "hcA-txt" },
-            enTete("03", "PRENDRE SOIN DE MES CHEVAUX", "Le concours se termine. L’attention portée au cheval continue.", "fer"),
-            coches(["Organiser le retour des chevaux.", "Retrouver la liste du matériel pour ne rien oublier.", "Consulter les consignes propres à chaque cheval.", "Accompagner la récupération après l’effort.", "Retrouver les informations de santé.", "Consulter les soins et les traitements enregistrés.", "Accéder aux contenus pédagogiques sur la récupération et les soins.", "Partager les recommandations utiles avec les cavaliers."]),
-            exemple(5, "EXEMPLE", "Chaque cheval a ses propres besoins.", p("Retrouve ses consignes, ses informations de santé et les recommandations utiles pour accompagner son retour à l’écurie.", 0)),
-            lienVers("Ouvrir la santé de mes chevaux", "chevaux"),
-            cartes(["retour"]))),
-
-        /* 04 — FAIRE PROGRESSER MON ÉQUIPE : la partie la plus riche */
-        h("section", { id: "hc-u4", className: "hcA-bloc", style: { marginTop: 52, scrollMarginTop: 16 } },
-          photo("coach-hd-coach", "78% 30%"),
-          h("div", { className: "hcA-txt" },
-            enTete("04", "FAIRE PROGRESSER MON ÉQUIPE", "Transforme chaque parcours en une leçon.", "video"),
-            h("div", { className: "hcA-duo" },
-              h("div", null, groupe("Retrouver les performances", ["Importer les résultats du concours.", "Retrouver les résultats de chaque cavalier.", "Consulter les performances des chevaux.", "Suivre les résultats de chaque couple cavalier-cheval.", "Retrouver les classements, les statistiques et les sans-faute.", "Observer l’évolution des performances dans le temps."])),
-              h("div", null, groupe("Retrouver et analyser les parcours", ["Chaque cavalier dispose de son espace pour partager ses vidéos.", "Retrouver les vidéos par cavalier.", "Retrouver les vidéos par cheval.", "Accéder à l’historique des vidéos d’un même couple.", "Comparer les parcours réalisés lors de différents concours.", "Commenter les vidéos et partager ses observations.", "Sélectionner un extrait précis et demander une analyse à Hey Baby."]))),
-            exemple(6, "EXEMPLE", "Un virage difficile devient un exercice de travail.", h("div", null,
-              p("Un cavalier rencontre une difficulté dans un virage serré.", 0),
-              p("Tu sélectionnes l’extrait vidéo et échanges avec Hey Baby sur les causes possibles : équilibre, rêne extérieure, trajectoire ou position du cavalier.", 1),
-              h("div", { style: { fontSize: 15, color: IV, margin: "10px 0 2px" } }, "Tu peux ensuite :"),
-              coches(["Partager un conseil personnalisé avec ce cavalier.", "Transformer cette observation en un contenu pédagogique pour toute l’équipe.", "Préparer un exercice adapté pour la prochaine séance."]))),
-            h("div", { className: "hcA-duo" },
-              h("div", null, groupe("Accompagner individuellement", ["Échanger avec Hey Baby sur une difficulté rencontrée.", "Approfondir l’analyse.", ["Modifier ou compléter les conseils proposés."], ["Valider les conseils avant leur partage."], "Épingler un conseil privé destiné au cavalier concerné."])),
-              h("div", null, groupe("Faire progresser toute l’équipe", ["Identifier une difficulté technique rencontrée en concours.", "Demander à Hey Baby de créer un contenu pédagogique à partir de cette difficulté.", ["Relire, modifier et valider le contenu."], "Partager un enseignement collectif sans identifier le cavalier à l’origine de l’observation.", "Épingler ce contenu sur la page de l’équipe.", "S’appuyer sur les observations pour préparer les prochaines séances."]))),
-            h("div", { className: "hcA-duo", style: { marginTop: 16 } },
-              encart([h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 10 } }, h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV } }, ico(h, "bulle", 20)), h("span", { style: { fontSize: 16, fontWeight: 600, color: IV } }, "Un conseil individuel")),
-                h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Un retour personnalisé, visible uniquement par le coach et le cavalier concerné.")], "ind"),
-              encart([h("div", { key: "a", style: { display: "flex", alignItems: "center", gap: 10 } }, h("span", { "aria-hidden": "true", style: { display: "inline-flex", color: IV } }, ico(h, "groupe", 20)), h("span", { style: { fontSize: 16, fontWeight: 600, color: IV } }, "Un enseignement collectif")),
-                h("div", { key: "b", style: { fontSize: 14.5, lineHeight: 1.45, color: "#DEDAD2", marginTop: 8 } }, "Un contenu pédagogique anonymisé, accessible à toute l’équipe après validation du coach.")], "col")),
-            /* 14/11 (brief) : nouvelles possibilités de conversation avec Hey Baby */
-            groupe("Parler avec Hey Baby", ["Poser une question à l’écrit ou à l’oral.", "Poursuivre un échange sans répéter les informations déjà données.", "Interroger Hey Baby depuis son encart présent dans les différentes pages de Hype.", "Effacer ce qu’il a retenu depuis ton compte."]),
-            lienTuto("Voir le tuto", "hbvoix"),
-            p("Tu gardes toujours la maîtrise pédagogique et décides de ce qui est partagé.", 1),
-            cartes(["resultats", "analyse"]))),
-
-        /* conclusion : cycle de progression vivant (14/11 12h20) — chaque étape mène directement à sa partie du guide */
-        h("div", { style: { maxWidth: 680, margin: "52px auto 0", padding: "26px 22px 0", borderTop: "1px solid rgba(243,238,228,0.10)" } },
-          h(CycleVivant, { id: "hc-cycle", aller: allerCycle, centre: function () { try { var zc = document.getElementById("hype-defile"); sessionStorage.setItem("hype_coach_cycle", String(zc ? zc.scrollTop : 1)); } catch (e) { } setVue("sommaire"); haut0(); } })));
+      /* 14/11 18h30 (brief « Refonte de l'accueil du Guide du coach », maquette ChatGPT n° 2 de référence) : accueil court —
+         héros Vidéothèque, sommaire des 9 chapitres en 3 temps (photo, numéro, titre, phrase, chevron ; toute la ligne ouvre le
+         chapitre), espace Hey Baby (tutos 15 et 17), cycle validé (7 étapes cliquables, HYPE = sommaire). L'encart universel
+         Hey Baby et la fin de page viennent de FinPageHype (guide-coach est dans ECRANS_FIN_PAGE). */
+      var SOMM = [
+        ["Avant le concours", [["01", "engagements", "Engagements", "Prépare et édite tes engagements.", "guide-coach/coach-hd-dossard"],
+          ["02", "feuille", "Feuille de route", "Organise le départ, le transport et le matériel.", "guide-coach/coach-acc-camion_soir"],
+          ["03", "programme", "Programme", "Importe les listes de départ et calcule tes horaires.", "guide-coach/coach-hd-documents"]]],
+        ["Pendant le concours", [["04", "passages", "Passages", "Gère les passages, les retards et les changements.", "guide-coach/coach-pas-hero"],
+          ["05", "paddock", "Paddock", "Crée tes groupes de détente et leurs rendez-vous.", "concours-carte-equipe"],
+          ["06", "jourj", "Jour J", "Suis ton concours et informe tes cavaliers.", "guide-coach/coach-hd-chrono"]]],
+        ["Après le concours", [["07", "retour", "Retour & récupération", "Organise le retour et les soins de tes chevaux.", "guide-coach/coach-hd-embarquement"],
+          ["08", "resultats", "Résultats", "Importe les résultats et suis les performances.", "team-competition-performances-hero"],
+          ["09", "analyse", "Analyse & progression", "Analyse les parcours et prépare tes prochaines séances.", "guide-coach/coach-hd-entree"]]]
+      ];
+      function ligneS(c) {
+        function ouvrirC() { try { var zc = document.getElementById("hype-defile"); sessionStorage.setItem("hype_coach_yacc", String(zc ? zc.scrollTop : 0)); sessionStorage.removeItem("hype_coach_cycle"); } catch (e) { } setVue(c[1]); haut0(); }
+        return h("div", { key: c[0], role: "button", tabIndex: 0, onClick: ouvrirC, onKeyDown: function (ev) { if (ev.key === "Enter") ouvrirC(); }, "data-coach-chap": c[1],
+          style: { display: "grid", gridTemplateColumns: "74px 1px 26px minmax(0,1fr) 14px", alignItems: "center", columnGap: 10, minHeight: 64, paddingInlineEnd: 12, borderRadius: 14, border: "1px solid rgba(243,238,228,0.12)", background: "#0B0E0C", overflow: "hidden", cursor: "pointer" } },
+          h("div", { "aria-hidden": "true", style: { alignSelf: "stretch", position: "relative", overflow: "hidden" } },
+            h("img", { src: "images/" + c[4] + ".webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "78% 45%" } })),
+          h("div", { "aria-hidden": "true", style: { alignSelf: "stretch", margin: "12px 0", background: "rgba(201,166,107,0.40)" } }),
+          h("div", { style: { fontFamily: SERIF, fontSize: 21, color: "rgba(201,166,107,0.85)", lineHeight: 1, textAlign: "center" } }, c[0]),
+          h("div", { style: { minWidth: 0, padding: "9px 0" } },
+            h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: 19.5, color: IV, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c[2]),
+            h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,0.72)", marginTop: 3, lineHeight: 1.35 } }, c[3])),
+          h("div", { "aria-hidden": "true", style: { color: IV, opacity: 0.75, fontSize: 22, lineHeight: 1, textAlign: "end" } }, rtlG ? "‹" : "›"));
+      }
+      function lienT(lab, id) {
+        return h("button", { type: "button", "data-coach-tuto": id, onClick: function () { try { window.__aideTuto = id; } catch (eT) { } setEcran("aide"); },
+          style: { display: "flex", alignItems: "center", gap: 8, minHeight: 40, padding: 0, border: "none", background: "transparent", color: IV, fontFamily: M, fontSize: 14, textDecoration: "underline", textUnderlineOffset: 5, textDecorationColor: "rgba(201,166,107,0.6)", cursor: "pointer", textAlign: "start" } },
+          lab, h("span", { "aria-hidden": "true", style: { color: CH, textDecoration: "none" } }, rtlG ? "←" : "→"));
+      }
+      return h("div", { "data-noswipe": "1", style: { background: BG, color: IV, fontFamily: M, paddingBottom: 8 } },
+        heroVid("coach-hd-coach", "entiere", "GUIDE COACH", "Le guide du coach", "Avant, pendant et après le concours.", null, "clamp(40px, 11vw, 64px)"),
+        h("div", { style: { maxWidth: 680, margin: "16px auto 0", padding: "0 22px" } },
+          h("p", { style: { fontSize: 14.5, lineHeight: 1.5, color: "#DEDAD2", margin: 0 } }, "Organise tes concours, accompagne tes chevaux et fais progresser ton équipe."),
+          h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17.5, color: IV, lineHeight: 1.3, margin: "8px 0 0" } }, "Concentre-toi sur la performance. Hype gère la logistique.")),
+        h("div", { id: "hc-sommaire", style: { maxWidth: 680, margin: "24px auto 0", padding: "0 18px", scrollMarginTop: 16 } },
+          SOMM.map(function (g, gi) {
+            return h("section", { key: g[0], style: { marginTop: gi ? 22 : 0 } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 } },
+                h("span", { style: { fontSize: 11, letterSpacing: "0.3em", color: CH, fontWeight: 500, whiteSpace: "nowrap", textTransform: "uppercase" } }, g[0]),
+                h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", rgba(201,166,107,0.5), rgba(201,166,107,0))" } })),
+              h("div", { style: { display: "grid", gap: 8 } }, g[1].map(ligneS)));
+          })),
+        h("div", { style: { maxWidth: 680, margin: "38px auto 0", padding: "0 22px" } },
+          h("h2", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(26px, 7vw, 34px)", lineHeight: 1.1, margin: 0, color: IV } }, "Plus besoin de chercher où cliquer."),
+          h("p", { style: { fontSize: 14.5, lineHeight: 1.5, color: "#DEDAD2", margin: "10px 0 0" } }, "Depuis n’importe quelle page, dicte une information à Hey Baby, prends une photo ou transmets un document."),
+          h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18.5, color: IV, lineHeight: 1.4, margin: "10px 0 0" } }, "« Demain, départ à 6\u00a0h\u00a030. »", h("br"), "« Engage Eva avec Yellow en Club\u00a02. »"),
+          h("p", { style: { fontSize: 15, fontWeight: 600, color: IV, letterSpacing: "0.02em", margin: "12px 0 6px" } }, "Échange. Vérifie. Valide."),
+          lienT("Échange avec Hey Baby à l’oral", "hbvoix"),
+          lienT("Enregistre une information avec Hey Baby", "infohb")),
+        h("div", { style: { maxWidth: 680, margin: "34px auto 0", padding: "0 18px" } },
+          h(CycleVivant, { id: "hc-cycle", aller: allerCycle, centre: function () { try { sessionStorage.removeItem("hype_coach_cycle"); var el = document.getElementById("hc-sommaire"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } }),
+          h("p", { style: { textAlign: "center", fontSize: 13, color: "rgba(243,238,228,0.7)", margin: "2px 0 0" } }, "Choisis une étape pour ouvrir son tutoriel.")));
     }
     var PG = PAGES[vue] || PAGES.engagements;
     return h("div", { "data-noswipe": "1", style: { minHeight: "100vh", background: BG, color: IV, fontFamily: M, paddingBottom: 24 } },

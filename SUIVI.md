@@ -58,6 +58,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Jour J : 04 « Prévenir mes cavaliers » réécrite (« Prévenir le groupe », ancienne et nouvelle heure, WhatsApp).
 - Guillemets et deux-points insécables dans tout le guide.
 
+## 2026-11-14 19h10 — PUBLIÉ build 20261114-2110 (Blandine : « Ok, vas-y ») — fichiers : index.html (build, hype-ecran-coach.js?v=22), hype-ecran-coach.js v=22, SUIVI.md : refonte de l'ACCUEIL du Guide du coach (brief « Refonte de l'accueil du Guide du coach », maquette ChatGPT n° 2)
+- Accueil court (≈ 2 750 px en 390, encart et fin de page compris) : héros Vidéothèque (« GUIDE COACH », « Le guide du coach », « Avant, pendant et après le concours. »), 2 phrases d'intro ; anciens paragraphes, 4 boutons d'univers et les 4 blocs u1–u4 (listes de fonctionnalités) retirés de l'accueil.
+- Sommaire des 9 chapitres en 3 temps (Avant / Pendant / Après) : photo différente à gauche, numéro champagne discret, titre, phrase du brief, chevron ; toute la ligne ouvre le chapitre ; retour d'un chapitre = même position sur l'accueil (hype_coach_yacc).
+- Espace Hey Baby : « Plus besoin de chercher où cliquer. », exemples en italique sans contour, « Échange. Vérifie. Valide. », liens vers les tutos hbvoix et infohb (affichés TUTO 29 et 31 dans l'appli, numérotés 15 et 17 dans le brief).
+- Cycle validé conservé + « Choisis une étape pour ouvrir son tutoriel. » ; destinations (CYC_DEST) : Préparer→01, Concourir→06, Prendre soin→07, Observer/Analyser/Enseigner/Progresser→09 cartes 01/03/07/08 dépliées ; HYPE→sommaire de l'accueil (plus de page intermédiaire).
+- Encart universel Hey Baby + partage + fin de page : composants existants (FinPageHype, guide-coach dans ECRANS_FIN_PAGE), rien redessiné.
+- Contenu des 9 chapitres inchangé.
+- Vérifié (base simulée) : 9 lignes, 2 tutos, 7 étapes + centre, position au retour ; captures 390 / 820 / 1280 ; 0 erreur.
+- 🟧 PHOTO D'EN-TÊTE PROVISOIRE (coach-hd-coach, très basse) : en attente de la photo demandée (enseignant à pied + cavalier à cheval, cheval entier, sans texte) — Blandine la fait faire par ChatGPT.
+- Textes du guide en français seulement (comme le reste du guide).
+
 ## 2026-11-14 16h40 — PUBLIÉ build 20261114-2030 (Blandine : « réduis l'encart et vérifie tous les onglets ») — fichiers : index.html (build, ?v=199, encart Hey Baby), hype-ecran-saison.js v=199, SUIVI.md
 - Encart Hey Baby (EncartAideHype) réduit, contenu validé inchangé : photo du cheval ENTIÈRE mais à 62 % de la largeur, bords fondus dans le noir ; titre 28 px max (au lieu de 34), texte 13,5, champ 50 px, boutons 44 px, marges resserrées. Hauteur ≈ 430 px au lieu de ≈ 620 sur iPhone.
 - Concours, cartes du haut : toucher une carte descend jusqu'à son contenu, et ne referme plus la partie déjà ouverte (cause du « Jour J n'emmène pas sur la bonne page » : Jour J était déjà ouvert, le toucher le refermait). Personne non engagée : plus de carte Engagements (3 cartes sur la ligne), la page s'ouvre sur le Jour J.
