@@ -1530,8 +1530,8 @@
       ".hod-plus span{color:" + OR + ";display:inline-block;transition:transform .2s}",
       ".hod-plus.ouv span{transform:rotate(180deg)}",
       ".hod-liste{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:14.5px;line-height:1.45;color:rgba(243,238,228,.62);margin:12px 4px 0}",
-      ".hod-voile{position:fixed;inset:0;background:rgba(4,6,9,.72);z-index:9000;display:flex;align-items:flex-end;justify-content:center}",
-      ".hod-feuille{width:100%;max-width:640px;max-height:88vh;overflow:auto;background:#050505;border-top:1px solid rgba(201,166,107,.35);border-radius:24px 24px 0 0;padding:16px 20px calc(26px + env(safe-area-inset-bottom));color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif}",
+      ".hod-voile{position:fixed;inset:0;background:rgba(4,6,9,.72);z-index:2147483000;display:flex;align-items:flex-end;justify-content:center}",
+      ".hod-feuille{width:100%;max-width:640px;max-height:88vh;overflow:auto;background:#050505;border-top:1px solid rgba(201,166,107,.35);border-radius:24px 24px 0 0;padding:16px 20px calc(96px + env(safe-area-inset-bottom));color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif}",
       ".hod-poignee{width:42px;height:4px;border-radius:4px;background:rgba(243,238,228,.25);margin:0 auto 14px}",
       ".hod-titre{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;margin:6px 0 10px}",
       ".hod-note{font-size:12.5px;line-height:1.55;color:rgba(243,238,228,.7)}",
@@ -1676,7 +1676,7 @@
       + "Ecris resume et question dans cette langue (code) : " + langue() + ". "
       + "Date du jour : " + new Date().toISOString().slice(0, 10) + ". Si l'annee n'est pas ecrite, prends la plus logique (jamais dans le futur pour un soin deja fait). "
       + "Tu parles avec la personne comme un assistant attentionne et precis : phrases naturelles et correctes, tutoiement, ni familier ni enfantin. Si elle te pose une question ou te corrige, reponds-lui vraiment. "
-      + "Reponds UNIQUEMENT en JSON : {\"message\":\"ta reponse a la personne, 1 a 3 phrases : ce que tu as compris et ce que tu vas faire ; si tu as un doute, termine par ta question\",\"type\":\"...\",\"resume\":\"une phrase simple qui dit ce que tu as compris\",\"question\":\"ta question s'il y a un doute, sinon vide\","
+      + "Reponds UNIQUEMENT en JSON : {\"message\":\"ta reponse a la personne, 1 a 3 phrases : ce que tu as compris et ce que tu VAS faire quand elle aura valide (au futur : « je vais mettre a jour… quand tu valides » ; ne dis JAMAIS que c'est fait, rien n'est enregistre avant qu'elle touche Valider ; ne recopie pas de message pour les cavaliers, l'appli le prepare) ; si tu as un doute, termine par ta question\",\"type\":\"...\",\"resume\":\"une phrase simple qui dit ce que tu as compris\",\"question\":\"ta question s'il y a un doute, sinon vide\","
       + "\"cheval\":\"nom du cheval concerne si un seul, sinon vide\",\"soins\":[{\"cheval\":\"nom\",\"soin\":\"ferrure|parage|vermifuge|vaccin|dentiste|osteopathe|veterinaire|traitement|autre\",\"date\":\"AAAA-MM-JJ ou vide\",\"detail\":\"precision courte ou vide\"}],"
       + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
       + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"puce\":\"numero de transpondeur (15 chiffres) ou vide\",\"proprietaire\":\"nom du ou des proprietaires ou vide\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"},"
@@ -1752,6 +1752,12 @@
        concours_feuille.numero). concId = celui de la page, sinon celui retrouvé ou choisi. */
     var _cc = React.useState({ liste: null, choisi: "" }), concR = _cc[0], setConcR = _cc[1];
     var concId = props.concoursId || concR.choisi || "";
+    var _ci = React.useState(null), concInfo = _ci[0], setConcInfo = _ci[1];
+    React.useEffect(function () {
+      if (!concId) { setConcInfo(null); return; } var vif = true;
+      try { supa.from("club_agenda").select("titre, lieu, date_jour").eq("id", concId).maybeSingle().then(function (r) { if (vif && r && !r.error && r.data) setConcInfo(r.data); }, function () { }); } catch (e) { }
+      return function () { vif = false; };
+    }, [concId]);
     React.useEffect(function () {
       var lu = st.lu; if (!lu || props.concoursId) return;
       if (["programme", "ordre_passage", "resultats", "horaires_concours", "liste_chevaux", "engagements"].indexOf(lu.type) < 0) return;
@@ -1776,7 +1782,10 @@
             x.score = s;
           });
           L.sort(function (a, b) { return b.score - a.score; });
-          var sur = L.length && (L[0].score >= 30 || (L.length === 1 && d));
+          /* 14/11 12h : un seul concours ce jour-là → c'est lui (Blandine : « Versailles » dicté avec le lieu du rendez-vous) */
+          var ceJour = d ? L.filter(function (x) { return String(x.date_jour || "").slice(0, 10) === d; }) : [];
+          if (ceJour.length === 1 && L[0] !== ceJour[0] && L[0].score < 100) { L.splice(L.indexOf(ceJour[0]), 1); L.unshift(ceJour[0]); }
+          var sur = L.length && (L[0].score >= 30 || (L.length === 1 && d) || ceJour.length === 1);
           if (vif) setConcR({ liste: L, choisi: sur ? L[0].id : "" });
         } catch (e) { if (vif) setConcR({ liste: [], choisi: "" }); }
       })();
@@ -1909,7 +1918,8 @@
     }, [st.fil]);
     React.useEffect(function () { return function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) { } try { refEc.current && refEc.current.annuler(); } catch (e) { } }; }, []);
     React.useEffect(function () {
-      var t = null, v = false; try { t = window.__outilDocTexte; v = !!window.__outilDocVoix; window.__outilDocTexte = null; window.__outilDocVoix = false; } catch (e) { }
+      var t = null, v = false, fi = null; try { t = window.__outilDocTexte; v = !!window.__outilDocVoix; fi = window.__outilDocFichier; window.__outilDocTexte = null; window.__outilDocVoix = false; window.__outilDocFichier = null; } catch (e) { }
+      if (fi) { choisir({ target: { files: [fi] } }); return; }
       if (!t) return;
       if (v) { setVoix(true); refVoix.current = true; }
       envoyerVoix(String(t));
@@ -2183,14 +2193,21 @@
        avant de le partager » ; « s'il l'a fait, il ne faut pas qu'il le fasse en silence ») : les horaires sont enregistrés dans le
        concours ET un message prêt à envoyer au groupe est proposé, modifiable, à copier ou partager. */
     function messageHoraires() {
-      var hz = (st.lu && st.lu.horaires) || {}, c = (st.lu && st.lu.concours) || {};
+      var hz = (st.lu && st.lu.horaires) || {}, c = Object.assign({}, (st.lu && st.lu.concours) || {}, concInfo || {});
       var libT = { reco: T("Reco"), debut: T("Début"), autre: "" };
+      /* 14/11 12h (Blandine : « il faut plutôt donner l'endroit du concours… j'ai les horaires pour le concours de Versailles ») :
+         le lieu et la date viennent du concours de l'agenda ; les heures sont rangées dans l'ordre et écrites « 5 h 30 » */
+      function hh(x) { var m = String(x || "").match(/(\d{1,2})\s*[h:]\s*(\d{2})?/i); if (!m) return String(x || ""); var hr = String(+m[1]), mn = m[2] && m[2] !== "00" ? m[2] : ""; return hr + " h" + (mn ? " " + mn : ""); }
+      function mi(x) { var m = String(x || "").match(/(\d{1,2})\s*[h:]\s*(\d{2})?/i); return m ? (+m[1]) * 60 + (+(m[2] || 0)) : 9999; }
       var L = [];
-      if (hz.embarquement) L.push("• " + T("Embarquement") + " : " + hz.embarquement);
-      if (hz.depart) L.push("• " + T("Départ") + " : " + hz.depart);
-      (Array.isArray(hz.lignes) ? hz.lignes : []).forEach(function (x) { if (!x || !x.heure) return; var lib = x.type === "autre" ? (x.lib || "") : (libT[x.type] || ""); L.push("• " + [lib, x.epreuve].filter(Boolean).join(" ") + (lib || x.epreuve ? " : " : "") + x.heure); });
-      var titre = T("Les horaires") + ([c.lieu, c.date].filter(Boolean).length ? " — " + [c.lieu, c.date].filter(Boolean).join(", ") : "") + " :";
-      return [T("Coucou !"), titre].concat(L).concat([T("Pensez à mettre vos réveils !")]).join("\n");
+      if (hz.embarquement) L.push([mi(hz.embarquement), T("Embarquement") + " : " + hh(hz.embarquement)]);
+      if (hz.depart) L.push([mi(hz.depart), T("Départ") + " : " + hh(hz.depart)]);
+      (Array.isArray(hz.lignes) ? hz.lignes : []).forEach(function (x) { if (!x || !x.heure) return; var lib = x.type === "autre" ? (x.lib || "") : (libT[x.type] || ""); L.push([mi(x.heure), [lib, x.epreuve].filter(Boolean).join(" ") + (lib || x.epreuve ? " : " : "") + hh(x.heure)]); });
+      L.sort(function (a, b) { return a[0] - b[0]; });
+      var jour = ""; try { var d = String(c.date_jour || c.date || "").slice(0, 10); if (/^\d{4}-\d{2}-\d{2}$/.test(d)) jour = new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }); } catch (eJ) { }
+      var ou = String(c.lieu_concours || c.lieu || c.titre || "").trim();
+      var titre = T("J’ai les horaires") + (ou ? " " + T("pour le concours de") + " " + ou : "") + (jour ? ", " + jour : "") + " :";
+      return [T("Coucou !"), titre].concat(L.map(function (x) { return "• " + x[1]; })).concat([T("Pensez à mettre vos réveils !")]).join("\n");
     }
     function blocMessage() {
       var m = st.msgH != null ? st.msgH : messageHoraires();
@@ -2223,7 +2240,7 @@
         if (hFmt(hz.embarquement)) upd.heure_embarquement = hFmt(hz.embarquement);
         var r = await supa.from("club_agenda").update(upd).eq("id", concId).select("id");
         if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
-        var okH = T("✓ C’est fait : les horaires sont sur la page du concours.") + " " + T("Les rappels envoyés aux cavaliers inscrits suivent ces heures (départ et reco).") + " " + T("Je t’ai préparé un message pour ton équipe : modifie-le si tu veux, puis envoie-le.");
+        var okH = T("✓ C’est fait : les horaires sont sur la page du concours.") + " " + T("Les rappels envoyés aux cavaliers inscrits suivent ces heures (départ et reco).") + " " + T("Rien n’a encore été envoyé aux cavaliers : le message ci-dessous est prêt, modifie-le si tu veux, puis touche Partager (WhatsApp, SMS…).");
         maj({ busy: false, etape: "fini", msgH: st.msgH != null ? st.msgH : messageHoraires(), ok: okH });
         try { if (refVoix.current) dire(okH.replace("✓ ", "")); } catch (eD) { }
       } catch (eH) { maj({ busy: false, err: T("Pas enregistré : ") + String((eH && eH.message) || eH) }); }
@@ -2879,9 +2896,10 @@
     /* 14/11 : consigne dite dans l'encart → l'outil s'ouvre et la traite (récap + Valider) */
     React.useEffect(function () {
       if (!moi) return undefined;
-      function go() { try { if (window.__outilDocTexte) ouvrir(); } catch (e) { } }
+      function go() { try { if (window.__outilDocTexte || window.__outilDocFichier || window.__outilDocOuvrir) { window.__outilDocOuvrir = false; ouvrir(); } } catch (e) { } }
+      window.__outilDocHotes = (window.__outilDocHotes || 0) + 1;
       go(); window.addEventListener("hype-outil-ouvrir", go);
-      return function () { window.removeEventListener("hype-outil-ouvrir", go); };
+      return function () { window.removeEventListener("hype-outil-ouvrir", go); window.__outilDocHotes = Math.max(0, (window.__outilDocHotes || 1) - 1); };
     }, [moi]);
     if (!moi) return null;
     var chevalCtx = null; try { chevalCtx = props.ecran === "sante-cheval" ? window.__santeCheval : null; } catch (e1) { }
@@ -2891,5 +2909,15 @@
       feuille ? h(Feuille, { fermer: function () { setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
   }
 
-  window.HypeOutilDoc = { Encart: Encart, Bouton: Bouton };
+  /* 14/11 11h55 — entrées appelables de partout (encart Hey Baby, page Hey Baby…). Il faut qu'un hôte soit monté sur la page :
+     n'importe quel HypeOutilDoc.Bouton (avec sansBouton: true pour ne rien afficher), par ex. h(HypeOutilDoc.Hote, { ecran }).
+     traiterTexte(texte, { ecran, origine, voix }) : ouvre l'outil avec la dictée déjà chargée (récap → Valider) ; voix: true garde la conversation à la voix.
+     traiterFichier(fichier, { ecran, origine }) : ouvre l'outil et lit tout de suite la photo / le PDF (sans l'écran d'accueil).
+     ouvrir({ ecran, origine }) : ouvre l'outil sur son écran d'accueil. Chacune renvoie false s'il n'y a pas d'hôte (ou pas de compte). */
+  function lancer() { try { window.dispatchEvent(new Event("hype-outil-ouvrir")); } catch (e) { } return (window.__outilDocHotes || 0) > 0; }
+  function traiterTexte(texte, o) { var t = String(texte || "").trim(); if (!t) return false; window.__outilDocTexte = t; window.__outilDocVoix = !!(o && o.voix); window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
+  function traiterFichier(fichier, o) { if (!fichier) return false; window.__outilDocFichier = fichier; window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
+  function ouvrirOutil(o) { window.__outilDocOuvrir = true; window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
+  function Hote(props) { return h(Bouton, { ecran: props && props.ecran, sansBouton: true }); }
+  window.HypeOutilDoc = { Encart: Encart, Bouton: Bouton, Hote: Hote, traiterTexte: traiterTexte, traiterFichier: traiterFichier, ouvrir: ouvrirOutil };
 })();
