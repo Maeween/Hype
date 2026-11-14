@@ -34,6 +34,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 10:55 — build 20261114-1055 — Juger une reprise / Jury CSO : retour au design Hype, moins de doré
+- Blandine (09h49) : « attention à bien garder le design… on s'en éloigne complètement. Et pas trop de doré ». Héros : grands chevaux noirs sur fond noir (dressage : theme-position-cavalier-noir ; CSO : portrait-defaut-noir), photo entière, titre dessous.
+- Doré gardé seulement pour : petit titre en capitales, courbes, bouton principal (contour fin). Tout le reste passe en ivoire : cadres, micro, étiquettes, numéros, sélection (contour ivoire), progression, podium, carrière dessinée.
+- Fichiers : hype-ecran-juge.js, index.html (build), SUIVI.md.
+
 ## 2026-11-14 10:40 — build 20261114-1040 — Jury de CSO à la voix
 - Nouvel outil dans l'onglet Résultats d'un concours (équipe qui gère) : « Dicter les résultats de CSO ». Réglages : épreuve, barème (A au chrono, A sans chrono, C), temps accordé.
 - Pour chaque couple en piste : le jury dit « sans faute, 32 secondes 45 », « une barre et un refus, 41 secondes 10 », « 4 points 38,2 », « éliminé »… Hype remplit barres, désobéissances, temps (corrigeables avec les boutons +/− et le champ temps), calcule les points et passe au couple suivant. Couples ajoutables à la main, liste de l'ordre de passage pour revenir sur un couple.
