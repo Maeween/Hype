@@ -11,6 +11,9 @@ const URL_SB = Deno.env.get("SUPABASE_URL")!
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!
 const DEPOT = "https://raw.githubusercontent.com/Maeween/Hype/main/outils/mails/"
+// 14/11 21h (Blandine « fais l'ensemble ») : mail traduit. L'appli envoie { langue } ; modèle bienvenue-express.<langue>.html (repli : le français).
+const LANGUES = ["en","es","it","ja","de","ar","zh","nl","pt","sv","ru","pl","ko","fa"]
+const SUJETS = {"fr": "HYPE — bienvenue, ton compte est prêt 🐴", "en": "HYPE — welcome, your account is ready 🐴", "es": "HYPE — bienvenido, tu cuenta está lista 🐴", "it": "HYPE — benvenuto, il tuo account è pronto 🐴", "ja": "HYPE — ようこそ、アカウントの準備ができました 🐴", "de": "HYPE – willkommen, dein Konto ist bereit 🐴", "ar": "HYPE — مرحبًا، حسابك جاهز 🐴", "zh": "HYPE — 欢迎，你的账号已准备好 🐴", "nl": "HYPE — welkom, je account is klaar 🐴", "pt": "HYPE — bem-vindo, a tua conta está pronta 🐴", "sv": "HYPE — välkommen, ditt konto är klart 🐴", "ru": "HYPE — добро пожаловать, твой аккаунт готов 🐴", "pl": "HYPE — witaj, twoje konto jest gotowe 🐴", "ko": "HYPE — 환영해요, 계정이 준비됐어요 🐴", "fa": "HYPE — خوش آمدی، حسابت آماده است 🐴"}
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" }
 function rep(o, s = 200) { return new Response(JSON.stringify(o), { status: s, headers: { ...CORS, "Content-Type": "application/json; charset=utf-8" } }) }
 Deno.serve(async (req) => {
@@ -29,12 +32,16 @@ Deno.serve(async (req) => {
   const admin = createClient(URL_SB, SERVICE)
   const { data: lk, error: eL } = await admin.auth.admin.generateLink({ type: "recovery", email: user.email, options: { redirectTo: "https://2hype.fr" } })
   if (eL || !lk || !lk.properties || !lk.properties.action_link) return rep({ ok: false, erreur: "lien", detail: String(eL && eL.message || "") }, 500)
-  const m = await fetch(DEPOT + "bienvenue-express.html?t=" + Date.now())
+  let lg = "fr"
+  try { const b = await req.json(); if (b && LANGUES.includes(String(b.langue || ""))) lg = String(b.langue) } catch (_) { }
+  if (lg === "fr" && LANGUES.includes(String(meta.accord_inscription.langue || ""))) lg = String(meta.accord_inscription.langue)
+  let m = await fetch(DEPOT + (lg === "fr" ? "bienvenue-express.html" : "bienvenue-express." + lg + ".html") + "?t=" + Date.now())
+  if (!m.ok && lg !== "fr") { lg = "fr"; m = await fetch(DEPOT + "bienvenue-express.html?t=" + Date.now()) }
   if (!m.ok) return rep({ ok: false, erreur: "modèle introuvable" }, 500)
   const lien = lk.properties.action_link
   const html = (await m.text()).split("{{LIEN}}").join(lien.replace(/&/g, "&amp;"))
   const r = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST", headers: { "api-key": cle, "Content-Type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ sender: { name: "Hype", email: "contact@2hype.fr" }, to: [{ email: user.email }], subject: "HYPE — bienvenue, ton compte est prêt 🐴", htmlContent: html }) })
+    body: JSON.stringify({ sender: { name: "Hype", email: "contact@2hype.fr" }, to: [{ email: user.email }], subject: SUJETS[lg] || SUJETS.fr, htmlContent: html }) })
   const t = await r.text()
   if (!r.ok) return rep({ ok: false, erreur: "brevo", statut: r.status, detail: t.slice(0, 300) }, 502)
   await admin.auth.admin.updateUserById(user.id, { app_metadata: { ...app, bienvenue_envoyee: new Date().toISOString() } })
