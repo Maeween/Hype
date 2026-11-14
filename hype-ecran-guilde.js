@@ -790,6 +790,7 @@ function EcranGuilde() {
       })) : null,
     /* (535) MENU PHOTO de l ecurie (choix de Blandine : « comme sur la page cheval ») : changer la photo
        (proprietaire) + « Couleur » 4 pastilles (proprietaire ou gestionnaire). Remplace la ligne de pastilles du 534. */
+    (typeof window !== "undefined" && window.HypeBandeauProchainConcours) ? h(window.HypeBandeauProchainConcours, { style: { margin: "6px 16px 16px" } }) : null,   /* 14/11 20h30 : bandeau Prochain concours */
     menuPhotoG ? h("div", { onClick: function () { setMenuPhotoG(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", maxWidth: 480, background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(255,255,255,0.1)", padding: "16px 16px calc(16px + env(safe-area-inset-bottom))" } },
         peutEditerBanniere ? h("button", { type: "button", onClick: function () { setMenuPhotoG(false); if (banRef.current) banRef.current.click(); }, style: { width: "100%", textAlign: "start", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: M, cursor: "pointer" } },
