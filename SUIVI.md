@@ -34,6 +34,26 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 01:40 — build 20261114-0140 — « Juger une reprise » : design moins tristounet
+- Blandine (01h12) : « garde bien le design, c'est un peu tristounet ». Ajouts : carrière de dressage dessinée à côté de chaque figure (20 × 40, ou 20 × 60 si la figure cite V S R P), lettres de la figure en or reliées par le tracé ; couples engagés en cartes photo (photo du cheval entière, règle d'équilibre : un nombre impair → le dernier en pleine largeur) dans un encart à cadre fin ; fines courbes dorées entre les parties ; podium des 3 premiers (ronds dorés 1-2-3) au-dessus du classement.
+- Fichiers : hype-ecran-juge.js (v=2), index.html (build), SUIVI.md.
+
+## À TESTER SUR IPHONE (liste du 14/11, outil unique + juge)
+1. Outil « Ajouter un document » : ouvrir depuis le bas d'une page (Santé, Écurie, Registre, Concours) → en-tête cheval noir, titre sous la photo.
+2. Papiers d'un cheval (SIRE) → les cases cochées se remplissent sur la fiche ; puce / propriétaire dans le registre.
+3. Dire « Machin est parti hier chez … » → départ au registre ; « X arrive aujourd'hui, crée-lui sa fiche » → fiche créée + registre.
+4. Donner des engagements ou dire « les engagements sont sortis, ajoute les nouveaux chevaux » sur un concours → chevaux sans fiche créés, reliés aux engagements.
+5. Nom mal écrit d'un cheval existant dans un document → « Fiches à mettre à jour » → la correction passe (propriétaire / équipe) ; avec un autre compte → « Demander la correction » → apparaît chez le propriétaire en haut de l'outil → Accepter.
+6. Résultats (PDF) depuis la fiche du concours ET depuis une autre page → concours retrouvé tout seul → onglet Résultats → lecture lancée.
+7. Récapitulatif d'engagement FFE → écran Engagements, couples ajoutés (plusieurs tours).
+8. Ordonnance → traitement dans la page Santé avec rappel le dernier jour ; alerte si concours proche.
+9. Papier qui expire (licence, contrôle technique) → Mes documents avec date ; date du camion mise à jour si la plaque correspond.
+10. Contrat de demi-pension → page Pensions ; autre contrat → page Contrats.
+11. Échographie / saillie → page Santé de la jument, terme et rappel.
+12. Facture du maréchal pour plusieurs chevaux → une ligne par cheval, document dans chaque page Santé ; « Ma compta » → « Le coût des chevaux ».
+13. Juger une reprise : fiche du concours > Résultats > « Juger une reprise à la voix » → choisir reprise + couple → dicter « six et demi, manque d'incurvation » plusieurs fois → passage automatique, total et moyenne → Signer et envoyer → classement et podium (2 juges sur un même couple = moyenne).
+14. Langue : passer l'appli en anglais ou en arabe et rouvrir l'outil et le juge (textes traduits, sens de lecture).
+
 ## 2026-11-14 01:25 — build 20261114-0125 — « Juger une reprise à la voix » (dressage) : feuille dictée + classement en direct
 - Nouvel écran hype-ecran-juge.js (route « juger », fin de page Hype, pleine largeur) ; entrée : fiche du concours > onglet Résultats > « Juger une reprise à la voix » (équipe qui gère).
 - Choix pris (questions restées sans réponse, à confirmer) : concours internes / Challenge / entraînements ; l'équipe de l'écurie juge ; ouverture depuis l'onglet Résultats ; notes d'ensemble (Allures, Impulsion, Soumission, Position et assiette du cavalier / effet des aides) notées comme les figures — À VÉRIFIER sur les protocoles FFE actuels.

@@ -112,7 +112,27 @@
       ".hj-total b{font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:600}.hj-total span{font-size:12px;color:rgba(243,238,228,.6)}",
       ".hj-astuce{margin-top:14px;font-size:12px;line-height:1.55;color:rgba(243,238,228,.6)}",
       ".hj-sel{display:block;width:100%;box-sizing:border-box;margin-top:6px;background:#000;color:#F3EEE4;border:1px solid rgba(243,238,228,.16);border-radius:12px;padding:11px 12px;font:inherit;font-size:14px;color-scheme:dark}",
-      ".hj-msg{margin-top:12px;font-size:13px;color:#96CDAA}.hj-err{margin-top:12px;font-size:13px;color:#E8A0A0}"
+      ".hj-msg{margin-top:12px;font-size:13px;color:#96CDAA}.hj-err{margin-top:12px;font-size:13px;color:#E8A0A0}",
+      /* 14/11 01h12 (Blandine : « garde bien le design, c'est un peu tristounet ») : carrière dessinée, couples en cartes photo, podium */
+      ".hj-arene{display:flex;justify-content:center;margin:14px 0 2px}",
+      ".hj-arene svg{width:118px;height:auto;overflow:visible}",
+      ".hj-figwrap{display:flex;gap:14px;align-items:center}",
+      ".hj-figwrap .hj-fig{flex:1;margin:0}",
+      ".hj-encart{margin-top:22px;border:1px solid rgba(201,166,107,.22);border-radius:20px;padding:14px 14px 6px;background:#0A0A0A}",
+      ".hj-encart .hj-k{margin-bottom:6px}",
+      ".hj-couples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}",
+      ".hj-cp{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(243,238,228,.1);background:#000;text-align:left;padding:0;font:inherit;color:#F3EEE4;cursor:pointer}",
+      ".hj-cp.on{border-color:" + OR + ";box-shadow:0 0 0 1px " + OR + "}",
+      ".hj-cp-ph{aspect-ratio:4/3;background:#000;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;color:" + OR + "}",
+      ".hj-cp-ph img{width:100%;height:100%;object-fit:contain;display:block}",
+      ".hj-cp-t{padding:8px 10px 10px}.hj-cp-t b{display:block;font-weight:500;font-size:13px}.hj-cp-t span{font-size:11.5px;color:rgba(243,238,228,.6)}",
+      ".hj-podium{display:flex;gap:10px;align-items:flex-end;margin:12px 0 6px}",
+      ".hj-pod{flex:1;text-align:center;border-radius:16px;border:1px solid rgba(243,238,228,.1);background:#000;padding:12px 6px 10px}",
+      ".hj-pod.p1{border-color:rgba(201,166,107,.6);padding-top:18px}",
+      ".hj-rang{width:34px;height:34px;margin:0 auto 6px;border-radius:50%;border:1px solid " + OR + ";display:flex;align-items:center;justify-content:center;font-family:'Cinzel',Georgia,serif;font-size:14px;color:" + OR + "}",
+      ".hj-pod b{display:block;font-weight:500;font-size:12.5px;line-height:1.25}.hj-pod span{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:2px}",
+      ".hj-pod em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:22px;margin-top:6px}",
+      ".hj-sep{display:block;width:100%;height:20px;margin:18px 0 0}"
     ].join("\n");
     document.head.appendChild(s);
   }
@@ -135,6 +155,27 @@
   }
   function fmt(n) { return n == null || n === "" ? "—" : String(Math.round(n * 100) / 100).replace(".", ","); }
 
+  /* carrière de dressage dessinée : 20 × 40 (A K E H C M B F) ou 20 × 60 si la figure cite V S R P ; lettres de la figure en or, reliées */
+  var POS40 = { A: [50, 200], K: [6, 168], E: [6, 100], H: [6, 32], C: [50, 0], M: [94, 32], B: [94, 100], F: [94, 168], X: [50, 100], G: [50, 32], D: [50, 168] };
+  var POS60 = { A: [50, 300], K: [6, 270], V: [6, 210], E: [6, 150], S: [6, 90], H: [6, 30], C: [50, 0], M: [94, 30], R: [94, 90], B: [94, 150], P: [94, 210], F: [94, 270], X: [50, 150], G: [50, 30], D: [50, 270], L: [50, 210], I: [50, 90] };
+  function arene(texte) {
+    var toks = (String(texte || "").match(/\b[A-Z]{1,4}\b/g) || []).filter(function (t) { return /^[AKVESHCMRBPFXGDLI]+$/.test(t); });
+    var grand = toks.some(function (t) { return /[VSRPLI]/.test(t); });
+    var P = grand ? POS60 : POS40, H = grand ? 300 : 200;
+    var seq = []; toks.forEach(function (t) { t.split("").forEach(function (l) { if (P[l] && seq[seq.length - 1] !== l) seq.push(l); }); });
+    var on = {}; seq.forEach(function (l) { on[l] = 1; });
+    var pts = seq.map(function (l) { return P[l][0] + "," + P[l][1]; }).join(" ");
+    return h("svg", { viewBox: "-14 -14 128 " + (H + 28), "aria-hidden": "true" },
+      h("rect", { x: 6, y: 0, width: 88, height: H, fill: "rgba(243,238,228,.02)", stroke: "rgba(243,238,228,.28)", strokeWidth: 1 }),
+      seq.length > 1 ? h("polyline", { points: pts, fill: "none", stroke: OR, strokeWidth: 1.6, strokeLinejoin: "round", strokeLinecap: "round", opacity: .9 }) : null,
+      Object.keys(P).filter(function (l) { return !/[XGDLI]/.test(l) || on[l]; }).map(function (l) {
+        var x = P[l][0], y = P[l][1], bord = x === 6 ? -9 : x === 94 ? 9 : 0, dy = y === 0 ? -7 : y === H ? 11 : 3;
+        return h("g", { key: l },
+          on[l] ? h("circle", { cx: x, cy: y, r: 3.2, fill: OR }) : null,
+          h("text", { x: x + bord, y: y + (bord ? 3 : dy), textAnchor: "middle", fontFamily: "Cinzel, Georgia, serif", fontSize: on[l] ? 10 : 8, fill: on[l] ? OR : "rgba(243,238,228,.45)" }, l));
+      }));
+  }
+  var COURBE = function () { return h("svg", { className: "hj-sep", viewBox: "0 0 400 20", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 16 C 140 16, 240 4, 400 6", fill: "none", stroke: "rgba(201,166,107,.45)", strokeWidth: 1 })); };
   var ENSEMBLE = ["Allures", "Impulsion", "Soumission", "Position et assiette du cavalier, effet des aides"];
 
   function EcranJuge() {
@@ -151,6 +192,12 @@
     var _r = React.useState({ cavalier: ctx.cavalier || "", cheval: ctx.cheval || "", reprise: ctx.reprise || "", juge: "C" }), choix = _r[0], setChoix = _r[1];
     var _e = React.useState({ ecoute: false, dit: "", msg: "", err: "", busy: false }), e = _e[0], setE = _e[1];
     var recRef = React.useRef(null);
+    var _ph = React.useState({}), photos = _ph[0], setPhotos = _ph[1];
+    React.useEffect(function () {
+      var ids = (ctx.couples || []).map(function (c) { return c.cheval_id; }).filter(Boolean);
+      if (!ids.length) return;
+      try { supa.from("chevaux").select("id, photo_url").in("id", ids.slice(0, 100)).then(function (r) { var o = {}; ((r && !r.error && r.data) || []).forEach(function (c) { o[c.id] = c.photo_url || ""; }); setPhotos(o); }, function () { }); } catch (x) { }
+    }, []);
     /* classement en direct : toutes les feuilles signées de ce concours, relues toutes les 15 s ; plusieurs juges = moyenne */
     var _c = React.useState([]), feuilles = _c[0], setFeuilles = _c[1];
     React.useEffect(function () {
@@ -173,7 +220,12 @@
           .filter(function (o) { return o.moy != null; }).sort(function (a, b) { return b.moy - a.moy; });
         var R = REP[k] || {};
         return h("div", { key: k },
-          h("div", { className: "hj-h2" }, T("Le classement"), h("span", null, R.niveauFFE || R.titre || k)),
+          COURBE(),
+          h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("Le classement"), h("span", null, R.niveauFFE || R.titre || k)),
+          L.length >= 2 ? h("div", { className: "hj-podium" }, [1, 0, 2].filter(function (n) { return L[n]; }).map(function (n) {
+            var o = L[n];
+            return h("div", { key: n, className: "hj-pod" + (n === 0 ? " p1" : "") }, h("div", { className: "hj-rang" }, String(n + 1)), h("b", null, o.cavalier), h("span", null, o.cheval || ""), h("em", null, fmt(Math.round(o.moy * 100) / 100) + " %"));
+          })) : null,
           L.map(function (o, n) {
             return h("div", { key: n, className: "hj-li", style: { cursor: "default" } },
               h("span", { className: "n" }, String(n + 1)),
@@ -204,8 +256,15 @@
           h("select", { className: "hj-sel", value: choix.reprise, onChange: function (ev) { setChoix(Object.assign({}, choix, { reprise: ev.target.value })); } },
             h("option", { value: "" }, T("— Quelle reprise ? —")),
             ORDRE.map(function (k) { return h("option", { key: k, value: k }, (REP[k].niveauFFE || REP[k].titre)); })),
-          (ctx.couples || []).length ? h("div", null, h("div", { className: "hj-l", style: { marginTop: 14 } }, T("Les couples engagés")),
-            h("div", { className: "hj-pills" }, ctx.couples.map(function (c, k) { var on = choix.cavalier === c.cavalier && choix.cheval === c.cheval; return h("button", { key: k, type: "button", className: "hj-pill" + (on ? " on" : ""), onClick: function () { setChoix(Object.assign({}, choix, { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id, cheval_id: c.cheval_id })); } }, c.cavalier + (c.cheval ? " · " + c.cheval : "")); }))) : null,
+          (ctx.couples || []).length ? h("div", { className: "hj-encart" }, h("div", { className: "hj-k" }, T("Les couples engagés")),
+            h("div", { className: "hj-couples" }, ctx.couples.map(function (c, k) {
+              var on = choix.cavalier === c.cavalier && choix.cheval === c.cheval, ph = c.cheval_id && photos[c.cheval_id];
+              /* règle d'équilibre (09/11) : jamais une ligne à moitié vide → le dernier d'un nombre impair prend toute la largeur */
+              var seul = ctx.couples.length % 2 === 1 && k === ctx.couples.length - 1;
+              return h("button", { key: k, type: "button", className: "hj-cp" + (on ? " on" : ""), style: seul ? { gridColumn: "1 / -1", display: "flex", alignItems: "stretch" } : null, onClick: function () { setChoix(Object.assign({}, choix, { cavalier: c.cavalier, cheval: c.cheval, cavalier_id: c.cavalier_id, cheval_id: c.cheval_id })); } },
+                h("div", { className: "hj-cp-ph", style: seul ? { width: "46%", flex: "0 0 46%" } : null }, ph ? h("img", { src: ph, alt: "" }) : String(c.cheval || c.cavalier || "?").charAt(0).toUpperCase()),
+                h("div", { className: "hj-cp-t", style: seul ? { alignSelf: "center", padding: "10px 14px" } : null }, h("b", null, c.cavalier), h("span", null, c.cheval || ""), c.epreuve ? h("span", { style: { display: "block" } }, c.epreuve) : null));
+            })), h("div", { style: { height: 8 } })) : null,
           h("div", { className: "hj-l", style: { marginTop: 14 } }, T("Cavalier")),
           h("input", { className: "hj-sel", value: choix.cavalier, onChange: function (ev) { setChoix(Object.assign({}, choix, { cavalier: ev.target.value, cavalier_id: null })); } }),
           h("div", { className: "hj-l", style: { marginTop: 14 } }, T("Cheval")),
@@ -274,7 +333,7 @@
         h("div", { className: "hj-live" },
           h("div", { className: "hj-row" }, h("span", { className: "hj-pas" }, (cur.ens ? T("NOTE D’ENSEMBLE") : T("FIGURE")) + " " + (i + 1) + " / " + L.length),
             h("button", { type: "button", className: "hj-coef", onClick: function () { maj({ coef: cur.coef >= 3 ? 1 : cur.coef + 1 }); } }, T("coefficient") + " " + cur.coef)),
-          h("div", { className: "hj-fig" }, cur.t),
+          cur.ens ? h("div", { className: "hj-fig" }, cur.t) : h("div", { className: "hj-figwrap", style: { marginTop: 10 } }, h("div", { className: "hj-fig" }, cur.t), h("div", { className: "hj-arene", style: { margin: 0 } }, arene(cur.t))),
           h("div", { className: "hj-mic" },
             h("button", { type: "button", className: "hj-rond" + (e.ecoute ? " on" : ""), "aria-label": T("Dicter la note et le commentaire"), onClick: dicter },
               h("svg", { width: 30, height: 40, viewBox: "0 0 30 40" }, h("rect", { x: 9, y: 2, width: 12, height: 22, rx: 6, fill: "none", stroke: OR, strokeWidth: 1.6 }), h("path", { d: "M4 18c0 6 5 11 11 11s11-5 11-11M15 29v8M9 37h12", fill: "none", stroke: OR, strokeWidth: 1.6, strokeLinecap: "round" }))),
@@ -288,7 +347,8 @@
           h("div", { className: "hj-bas" },
             h("button", { type: "button", className: "hj-btn sec", disabled: i === 0, onClick: function () { aller(i - 1); } }, "‹ " + (i > 0 ? String(i) : "")),
             h("button", { type: "button", className: "hj-btn", disabled: i >= L.length - 1, onClick: function () { aller(i + 1); } }, (i < L.length - 1 ? String(i + 2) : "") + " ›"))),
-        h("div", { className: "hj-h2" }, T("La feuille"), h("span", null, nb + " / " + L.length + " " + T("notées"))),
+        COURBE(),
+        h("div", { className: "hj-h2", style: { marginTop: 8 } }, T("La feuille"), h("span", null, nb + " / " + L.length + " " + T("notées"))),
         L.map(function (l, k) {
           return h("div", { key: k, className: "hj-li" + (k === i ? " cur" : (l.note == null ? " af" : "")), onClick: function () { aller(k); } },
             h("span", { className: "n" }, String(k + 1)),
