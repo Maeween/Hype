@@ -34,6 +34,19 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-14 01:25 — build 20261114-0125 — « Juger une reprise à la voix » (dressage) : feuille dictée + classement en direct
+- Nouvel écran hype-ecran-juge.js (route « juger », fin de page Hype, pleine largeur) ; entrée : fiche du concours > onglet Résultats > « Juger une reprise à la voix » (équipe qui gère).
+- Choix pris (questions restées sans réponse, à confirmer) : concours internes / Challenge / entraînements ; l'équipe de l'écurie juge ; ouverture depuis l'onglet Résultats ; notes d'ensemble (Allures, Impulsion, Soumission, Position et assiette du cavalier / effet des aides) notées comme les figures — À VÉRIFIER sur les protocoles FFE actuels.
+- Préparer : reprise (REPRISES_FFE, Galop 3 → Amateur), couple (liste des couples engagés ou saisie), place du juge (E, H, C, M, B).
+- Juger : figure en cours (texte dans la langue de l'appli), gros micro → « Six et demi, manque d'incurvation » → note + commentaire, figure suivante automatique ; lecture de la note : chiffres (6,5), mots (six et demi, sept virgule cinq, cinq et demie) ; à défaut on touche la note (0 à 10 par 0,5, ou 0 à 5). Dictée en français pour l'instant. Brouillon gardé sur le téléphone à chaque note.
+- Coefficients : les fiches de Hype n'ont pas les coefficients officiels → 1 par défaut, réglable (×2, ×3) en touchant « coefficient » — À COMPLÉTER avec les vrais protocoles.
+- Calculs : note × coefficient, total / total possible, moyenne en %.
+- BASE (accord « Ok » 01h05) : table dressage_feuilles (concours, reprise, couple, place et compte du juge, lignes, total, possible, %) + fonction hype_gere_agenda ; RLS : juge, cavalier concerné, équipe qui gère l'écurie du concours, modératrice.
+- Classement en direct (relu toutes les 15 s) : par reprise, moyenne des juges par couple, du meilleur au moins bon ; égalité → règlement FFE (à coder après lecture du règlement).
+- Traductions : 15 langues. Fichiers : hype-ecran-juge.js (nouveau, v=1), hype-ecran-saison.js (v=173), index.html (build, route, listes d'écrans), SUIVI.md.
+- Pas testé en vrai : la dictée sur iPhone et l'envoi en base → à vérifier.
+- ENSUITE : publier le classement dans les résultats du concours et les performances ; feuille consultable par le cavalier ; départage des ex æquo ; puis la même chose pour le CSO (résultats dictés au jury) ; tuto « Juger une reprise à la voix ».
+
 ## 2026-11-13 23:58 — (suivi seul) Dressage : la reprise dictée par le juge — maquette montrée
 - Maquette « Juger une reprise » montrée (héros façon Vidéothèque, figure en cours en grand, gros micro, note + commentaire écrits par Hey Baby, feuille qui se remplit, total et moyenne automatiques). Reprises = REPRISES_FFE déjà dans Hype (Galop 3 à 7, notes sur 5 ou 10).
 - Blandine (23h58) : « énorme… plus besoin de lapins » (les personnes qui courent porter les protocoles du juge au secrétariat pour recompter) → chaque feuille part directement au secrétariat : calcul des points automatique, plusieurs juges (E / H / C) moyennés, classement en direct, résultats publiés sans recopie.

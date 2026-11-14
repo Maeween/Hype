@@ -528,6 +528,8 @@ var HS_TR_BRUT = {
   "Le dossier": ["The file", "El expediente", "Il fascicolo", "書類一式", "Die Unterlagen", "الملف", "资料", "Het dossier", "O dossiê", "Pärmen", "Документы", "Dokumenty", "서류"],
   "Modifier le rendez-vous": ["Edit the event", "Modificar la cita", "Modifica l’appuntamento", "予定を編集", "Termin bearbeiten", "تعديل الموعد", "编辑活动", "Afspraak bewerken", "Editar o evento", "Redigera händelsen", "Изменить событие", "Edytuj wydarzenie", "일정 수정"],
   "Photos et commentaires": ["Photos and comments", "Fotos y comentarios", "Foto e commenti", "写真とコメント", "Fotos und Kommentare", "الصور والتعليقات", "照片和评论", "Foto’s en reacties", "Fotos e comentários", "Foton och kommentarer", "Фото и комментарии", "Zdjęcia i komentarze", "사진과 댓글"],
+  "Juger une reprise à la voix": ["Judge a test by voice", "Juzgar una reprise por voz", "Giudica una ripresa a voce", "音声で課目を審査", "Eine Aufgabe per Stimme richten", "تحكيم اختبار بالصوت", "语音评判考核", "Een proef jureren met je stem", "Julgar uma reprise por voz", "Döma ett program med rösten", "Судить езду голосом", "Sędziuj program głosem", "음성으로 과목 심사", "داوری برنامه با صدا"],
+  "Le juge dicte la note et le commentaire, Hype calcule tout.": ["The judge dictates the mark and comment, Hype does all the maths.", "El juez dicta la nota y el comentario, Hype lo calcula todo.", "Il giudice detta voto e commento, Hype calcola tutto.", "審査員が点数とコメントを口述し、Hypeがすべて計算します。", "Der Richter diktiert Note und Kommentar, Hype rechnet alles.", "يملي الحكم العلامة والتعليق، ويحسب Hype كل شيء.", "裁判口述分数和评语，Hype 自动计算一切。", "De jury dicteert cijfer en opmerking, Hype rekent alles uit.", "O juiz dita a nota e o comentário, o Hype calcula tudo.", "Domaren dikterar poäng och kommentar, Hype räknar allt.", "Судья диктует оценку и комментарий, Hype всё считает.", "Sędzia dyktuje ocenę i komentarz, Hype liczy wszystko.", "심판이 점수와 코멘트를 말하면 Hype가 다 계산해.", "داور نمره و توضیح را دیکته می‌کند، Hype همه را حساب می‌کند."],
   "Résultats en direct": ["Live results", "Resultados en directo", "Risultati in diretta", "ライブ結果", "Live-Ergebnisse", "النتائج المباشرة", "实时成绩", "Live-uitslagen", "Resultados em direto", "Liveresultat", "Результаты онлайн", "Wyniki na żywo", "실시간 결과"],
   "Impossible d’ouvrir ce concours : ": ["Couldn’t open this show: ", "No se pudo abrir este concurso: ", "Impossibile aprire questo concorso: ", "この大会を開けませんでした：", "Dieses Turnier konnte nicht geöffnet werden: ", "تعذّر فتح هذه المسابقة: ", "无法打开该比赛：", "Kan deze wedstrijd niet openen: ", "Não foi possível abrir este concurso: ", "Kunde inte öppna tävlingen: ", "Не удалось открыть соревнование: ", "Nie udało się otworzyć zawodów: ", "이 대회를 열 수 없어요: "],
   "Rendez-vous": ["Meeting time", "Hora de encuentro", "Ritrovo", "集合", "Treffpunkt", "الموعد", "集合时间", "Verzamelen", "Encontro", "Samling", "Сбор", "Zbiórka", "집합"],
@@ -3905,9 +3907,15 @@ function EcranConcours() {
       /* 13/11 10h25 (Blandine : « je devrais pas avoir à scroller 20 fois pour fermer ») : on ferme aussi d'en haut */
       h("button", { type: "button", onClick: fermerModifPassages, "aria-label": F("Fermer"), style: { flex: "0 0 auto", minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,.22)", background: "none", color: "#F3EEE4", fontSize: 12.5, cursor: "pointer" } }, "✕ " + F("Fermer"))),
     h(EcranJourJ, { integre: true, onFermer: fermerModifPassages })) : null;   /* « Terminer » du bas remplacé par « Fermer » dans la barre qui reste visible */
+  /* 14/11 (Blandine : « que les juges n'aient qu'à dicter… plus besoin de lapins ») : juger une reprise à la voix, pour l'équipe qui gère */
+  function ouvrirJuge() {
+    try { window.__juger = { agenda_id: idEv, couples: (passagesEq || []).map(function (p) { return { cavalier: p.pseudo || p.nom || "", cavalier_id: p.cavalier_id || null, cheval: p.cheval_nom || "", cheval_id: p.cheval_id || null, epreuve: p.epreuve || "" }; }) }; } catch (eJ) { }
+    setEcran("juger");
+  }
   var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
     ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
-      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages)) : null;
+      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages),
+    gestion ? outil("juge", F("Juger une reprise à la voix"), F("Le juge dicte la note et le commentaire, Hype calcule tout."), ouvrirJuge) : null) : null;
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
     outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
 
