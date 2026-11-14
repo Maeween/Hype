@@ -66,7 +66,7 @@ function EcranAssistantIA() {
        l'outil documents est chargé sur la page Hey Baby ; une consigne (horaires, engager, retirer, soins, registre…) y part
        directement (récap → Valider), seules les questions vont à Hey Baby. */
     const [outilPretHB, setOutilPretHB] = useState(() => { try { return !!(window.HypeOutilDoc && window.HypeOutilDoc.Hote); } catch (e) { return false; } });
-    useEffect(() => { if (outilPretHB) return undefined; let vif = true; try { if (typeof hypeChargerDiffere === "function") hypeChargerDiffere("hype-outil-doc.js?v=20", "HypeOutilDoc").then((ok) => { if (vif && ok) setOutilPretHB(true); }); } catch (e) { } return () => { vif = false; }; }, []);
+    useEffect(() => { if (outilPretHB) return undefined; let vif = true; try { if (typeof hypeChargerDiffere === "function") hypeChargerDiffere("hype-outil-doc.js?v=21", "HypeOutilDoc").then((ok) => { if (vif && ok) setOutilPretHB(true); }); } catch (e) { } return () => { vif = false; }; }, []);
     useEffect(function () { try { if (typeof window !== "undefined" && window.__hbPrefill != null) { var pf = String(window.__hbPrefill); if (window.__hbAutoEnvoi === true && pf.trim()) { autoEnvoiRef.current = pf.trim(); } else { setSaisie(pf); } window.__hbPrefill = null; window.__hbAutoEnvoi = null; } } catch (e) { } }, []);
     const [enCours, setEnCours] = useState(false);
     const [questionsPosees, setQuestionsPosees] = useState(() => {

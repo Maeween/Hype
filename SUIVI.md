@@ -41,6 +41,44 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > ✅🔒 MAQUETTE VALIDÉE ET FIGÉE — VERSION DU 14/11 12h11 (Blandine ; remplace toutes les précédentes, dont 10h39 et 11h50) — ENCART HEY BABY UNIVERSEL (EcranAideHype → EncartAideHype, index.html). Photo du cheval bai ENTIÈRE (images/sante-fond-defaut.webp), « HEY BABY », « Une question, un document ? », texte « Pose ta question, donne-moi une info ou un document : je m'occupe du reste. », champ « Comment puis-je t'aider ? » avec UN SEUL rond (micro ivoire léger → flèche d'envoi dès qu'on écrit). Dessous, côte à côte sur une ligne : « [appareil photo] Prends une photo » (ouvre l'appareil photo, la photo part directement dans l'outil) et « + Document » ; contour ivoire fin rgba(243,238,228,0.22), texte IVOIRE, fond transparent ; seules les 2 petites icônes en champagne. AUCUN texte ni contour doré. « Je peux t'aider pour… » (ivoire) se déplie — CONTENU DE LA LISTE ENCORE EN DISCUSSION (Blandine 12h31 : trop résumé, à détailler par parties, ne rien annoncer qui ne marche pas). Sur toutes les pages où l'encart s'affiche, y compris guide du coach et page Aide (pas sur la page Hey Baby). Jamais « à l'écrit ou à la voix » ni « parler à la voix ». Tri question / info : hypeGenreMessage ; doute → « Tu veux que je l'enregistre ou c'est une question ? ».
 > ⚠️ RÈGLE (Blandine 14/11 10h39) : elle colle parfois des consignes de ChatGPT sans les avoir relues. Toute conversation qui reçoit une consigne DIFFÉRENTE de cette maquette (ou de toute autre maquette marquée VALIDÉE) doit d'abord la lui faire revalider, en lui montrant la différence, avant de coder.
 
+## 2026-11-14 13h25 — PUBLIÉ build 20261114-1610 (Blandine « Ok », 13h19) : lien direct vers la liste du van + message proposé au partage
+- Blandine (13h17-13h18) : pas de lien de partage sur la liste du matériel ; elle veut un petit texte qui se propose tout seul quand on partage depuis la page.
+- **index.html** : nouvelle adresse 2hype.fr/#lv=<concours> qui ouvre directement la liste du van de ce concours (après connexion si besoin) ; l'encadré « Partage cette page » apparaît donc en bas de la liste du van.
+- « Envoyer » (partage du téléphone) propose maintenant un message avec le lien, selon la page (hypeTextePartagePage) ; on peut le modifier dans l'appli de messagerie avant d'envoyer. « Copier le lien » copie le lien seul. Message de la liste du van (français seulement, traductions après validation) : « Peur d'oublier une partie du matériel pour le concours ? Toute la liste de ce qu'il faut emporter est sur Hype : tu coches au fur et à mesure en préparant tes affaires et le van, et tu vois tout de suite ce qui manque. »
+
+## 2026-11-14 13h15 — PUBLIÉ build 20261114-1610 (Blandine « Ok », 13h19) : adresse complète sur la carte « Informations du concours »
+- Blandine (13h12) : sur une capture d'écran de la carte, les cavaliers n'ont que la ville, pas l'adresse (l'itinéraire est un lien).
+- **hype-ecran-saison.js (v=183 → 184)**, présentation en vigueur de la carte : sous le nom du lieu, l'adresse complète telle qu'elle est enregistrée (ex. « 59 rue Rémont, 78000 Versailles »), en ivoire atténué ; plus seulement « · Versailles ». Le texte peut être sélectionné et copié.
+
+## 2026-11-14 13h40 — Plan d'exemple du parcours : PRÊT, PAS ENCORE PUBLIÉ (attend la validation de Blandine) ; correction des listes du juge : publiée
+- **Correction urgente (hype-ecran-juge.js v=21) — PUBLIÉE build 20261114-1610, seule (sans le plan)** : la règle CSS ajoutée pour les listes du classement (`.hj-li … !important`, en ligne depuis le build 20261114-1550) écrasait la mise en page de toutes les autres listes du juge (règlements, foulées, « Le parcours », classements Equifun et équipes) : libellés et valeurs se chevauchaient. `!important` retiré ; chaque liste reprend sa propre mise en page.
+- **Plan du parcours — plan d'exemple refait** (brief de 12h48 ; Blandine : « ce plan n'existe dans aucun monde possible à cheval ») :
+  - dessin vectoriel à l'échelle (1 m = 10 unités), coordonnées en mètres ; aucune image générée ;
+  - carrière 80 × 40 m (en 70 × 40, impossible de placer 9 obstacles avec des virages d'au moins 6 m et sans tracés qui se gênent), entrée en bas à gauche, contour ivoire fin, échelle 10 m ;
+  - Club 2, 80 cm, 9 obstacles et 10 efforts, une combinaison (8a-8b dans l'axe) ; verticaux, oxers, une triple barre ; barres de 3,50 m perpendiculaires au sens du saut ; fanion rouge à droite, blanc à gauche ;
+  - tracé en S sur 3 lignes : demi-tour à droite puis à gauche (changement de main), virages de 6,5 m de rayon, tout à 6,5 m ou plus des lices, aucun croisement ; lignes de départ et d'arrivée ;
+  - distances écrites et mesurées sur le dessin (vérifié par calcul) : 1-2 21,50 m ; 2-3 25,00 m ; 4-5 21,50 m ; 5-6 14,50 m ; 7-8a 18,00 m ; 8a-8b 7,50 m ; 8b-9 17,50 m ;
+  - foulées (distance ÷ foulée − 1), cheval 3,50 m : 5, 6, 5, 3, 4, 1, 4 ; poney D 3,30 m : 6, 7, 6, 3, 4, 1, 4 ; C 3,10 m : 6, 7, 6, 4, 5, 1, 5 ; B 2,90 m : 6, 8, 6, 4, 5, 2, 5 ;
+  - en-tête : Club 2 · 80 cm · Barème A au chrono · 350 m/min · longueur mesurée sur le tracé 215 m · temps accordé 37 s · temps limite 74 s (2 × TA) ;
+  - sur le plan : distances en ivoire, foulées estimées en champagne ; sous les foulées : « Les foulées sont données à titre indicatif. Adapte-les à ton cheval lors de la reconnaissance. » ;
+  - outil : lien « Voir un exemple de plan » (le plan d'exemple suit le choix Cheval / Poney D / C / B) ; bouton « Agrandir » → plein écran, on fait glisser et on pince pour zoomer ;
+  - images/tutos/plan-du-parcours.webp refaite (780 × 1700, capture de l'outil avec l'exemple) — à remettre dans le tuto 16 par l'autre conversation après validation.
+  - Textes nouveaux en français seulement : traductions après validation.
+
+## 2026-11-14 13h05 — PUBLIÉ build 20261114-1610 (Blandine « Ok », 13h19) : l'appli ne se recharge plus en plein travail + l'outil garde la lecture en cours
+Signalé par Blandine (12h52) : outil lancé sur les horaires de Versailles, elle change d'écran 10 s, revient : long texte doré illisible, puis la page se rafraîchit et tout est perdu.
+- Cause du rafraîchissement : la mise à jour automatique (nouvelle version publiée à 12h50) recharge l'appli au retour au premier plan, même en plein travail.
+- **index.html** : la mise à jour attend que la personne ait fini — outil documents ouvert ou info pas encore validée, écran de juge, texte en cours de saisie. Nouvel essai toutes les 30 s. (Les téléphones encore sur l'ancienne version peuvent se recharger une dernière fois en recevant celle-ci.)
+- **hype-outil-doc.js (v=20 → 21)** :
+  - une info dictée ou tapée pas encore validée est gardée 20 min sur le téléphone : si la page se recharge ou si on revient d'un autre écran, l'outil se rouvre dessus ; effacée dès qu'on valide ou qu'on ferme ;
+  - la lecture tourne sur le serveur : son numéro est gardé 20 min, la même demande reprend la même lecture (réponse immédiate si elle est finie) au lieu d'en relancer une ;
+  - message d'attente pour une info : « Tu peux changer d'écran : je te garde la réponse » (15 langues) ; pour une photo ou un PDF, on garde « Reste sur cette fenêtre » ;
+  - le texte de la personne n'est plus en doré : ivoire atténué, replié sur 3 lignes (on touche pour tout lire) ; bulles en 15 px.
+- hype-ecran-assistant.js (v=27 → 28) : appelle l'outil v=21.
+- Fichiers de cette mise en ligne (build 20261114-1610) : index.html, hype-outil-doc.js v=21, hype-ecran-assistant.js v=28, hype-ecran-saison.js v=184, hype-ecran-juge.js v=21 (correction des listes seule), SUIVI.md.
+- Testé : page rechargée avec une info en attente → l'outil se rouvre tout seul sur « Ce que j'ai compris ».
+- Le visuel de l'outil sera revu plus largement (Blandine : « il faudra qu'on change ce visuel-là »).
+
 ## 2026-11-14 · build 20261114-1550 — Liste « Je peux t'aider pour… » en 4 parties + tri question / info / mixte + juge (protocoles FFE, barrage, 2 phases)
 Fichiers : index.html, hype-ecran-assistant.js (v=27), hype-ecran-juge.js (v=20), hype-ecran-saison.js (v=183), SUIVI.md. Inchangé : hype-outil-doc.js (v=20).
 - **Encart Hey Baby** : la partie qui se déplie passe en 4 parties validées par Blandine (12h38) : Tes chevaux / Ton écurie / Tes concours / Dans Hype (HYPE_ENCART_LISTE, 15 langues). Titres en petites majuscules ivoire, sans doré ; espaces insécables avant « ; » et « : ».

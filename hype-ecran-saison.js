@@ -4314,7 +4314,8 @@ function EcranConcours() {
                   h("div", { className: "ic-fp" },
                     crayon ? h("div", { className: "ic-cr-a" }, crayon) : null,
                     h("div", { className: "ic-date" }, jourL || "–"),
-                    h("div", { className: "ic-lieu" }, lieuNom + (lieuAdr ? " · " + hsVille(ev.lieu) : "")),
+                    h("div", { className: "ic-lieu" }, lieuNom),
+                    lieuAdr ? h("div", { className: "ic-adr", style: { marginTop: 4, fontSize: 13.5, color: "rgba(243,238,228,.75)", userSelect: "text" } }, lieuAdr) : null,   /* 14/11 13h12 (Blandine) : l'adresse complète sur la carte, pour qu'elle figure sur une capture d'écran */
                     liens,
                     orn,
                     hcL.length ? (vE === "3"

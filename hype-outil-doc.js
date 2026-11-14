@@ -466,6 +466,22 @@
 "잠시만요…",
 "یک لحظه…"
 ],
+"Ça prend en général 1 à 2 minutes. Tu peux changer d’écran : je te garde la réponse.": [
+"It usually takes 1 to 2 minutes. You can switch screens: I'll keep the answer for you.",
+"Suele tardar 1 o 2 minutos. Puedes cambiar de pantalla: te guardo la respuesta.",
+"Di solito ci vogliono 1 o 2 minuti. Puoi cambiare schermata: ti tengo la risposta.",
+"通常1〜2分かかります。画面を移動しても大丈夫、答えは取っておくね。",
+"Das dauert meist 1 bis 2 Minuten. Du kannst den Bildschirm wechseln: ich behalte die Antwort für dich.",
+"يستغرق عادة دقيقة أو دقيقتين. يمكنك تغيير الشاشة: أحتفظ لك بالإجابة.",
+"通常需要 1 到 2 分钟。你可以切换页面：我会帮你保留答复。",
+"Dit duurt meestal 1 à 2 minuten. Je mag van scherm wisselen: ik bewaar het antwoord voor je.",
+"Costuma demorar 1 a 2 minutos. Podes mudar de ecrã: eu guardo-te a resposta.",
+"Det tar oftast 1–2 minuter. Du kan byta skärm: jag sparar svaret åt dig.",
+"Обычно это занимает 1–2 минуты. Можешь перейти на другой экран: я сохраню ответ.",
+"Zwykle trwa to 1–2 minuty. Możesz zmienić ekran: zachowam dla ciebie odpowiedź.",
+"보통 1~2분 걸려요. 다른 화면으로 가도 돼요: 답은 내가 잘 보관해 둘게.",
+"معمولاً ۱ تا ۲ دقیقه طول می‌کشد. می‌توانی صفحه را عوض کنی: پاسخ را برایت نگه می‌دارم."
+],
 "Ça prend en général 1 à 2 minutes. Reste sur cette fenêtre.": [
 "It usually takes 1 to 2 minutes. Stay on this window.",
 "Suele tardar 1 o 2 minutos. Quédate en esta ventana.",
@@ -1577,9 +1593,10 @@
       ".hod-bas{display:flex;gap:10px;margin-top:16px}",
       ".hod-bas .hod-btn{flex:1}",
       ".hod-fil{display:flex;flex-direction:column;gap:8px;margin:6px 0 4px}",
-      ".hod-bulle{max-width:86%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.5}",
+      ".hod-bulle{max-width:86%;padding:10px 13px;border-radius:16px;font-size:15px;line-height:1.5}",
       ".hod-bulle.hype{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(201,166,107,.28);border-bottom-left-radius:6px;color:#F3EEE4}",
-      ".hod-bulle.moi{align-self:flex-end;background:rgba(201,166,107,.12);border:1px solid rgba(201,166,107,.35);border-bottom-right-radius:6px;color:#E8D3A8}",
+      ".hod-bulle.moi{align-self:flex-end;background:rgba(243,238,228,.06);border:1px solid rgba(243,238,228,.16);border-bottom-right-radius:6px;color:rgba(243,238,228,.78)}",
+      ".hod-bulle.moi.long{max-height:calc(4.5em + 20px);overflow:hidden;cursor:pointer;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);mask-image:linear-gradient(180deg,#000 60%,transparent)}",
       ".hod-err{margin-top:10px;font-size:12.5px;color:#E8A0A0}",
       ".hod-ok{margin-top:10px;font-size:13px;color:#96CDAA}",
       /* 13/11 22h41 (Blandine : « fais un effort sur le visuel ») : cartes des chevaux à créer / fiches à mettre à jour */
@@ -1728,8 +1745,19 @@
     if ((echanges || []).length) { txt += " Votre conversation jusqu'ici :"; echanges.forEach(function (e) { txt += " Toi : « " + e.q + " ». La personne : « " + e.r + " »."; }); txt += " Tiens compte de tout, et reponds a son dernier message."; }
     blocs.push({ type: "text", text: txt });
     var corps = { mode: "perception", stream: false, differe: true, system: system, messages: [{ role: "user", content: blocs }] };
-    var rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify(corps) });
-    var data = null; try { data = await rep.json(); } catch (e) { }
+    /* 14/11 12h55 (Blandine : « je suis passée sur un autre écran… la page s'est rafraîchie… il m'a rien mis en mémoire ») :
+       la lecture tourne sur le serveur ; on garde son numéro 20 min. Même demande relancée (autre écran, page rechargée) → on reprend
+       la même lecture au lieu d'en recommencer une. */
+    var cleJob = (function () { var x = txt + "|" + (images || []).map(function (du) { du = String(du); return du.length + ":" + du.slice(-400); }).join("|"), hsh = 5381; for (var i = 0; i < x.length; i++) hsh = ((hsh * 33) ^ x.charCodeAt(i)) >>> 0; return "j" + hsh; })();
+    var jobs = {}; try { jobs = JSON.parse(localStorage.getItem("hype_outil_jobs") || "{}") || {}; } catch (eJs) { jobs = {}; }
+    Object.keys(jobs).forEach(function (k) { if (!jobs[k] || Date.now() - jobs[k].t > 1200000) delete jobs[k]; });
+    var rep, data = null;
+    if (jobs[cleJob] && jobs[cleJob].id) { rep = { ok: true, status: 200 }; data = { ok: true, differe: true, jobId: jobs[cleJob].id }; }
+    else {
+    rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify(corps) });
+    try { data = await rep.json(); } catch (e) { }
+    if (rep.ok && data && data.ok && data.differe && data.jobId) { jobs[cleJob] = { id: data.jobId, t: Date.now() }; try { localStorage.setItem("hype_outil_jobs", JSON.stringify(jobs)); } catch (eJw) { } }
+    }
     var texte = "";
     if (rep.ok && data && data.ok && data.differe && data.jobId) {
       var t0 = Date.now(), fini = null;
@@ -1777,7 +1805,7 @@
     var app = (typeof useApp === "function") ? useApp() : {};
     var _e = React.useState({ etape: "choix", note: "", fichier: null, images: null, lu: null, echanges: [], fil: [], reponse: "", lignes: [], chevalId: "", err: "", ok: "", busy: false });
     var st = _e[0], setSt = _e[1];
-    function maj(o) { setSt(function (x) { return Object.assign({}, x, o); }); }
+    function maj(o) { if (o && o.etape === "fini") { try { localStorage.removeItem("hype_outil_encours"); } catch (eE) { } } setSt(function (x) { return Object.assign({}, x, o); }); }
     var refFic = React.useRef(null);
     var chevaux = props.chevaux || [];
     /* 13/11 23h15 (Blandine : « on avait essayé… pour qu'il retrouve le concours ») : depuis n'importe quelle page, l'outil lit
@@ -2666,7 +2694,7 @@
       corps = h("div", { style: { textAlign: "center", padding: "26px 0" } },
         h("div", { className: "hod-k" }, T("Je lis ton document")),
         h("div", { className: "hod-titre" }, T("Un instant…")),
-        h("div", { className: "hod-note" }, T("Ça prend en général 1 à 2 minutes. Reste sur cette fenêtre.")));
+        h("div", { className: "hod-note" }, ((st.images || []).length ? T("Ça prend en général 1 à 2 minutes. Reste sur cette fenêtre.") : T("Ça prend en général 1 à 2 minutes. Tu peux changer d’écran : je te garde la réponse."))));
     } else if (st.etape === "fini") {
       corps = h("div", { style: { textAlign: "center", padding: "18px 0" } },
         h("div", { className: "hod-ok", style: { fontSize: 15 } }, st.ok),
@@ -2890,7 +2918,7 @@
             h("div", { className: "hod-k" }, T("Ce que j’ai compris")),
             h("div", { className: "hod-titre" }, (function () { var x = T(NOMS_TYPE[type] || NOMS_TYPE.autre); return x.charAt(0).toUpperCase() + x.slice(1) + "."; })()))),
         h("div", { className: "hod-fil" },
-          st.fil.map(function (m, i) { return h("div", { key: "m" + i, className: "hod-bulle " + (m.qui === "moi" ? "moi" : "hype") }, m.t); }),
+          st.fil.map(function (m, i) { var lg = m.qui === "moi" && String(m.t || "").length > 160 && !(st.deplie || {})[i]; return h("div", { key: "m" + i, className: "hod-bulle " + (m.qui === "moi" ? "moi" : "hype") + (lg ? " long" : ""), onClick: lg ? function () { var d = Object.assign({}, st.deplie || {}); d[i] = true; maj({ deplie: d }); } : null }, m.t); }),
           st.reflechit ? h("div", { className: "hod-bulle hype" }, "…") : null),
         h("textarea", { className: "hod-ta", value: st.reponse, placeholder: T("Réponds-lui, corrige-le ou pose-lui une question"), onChange: function (e) { maj({ reponse: e.target.value }); } }),
         h("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 } },
@@ -2943,7 +2971,7 @@
           h("button", { type: "button", className: "hod-btn", onClick: ouvrir }, T("＋ Ajouter un document")),
           h("div", null, h("button", { type: "button", className: "hod-plus" + (ouv ? " ouv" : ""), onClick: function () { setOuv(!ouv); } }, T("Tout ce qu’il sait lire "), h("span", null, "⌄"))),
           ouv ? h("div", { className: "hod-liste" }, T("Papiers du cheval et n° SIRE · carnet de vaccins · listes de soins (maréchal, vermifuge, dentiste…), même écrites à la main · ordonnances · factures · programme, ordre de passage et horaires — il reconnaît le cheval, te pose une question s’il a un doute, et range tout au même endroit.")) : null)),
-      feuille ? h(Feuille, { fermer: function () { setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
+      feuille ? h(Feuille, { fermer: function () { try { localStorage.removeItem("hype_outil_encours"); } catch (eE) { } setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
   }
 
   /* 14/11 10h50 (Blandine, maquette validée « encart Hey Baby unique ») : l'outil vit DANS l'encart Hey Baby du bas des pages.
@@ -2970,6 +2998,8 @@
       if (!moi) return undefined;
       function go() { try { if (window.__outilDocTexte || window.__outilDocFichier || window.__outilDocOuvrir) { window.__outilDocOuvrir = false; ouvrir(); } } catch (e) { } }
       window.__outilDocHotes = (window.__outilDocHotes || 0) + 1;
+      /* 14/11 12h55 : une info dictée pas encore validée (page rechargée, autre écran) → l'outil se rouvre dessus */
+      try { if (!window.__outilDocTexte && !window.__outilRepriseFaite) { var enc = JSON.parse(localStorage.getItem("hype_outil_encours") || "null"); if (enc && enc.t && Date.now() - enc.ts < 1200000) { window.__outilRepriseFaite = true; window.__outilDocTexte = enc.t; window.__outilDocVoix = false; } else if (enc) localStorage.removeItem("hype_outil_encours"); } } catch (eR) { }
       go(); window.addEventListener("hype-outil-ouvrir", go);
       return function () { window.removeEventListener("hype-outil-ouvrir", go); window.__outilDocHotes = Math.max(0, (window.__outilDocHotes || 1) - 1); };
     }, [moi]);
@@ -2978,7 +3008,7 @@
     var concoursId = null; try { concoursId = ["concours", "engagements", "jour-j", "dossier-concours", "liste-van"].indexOf(props.ecran) >= 0 ? (window.__concoursId || window.__engagementsId || null) : null; } catch (e2) { }
     return h(React.Fragment, null,
       props.sansBouton ? null : h("button", { type: "button", className: "hod-btn", style: props.styleBouton || null, onClick: ouvrir }, T("＋ Ajouter un document")),
-      feuille ? h(Feuille, { fermer: function () { setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
+      feuille ? h(Feuille, { fermer: function () { try { localStorage.removeItem("hype_outil_encours"); } catch (eE) { } setFeuille(false); }, chevaux: chevaux || [], chevalId: chevalCtx && chevalCtx.id, chevalNom: chevalCtx && chevalCtx.nom, concoursId: concoursId }) : null);
   }
 
   /* 14/11 11h55 — entrées appelables de partout (encart Hey Baby, page Hey Baby…). Il faut qu'un hôte soit monté sur la page :
@@ -2987,7 +3017,7 @@
      traiterFichier(fichier, { ecran, origine }) : ouvre l'outil et lit tout de suite la photo / le PDF (sans l'écran d'accueil).
      ouvrir({ ecran, origine }) : ouvre l'outil sur son écran d'accueil. Chacune renvoie false s'il n'y a pas d'hôte (ou pas de compte). */
   function lancer() { try { window.dispatchEvent(new Event("hype-outil-ouvrir")); } catch (e) { } return (window.__outilDocHotes || 0) > 0; }
-  function traiterTexte(texte, o) { var t = String(texte || "").trim(); if (!t) return false; window.__outilDocTexte = t; window.__outilDocVoix = !!(o && o.voix); window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
+  function traiterTexte(texte, o) { var t = String(texte || "").trim(); if (!t) return false; try { localStorage.setItem("hype_outil_encours", JSON.stringify({ t: t, voix: !!(o && o.voix), ts: Date.now() })); } catch (eE) { } window.__outilDocTexte = t; window.__outilDocVoix = !!(o && o.voix); window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
   function traiterFichier(fichier, o) { if (!fichier) return false; window.__outilDocFichier = fichier; window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
   function ouvrirOutil(o) { window.__outilDocOuvrir = true; window.__outilDocOrigine = (o && o.origine) || ""; return lancer(); }
   function Hote(props) { return h(Bouton, { ecran: props && props.ecran, sansBouton: true }); }
